@@ -83,7 +83,7 @@ lerna bootstrap
 Step 7: Smart contracts
 
 ```bash
-mkdir stays-smart-contracts && cd $_
+mkdir smart-contracts && cd $_
 yarn init
 ```
 
