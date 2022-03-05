@@ -55,3 +55,9 @@ Step 4: Conventional Commits
 ```bash
 yarn add -D -W git-cz
 ```
+
+Step 5: Typescript
+
+```bash
+npm install -g typescript
+```
