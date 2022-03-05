@@ -10,7 +10,7 @@ nvm use
 Step 2: `.gitignore`
 
 ```bash
-echo "node_modules\n.DS_Store\n.env\n" > .gitignore
+echo "node_modules\n.DS_Store\ntypechain\n.env\n" > .gitignore
 ```
 
 Step 3: Yarn
