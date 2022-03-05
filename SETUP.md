@@ -69,3 +69,13 @@ Step 5: Typescript
 ```bash
 yarn add global typescript
 ```
+
+Step 6: Init Frontend DApps
+
+```bash
+cd packages
+yarn add -D -W create-react-app create-react-library
+yarn create react-app glider --template typescript
+yarn create react-app rooms --template typescript
+lerna bootstrap
+```
