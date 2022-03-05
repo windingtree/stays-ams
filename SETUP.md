@@ -16,9 +16,8 @@ echo "node_modules\n.DS_Store\n.env\n" > .gitignore
 Step 3: Yarn and Lerna
 
 ```bash
-npm install -g yarn
+npm install -g yarn lerna
 yarn init --yes
-yarn add -D lerna
 yarn lerna init
 ```
 
