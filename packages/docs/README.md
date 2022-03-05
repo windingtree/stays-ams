@@ -1,0 +1,1 @@
+# Stays: on-chain bookings

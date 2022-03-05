@@ -1,19 +1,19 @@
 Global dependencies: `node` and `nvm`
 
-Step 1: NVM
+## Step 1: NVM
 
 ```bash
 echo "v16.14.0" > .nvmrc
 nvm use
 ```
 
-Step 2: `.gitignore`
+## Step 2: `.gitignore`
 
 ```bash
 echo "node_modules\n.DS_Store\ntypechain\n.env\n" > .gitignore
 ```
 
-Step 3: Yarn
+## Step 3: Yarn
 
 ```bash
 npm install -g yarn
@@ -22,7 +22,7 @@ yarn init --yes
 
 Add `export PATH="$(yarn global bin):$PATH"` to `.bashrc` or `.zshrc`
 
-Step 4: Lerna
+## Step 4: Lerna
 
 ```bash
 yarn global add lerna
@@ -64,13 +64,13 @@ Step 4: Conventional Commits
 yarn add -D -W git-cz
 ```
 
-Step 5: Typescript
+## Step 5: Typescript
 
 ```bash
 yarn global add typescript
 ```
 
-Step 6: Init Frontend DApps
+## Step 6: Init Frontend DApps
 
 ```bash
 cd packages
@@ -80,7 +80,7 @@ yarn create react-app rooms --template typescript
 lerna bootstrap
 ```
 
-Step 7: Smart contracts
+## Step 7: Smart contracts
 
 ```bash
 mkdir smart-contracts && cd $_
@@ -146,4 +146,23 @@ Structure
 
 ```bash
 mkdir contracts test
+```
+
+## Step 8: Documentation
+
+```bash
+cd packages
+mkdir docs && cd $_
+yarn init --yes
+echo "# Stays: on-chain bookings" > README.md
+```
+
+Edit `package.json`
+
+```json
+{
+  "name": "stays-docs",
+  "version": "0.0.1",
+  "license": "MIT"
+}
 ```
