@@ -13,12 +13,20 @@ Step 2: `.gitignore`
 echo "node_modules\n.DS_Store\n.env\n" > .gitignore
 ```
 
-Step 3: Yarn and Lerna
+Step 3: Yarn
 
 ```bash
-npm install -g yarn lerna
+npm install -g yarn
 yarn init --yes
-yarn lerna init
+```
+
+Add `export PATH="$(yarn global bin):$PATH"` to `.bashrc` or `.zshrc`
+
+Step 4: Lerna
+
+```bash
+yarn global add lerna
+lerna init
 ```
 
 Add to `lerna.json`
@@ -59,5 +67,5 @@ yarn add -D -W git-cz
 Step 5: Typescript
 
 ```bash
-npm install -g typescript
+yarn add global typescript
 ```

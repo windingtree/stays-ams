@@ -4,10 +4,6 @@
   "main": "index.js",
   "author": "Maksim Izmaylov <me@kvakes.com>",
   "license": "GPL3",
-  "devDependencies": {
-    "git-cz": "^4.8.0",
-    "lerna": "^4.0.0"
-  },
   "private": true,
   "workspaces": [
     "packages/*"
@@ -17,5 +13,8 @@
     "new-version": "lerna version --conventional-commits --yes",
     "diff": "lerna diff",
     "commit": "yarn run git-cz"
+  },
+  "devDependencies": {
+    "git-cz": "^4.8.0"
   }
 }
