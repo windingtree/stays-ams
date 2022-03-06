@@ -148,7 +148,7 @@ Structure
 mkdir contracts test
 ```
 
-## Step 8: Documentation
+## Step 8: Documentation Package
 
 ```bash
 cd packages
@@ -165,4 +165,92 @@ Edit `package.json`
   "version": "0.0.1",
   "license": "MIT"
 }
+```
+
+## Step 9: ESLint and Prettier
+
+In project root:
+
+```bash
+echo "**/*.js\nnode_modules\nbuild" > .eslintignore
+```
+
+```bash
+yarn add -D -W eslint-plugin-react@^7.28.0 @typescript-eslint/eslint-plugin@latest eslint-config-airbnb@latest eslint@^8.2.0 eslint-plugin-import@^2.25.3 eslint-plugin-jsx-a11y@^6.5.1 eslint-plugin-react-hooks@^4.3.0 @typescript-eslint/parser@latest eslint-import-resolver-typescript
+yarn add -D -W prettier eslint-config-prettier eslint-plugin-prettier
+cd packages/glider
+yarn eslint --init
+```
+
+Answer
+
+```
+1. To check syntax, find problems, and enforce code style
+2. JavaScript modules (import/export)
+3. React
+4. Yes
+5. Browser
+6. Use a popular style guide
+7. Airbnb
+8. JSON
+9. No
+```
+
+Add to `.eslintrc.json`
+
+```json
+  "extends": [
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "plugins": [
+    "react-hooks",
+    "prettier"
+  ],
+  "rules": {
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "react/jsx-filename-extension": [
+      1,
+      {
+        "extensions": [
+          ".tsx"
+        ]
+      }
+    ],
+    "import/prefer-default-export": "off",
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "ts": "never",
+        "tsx": "never"
+      }
+    ],
+    "prettier/prettier": "error",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "react/jsx-one-expression-per-line": "off",
+    "no-use-before-define": "off"
+  },
+  "settings": {
+    "import/resolver": {
+        "typescript": {}
+    }
+  }
+```
+
+Create `prettier.config.js`
+
+```js
+module.exports = {
+  singleQuote: true,
+  trailingComma: 'all',
+  allowParens: 'avoid'
+}
+```
+
+Now, copy the two config files to `rooms` as well
+
+```bash
+cp .eslintrc.json prettier.config.js ../rooms
 ```
