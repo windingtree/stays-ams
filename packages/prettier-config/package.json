@@ -1,0 +1,12 @@
+{
+  "name": "@windingtree/prettier-config",
+  "version": "0.0.1",
+  "license": "ISC",
+  "main": "index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "prettier": "^2.5.1"
+  }
+}

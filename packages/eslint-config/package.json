@@ -1,0 +1,12 @@
+{
+  "name": "@windingtree/eslint-config",
+  "version": "0.0.1",
+  "license": "ISC",
+  "main": "index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "eslint": "^8.10.0"
+  }
+}
