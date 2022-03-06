@@ -15,7 +15,9 @@
     "ethers": "^5.5.4",
     "hardhat": "^2.9.1",
     "ts-node": "^10.6.0",
-    "typechain": "7.0.0"
+    "typechain": "7.0.0",
+    "@windingtree/eslint-config": "^0.0.1",
+    "@windingtree/prettier-config": "^0.0.1"
   },
   "dependencies": {}
 }
