@@ -35,7 +35,7 @@ abstract contract StayEscrow {
   }
 
   // Complete withdraw  - state "Checkout" only
-  function withdraw(address payable payee, bytes32 spaceId) public virtual {
+  function withdraw(address payable payee, bytes32 spaceId) internal virtual {
     uint256 payment = _deposits[spaceId][payee];
     require(payment > 0, "Insufficient funds");
     require(
@@ -52,7 +52,7 @@ abstract contract StayEscrow {
     address payable payee,
     uint256 payment,
     bytes32 spaceId
-  ) public virtual {
+  ) internal virtual {
     require(payment >= _deposits[spaceId][payee], "Insufficient funds");
     _deposits[spaceId][payee] = _deposits[spaceId][payee] - payment;
     _states[spaceId][payee] = State.Checkout;

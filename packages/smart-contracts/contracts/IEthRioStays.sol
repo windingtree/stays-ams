@@ -12,7 +12,9 @@ abstract contract IEthRioStays {
   event LodgingFacilityRemoved(bytes32 facilityId);
   event SpaceAdded(bytes32 facilityId, uint64 capacity, uint64 pricePerNightWei, bool active, string dataURI);
   event SpaceUpdated(bytes32 facilityId, uint256 index, uint64 capacity, uint64 pricePerNightWei, bool active, string dataURI);
-  event NewStay(bytes32 spaceID, uint256 tokenId);
+  event NewStay(bytes32 spaceId, uint256 tokenId);
+  event CheckIn(uint256 tokenId);
+  event CheckOut(uint256 tokenId);
 
   // To display all availability in Glider: getActiveLodgingFacilityIds, getSpaceIdsByFacilityId, getAvailability
   function getAllLodgingFacilityIds() public view virtual returns (bytes32[] memory);
@@ -69,7 +71,7 @@ abstract contract IEthRioStays {
   // function getCurrentStayIdsByFacilityId(bytes32 _lodgingFacilityId) public virtual returns (uint256[] memory);
   // function getFutureStayIdsByFacilityId(bytes32 _lodgingFacilityId) public virtual returns (uint256[] memory);
   function checkIn(uint256 _tokenId) public virtual;
-  // function checkOut(uint256 _tokenId) public virtual;
+  function checkOut(uint256 _tokenId) public virtual;
 
   // function requestChange(uint256 _tokenId, bytes32 _spaceId, uint16 _startDay, uint16 _numberOfDays, uint16 _quantity) public payable virtual;
   // function requestCancel(int256 _tokenId) public virtual;

@@ -42,6 +42,16 @@ contract EthRioStays is IEthRioStays, StayEscrow, ERC721URIStorage {
     string dataURI; // must be conformant with "spaceSchemaURI"
   }
 
+  // Stay
+  struct Stay {
+    bytes32 spaceId;
+    uint16 startDay;
+    uint16 numberOfDays;
+    uint16 quantity;
+    bool checkIn;
+    bool checkOut;
+  }
+
   bytes32[] private _lodgingFacilityIds;
   mapping (address => bytes32[]) private _facilityIdsByOwner;
   mapping (bytes32 => LodgingFacility) public lodgingFacilities;
@@ -52,8 +62,8 @@ contract EthRioStays is IEthRioStays, StayEscrow, ERC721URIStorage {
   // _spaceId -> _daysFromDayZero -> _numberOfBookings
   mapping(bytes32 => mapping(uint16 => uint16)) private _booked;
 
-  // Stay token => spaceId
-  mapping(uint256 => bytes32) private _stays;
+  // Stay token => Stay
+  mapping(uint256 => Stay) private _stays;
 
   constructor() ERC721("EthRioStays", "ERS22") {}
 
@@ -301,7 +311,7 @@ contract EthRioStays is IEthRioStays, StayEscrow, ERC721URIStorage {
     address payable payee,
     bytes32 _spaceId
   )
-    public override(StayEscrow) onlySpaceOwner(_spaceId)
+    internal override(StayEscrow)
   {
     super.withdraw(payee, _spaceId);
   }
@@ -311,7 +321,7 @@ contract EthRioStays is IEthRioStays, StayEscrow, ERC721URIStorage {
     address payable payee,
     uint256 payment,
     bytes32 _spaceId
-  ) public override(StayEscrow) onlySpaceOwner(_spaceId) {
+  ) internal override(StayEscrow) {
     // partial withdraw condition
     require(
       payment <= spaces[_spaceId].pricePerNightWei,
@@ -350,6 +360,15 @@ contract EthRioStays is IEthRioStays, StayEscrow, ERC721URIStorage {
     _safeMint(_msgSender(), _newStayTokenId);
     _setTokenURI(_newStayTokenId, _tokenURI);
 
+    _stays[_newStayTokenId] = Stay(
+      _spaceId,
+      _startDay,
+      _numberOfDays,
+      _quantity,
+      false,
+      false
+    );
+
     // @todo: escrow
     // facility owner should be able to claim 1-night amount during check-in
     // then, facility owner should be able to claim full amount on check-out day
@@ -370,13 +389,45 @@ contract EthRioStays is IEthRioStays, StayEscrow, ERC721URIStorage {
 
   // Stay checkIn; can be called by a stay token owner
   function checkIn(uint256 _tokenId) public override onlyTokenOwner(_tokenId) {
-    bytes32 _spaceId = _stays[_tokenId];
+    Stay storage _stay = _stays[_tokenId];
+    require(!_stay.checkIn, "Already checked in");
+    bytes32 _spaceId = _stay.spaceId;
     uint256 firstNight = spaces[_spaceId].pricePerNightWei;
+    // Partial withdraw, just for a first night
+    _stay.checkIn = true;
     withdraw(
       payable(lodgingFacilities[spaces[_spaceId].lodgingFacilityId].owner),
       firstNight,
       _spaceId
     );
+    emit CheckIn(_tokenId);
+  }
+
+  /**
+   * CheckOut
+   */
+
+  function checkOut(uint256 _tokenId) public virtual override {
+    Stay storage _stay = _stays[_tokenId];
+    require(!_stay.checkOut, "Already checked out");
+    bytes32 _spaceId = _stay.spaceId;
+    address spaceOwner = lodgingFacilities[spaces[_spaceId].lodgingFacilityId].owner;
+    require(
+      _msgSender() == spaceOwner,
+      "Only space owner is allowed"
+    );
+    // CheckOut condition by time
+    require(
+      dayZero + (_stay.startDay + _stay.numberOfDays) * 86400 >= block.timestamp,
+      "Forbidden unless checkout date"
+    );
+    // Complete withdraw (rest of deposit)
+    _stay.checkOut = true;
+    withdraw(
+      payable(spaceOwner),
+      _spaceId
+    );
+    emit CheckOut(_tokenId);
   }
 
   /*
