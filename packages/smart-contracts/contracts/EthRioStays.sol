@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "./IEthRioStays.sol";
 import "./StayEscrow.sol";
+import "./libraries/StayTokenMeta.sol";
 
 // import "hardhat/console.sol";
 
@@ -53,13 +54,20 @@ contract EthRioStays is IEthRioStays, StayEscrow, ERC721URIStorage {
   }
 
   bytes32[] private _lodgingFacilityIds;
+
+  // Facility owner => LodgingFacility[]
   mapping (address => bytes32[]) private _facilityIdsByOwner;
+
+  // facilityId => LodgingFacility
   mapping (bytes32 => LodgingFacility) public lodgingFacilities;
 
+  // facilityId => spaceId[]
   mapping (bytes32 => bytes32[]) private _spaceIdsByFacilityId;
+
+  // spaceId => Space
   mapping (bytes32 => Space) public spaces;
 
-  // _spaceId -> _daysFromDayZero -> _numberOfBookings
+  // spaceId => daysFromDayZero => numberOfBookings
   mapping(bytes32 => mapping(uint16 => uint16)) private _booked;
 
   // Stay token => Stay
@@ -338,8 +346,7 @@ contract EthRioStays is IEthRioStays, StayEscrow, ERC721URIStorage {
     bytes32 _spaceId,
     uint16 _startDay,
     uint16 _numberOfDays,
-    uint16 _quantity,
-    string memory _tokenURI
+    uint16 _quantity
   ) public payable override returns (uint256) {
     _checkBookingParams(_spaceId, _startDay, _numberOfDays);
 
@@ -349,7 +356,10 @@ contract EthRioStays is IEthRioStays, StayEscrow, ERC721URIStorage {
     require(msg.value >= _stayPrice, "Need. More. Money!");
 
     for (uint16 _x = 0; _x < _numberOfDays; _x++) {
-      require(_s.capacity - _booked[_spaceId][_startDay+_x] >= _quantity, "Insufficient inventory");
+      require(
+        _s.capacity - _booked[_spaceId][_startDay+_x] >= _quantity,
+        "Insufficient inventory"
+      );
       _booked[_spaceId][_startDay+_x] += _quantity;
     }
 
@@ -358,6 +368,16 @@ contract EthRioStays is IEthRioStays, StayEscrow, ERC721URIStorage {
     _stayTokenIds.increment();
     uint256 _newStayTokenId = _stayTokenIds.current();
     _safeMint(_msgSender(), _newStayTokenId);
+
+    // Inline tokenURI (data:application/json;base64)
+    string memory _tokenURI = StayTokenMeta.createTokenUri(
+      _newStayTokenId,
+      _s.lodgingFacilityId,
+      _spaceId,
+      _startDay,
+      _numberOfDays,
+      _quantity
+    );
     _setTokenURI(_newStayTokenId, _tokenURI);
 
     _stays[_newStayTokenId] = Stay(

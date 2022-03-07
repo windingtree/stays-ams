@@ -64,7 +64,7 @@ abstract contract IEthRioStays {
   // function claimAllFromEscrow() public virtual;
 
   // Stays
-  function newStay(bytes32 _spaceId, uint16 _startDay, uint16 _numberOfDays, uint16 _quantity, string memory _tokenURI) public payable virtual returns (uint256);
+  function newStay(bytes32 _spaceId, uint16 _startDay, uint16 _numberOfDays, uint16 _quantity) public payable virtual returns (uint256);
   // getting all my Stays is via built-in NFT contract getter
   // getting Stay details is via NFT's tokenURI getter
   // function getAllStayIdsByFacilityId(bytes32 _lodgingFacilityId) public virtual returns (uint256[] memory);
