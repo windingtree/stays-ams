@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/utils/Address.sol";
 
 
-contract StayEscrow {
+abstract contract StayEscrow {
   using Address for address payable;
 
   enum State {
