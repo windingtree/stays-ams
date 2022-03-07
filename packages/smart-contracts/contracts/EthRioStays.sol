@@ -4,13 +4,13 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/utils/escrow/ConditionalEscrow.sol";
 import "./IEthRioStays.sol";
+import "./StayEscrow.sol";
 
-import "hardhat/console.sol";
+// import "hardhat/console.sol";
 
 
-contract EthRioStays is IEthRioStays, ERC721URIStorage {
+contract EthRioStays is IEthRioStays, StayEscrow, ERC721URIStorage {
   using Counters for Counters.Counter;
   Counters.Counter private _stayTokenIds;
 
@@ -65,6 +65,14 @@ contract EthRioStays is IEthRioStays, ERC721URIStorage {
     _;
   }
 
+  modifier onlySpaceOwner(bytes32 _spaceId) {
+    require(
+      _msgSender() == lodgingFacilities[spaces[_spaceId].lodgingFacilityId].owner,
+      "Only space owner is allowed"
+    );
+    _;
+  }
+
   /**
    * Lodging Facilities Getters
    */
@@ -92,7 +100,7 @@ contract EthRioStays is IEthRioStays, ERC721URIStorage {
   }
 
   // All ACTIVE spaces Ids from facility by Id
-  function getActiveSpaceIdsByFacilityId(bytes32 _lodgingFacilityId) public override returns (bytes32[] memory activeSpacesIds) {
+  function getActiveSpaceIdsByFacilityId(bytes32 _lodgingFacilityId) public view override returns (bytes32[] memory activeSpacesIds) {
     activeSpacesIds = new bytes32[](_getActiveSpacesCount(_lodgingFacilityId));
     bytes32[] memory facilitiesSpaces = _spaceIdsByFacilityId[_lodgingFacilityId];
     uint256 index;
@@ -124,7 +132,7 @@ contract EthRioStays is IEthRioStays, ERC721URIStorage {
   }
 
   // Facilities by owner
-  function getLodgingFacilityIdsByOwner(address _owner) public override returns (bytes32[] memory) {
+  function getLodgingFacilityIdsByOwner(address _owner) public view override returns (bytes32[] memory) {
     return _facilityIdsByOwner[_owner];
   }
 
@@ -266,10 +274,45 @@ contract EthRioStays is IEthRioStays, ERC721URIStorage {
     // TODO
   }
 
+  /**
+   * Stay escrow
+   */
+
+  function deposit(
+    address payee,
+    bytes32 spaceId
+  ) public payable override(StayEscrow) {
+    super.deposit(payee, spaceId);
+  }
+
+  // Complete withdraw. Allowed in Checkout deposit state only
+  function withdraw(
+    address payable payee,
+    bytes32 _spaceId
+  )
+    public override(StayEscrow) onlySpaceOwner(_spaceId)
+  {
+    super.withdraw(payee, _spaceId);
+  }
+
+  // Partial withdraw
+  function withdraw(
+    address payable payee,
+    uint256 payment,
+    bytes32 _spaceId
+  ) public override(StayEscrow) onlySpaceOwner(_spaceId) {
+    // partial withdraw condition
+    require(
+      payment <= spaces[_spaceId].pricePerNightWei,
+      "Withdraw amount not allows in this state"
+    );
+    super.withdraw(payee, payment, _spaceId);
+  }
+
   /*
    * Glider
    */
-
+  // Book a new stay in a space
   function newStay(
     bytes32 _spaceId,
     uint16 _startDay,
@@ -279,9 +322,10 @@ contract EthRioStays is IEthRioStays, ERC721URIStorage {
   ) public payable override returns (uint256) {
     _checkBookingParams(_spaceId, _startDay, _numberOfDays);
 
-    Space memory _s = spaces[_spaceId];
+    Space storage _s = spaces[_spaceId];
+    uint256 _stayPrice = _numberOfDays * _quantity * _s.pricePerNightWei;
 
-    require(msg.value >= _numberOfDays * _quantity * _s.pricePerNightWei, "Need. More. Money!");
+    require(msg.value >= _stayPrice, "Need. More. Money!");
 
     for (uint16 _x = 0; _x < _numberOfDays; _x++) {
       require(_s.capacity - _booked[_spaceId][_startDay+_x] >= _quantity, "Insufficient inventory");
@@ -296,6 +340,7 @@ contract EthRioStays is IEthRioStays, ERC721URIStorage {
     // @todo: escrow
     // facility owner should be able to claim 1-night amount during check-in
     // then, facility owner should be able to claim full amount on check-out day
+    deposit(_msgSender(), _spaceId);
 
     // @todo LIF/WIN
     // @todo LodgingFacility loyalty token
