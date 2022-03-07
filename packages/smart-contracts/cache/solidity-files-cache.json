@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/home/kostysh/dev/stays-remote/packages/smart-contracts/contracts/EthRioStays.sol": {
-      "lastModificationDate": 1646664033611,
-      "contentHash": "1c2ff4a68151303adffb1fcccce15e26",
+      "lastModificationDate": 1646689414227,
+      "contentHash": "597a8adb0ad4d0f822107963b82c5813",
       "sourceName": "contracts/EthRioStays.sol",
       "solcConfig": {
         "version": "0.8.7",
@@ -39,9 +39,9 @@
         "@openzeppelin/contracts/token/ERC721/ERC721.sol",
         "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
         "@openzeppelin/contracts/utils/Counters.sol",
-        "@openzeppelin/contracts/utils/escrow/ConditionalEscrow.sol",
         "./IEthRioStays.sol",
-        "hardhat/console.sol"
+        "./StayEscrow.sol",
+        "./libraries/StayTokenMeta.sol"
       ],
       "versionPragmas": [
         "^0.8.0"
@@ -231,8 +231,8 @@
       ]
     },
     "/home/kostysh/dev/stays-remote/packages/smart-contracts/contracts/IEthRioStays.sol": {
-      "lastModificationDate": 1646664154876,
-      "contentHash": "2ccffc1f64ca00dad5eb3dfde3b731ef",
+      "lastModificationDate": 1646689434767,
+      "contentHash": "5a2403033ce26780bf7e820d98172ab9",
       "sourceName": "contracts/IEthRioStays.sol",
       "solcConfig": {
         "version": "0.8.7",
@@ -743,6 +743,136 @@
       ],
       "artifacts": [
         "Ownable"
+      ]
+    },
+    "/home/kostysh/dev/stays-remote/packages/smart-contracts/contracts/StayEscrow.sol": {
+      "lastModificationDate": 1646686135738,
+      "contentHash": "22b73dadf245d6a4e8d5fad8843edda6",
+      "sourceName": "contracts/StayEscrow.sol",
+      "solcConfig": {
+        "version": "0.8.7",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "storageLayout",
+                "devdoc",
+                "userdoc",
+                "evm.gasEstimates"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": true
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/utils/Address.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "StayEscrow"
+      ]
+    },
+    "/home/kostysh/dev/stays-remote/packages/smart-contracts/contracts/libraries/StayTokenMeta.sol": {
+      "lastModificationDate": 1646688831033,
+      "contentHash": "0e4fea3eea582ac3b244d6f7f70dc7a3",
+      "sourceName": "contracts/libraries/StayTokenMeta.sol",
+      "solcConfig": {
+        "version": "0.8.7",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "storageLayout",
+                "devdoc",
+                "userdoc",
+                "evm.gasEstimates"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": true
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/utils/Base64.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "StayTokenMeta"
+      ]
+    },
+    "/home/kostysh/dev/stays-remote/node_modules/@openzeppelin/contracts/utils/Base64.sol": {
+      "lastModificationDate": 1646662770236,
+      "contentHash": "077d9664b0b4a2fd2033cea2663530f4",
+      "sourceName": "@openzeppelin/contracts/utils/Base64.sol",
+      "solcConfig": {
+        "version": "0.8.7",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "storageLayout",
+                "devdoc",
+                "userdoc",
+                "evm.gasEstimates"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": true
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Base64"
       ]
     }
   }

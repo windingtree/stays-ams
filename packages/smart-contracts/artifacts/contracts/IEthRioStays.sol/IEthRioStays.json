@@ -8,6 +8,32 @@
       "inputs": [
         {
           "indexed": false,
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "CheckIn",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "CheckOut",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
           "internalType": "bytes32",
           "name": "facilityId",
           "type": "bytes32"
@@ -110,7 +136,7 @@
         {
           "indexed": false,
           "internalType": "bytes32",
-          "name": "spaceID",
+          "name": "spaceId",
           "type": "bytes32"
         },
         {
@@ -212,6 +238,32 @@
         }
       ],
       "name": "activateLodgingFacility",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "checkIn",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "checkOut",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -453,11 +505,6 @@
           "internalType": "uint16",
           "name": "_quantity",
           "type": "uint16"
-        },
-        {
-          "internalType": "string",
-          "name": "_tokenURI",
-          "type": "string"
         }
       ],
       "name": "newStay",
