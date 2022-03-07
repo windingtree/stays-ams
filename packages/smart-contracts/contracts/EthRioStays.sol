@@ -52,6 +52,9 @@ contract EthRioStays is IEthRioStays, StayEscrow, ERC721URIStorage {
   // _spaceId -> _daysFromDayZero -> _numberOfBookings
   mapping(bytes32 => mapping(uint16 => uint16)) private _booked;
 
+  // Stay token => spaceId
+  mapping(uint256 => bytes32) private _stays;
+
   constructor() ERC721("EthRioStays", "ERS22") {}
 
   /**
@@ -69,6 +72,14 @@ contract EthRioStays is IEthRioStays, StayEscrow, ERC721URIStorage {
     require(
       _msgSender() == lodgingFacilities[spaces[_spaceId].lodgingFacilityId].owner,
       "Only space owner is allowed"
+    );
+    _;
+  }
+
+  modifier onlyTokenOwner(uint256 _tokenId) {
+    require(
+      _msgSender() == ownerOf(_tokenId),
+      "Only stay token owner is allowed"
     );
     _;
   }
@@ -309,7 +320,7 @@ contract EthRioStays is IEthRioStays, StayEscrow, ERC721URIStorage {
     super.withdraw(payee, payment, _spaceId);
   }
 
-  /*
+  /**
    * Glider
    */
   // Book a new stay in a space
@@ -332,6 +343,8 @@ contract EthRioStays is IEthRioStays, StayEscrow, ERC721URIStorage {
       _booked[_spaceId][_startDay+_x] += _quantity;
     }
 
+    deposit(_msgSender(), _spaceId);
+
     _stayTokenIds.increment();
     uint256 _newStayTokenId = _stayTokenIds.current();
     _safeMint(_msgSender(), _newStayTokenId);
@@ -340,7 +353,6 @@ contract EthRioStays is IEthRioStays, StayEscrow, ERC721URIStorage {
     // @todo: escrow
     // facility owner should be able to claim 1-night amount during check-in
     // then, facility owner should be able to claim full amount on check-out day
-    deposit(_msgSender(), _spaceId);
 
     // @todo LIF/WIN
     // @todo LodgingFacility loyalty token
@@ -352,7 +364,20 @@ contract EthRioStays is IEthRioStays, StayEscrow, ERC721URIStorage {
     return _newStayTokenId;
   }
 
-  // @todo: check-in
+  /**
+   * CheckIn
+   */
+
+  // Stay checkIn; can be called by a stay token owner
+  function checkIn(uint256 _tokenId) public override onlyTokenOwner(_tokenId) {
+    bytes32 _spaceId = _stays[_tokenId];
+    uint256 firstNight = spaces[_spaceId].pricePerNightWei;
+    withdraw(
+      payable(lodgingFacilities[spaces[_spaceId].lodgingFacilityId].owner),
+      firstNight,
+      _spaceId
+    );
+  }
 
   /*
    * Helpers

@@ -68,7 +68,7 @@ abstract contract IEthRioStays {
   // function getAllStayIdsByFacilityId(bytes32 _lodgingFacilityId) public virtual returns (uint256[] memory);
   // function getCurrentStayIdsByFacilityId(bytes32 _lodgingFacilityId) public virtual returns (uint256[] memory);
   // function getFutureStayIdsByFacilityId(bytes32 _lodgingFacilityId) public virtual returns (uint256[] memory);
-  // function checkIn(uint256 _tokenId) public virtual;
+  function checkIn(uint256 _tokenId) public virtual;
   // function checkOut(uint256 _tokenId) public virtual;
 
   // function requestChange(uint256 _tokenId, bytes32 _spaceId, uint16 _startDay, uint16 _numberOfDays, uint16 _quantity) public payable virtual;
