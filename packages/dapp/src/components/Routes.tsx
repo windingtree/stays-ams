@@ -31,8 +31,7 @@ export const pagesRoutesConfig: Routes = [
     path: '/search',
     element: <Search />,
     title: 'Search for lodging facility',
-    label: 'Search',
-    protected: true
+    label: 'Search'
   },
 ];
 
