@@ -25,4 +25,4 @@ or
 
 or
 
-`lerna run test --scope='{stays-smart-contracts, stays-rooms}'`
+`lerna run test --scope='{stays-smart-contracts,stays-rooms}'`
