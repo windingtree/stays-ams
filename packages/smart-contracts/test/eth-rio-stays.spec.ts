@@ -250,7 +250,6 @@ describe("EthRioStays.sol", () => {
             100,
             1,
             5,
-            testDataUri + "stay",
             { value: 1000000 }
           );
           expect(
@@ -261,7 +260,6 @@ describe("EthRioStays.sol", () => {
             101,
             2,
             3,
-            testDataUri + "stay",
             { value: 1000000 }
           );
           expect(
@@ -272,19 +270,20 @@ describe("EthRioStays.sol", () => {
             102,
             1,
             1,
-            testDataUri + "stay",
             { value: 1000000 }
           );
           expect(
             await alice.ethRioStays.getAvailability(sid, 99, 5)
           ).to.deep.equal([10, 5, 7, 6, 10]);
-          await alice.ethRioStays.newStay(sid, 99, 2, 2, testDataUri + "stay", {
+          await alice.ethRioStays.newStay(
+            sid, 99, 2, 2,
+             {
             value: 1000000,
           });
           expect(
             await alice.ethRioStays.getAvailability(sid, 99, 5)
           ).to.deep.equal([8, 3, 7, 6, 10]);
-          await alice.ethRioStays.newStay(sid, 99, 5, 3, testDataUri + "stay", {
+          await alice.ethRioStays.newStay(sid, 99, 5, 3, {
             value: 1000000,
           });
           expect(
@@ -296,19 +295,19 @@ describe("EthRioStays.sol", () => {
       describe("newStay()", async () => {
         it("should revert if payment is less than what's required", async () => {
           await expect(
-            alice.ethRioStays.newStay(sid, 42, 1, 1, testDataUri + "stay", {
+            alice.ethRioStays.newStay(sid, 42, 1, 1, {
               value: 12344,
             })
           ).to.be.revertedWith("Need. More. Money!");
-          alice.ethRioStays.newStay(sid, 42, 1, 1, testDataUri + "stay", {
+          alice.ethRioStays.newStay(sid, 42, 1, 1, {
             value: 12345,
           });
           await expect(
-            bob.ethRioStays.newStay(sid, 42, 2, 5, testDataUri + "stay", {
+            bob.ethRioStays.newStay(sid, 42, 2, 5, {
               value: 123449,
             })
           ).to.be.revertedWith("Need. More. Money!");
-          bob.ethRioStays.newStay(sid, 42, 2, 5, testDataUri + "stay", {
+          bob.ethRioStays.newStay(sid, 42, 2, 5, {
             value: 123450,
           });
         });
@@ -324,7 +323,6 @@ describe("EthRioStays.sol", () => {
             testDay - 1,
             1,
             1,
-            testDataUri + "stay",
             { value: 1000000 }
           );
 
@@ -335,7 +333,6 @@ describe("EthRioStays.sol", () => {
               testDay - 2,
               1,
               1,
-              testDataUri + "stay",
               { value: 1000000 }
             )
           ).to.be.revertedWith("Don't stay in the past");
@@ -347,7 +344,6 @@ describe("EthRioStays.sol", () => {
             10000,
             1,
             1,
-            testDataUri + "stay",
             { value: 1000000 }
           );
           expect(await deployer.ethRioStays.balanceOf(alice.address)).to.equal(
@@ -355,9 +351,10 @@ describe("EthRioStays.sol", () => {
           );
           expect(await deployer.ethRioStays.balanceOf(bob.address)).to.equal(0);
           expect(await deployer.ethRioStays.ownerOf(1)).to.equal(alice.address);
-          expect(await deployer.ethRioStays.tokenURI(1)).to.equal(
-            testDataUri + "stay"
-          );
+          // @todo validate onchain uri
+          // expect(await deployer.ethRioStays.tokenURI(1)).to.equal(
+          //   testDataUri + "stay"
+          // );
         });
 
         // it("should send the money to the facility escrow", async () => {
@@ -370,7 +367,6 @@ describe("EthRioStays.sol", () => {
             100,
             1,
             1,
-            testDataUri + "stay",
             { value: 1000000 }
           );
           promise.then(async (tid) => {
