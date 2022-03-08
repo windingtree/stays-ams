@@ -30,9 +30,8 @@
     "solc": "0.8.12"
   },
   "scripts": {
-    "test": "npx hardhat typechain && npx hardhat test",
+    "test": "npx hardhat compile && npx hardhat test",
     "compile": "npx hardhat compile",
-    "typechain": "npx hardhat typechain",
-    "build": "npx hardhat compile && npx hardhat typechain"
+    "typechain": "npx hardhat typechain"
   }
 }
