@@ -1,2 +1,8 @@
+artifacts
+cache
+contracts
+deploy
+deployments
 node_modules
-build
+typechain
+typechain-types
