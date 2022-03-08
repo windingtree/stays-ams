@@ -1,0 +1,11 @@
+import type { LegalEntityReference, OrganizationalUnitReference, IdentifierReference, AddressReference, GeoCodeReference, OpeningHoursRangeReference, ContactReference, MessengerReference, MediaReference } from '@windingtree/org.json-schema/types/org.json';
+export declare const iterator: <T>(count: number, callback: () => T) => T[];
+export declare const createFakeCompanyIdentifier: () => IdentifierReference;
+export declare const createFakeAddress: () => AddressReference;
+export declare const createFakeGeocode: () => GeoCodeReference;
+export declare const createFakeOpeningHours: () => OpeningHoursRangeReference;
+export declare const createFakeMessenger: () => MessengerReference;
+export declare const createFakeContact: () => ContactReference;
+export declare const createFakeImage: () => MediaReference;
+export declare const createFakeLodgingFacility: () => LegalEntityReference;
+export declare const createFakeSpace: () => OrganizationalUnitReference;
