@@ -1,0 +1,9 @@
+coverage
+docs
+node_modules
+test
+.gitignore
+.eslintrc
+jest.config.json
+tsconfig.json
+tsconfig-build.json

@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    // project options
+    "outDir": "dist",
+    "allowJs": true,
+    "checkJs": true,
+    "target": "es5",
+    "noEmit": false,
+    "noEmitOnError": true,
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "declarationMap": true,
+    "incremental": true,
+    "composite": true,
+    "isolatedModules": true,
+    "removeComments": true,
+    "sourceMap": true,
+    // module resolution
+    "esModuleInterop": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    // linter checks
+    "noImplicitReturns": false,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": false,
+    // advanced
+    "importsNotUsedAsValues": "error",
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "stripInternal": true,
+    "resolveJsonModule": true
+  },
+  "include": [
+    "src",
+    "test"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
