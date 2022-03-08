@@ -29,6 +29,10 @@
     "solhint": "3.3.7",
     "solc": "0.8.12"
   },
+  "devDependencies": {
+    "@windingtree/eslint-config": "^0.0.1",
+    "@windingtree/prettier-config": "^0.0.1"
+  },
   "scripts": {
     "test": "npx hardhat compile && npx hardhat test",
     "compile": "npx hardhat compile",
