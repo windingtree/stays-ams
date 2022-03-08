@@ -8,12 +8,21 @@ Make sure you have `node` and `nvm` installed.
 nvm use
 npm install -g yarn
 yarn install
+lerna bootstrap
 ```
 
-## Start
+## Start All Apps
 
 `lerna run start`
 
-## Test
+## Test All Apps
 
 `lerna run test`
+
+or
+
+`lerna run test --scope=stays-smart-contracts`
+
+or
+
+`lerna run test --scope='{stays-smart-contracts, stays-rooms}'`
