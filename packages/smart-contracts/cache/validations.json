@@ -430,6 +430,4561 @@
       "EthRioStays": {
         "src": "contracts/EthRioStays.sol:14",
         "version": {
+          "withMetadata": "a39861a7935958957138e38c039300c66cbb0aa0782ae4df963bf25af6a2f699",
+          "withoutMetadata": "6caca79f97c127bc0254704204c4d9a6b24328a938a746f0c7b466d3ea31d98b",
+          "linkedWithoutMetadata": "6caca79f97c127bc0254704204c4d9a6b24328a938a746f0c7b466d3ea31d98b"
+        },
+        "inherit": [
+          "ERC721URIStorage",
+          "ERC721",
+          "IERC721Metadata",
+          "IERC721",
+          "ERC165",
+          "IERC165",
+          "Context",
+          "StayEscrow",
+          "IEthRioStays"
+        ],
+        "libraries": [
+          "Counters",
+          "StayTokenMeta"
+        ],
+        "methods": [
+          "()",
+          "getAllLodgingFacilityIds()",
+          "getActiveLodgingFacilityIds()",
+          "getSpaceIdsByFacilityId(bytes32)",
+          "getActiveSpaceIdsByFacilityId(bytes32)",
+          "getAvailability(bytes32,uint16,uint16)",
+          "getLodgingFacilityIdsByOwner(address)",
+          "getLodgingFacilityById(bytes32)",
+          "getSpaceById(bytes32)",
+          "registerLodgingFacility(string,bool,address)",
+          "registerLodgingFacility(string,bool)",
+          "updateLodgingFacility(bytes32,string)",
+          "activateLodgingFacility(bytes32)",
+          "deactivateLodgingFacility(bytes32)",
+          "yieldLodgingFacility(bytes32,address)",
+          "deleteLodgingFacility(bytes32)",
+          "addSpace(bytes32,uint16,uint64,bool,string)",
+          "updateSpace(uint256,uint16,uint64,bool,string)",
+          "deposit(address,bytes32)",
+          "newStay(bytes32,uint16,uint16,uint16)",
+          "checkIn(uint256)",
+          "checkOut(uint256)"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "EthRioStays",
+            "src": "contracts/EthRioStays.sol:76"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_deposits",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_mapping(t_bytes32,t_mapping(t_address,t_uint256))",
+              "contract": "StayEscrow",
+              "src": "contracts/StayEscrow.sol:19"
+            },
+            {
+              "label": "_states",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_mapping(t_bytes32,t_mapping(t_address,t_enum(State)3389))",
+              "contract": "StayEscrow",
+              "src": "contracts/StayEscrow.sol:20"
+            },
+            {
+              "label": "_name",
+              "offset": 0,
+              "slot": "2",
+              "type": "t_string_storage",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:24"
+            },
+            {
+              "label": "_symbol",
+              "offset": 0,
+              "slot": "3",
+              "type": "t_string_storage",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:27"
+            },
+            {
+              "label": "_owners",
+              "offset": 0,
+              "slot": "4",
+              "type": "t_mapping(t_uint256,t_address)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:30"
+            },
+            {
+              "label": "_balances",
+              "offset": 0,
+              "slot": "5",
+              "type": "t_mapping(t_address,t_uint256)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:33"
+            },
+            {
+              "label": "_tokenApprovals",
+              "offset": 0,
+              "slot": "6",
+              "type": "t_mapping(t_uint256,t_address)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:36"
+            },
+            {
+              "label": "_operatorApprovals",
+              "offset": 0,
+              "slot": "7",
+              "type": "t_mapping(t_address,t_mapping(t_address,t_bool))",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:39"
+            },
+            {
+              "label": "_tokenURIs",
+              "offset": 0,
+              "slot": "8",
+              "type": "t_mapping(t_uint256,t_string_storage)",
+              "contract": "ERC721URIStorage",
+              "src": "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol:15"
+            },
+            {
+              "label": "_stayTokenIds",
+              "offset": 0,
+              "slot": "9",
+              "type": "t_struct(Counter)1524_storage",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:16"
+            },
+            {
+              "label": "_lodgingFacilityIds",
+              "offset": 0,
+              "slot": "10",
+              "type": "t_array(t_bytes32)dyn_storage",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:56"
+            },
+            {
+              "label": "_facilityIdsByOwner",
+              "offset": 0,
+              "slot": "11",
+              "type": "t_mapping(t_address,t_array(t_bytes32)dyn_storage)",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:59"
+            },
+            {
+              "label": "lodgingFacilities",
+              "offset": 0,
+              "slot": "12",
+              "type": "t_mapping(t_bytes32,t_struct(LodgingFacility)1881_storage)",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:62"
+            },
+            {
+              "label": "_spaceIdsByFacilityId",
+              "offset": 0,
+              "slot": "13",
+              "type": "t_mapping(t_bytes32,t_array(t_bytes32)dyn_storage)",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:65"
+            },
+            {
+              "label": "spaces",
+              "offset": 0,
+              "slot": "14",
+              "type": "t_mapping(t_bytes32,t_struct(Space)1894_storage)",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:68"
+            },
+            {
+              "label": "_booked",
+              "offset": 0,
+              "slot": "15",
+              "type": "t_mapping(t_bytes32,t_mapping(t_uint16,t_uint16))",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:71"
+            },
+            {
+              "label": "_stays",
+              "offset": 0,
+              "slot": "16",
+              "type": "t_mapping(t_uint256,t_struct(Stay)1907_storage)",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:74"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address"
+            },
+            "t_array(t_bytes32)dyn_storage": {
+              "label": "bytes32[]"
+            },
+            "t_bool": {
+              "label": "bool"
+            },
+            "t_bytes32": {
+              "label": "bytes32"
+            },
+            "t_enum(State)3389": {
+              "label": "enum StayEscrow.State",
+              "members": [
+                "Checkin",
+                "Checkout"
+              ]
+            },
+            "t_mapping(t_address,t_array(t_bytes32)dyn_storage)": {
+              "label": "mapping(address => bytes32[])"
+            },
+            "t_mapping(t_address,t_bool)": {
+              "label": "mapping(address => bool)"
+            },
+            "t_mapping(t_address,t_enum(State)3389)": {
+              "label": "mapping(address => enum StayEscrow.State)"
+            },
+            "t_mapping(t_address,t_mapping(t_address,t_bool))": {
+              "label": "mapping(address => mapping(address => bool))"
+            },
+            "t_mapping(t_address,t_uint256)": {
+              "label": "mapping(address => uint256)"
+            },
+            "t_mapping(t_bytes32,t_array(t_bytes32)dyn_storage)": {
+              "label": "mapping(bytes32 => bytes32[])"
+            },
+            "t_mapping(t_bytes32,t_mapping(t_address,t_enum(State)3389))": {
+              "label": "mapping(bytes32 => mapping(address => enum StayEscrow.State))"
+            },
+            "t_mapping(t_bytes32,t_mapping(t_address,t_uint256))": {
+              "label": "mapping(bytes32 => mapping(address => uint256))"
+            },
+            "t_mapping(t_bytes32,t_mapping(t_uint16,t_uint16))": {
+              "label": "mapping(bytes32 => mapping(uint16 => uint16))"
+            },
+            "t_mapping(t_bytes32,t_struct(LodgingFacility)1881_storage)": {
+              "label": "mapping(bytes32 => struct EthRioStays.LodgingFacility)"
+            },
+            "t_mapping(t_bytes32,t_struct(Space)1894_storage)": {
+              "label": "mapping(bytes32 => struct EthRioStays.Space)"
+            },
+            "t_mapping(t_uint16,t_uint16)": {
+              "label": "mapping(uint16 => uint16)"
+            },
+            "t_mapping(t_uint256,t_address)": {
+              "label": "mapping(uint256 => address)"
+            },
+            "t_mapping(t_uint256,t_string_storage)": {
+              "label": "mapping(uint256 => string)"
+            },
+            "t_mapping(t_uint256,t_struct(Stay)1907_storage)": {
+              "label": "mapping(uint256 => struct EthRioStays.Stay)"
+            },
+            "t_string_storage": {
+              "label": "string"
+            },
+            "t_struct(Counter)1524_storage": {
+              "label": "struct Counters.Counter",
+              "members": [
+                {
+                  "label": "_value",
+                  "type": "t_uint256"
+                }
+              ]
+            },
+            "t_struct(LodgingFacility)1881_storage": {
+              "label": "struct EthRioStays.LodgingFacility",
+              "members": [
+                {
+                  "label": "owner",
+                  "type": "t_address"
+                },
+                {
+                  "label": "active",
+                  "type": "t_bool"
+                },
+                {
+                  "label": "exists",
+                  "type": "t_bool"
+                },
+                {
+                  "label": "dataURI",
+                  "type": "t_string_storage"
+                },
+                {
+                  "label": "fren",
+                  "type": "t_address"
+                }
+              ]
+            },
+            "t_struct(Space)1894_storage": {
+              "label": "struct EthRioStays.Space",
+              "members": [
+                {
+                  "label": "lodgingFacilityId",
+                  "type": "t_bytes32"
+                },
+                {
+                  "label": "capacity",
+                  "type": "t_uint16"
+                },
+                {
+                  "label": "pricePerNightWei",
+                  "type": "t_uint256"
+                },
+                {
+                  "label": "active",
+                  "type": "t_bool"
+                },
+                {
+                  "label": "exists",
+                  "type": "t_bool"
+                },
+                {
+                  "label": "dataURI",
+                  "type": "t_string_storage"
+                }
+              ]
+            },
+            "t_struct(Stay)1907_storage": {
+              "label": "struct EthRioStays.Stay",
+              "members": [
+                {
+                  "label": "spaceId",
+                  "type": "t_bytes32"
+                },
+                {
+                  "label": "startDay",
+                  "type": "t_uint16"
+                },
+                {
+                  "label": "numberOfDays",
+                  "type": "t_uint16"
+                },
+                {
+                  "label": "quantity",
+                  "type": "t_uint16"
+                },
+                {
+                  "label": "checkIn",
+                  "type": "t_bool"
+                },
+                {
+                  "label": "checkOut",
+                  "type": "t_bool"
+                }
+              ]
+            },
+            "t_uint16": {
+              "label": "uint16"
+            },
+            "t_uint256": {
+              "label": "uint256"
+            }
+          },
+          "layoutVersion": "1.1",
+          "flat": true
+        }
+      },
+      "IEthRioStays": {
+        "src": "contracts/IEthRioStays.sol:5",
+        "inherit": [],
+        "libraries": [],
+        "methods": [
+          "getAllLodgingFacilityIds()",
+          "getActiveLodgingFacilityIds()",
+          "getSpaceIdsByFacilityId(bytes32)",
+          "getActiveSpaceIdsByFacilityId(bytes32)",
+          "getAvailability(bytes32,uint16,uint16)",
+          "getLodgingFacilityIdsByOwner(address)",
+          "getLodgingFacilityById(bytes32)",
+          "getSpaceById(bytes32)",
+          "registerLodgingFacility(string,bool,address)",
+          "registerLodgingFacility(string,bool)",
+          "updateLodgingFacility(bytes32,string)",
+          "activateLodgingFacility(bytes32)",
+          "deactivateLodgingFacility(bytes32)",
+          "yieldLodgingFacility(bytes32,address)",
+          "deleteLodgingFacility(bytes32)",
+          "newStay(bytes32,uint16,uint16,uint16)",
+          "checkIn(uint256)",
+          "checkOut(uint256)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "StayEscrow": {
+        "src": "contracts/StayEscrow.sol:7",
+        "inherit": [],
+        "libraries": [
+          "Address"
+        ],
+        "methods": [
+          "depositsOf(address,bytes32)",
+          "depositsState(address,bytes32)",
+          "deposit(address,bytes32)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [
+            {
+              "label": "_deposits",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_mapping(t_bytes32,t_mapping(t_address,t_uint256))",
+              "contract": "StayEscrow",
+              "src": "contracts/StayEscrow.sol:19"
+            },
+            {
+              "label": "_states",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_mapping(t_bytes32,t_mapping(t_address,t_enum(State)3389))",
+              "contract": "StayEscrow",
+              "src": "contracts/StayEscrow.sol:20"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address"
+            },
+            "t_bytes32": {
+              "label": "bytes32"
+            },
+            "t_enum(State)3389": {
+              "label": "enum StayEscrow.State",
+              "members": [
+                "Checkin",
+                "Checkout"
+              ]
+            },
+            "t_mapping(t_address,t_enum(State)3389)": {
+              "label": "mapping(address => enum StayEscrow.State)"
+            },
+            "t_mapping(t_address,t_uint256)": {
+              "label": "mapping(address => uint256)"
+            },
+            "t_mapping(t_bytes32,t_mapping(t_address,t_enum(State)3389))": {
+              "label": "mapping(bytes32 => mapping(address => enum StayEscrow.State))"
+            },
+            "t_mapping(t_bytes32,t_mapping(t_address,t_uint256))": {
+              "label": "mapping(bytes32 => mapping(address => uint256))"
+            },
+            "t_uint256": {
+              "label": "uint256"
+            }
+          },
+          "layoutVersion": "1.1",
+          "flat": true
+        }
+      },
+      "StayTokenMeta": {
+        "src": "contracts/libraries/StayTokenMeta.sol:6",
+        "version": {
+          "withMetadata": "7f1af66e4b15208e486277a805d076338c16ee622c7bb266184f7f5d2334aa78",
+          "withoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db",
+          "linkedWithoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db"
+        },
+        "inherit": [],
+        "libraries": [
+          "Base64"
+        ],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      }
+    },
+    {
+      "ERC721": {
+        "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:19",
+        "version": {
+          "withMetadata": "cabc01b7ec74fb616134e8328cdcfcabaeba668b21af818a61e7c9e07b805edf",
+          "withoutMetadata": "c5c5ff5da080427edccaceaef63efbea48b17fa97d3c1d2848b9e00cc70457d0",
+          "linkedWithoutMetadata": "c5c5ff5da080427edccaceaef63efbea48b17fa97d3c1d2848b9e00cc70457d0"
+        },
+        "inherit": [
+          "IERC721Metadata",
+          "IERC721",
+          "ERC165",
+          "IERC165",
+          "Context"
+        ],
+        "libraries": [
+          "Address",
+          "Strings"
+        ],
+        "methods": [
+          "(string,string)",
+          "supportsInterface(bytes4)",
+          "balanceOf(address)",
+          "ownerOf(uint256)",
+          "name()",
+          "symbol()",
+          "tokenURI(uint256)",
+          "approve(address,uint256)",
+          "getApproved(uint256)",
+          "setApprovalForAll(address,bool)",
+          "isApprovedForAll(address,address)",
+          "transferFrom(address,address,uint256)",
+          "safeTransferFrom(address,address,uint256)",
+          "safeTransferFrom(address,address,uint256,bytes)"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "ERC721",
+            "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:44"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_name",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_string_storage",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:24"
+            },
+            {
+              "label": "_symbol",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_string_storage",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:27"
+            },
+            {
+              "label": "_owners",
+              "offset": 0,
+              "slot": "2",
+              "type": "t_mapping(t_uint256,t_address)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:30"
+            },
+            {
+              "label": "_balances",
+              "offset": 0,
+              "slot": "3",
+              "type": "t_mapping(t_address,t_uint256)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:33"
+            },
+            {
+              "label": "_tokenApprovals",
+              "offset": 0,
+              "slot": "4",
+              "type": "t_mapping(t_uint256,t_address)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:36"
+            },
+            {
+              "label": "_operatorApprovals",
+              "offset": 0,
+              "slot": "5",
+              "type": "t_mapping(t_address,t_mapping(t_address,t_bool))",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:39"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address"
+            },
+            "t_bool": {
+              "label": "bool"
+            },
+            "t_mapping(t_address,t_bool)": {
+              "label": "mapping(address => bool)"
+            },
+            "t_mapping(t_address,t_mapping(t_address,t_bool))": {
+              "label": "mapping(address => mapping(address => bool))"
+            },
+            "t_mapping(t_address,t_uint256)": {
+              "label": "mapping(address => uint256)"
+            },
+            "t_mapping(t_uint256,t_address)": {
+              "label": "mapping(uint256 => address)"
+            },
+            "t_string_storage": {
+              "label": "string"
+            },
+            "t_uint256": {
+              "label": "uint256"
+            }
+          },
+          "layoutVersion": "1.1",
+          "flat": true
+        }
+      },
+      "IERC721": {
+        "src": "@openzeppelin/contracts/token/ERC721/IERC721.sol:11",
+        "inherit": [
+          "IERC165"
+        ],
+        "libraries": [],
+        "methods": [
+          "balanceOf(address)",
+          "ownerOf(uint256)",
+          "safeTransferFrom(address,address,uint256)",
+          "transferFrom(address,address,uint256)",
+          "approve(address,uint256)",
+          "getApproved(uint256)",
+          "setApprovalForAll(address,bool)",
+          "isApprovedForAll(address,address)",
+          "safeTransferFrom(address,address,uint256,bytes)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "IERC721Receiver": {
+        "src": "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol:11",
+        "inherit": [],
+        "libraries": [],
+        "methods": [
+          "onERC721Received(address,address,uint256,bytes)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "ERC721URIStorage": {
+        "src": "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol:11",
+        "inherit": [
+          "ERC721",
+          "IERC721Metadata",
+          "IERC721",
+          "ERC165",
+          "IERC165",
+          "Context"
+        ],
+        "libraries": [
+          "Strings"
+        ],
+        "methods": [
+          "tokenURI(uint256)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [
+            {
+              "label": "_name",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_string_storage",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:24"
+            },
+            {
+              "label": "_symbol",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_string_storage",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:27"
+            },
+            {
+              "label": "_owners",
+              "offset": 0,
+              "slot": "2",
+              "type": "t_mapping(t_uint256,t_address)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:30"
+            },
+            {
+              "label": "_balances",
+              "offset": 0,
+              "slot": "3",
+              "type": "t_mapping(t_address,t_uint256)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:33"
+            },
+            {
+              "label": "_tokenApprovals",
+              "offset": 0,
+              "slot": "4",
+              "type": "t_mapping(t_uint256,t_address)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:36"
+            },
+            {
+              "label": "_operatorApprovals",
+              "offset": 0,
+              "slot": "5",
+              "type": "t_mapping(t_address,t_mapping(t_address,t_bool))",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:39"
+            },
+            {
+              "label": "_tokenURIs",
+              "offset": 0,
+              "slot": "6",
+              "type": "t_mapping(t_uint256,t_string_storage)",
+              "contract": "ERC721URIStorage",
+              "src": "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol:15"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address"
+            },
+            "t_bool": {
+              "label": "bool"
+            },
+            "t_mapping(t_address,t_bool)": {
+              "label": "mapping(address => bool)"
+            },
+            "t_mapping(t_address,t_mapping(t_address,t_bool))": {
+              "label": "mapping(address => mapping(address => bool))"
+            },
+            "t_mapping(t_address,t_uint256)": {
+              "label": "mapping(address => uint256)"
+            },
+            "t_mapping(t_uint256,t_address)": {
+              "label": "mapping(uint256 => address)"
+            },
+            "t_mapping(t_uint256,t_string_storage)": {
+              "label": "mapping(uint256 => string)"
+            },
+            "t_string_storage": {
+              "label": "string"
+            },
+            "t_uint256": {
+              "label": "uint256"
+            }
+          },
+          "layoutVersion": "1.1",
+          "flat": true
+        }
+      },
+      "IERC721Metadata": {
+        "src": "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol:12",
+        "inherit": [
+          "IERC721",
+          "IERC165"
+        ],
+        "libraries": [],
+        "methods": [
+          "name()",
+          "symbol()",
+          "tokenURI(uint256)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "Address": {
+        "src": "@openzeppelin/contracts/utils/Address.sol:9",
+        "version": {
+          "withMetadata": "71ea15464a13e253b7edcff16f716b0ae3de5b105af42b441faf03bb267264a1",
+          "withoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db",
+          "linkedWithoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db"
+        },
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "delegatecall",
+            "src": "@openzeppelin/contracts/utils/Address.sol:191"
+          }
+        ],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "Base64": {
+        "src": "@openzeppelin/contracts/utils/Base64.sol:11",
+        "version": {
+          "withMetadata": "b2faa78829b20448d7cb4539cd2481ec53fb39d1acd96db6b1e5e9181afa4159",
+          "withoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db",
+          "linkedWithoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db"
+        },
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "Context": {
+        "src": "@openzeppelin/contracts/utils/Context.sol:16",
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "Counters": {
+        "src": "@openzeppelin/contracts/utils/Counters.sol:14",
+        "version": {
+          "withMetadata": "d87e8fe9a1ad0d439192200a9fbd2945faf7e2e7d55054798aedd52ec47c6a96",
+          "withoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db",
+          "linkedWithoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db"
+        },
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "Strings": {
+        "src": "@openzeppelin/contracts/utils/Strings.sol:9",
+        "version": {
+          "withMetadata": "110dc4744f3e3c59f1d44bb6173eff4c93982cc6cf1735ac9bc228bfaaed9bf0",
+          "withoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db",
+          "linkedWithoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db"
+        },
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "ERC165": {
+        "src": "@openzeppelin/contracts/utils/introspection/ERC165.sol:22",
+        "inherit": [
+          "IERC165"
+        ],
+        "libraries": [],
+        "methods": [
+          "supportsInterface(bytes4)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "IERC165": {
+        "src": "@openzeppelin/contracts/utils/introspection/IERC165.sol:15",
+        "inherit": [],
+        "libraries": [],
+        "methods": [
+          "supportsInterface(bytes4)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "EthRioStays": {
+        "src": "contracts/EthRioStays.sol:14",
+        "version": {
+          "withMetadata": "8a3c529eab4c77747a1ae9c7481603df33b7747863f033f3cf22ea4b575c8766",
+          "withoutMetadata": "716054a78892301de6e520c6dca4b53233fbef1de5eee99308abe510412ccc85",
+          "linkedWithoutMetadata": "716054a78892301de6e520c6dca4b53233fbef1de5eee99308abe510412ccc85"
+        },
+        "inherit": [
+          "ERC721URIStorage",
+          "ERC721",
+          "IERC721Metadata",
+          "IERC721",
+          "ERC165",
+          "IERC165",
+          "Context",
+          "StayEscrow",
+          "IEthRioStays"
+        ],
+        "libraries": [
+          "Counters",
+          "StayTokenMeta"
+        ],
+        "methods": [
+          "()",
+          "getAllLodgingFacilityIds()",
+          "getActiveLodgingFacilityIds()",
+          "getSpaceIdsByFacilityId(bytes32)",
+          "getActiveSpaceIdsByFacilityId(bytes32)",
+          "getAvailability(bytes32,uint16,uint16)",
+          "getLodgingFacilityIdsByOwner(address)",
+          "getLodgingFacilityById(bytes32)",
+          "getSpaceById(bytes32)",
+          "registerLodgingFacility(string,bool,address)",
+          "registerLodgingFacility(string,bool)",
+          "updateLodgingFacility(bytes32,string)",
+          "activateLodgingFacility(bytes32)",
+          "deactivateLodgingFacility(bytes32)",
+          "yieldLodgingFacility(bytes32,address)",
+          "deleteLodgingFacility(bytes32)",
+          "addSpace(bytes32,uint16,uint64,bool,string)",
+          "updateSpace(uint256,uint16,uint64,bool,string)",
+          "deposit(address,bytes32)",
+          "newStay(bytes32,uint16,uint16,uint16)",
+          "checkIn(uint256)",
+          "checkOut(uint256)"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "EthRioStays",
+            "src": "contracts/EthRioStays.sol:76"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_deposits",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_mapping(t_bytes32,t_mapping(t_address,t_uint256))",
+              "contract": "StayEscrow",
+              "src": "contracts/StayEscrow.sol:19"
+            },
+            {
+              "label": "_states",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_mapping(t_bytes32,t_mapping(t_address,t_enum(State)3389))",
+              "contract": "StayEscrow",
+              "src": "contracts/StayEscrow.sol:20"
+            },
+            {
+              "label": "_name",
+              "offset": 0,
+              "slot": "2",
+              "type": "t_string_storage",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:24"
+            },
+            {
+              "label": "_symbol",
+              "offset": 0,
+              "slot": "3",
+              "type": "t_string_storage",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:27"
+            },
+            {
+              "label": "_owners",
+              "offset": 0,
+              "slot": "4",
+              "type": "t_mapping(t_uint256,t_address)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:30"
+            },
+            {
+              "label": "_balances",
+              "offset": 0,
+              "slot": "5",
+              "type": "t_mapping(t_address,t_uint256)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:33"
+            },
+            {
+              "label": "_tokenApprovals",
+              "offset": 0,
+              "slot": "6",
+              "type": "t_mapping(t_uint256,t_address)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:36"
+            },
+            {
+              "label": "_operatorApprovals",
+              "offset": 0,
+              "slot": "7",
+              "type": "t_mapping(t_address,t_mapping(t_address,t_bool))",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:39"
+            },
+            {
+              "label": "_tokenURIs",
+              "offset": 0,
+              "slot": "8",
+              "type": "t_mapping(t_uint256,t_string_storage)",
+              "contract": "ERC721URIStorage",
+              "src": "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol:15"
+            },
+            {
+              "label": "_stayTokenIds",
+              "offset": 0,
+              "slot": "9",
+              "type": "t_struct(Counter)1524_storage",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:16"
+            },
+            {
+              "label": "_lodgingFacilityIds",
+              "offset": 0,
+              "slot": "10",
+              "type": "t_array(t_bytes32)dyn_storage",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:56"
+            },
+            {
+              "label": "_facilityIdsByOwner",
+              "offset": 0,
+              "slot": "11",
+              "type": "t_mapping(t_address,t_array(t_bytes32)dyn_storage)",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:59"
+            },
+            {
+              "label": "lodgingFacilities",
+              "offset": 0,
+              "slot": "12",
+              "type": "t_mapping(t_bytes32,t_struct(LodgingFacility)1881_storage)",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:62"
+            },
+            {
+              "label": "_spaceIdsByFacilityId",
+              "offset": 0,
+              "slot": "13",
+              "type": "t_mapping(t_bytes32,t_array(t_bytes32)dyn_storage)",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:65"
+            },
+            {
+              "label": "spaces",
+              "offset": 0,
+              "slot": "14",
+              "type": "t_mapping(t_bytes32,t_struct(Space)1894_storage)",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:68"
+            },
+            {
+              "label": "_booked",
+              "offset": 0,
+              "slot": "15",
+              "type": "t_mapping(t_bytes32,t_mapping(t_uint16,t_uint16))",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:71"
+            },
+            {
+              "label": "_stays",
+              "offset": 0,
+              "slot": "16",
+              "type": "t_mapping(t_uint256,t_struct(Stay)1907_storage)",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:74"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address"
+            },
+            "t_array(t_bytes32)dyn_storage": {
+              "label": "bytes32[]"
+            },
+            "t_bool": {
+              "label": "bool"
+            },
+            "t_bytes32": {
+              "label": "bytes32"
+            },
+            "t_enum(State)3389": {
+              "label": "enum StayEscrow.State",
+              "members": [
+                "Checkin",
+                "Checkout"
+              ]
+            },
+            "t_mapping(t_address,t_array(t_bytes32)dyn_storage)": {
+              "label": "mapping(address => bytes32[])"
+            },
+            "t_mapping(t_address,t_bool)": {
+              "label": "mapping(address => bool)"
+            },
+            "t_mapping(t_address,t_enum(State)3389)": {
+              "label": "mapping(address => enum StayEscrow.State)"
+            },
+            "t_mapping(t_address,t_mapping(t_address,t_bool))": {
+              "label": "mapping(address => mapping(address => bool))"
+            },
+            "t_mapping(t_address,t_uint256)": {
+              "label": "mapping(address => uint256)"
+            },
+            "t_mapping(t_bytes32,t_array(t_bytes32)dyn_storage)": {
+              "label": "mapping(bytes32 => bytes32[])"
+            },
+            "t_mapping(t_bytes32,t_mapping(t_address,t_enum(State)3389))": {
+              "label": "mapping(bytes32 => mapping(address => enum StayEscrow.State))"
+            },
+            "t_mapping(t_bytes32,t_mapping(t_address,t_uint256))": {
+              "label": "mapping(bytes32 => mapping(address => uint256))"
+            },
+            "t_mapping(t_bytes32,t_mapping(t_uint16,t_uint16))": {
+              "label": "mapping(bytes32 => mapping(uint16 => uint16))"
+            },
+            "t_mapping(t_bytes32,t_struct(LodgingFacility)1881_storage)": {
+              "label": "mapping(bytes32 => struct EthRioStays.LodgingFacility)"
+            },
+            "t_mapping(t_bytes32,t_struct(Space)1894_storage)": {
+              "label": "mapping(bytes32 => struct EthRioStays.Space)"
+            },
+            "t_mapping(t_uint16,t_uint16)": {
+              "label": "mapping(uint16 => uint16)"
+            },
+            "t_mapping(t_uint256,t_address)": {
+              "label": "mapping(uint256 => address)"
+            },
+            "t_mapping(t_uint256,t_string_storage)": {
+              "label": "mapping(uint256 => string)"
+            },
+            "t_mapping(t_uint256,t_struct(Stay)1907_storage)": {
+              "label": "mapping(uint256 => struct EthRioStays.Stay)"
+            },
+            "t_string_storage": {
+              "label": "string"
+            },
+            "t_struct(Counter)1524_storage": {
+              "label": "struct Counters.Counter",
+              "members": [
+                {
+                  "label": "_value",
+                  "type": "t_uint256"
+                }
+              ]
+            },
+            "t_struct(LodgingFacility)1881_storage": {
+              "label": "struct EthRioStays.LodgingFacility",
+              "members": [
+                {
+                  "label": "owner",
+                  "type": "t_address"
+                },
+                {
+                  "label": "active",
+                  "type": "t_bool"
+                },
+                {
+                  "label": "exists",
+                  "type": "t_bool"
+                },
+                {
+                  "label": "dataURI",
+                  "type": "t_string_storage"
+                },
+                {
+                  "label": "fren",
+                  "type": "t_address"
+                }
+              ]
+            },
+            "t_struct(Space)1894_storage": {
+              "label": "struct EthRioStays.Space",
+              "members": [
+                {
+                  "label": "lodgingFacilityId",
+                  "type": "t_bytes32"
+                },
+                {
+                  "label": "capacity",
+                  "type": "t_uint16"
+                },
+                {
+                  "label": "pricePerNightWei",
+                  "type": "t_uint256"
+                },
+                {
+                  "label": "active",
+                  "type": "t_bool"
+                },
+                {
+                  "label": "exists",
+                  "type": "t_bool"
+                },
+                {
+                  "label": "dataURI",
+                  "type": "t_string_storage"
+                }
+              ]
+            },
+            "t_struct(Stay)1907_storage": {
+              "label": "struct EthRioStays.Stay",
+              "members": [
+                {
+                  "label": "spaceId",
+                  "type": "t_bytes32"
+                },
+                {
+                  "label": "startDay",
+                  "type": "t_uint16"
+                },
+                {
+                  "label": "numberOfDays",
+                  "type": "t_uint16"
+                },
+                {
+                  "label": "quantity",
+                  "type": "t_uint16"
+                },
+                {
+                  "label": "checkIn",
+                  "type": "t_bool"
+                },
+                {
+                  "label": "checkOut",
+                  "type": "t_bool"
+                }
+              ]
+            },
+            "t_uint16": {
+              "label": "uint16"
+            },
+            "t_uint256": {
+              "label": "uint256"
+            }
+          },
+          "layoutVersion": "1.1",
+          "flat": true
+        }
+      },
+      "IEthRioStays": {
+        "src": "contracts/IEthRioStays.sol:5",
+        "inherit": [],
+        "libraries": [],
+        "methods": [
+          "getAllLodgingFacilityIds()",
+          "getActiveLodgingFacilityIds()",
+          "getSpaceIdsByFacilityId(bytes32)",
+          "getActiveSpaceIdsByFacilityId(bytes32)",
+          "getAvailability(bytes32,uint16,uint16)",
+          "getLodgingFacilityIdsByOwner(address)",
+          "getLodgingFacilityById(bytes32)",
+          "getSpaceById(bytes32)",
+          "registerLodgingFacility(string,bool,address)",
+          "registerLodgingFacility(string,bool)",
+          "updateLodgingFacility(bytes32,string)",
+          "activateLodgingFacility(bytes32)",
+          "deactivateLodgingFacility(bytes32)",
+          "yieldLodgingFacility(bytes32,address)",
+          "deleteLodgingFacility(bytes32)",
+          "newStay(bytes32,uint16,uint16,uint16)",
+          "checkIn(uint256)",
+          "checkOut(uint256)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "StayEscrow": {
+        "src": "contracts/StayEscrow.sol:7",
+        "inherit": [],
+        "libraries": [
+          "Address"
+        ],
+        "methods": [
+          "depositsOf(address,bytes32)",
+          "depositsState(address,bytes32)",
+          "deposit(address,bytes32)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [
+            {
+              "label": "_deposits",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_mapping(t_bytes32,t_mapping(t_address,t_uint256))",
+              "contract": "StayEscrow",
+              "src": "contracts/StayEscrow.sol:19"
+            },
+            {
+              "label": "_states",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_mapping(t_bytes32,t_mapping(t_address,t_enum(State)3389))",
+              "contract": "StayEscrow",
+              "src": "contracts/StayEscrow.sol:20"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address"
+            },
+            "t_bytes32": {
+              "label": "bytes32"
+            },
+            "t_enum(State)3389": {
+              "label": "enum StayEscrow.State",
+              "members": [
+                "Checkin",
+                "Checkout"
+              ]
+            },
+            "t_mapping(t_address,t_enum(State)3389)": {
+              "label": "mapping(address => enum StayEscrow.State)"
+            },
+            "t_mapping(t_address,t_uint256)": {
+              "label": "mapping(address => uint256)"
+            },
+            "t_mapping(t_bytes32,t_mapping(t_address,t_enum(State)3389))": {
+              "label": "mapping(bytes32 => mapping(address => enum StayEscrow.State))"
+            },
+            "t_mapping(t_bytes32,t_mapping(t_address,t_uint256))": {
+              "label": "mapping(bytes32 => mapping(address => uint256))"
+            },
+            "t_uint256": {
+              "label": "uint256"
+            }
+          },
+          "layoutVersion": "1.1",
+          "flat": true
+        }
+      },
+      "StayTokenMeta": {
+        "src": "contracts/libraries/StayTokenMeta.sol:6",
+        "version": {
+          "withMetadata": "71c217ec1762c54f8b605174dbd6eb3370aad04d7cbbeca2f53d7fa1de8ca071",
+          "withoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db",
+          "linkedWithoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db"
+        },
+        "inherit": [],
+        "libraries": [
+          "Base64"
+        ],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      }
+    },
+    {
+      "ERC721": {
+        "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:19",
+        "version": {
+          "withMetadata": "cabc01b7ec74fb616134e8328cdcfcabaeba668b21af818a61e7c9e07b805edf",
+          "withoutMetadata": "c5c5ff5da080427edccaceaef63efbea48b17fa97d3c1d2848b9e00cc70457d0",
+          "linkedWithoutMetadata": "c5c5ff5da080427edccaceaef63efbea48b17fa97d3c1d2848b9e00cc70457d0"
+        },
+        "inherit": [
+          "IERC721Metadata",
+          "IERC721",
+          "ERC165",
+          "IERC165",
+          "Context"
+        ],
+        "libraries": [
+          "Address",
+          "Strings"
+        ],
+        "methods": [
+          "(string,string)",
+          "supportsInterface(bytes4)",
+          "balanceOf(address)",
+          "ownerOf(uint256)",
+          "name()",
+          "symbol()",
+          "tokenURI(uint256)",
+          "approve(address,uint256)",
+          "getApproved(uint256)",
+          "setApprovalForAll(address,bool)",
+          "isApprovedForAll(address,address)",
+          "transferFrom(address,address,uint256)",
+          "safeTransferFrom(address,address,uint256)",
+          "safeTransferFrom(address,address,uint256,bytes)"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "ERC721",
+            "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:44"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_name",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_string_storage",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:24"
+            },
+            {
+              "label": "_symbol",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_string_storage",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:27"
+            },
+            {
+              "label": "_owners",
+              "offset": 0,
+              "slot": "2",
+              "type": "t_mapping(t_uint256,t_address)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:30"
+            },
+            {
+              "label": "_balances",
+              "offset": 0,
+              "slot": "3",
+              "type": "t_mapping(t_address,t_uint256)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:33"
+            },
+            {
+              "label": "_tokenApprovals",
+              "offset": 0,
+              "slot": "4",
+              "type": "t_mapping(t_uint256,t_address)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:36"
+            },
+            {
+              "label": "_operatorApprovals",
+              "offset": 0,
+              "slot": "5",
+              "type": "t_mapping(t_address,t_mapping(t_address,t_bool))",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:39"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address"
+            },
+            "t_bool": {
+              "label": "bool"
+            },
+            "t_mapping(t_address,t_bool)": {
+              "label": "mapping(address => bool)"
+            },
+            "t_mapping(t_address,t_mapping(t_address,t_bool))": {
+              "label": "mapping(address => mapping(address => bool))"
+            },
+            "t_mapping(t_address,t_uint256)": {
+              "label": "mapping(address => uint256)"
+            },
+            "t_mapping(t_uint256,t_address)": {
+              "label": "mapping(uint256 => address)"
+            },
+            "t_string_storage": {
+              "label": "string"
+            },
+            "t_uint256": {
+              "label": "uint256"
+            }
+          },
+          "layoutVersion": "1.1",
+          "flat": true
+        }
+      },
+      "IERC721": {
+        "src": "@openzeppelin/contracts/token/ERC721/IERC721.sol:11",
+        "inherit": [
+          "IERC165"
+        ],
+        "libraries": [],
+        "methods": [
+          "balanceOf(address)",
+          "ownerOf(uint256)",
+          "safeTransferFrom(address,address,uint256)",
+          "transferFrom(address,address,uint256)",
+          "approve(address,uint256)",
+          "getApproved(uint256)",
+          "setApprovalForAll(address,bool)",
+          "isApprovedForAll(address,address)",
+          "safeTransferFrom(address,address,uint256,bytes)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "IERC721Receiver": {
+        "src": "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol:11",
+        "inherit": [],
+        "libraries": [],
+        "methods": [
+          "onERC721Received(address,address,uint256,bytes)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "ERC721URIStorage": {
+        "src": "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol:11",
+        "inherit": [
+          "ERC721",
+          "IERC721Metadata",
+          "IERC721",
+          "ERC165",
+          "IERC165",
+          "Context"
+        ],
+        "libraries": [
+          "Strings"
+        ],
+        "methods": [
+          "tokenURI(uint256)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [
+            {
+              "label": "_name",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_string_storage",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:24"
+            },
+            {
+              "label": "_symbol",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_string_storage",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:27"
+            },
+            {
+              "label": "_owners",
+              "offset": 0,
+              "slot": "2",
+              "type": "t_mapping(t_uint256,t_address)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:30"
+            },
+            {
+              "label": "_balances",
+              "offset": 0,
+              "slot": "3",
+              "type": "t_mapping(t_address,t_uint256)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:33"
+            },
+            {
+              "label": "_tokenApprovals",
+              "offset": 0,
+              "slot": "4",
+              "type": "t_mapping(t_uint256,t_address)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:36"
+            },
+            {
+              "label": "_operatorApprovals",
+              "offset": 0,
+              "slot": "5",
+              "type": "t_mapping(t_address,t_mapping(t_address,t_bool))",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:39"
+            },
+            {
+              "label": "_tokenURIs",
+              "offset": 0,
+              "slot": "6",
+              "type": "t_mapping(t_uint256,t_string_storage)",
+              "contract": "ERC721URIStorage",
+              "src": "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol:15"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address"
+            },
+            "t_bool": {
+              "label": "bool"
+            },
+            "t_mapping(t_address,t_bool)": {
+              "label": "mapping(address => bool)"
+            },
+            "t_mapping(t_address,t_mapping(t_address,t_bool))": {
+              "label": "mapping(address => mapping(address => bool))"
+            },
+            "t_mapping(t_address,t_uint256)": {
+              "label": "mapping(address => uint256)"
+            },
+            "t_mapping(t_uint256,t_address)": {
+              "label": "mapping(uint256 => address)"
+            },
+            "t_mapping(t_uint256,t_string_storage)": {
+              "label": "mapping(uint256 => string)"
+            },
+            "t_string_storage": {
+              "label": "string"
+            },
+            "t_uint256": {
+              "label": "uint256"
+            }
+          },
+          "layoutVersion": "1.1",
+          "flat": true
+        }
+      },
+      "IERC721Metadata": {
+        "src": "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol:12",
+        "inherit": [
+          "IERC721",
+          "IERC165"
+        ],
+        "libraries": [],
+        "methods": [
+          "name()",
+          "symbol()",
+          "tokenURI(uint256)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "Address": {
+        "src": "@openzeppelin/contracts/utils/Address.sol:9",
+        "version": {
+          "withMetadata": "71ea15464a13e253b7edcff16f716b0ae3de5b105af42b441faf03bb267264a1",
+          "withoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db",
+          "linkedWithoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db"
+        },
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "delegatecall",
+            "src": "@openzeppelin/contracts/utils/Address.sol:191"
+          }
+        ],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "Base64": {
+        "src": "@openzeppelin/contracts/utils/Base64.sol:11",
+        "version": {
+          "withMetadata": "b2faa78829b20448d7cb4539cd2481ec53fb39d1acd96db6b1e5e9181afa4159",
+          "withoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db",
+          "linkedWithoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db"
+        },
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "Context": {
+        "src": "@openzeppelin/contracts/utils/Context.sol:16",
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "Counters": {
+        "src": "@openzeppelin/contracts/utils/Counters.sol:14",
+        "version": {
+          "withMetadata": "d87e8fe9a1ad0d439192200a9fbd2945faf7e2e7d55054798aedd52ec47c6a96",
+          "withoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db",
+          "linkedWithoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db"
+        },
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "Strings": {
+        "src": "@openzeppelin/contracts/utils/Strings.sol:9",
+        "version": {
+          "withMetadata": "110dc4744f3e3c59f1d44bb6173eff4c93982cc6cf1735ac9bc228bfaaed9bf0",
+          "withoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db",
+          "linkedWithoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db"
+        },
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "ERC165": {
+        "src": "@openzeppelin/contracts/utils/introspection/ERC165.sol:22",
+        "inherit": [
+          "IERC165"
+        ],
+        "libraries": [],
+        "methods": [
+          "supportsInterface(bytes4)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "IERC165": {
+        "src": "@openzeppelin/contracts/utils/introspection/IERC165.sol:15",
+        "inherit": [],
+        "libraries": [],
+        "methods": [
+          "supportsInterface(bytes4)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "EthRioStays": {
+        "src": "contracts/EthRioStays.sol:14",
+        "version": {
+          "withMetadata": "acb289ddc5f02ee06ec1c3902dcad2e0bb3062fd8ca956a40fa47cb140ede1ec",
+          "withoutMetadata": "72d9f8c27197747bda46fd731eb19707c1d6db096aad40269d6d3acd3b2c8062",
+          "linkedWithoutMetadata": "72d9f8c27197747bda46fd731eb19707c1d6db096aad40269d6d3acd3b2c8062"
+        },
+        "inherit": [
+          "ERC721URIStorage",
+          "ERC721",
+          "IERC721Metadata",
+          "IERC721",
+          "ERC165",
+          "IERC165",
+          "Context",
+          "StayEscrow",
+          "IEthRioStays"
+        ],
+        "libraries": [
+          "Counters",
+          "StayTokenMeta"
+        ],
+        "methods": [
+          "()",
+          "getAllLodgingFacilityIds()",
+          "getActiveLodgingFacilityIds()",
+          "getSpaceIdsByFacilityId(bytes32)",
+          "getActiveSpaceIdsByFacilityId(bytes32)",
+          "getAvailability(bytes32,uint16,uint16)",
+          "getLodgingFacilityIdsByOwner(address)",
+          "getLodgingFacilityById(bytes32)",
+          "getSpaceById(bytes32)",
+          "registerLodgingFacility(string,bool,address)",
+          "registerLodgingFacility(string,bool)",
+          "updateLodgingFacility(bytes32,string)",
+          "activateLodgingFacility(bytes32)",
+          "deactivateLodgingFacility(bytes32)",
+          "yieldLodgingFacility(bytes32,address)",
+          "deleteLodgingFacility(bytes32)",
+          "addSpace(bytes32,uint16,uint64,bool,string)",
+          "updateSpace(uint256,uint16,uint64,bool,string)",
+          "deposit(address,bytes32)",
+          "newStay(bytes32,uint16,uint16,uint16)",
+          "checkIn(uint256)",
+          "checkOut(uint256)"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "EthRioStays",
+            "src": "contracts/EthRioStays.sol:76"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_deposits",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_mapping(t_bytes32,t_mapping(t_address,t_uint256))",
+              "contract": "StayEscrow",
+              "src": "contracts/StayEscrow.sol:19"
+            },
+            {
+              "label": "_states",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_mapping(t_bytes32,t_mapping(t_address,t_enum(State)3389))",
+              "contract": "StayEscrow",
+              "src": "contracts/StayEscrow.sol:20"
+            },
+            {
+              "label": "_name",
+              "offset": 0,
+              "slot": "2",
+              "type": "t_string_storage",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:24"
+            },
+            {
+              "label": "_symbol",
+              "offset": 0,
+              "slot": "3",
+              "type": "t_string_storage",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:27"
+            },
+            {
+              "label": "_owners",
+              "offset": 0,
+              "slot": "4",
+              "type": "t_mapping(t_uint256,t_address)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:30"
+            },
+            {
+              "label": "_balances",
+              "offset": 0,
+              "slot": "5",
+              "type": "t_mapping(t_address,t_uint256)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:33"
+            },
+            {
+              "label": "_tokenApprovals",
+              "offset": 0,
+              "slot": "6",
+              "type": "t_mapping(t_uint256,t_address)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:36"
+            },
+            {
+              "label": "_operatorApprovals",
+              "offset": 0,
+              "slot": "7",
+              "type": "t_mapping(t_address,t_mapping(t_address,t_bool))",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:39"
+            },
+            {
+              "label": "_tokenURIs",
+              "offset": 0,
+              "slot": "8",
+              "type": "t_mapping(t_uint256,t_string_storage)",
+              "contract": "ERC721URIStorage",
+              "src": "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol:15"
+            },
+            {
+              "label": "_stayTokenIds",
+              "offset": 0,
+              "slot": "9",
+              "type": "t_struct(Counter)1524_storage",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:16"
+            },
+            {
+              "label": "_lodgingFacilityIds",
+              "offset": 0,
+              "slot": "10",
+              "type": "t_array(t_bytes32)dyn_storage",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:56"
+            },
+            {
+              "label": "_facilityIdsByOwner",
+              "offset": 0,
+              "slot": "11",
+              "type": "t_mapping(t_address,t_array(t_bytes32)dyn_storage)",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:59"
+            },
+            {
+              "label": "lodgingFacilities",
+              "offset": 0,
+              "slot": "12",
+              "type": "t_mapping(t_bytes32,t_struct(LodgingFacility)1881_storage)",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:62"
+            },
+            {
+              "label": "_spaceIdsByFacilityId",
+              "offset": 0,
+              "slot": "13",
+              "type": "t_mapping(t_bytes32,t_array(t_bytes32)dyn_storage)",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:65"
+            },
+            {
+              "label": "spaces",
+              "offset": 0,
+              "slot": "14",
+              "type": "t_mapping(t_bytes32,t_struct(Space)1894_storage)",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:68"
+            },
+            {
+              "label": "_booked",
+              "offset": 0,
+              "slot": "15",
+              "type": "t_mapping(t_bytes32,t_mapping(t_uint16,t_uint16))",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:71"
+            },
+            {
+              "label": "_stays",
+              "offset": 0,
+              "slot": "16",
+              "type": "t_mapping(t_uint256,t_struct(Stay)1907_storage)",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:74"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address"
+            },
+            "t_array(t_bytes32)dyn_storage": {
+              "label": "bytes32[]"
+            },
+            "t_bool": {
+              "label": "bool"
+            },
+            "t_bytes32": {
+              "label": "bytes32"
+            },
+            "t_enum(State)3389": {
+              "label": "enum StayEscrow.State",
+              "members": [
+                "Checkin",
+                "Checkout"
+              ]
+            },
+            "t_mapping(t_address,t_array(t_bytes32)dyn_storage)": {
+              "label": "mapping(address => bytes32[])"
+            },
+            "t_mapping(t_address,t_bool)": {
+              "label": "mapping(address => bool)"
+            },
+            "t_mapping(t_address,t_enum(State)3389)": {
+              "label": "mapping(address => enum StayEscrow.State)"
+            },
+            "t_mapping(t_address,t_mapping(t_address,t_bool))": {
+              "label": "mapping(address => mapping(address => bool))"
+            },
+            "t_mapping(t_address,t_uint256)": {
+              "label": "mapping(address => uint256)"
+            },
+            "t_mapping(t_bytes32,t_array(t_bytes32)dyn_storage)": {
+              "label": "mapping(bytes32 => bytes32[])"
+            },
+            "t_mapping(t_bytes32,t_mapping(t_address,t_enum(State)3389))": {
+              "label": "mapping(bytes32 => mapping(address => enum StayEscrow.State))"
+            },
+            "t_mapping(t_bytes32,t_mapping(t_address,t_uint256))": {
+              "label": "mapping(bytes32 => mapping(address => uint256))"
+            },
+            "t_mapping(t_bytes32,t_mapping(t_uint16,t_uint16))": {
+              "label": "mapping(bytes32 => mapping(uint16 => uint16))"
+            },
+            "t_mapping(t_bytes32,t_struct(LodgingFacility)1881_storage)": {
+              "label": "mapping(bytes32 => struct EthRioStays.LodgingFacility)"
+            },
+            "t_mapping(t_bytes32,t_struct(Space)1894_storage)": {
+              "label": "mapping(bytes32 => struct EthRioStays.Space)"
+            },
+            "t_mapping(t_uint16,t_uint16)": {
+              "label": "mapping(uint16 => uint16)"
+            },
+            "t_mapping(t_uint256,t_address)": {
+              "label": "mapping(uint256 => address)"
+            },
+            "t_mapping(t_uint256,t_string_storage)": {
+              "label": "mapping(uint256 => string)"
+            },
+            "t_mapping(t_uint256,t_struct(Stay)1907_storage)": {
+              "label": "mapping(uint256 => struct EthRioStays.Stay)"
+            },
+            "t_string_storage": {
+              "label": "string"
+            },
+            "t_struct(Counter)1524_storage": {
+              "label": "struct Counters.Counter",
+              "members": [
+                {
+                  "label": "_value",
+                  "type": "t_uint256"
+                }
+              ]
+            },
+            "t_struct(LodgingFacility)1881_storage": {
+              "label": "struct EthRioStays.LodgingFacility",
+              "members": [
+                {
+                  "label": "owner",
+                  "type": "t_address"
+                },
+                {
+                  "label": "active",
+                  "type": "t_bool"
+                },
+                {
+                  "label": "exists",
+                  "type": "t_bool"
+                },
+                {
+                  "label": "dataURI",
+                  "type": "t_string_storage"
+                },
+                {
+                  "label": "fren",
+                  "type": "t_address"
+                }
+              ]
+            },
+            "t_struct(Space)1894_storage": {
+              "label": "struct EthRioStays.Space",
+              "members": [
+                {
+                  "label": "lodgingFacilityId",
+                  "type": "t_bytes32"
+                },
+                {
+                  "label": "capacity",
+                  "type": "t_uint16"
+                },
+                {
+                  "label": "pricePerNightWei",
+                  "type": "t_uint256"
+                },
+                {
+                  "label": "active",
+                  "type": "t_bool"
+                },
+                {
+                  "label": "exists",
+                  "type": "t_bool"
+                },
+                {
+                  "label": "dataURI",
+                  "type": "t_string_storage"
+                }
+              ]
+            },
+            "t_struct(Stay)1907_storage": {
+              "label": "struct EthRioStays.Stay",
+              "members": [
+                {
+                  "label": "spaceId",
+                  "type": "t_bytes32"
+                },
+                {
+                  "label": "startDay",
+                  "type": "t_uint16"
+                },
+                {
+                  "label": "numberOfDays",
+                  "type": "t_uint16"
+                },
+                {
+                  "label": "quantity",
+                  "type": "t_uint16"
+                },
+                {
+                  "label": "checkIn",
+                  "type": "t_bool"
+                },
+                {
+                  "label": "checkOut",
+                  "type": "t_bool"
+                }
+              ]
+            },
+            "t_uint16": {
+              "label": "uint16"
+            },
+            "t_uint256": {
+              "label": "uint256"
+            }
+          },
+          "layoutVersion": "1.1",
+          "flat": true
+        }
+      },
+      "IEthRioStays": {
+        "src": "contracts/IEthRioStays.sol:5",
+        "inherit": [],
+        "libraries": [],
+        "methods": [
+          "getAllLodgingFacilityIds()",
+          "getActiveLodgingFacilityIds()",
+          "getSpaceIdsByFacilityId(bytes32)",
+          "getActiveSpaceIdsByFacilityId(bytes32)",
+          "getAvailability(bytes32,uint16,uint16)",
+          "getLodgingFacilityIdsByOwner(address)",
+          "getLodgingFacilityById(bytes32)",
+          "getSpaceById(bytes32)",
+          "registerLodgingFacility(string,bool,address)",
+          "registerLodgingFacility(string,bool)",
+          "updateLodgingFacility(bytes32,string)",
+          "activateLodgingFacility(bytes32)",
+          "deactivateLodgingFacility(bytes32)",
+          "yieldLodgingFacility(bytes32,address)",
+          "deleteLodgingFacility(bytes32)",
+          "newStay(bytes32,uint16,uint16,uint16)",
+          "checkIn(uint256)",
+          "checkOut(uint256)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "StayEscrow": {
+        "src": "contracts/StayEscrow.sol:7",
+        "inherit": [],
+        "libraries": [
+          "Address"
+        ],
+        "methods": [
+          "depositsOf(address,bytes32)",
+          "depositsState(address,bytes32)",
+          "deposit(address,bytes32)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [
+            {
+              "label": "_deposits",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_mapping(t_bytes32,t_mapping(t_address,t_uint256))",
+              "contract": "StayEscrow",
+              "src": "contracts/StayEscrow.sol:19"
+            },
+            {
+              "label": "_states",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_mapping(t_bytes32,t_mapping(t_address,t_enum(State)3389))",
+              "contract": "StayEscrow",
+              "src": "contracts/StayEscrow.sol:20"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address"
+            },
+            "t_bytes32": {
+              "label": "bytes32"
+            },
+            "t_enum(State)3389": {
+              "label": "enum StayEscrow.State",
+              "members": [
+                "Checkin",
+                "Checkout"
+              ]
+            },
+            "t_mapping(t_address,t_enum(State)3389)": {
+              "label": "mapping(address => enum StayEscrow.State)"
+            },
+            "t_mapping(t_address,t_uint256)": {
+              "label": "mapping(address => uint256)"
+            },
+            "t_mapping(t_bytes32,t_mapping(t_address,t_enum(State)3389))": {
+              "label": "mapping(bytes32 => mapping(address => enum StayEscrow.State))"
+            },
+            "t_mapping(t_bytes32,t_mapping(t_address,t_uint256))": {
+              "label": "mapping(bytes32 => mapping(address => uint256))"
+            },
+            "t_uint256": {
+              "label": "uint256"
+            }
+          },
+          "layoutVersion": "1.1",
+          "flat": true
+        }
+      },
+      "StayTokenMeta": {
+        "src": "contracts/libraries/StayTokenMeta.sol:6",
+        "version": {
+          "withMetadata": "29d0a1a62730da67943b6c1171521f4893d617b287c51c6e786b55ceae6966fd",
+          "withoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db",
+          "linkedWithoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db"
+        },
+        "inherit": [],
+        "libraries": [
+          "Base64"
+        ],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      }
+    },
+    {
+      "ERC721": {
+        "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:19",
+        "version": {
+          "withMetadata": "cabc01b7ec74fb616134e8328cdcfcabaeba668b21af818a61e7c9e07b805edf",
+          "withoutMetadata": "c5c5ff5da080427edccaceaef63efbea48b17fa97d3c1d2848b9e00cc70457d0",
+          "linkedWithoutMetadata": "c5c5ff5da080427edccaceaef63efbea48b17fa97d3c1d2848b9e00cc70457d0"
+        },
+        "inherit": [
+          "IERC721Metadata",
+          "IERC721",
+          "ERC165",
+          "IERC165",
+          "Context"
+        ],
+        "libraries": [
+          "Address",
+          "Strings"
+        ],
+        "methods": [
+          "(string,string)",
+          "supportsInterface(bytes4)",
+          "balanceOf(address)",
+          "ownerOf(uint256)",
+          "name()",
+          "symbol()",
+          "tokenURI(uint256)",
+          "approve(address,uint256)",
+          "getApproved(uint256)",
+          "setApprovalForAll(address,bool)",
+          "isApprovedForAll(address,address)",
+          "transferFrom(address,address,uint256)",
+          "safeTransferFrom(address,address,uint256)",
+          "safeTransferFrom(address,address,uint256,bytes)"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "ERC721",
+            "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:44"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_name",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_string_storage",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:24"
+            },
+            {
+              "label": "_symbol",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_string_storage",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:27"
+            },
+            {
+              "label": "_owners",
+              "offset": 0,
+              "slot": "2",
+              "type": "t_mapping(t_uint256,t_address)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:30"
+            },
+            {
+              "label": "_balances",
+              "offset": 0,
+              "slot": "3",
+              "type": "t_mapping(t_address,t_uint256)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:33"
+            },
+            {
+              "label": "_tokenApprovals",
+              "offset": 0,
+              "slot": "4",
+              "type": "t_mapping(t_uint256,t_address)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:36"
+            },
+            {
+              "label": "_operatorApprovals",
+              "offset": 0,
+              "slot": "5",
+              "type": "t_mapping(t_address,t_mapping(t_address,t_bool))",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:39"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address"
+            },
+            "t_bool": {
+              "label": "bool"
+            },
+            "t_mapping(t_address,t_bool)": {
+              "label": "mapping(address => bool)"
+            },
+            "t_mapping(t_address,t_mapping(t_address,t_bool))": {
+              "label": "mapping(address => mapping(address => bool))"
+            },
+            "t_mapping(t_address,t_uint256)": {
+              "label": "mapping(address => uint256)"
+            },
+            "t_mapping(t_uint256,t_address)": {
+              "label": "mapping(uint256 => address)"
+            },
+            "t_string_storage": {
+              "label": "string"
+            },
+            "t_uint256": {
+              "label": "uint256"
+            }
+          },
+          "layoutVersion": "1.1",
+          "flat": true
+        }
+      },
+      "IERC721": {
+        "src": "@openzeppelin/contracts/token/ERC721/IERC721.sol:11",
+        "inherit": [
+          "IERC165"
+        ],
+        "libraries": [],
+        "methods": [
+          "balanceOf(address)",
+          "ownerOf(uint256)",
+          "safeTransferFrom(address,address,uint256)",
+          "transferFrom(address,address,uint256)",
+          "approve(address,uint256)",
+          "getApproved(uint256)",
+          "setApprovalForAll(address,bool)",
+          "isApprovedForAll(address,address)",
+          "safeTransferFrom(address,address,uint256,bytes)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "IERC721Receiver": {
+        "src": "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol:11",
+        "inherit": [],
+        "libraries": [],
+        "methods": [
+          "onERC721Received(address,address,uint256,bytes)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "ERC721URIStorage": {
+        "src": "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol:11",
+        "inherit": [
+          "ERC721",
+          "IERC721Metadata",
+          "IERC721",
+          "ERC165",
+          "IERC165",
+          "Context"
+        ],
+        "libraries": [
+          "Strings"
+        ],
+        "methods": [
+          "tokenURI(uint256)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [
+            {
+              "label": "_name",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_string_storage",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:24"
+            },
+            {
+              "label": "_symbol",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_string_storage",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:27"
+            },
+            {
+              "label": "_owners",
+              "offset": 0,
+              "slot": "2",
+              "type": "t_mapping(t_uint256,t_address)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:30"
+            },
+            {
+              "label": "_balances",
+              "offset": 0,
+              "slot": "3",
+              "type": "t_mapping(t_address,t_uint256)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:33"
+            },
+            {
+              "label": "_tokenApprovals",
+              "offset": 0,
+              "slot": "4",
+              "type": "t_mapping(t_uint256,t_address)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:36"
+            },
+            {
+              "label": "_operatorApprovals",
+              "offset": 0,
+              "slot": "5",
+              "type": "t_mapping(t_address,t_mapping(t_address,t_bool))",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:39"
+            },
+            {
+              "label": "_tokenURIs",
+              "offset": 0,
+              "slot": "6",
+              "type": "t_mapping(t_uint256,t_string_storage)",
+              "contract": "ERC721URIStorage",
+              "src": "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol:15"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address"
+            },
+            "t_bool": {
+              "label": "bool"
+            },
+            "t_mapping(t_address,t_bool)": {
+              "label": "mapping(address => bool)"
+            },
+            "t_mapping(t_address,t_mapping(t_address,t_bool))": {
+              "label": "mapping(address => mapping(address => bool))"
+            },
+            "t_mapping(t_address,t_uint256)": {
+              "label": "mapping(address => uint256)"
+            },
+            "t_mapping(t_uint256,t_address)": {
+              "label": "mapping(uint256 => address)"
+            },
+            "t_mapping(t_uint256,t_string_storage)": {
+              "label": "mapping(uint256 => string)"
+            },
+            "t_string_storage": {
+              "label": "string"
+            },
+            "t_uint256": {
+              "label": "uint256"
+            }
+          },
+          "layoutVersion": "1.1",
+          "flat": true
+        }
+      },
+      "IERC721Metadata": {
+        "src": "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol:12",
+        "inherit": [
+          "IERC721",
+          "IERC165"
+        ],
+        "libraries": [],
+        "methods": [
+          "name()",
+          "symbol()",
+          "tokenURI(uint256)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "Address": {
+        "src": "@openzeppelin/contracts/utils/Address.sol:9",
+        "version": {
+          "withMetadata": "71ea15464a13e253b7edcff16f716b0ae3de5b105af42b441faf03bb267264a1",
+          "withoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db",
+          "linkedWithoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db"
+        },
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "delegatecall",
+            "src": "@openzeppelin/contracts/utils/Address.sol:191"
+          }
+        ],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "Base64": {
+        "src": "@openzeppelin/contracts/utils/Base64.sol:11",
+        "version": {
+          "withMetadata": "b2faa78829b20448d7cb4539cd2481ec53fb39d1acd96db6b1e5e9181afa4159",
+          "withoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db",
+          "linkedWithoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db"
+        },
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "Context": {
+        "src": "@openzeppelin/contracts/utils/Context.sol:16",
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "Counters": {
+        "src": "@openzeppelin/contracts/utils/Counters.sol:14",
+        "version": {
+          "withMetadata": "d87e8fe9a1ad0d439192200a9fbd2945faf7e2e7d55054798aedd52ec47c6a96",
+          "withoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db",
+          "linkedWithoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db"
+        },
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "Strings": {
+        "src": "@openzeppelin/contracts/utils/Strings.sol:9",
+        "version": {
+          "withMetadata": "110dc4744f3e3c59f1d44bb6173eff4c93982cc6cf1735ac9bc228bfaaed9bf0",
+          "withoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db",
+          "linkedWithoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db"
+        },
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "ERC165": {
+        "src": "@openzeppelin/contracts/utils/introspection/ERC165.sol:22",
+        "inherit": [
+          "IERC165"
+        ],
+        "libraries": [],
+        "methods": [
+          "supportsInterface(bytes4)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "IERC165": {
+        "src": "@openzeppelin/contracts/utils/introspection/IERC165.sol:15",
+        "inherit": [],
+        "libraries": [],
+        "methods": [
+          "supportsInterface(bytes4)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "EthRioStays": {
+        "src": "contracts/EthRioStays.sol:14",
+        "version": {
+          "withMetadata": "0782bb7f62455e68750b770a77b8c7be467768029cce9b0b142f5e560ab128b4",
+          "withoutMetadata": "54b95f50d1e0466afd104818fa038cc24808ff02d4c976ab7cec504a332050a3",
+          "linkedWithoutMetadata": "54b95f50d1e0466afd104818fa038cc24808ff02d4c976ab7cec504a332050a3"
+        },
+        "inherit": [
+          "ERC721URIStorage",
+          "ERC721",
+          "IERC721Metadata",
+          "IERC721",
+          "ERC165",
+          "IERC165",
+          "Context",
+          "StayEscrow",
+          "IEthRioStays"
+        ],
+        "libraries": [
+          "Counters",
+          "StayTokenMeta"
+        ],
+        "methods": [
+          "()",
+          "getAllLodgingFacilityIds()",
+          "getActiveLodgingFacilityIds()",
+          "getSpaceIdsByFacilityId(bytes32)",
+          "getActiveSpaceIdsByFacilityId(bytes32)",
+          "getAvailability(bytes32,uint16,uint16)",
+          "getLodgingFacilityIdsByOwner(address)",
+          "getLodgingFacilityById(bytes32)",
+          "getSpaceById(bytes32)",
+          "registerLodgingFacility(string,bool,address)",
+          "registerLodgingFacility(string,bool)",
+          "updateLodgingFacility(bytes32,string)",
+          "activateLodgingFacility(bytes32)",
+          "deactivateLodgingFacility(bytes32)",
+          "yieldLodgingFacility(bytes32,address)",
+          "deleteLodgingFacility(bytes32)",
+          "addSpace(bytes32,uint16,uint64,bool,string)",
+          "updateSpace(uint256,uint16,uint64,bool,string)",
+          "deposit(address,bytes32)",
+          "newStay(bytes32,uint16,uint16,uint16)",
+          "checkIn(uint256)",
+          "checkOut(uint256)"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "EthRioStays",
+            "src": "contracts/EthRioStays.sol:76"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_deposits",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_mapping(t_bytes32,t_mapping(t_address,t_uint256))",
+              "contract": "StayEscrow",
+              "src": "contracts/StayEscrow.sol:19"
+            },
+            {
+              "label": "_states",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_mapping(t_bytes32,t_mapping(t_address,t_enum(State)3389))",
+              "contract": "StayEscrow",
+              "src": "contracts/StayEscrow.sol:20"
+            },
+            {
+              "label": "_name",
+              "offset": 0,
+              "slot": "2",
+              "type": "t_string_storage",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:24"
+            },
+            {
+              "label": "_symbol",
+              "offset": 0,
+              "slot": "3",
+              "type": "t_string_storage",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:27"
+            },
+            {
+              "label": "_owners",
+              "offset": 0,
+              "slot": "4",
+              "type": "t_mapping(t_uint256,t_address)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:30"
+            },
+            {
+              "label": "_balances",
+              "offset": 0,
+              "slot": "5",
+              "type": "t_mapping(t_address,t_uint256)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:33"
+            },
+            {
+              "label": "_tokenApprovals",
+              "offset": 0,
+              "slot": "6",
+              "type": "t_mapping(t_uint256,t_address)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:36"
+            },
+            {
+              "label": "_operatorApprovals",
+              "offset": 0,
+              "slot": "7",
+              "type": "t_mapping(t_address,t_mapping(t_address,t_bool))",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:39"
+            },
+            {
+              "label": "_tokenURIs",
+              "offset": 0,
+              "slot": "8",
+              "type": "t_mapping(t_uint256,t_string_storage)",
+              "contract": "ERC721URIStorage",
+              "src": "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol:15"
+            },
+            {
+              "label": "_stayTokenIds",
+              "offset": 0,
+              "slot": "9",
+              "type": "t_struct(Counter)1524_storage",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:16"
+            },
+            {
+              "label": "_lodgingFacilityIds",
+              "offset": 0,
+              "slot": "10",
+              "type": "t_array(t_bytes32)dyn_storage",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:56"
+            },
+            {
+              "label": "_facilityIdsByOwner",
+              "offset": 0,
+              "slot": "11",
+              "type": "t_mapping(t_address,t_array(t_bytes32)dyn_storage)",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:59"
+            },
+            {
+              "label": "lodgingFacilities",
+              "offset": 0,
+              "slot": "12",
+              "type": "t_mapping(t_bytes32,t_struct(LodgingFacility)1881_storage)",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:62"
+            },
+            {
+              "label": "_spaceIdsByFacilityId",
+              "offset": 0,
+              "slot": "13",
+              "type": "t_mapping(t_bytes32,t_array(t_bytes32)dyn_storage)",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:65"
+            },
+            {
+              "label": "spaces",
+              "offset": 0,
+              "slot": "14",
+              "type": "t_mapping(t_bytes32,t_struct(Space)1894_storage)",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:68"
+            },
+            {
+              "label": "_booked",
+              "offset": 0,
+              "slot": "15",
+              "type": "t_mapping(t_bytes32,t_mapping(t_uint16,t_uint16))",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:71"
+            },
+            {
+              "label": "_stays",
+              "offset": 0,
+              "slot": "16",
+              "type": "t_mapping(t_uint256,t_struct(Stay)1907_storage)",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:74"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address"
+            },
+            "t_array(t_bytes32)dyn_storage": {
+              "label": "bytes32[]"
+            },
+            "t_bool": {
+              "label": "bool"
+            },
+            "t_bytes32": {
+              "label": "bytes32"
+            },
+            "t_enum(State)3389": {
+              "label": "enum StayEscrow.State",
+              "members": [
+                "Checkin",
+                "Checkout"
+              ]
+            },
+            "t_mapping(t_address,t_array(t_bytes32)dyn_storage)": {
+              "label": "mapping(address => bytes32[])"
+            },
+            "t_mapping(t_address,t_bool)": {
+              "label": "mapping(address => bool)"
+            },
+            "t_mapping(t_address,t_enum(State)3389)": {
+              "label": "mapping(address => enum StayEscrow.State)"
+            },
+            "t_mapping(t_address,t_mapping(t_address,t_bool))": {
+              "label": "mapping(address => mapping(address => bool))"
+            },
+            "t_mapping(t_address,t_uint256)": {
+              "label": "mapping(address => uint256)"
+            },
+            "t_mapping(t_bytes32,t_array(t_bytes32)dyn_storage)": {
+              "label": "mapping(bytes32 => bytes32[])"
+            },
+            "t_mapping(t_bytes32,t_mapping(t_address,t_enum(State)3389))": {
+              "label": "mapping(bytes32 => mapping(address => enum StayEscrow.State))"
+            },
+            "t_mapping(t_bytes32,t_mapping(t_address,t_uint256))": {
+              "label": "mapping(bytes32 => mapping(address => uint256))"
+            },
+            "t_mapping(t_bytes32,t_mapping(t_uint16,t_uint16))": {
+              "label": "mapping(bytes32 => mapping(uint16 => uint16))"
+            },
+            "t_mapping(t_bytes32,t_struct(LodgingFacility)1881_storage)": {
+              "label": "mapping(bytes32 => struct EthRioStays.LodgingFacility)"
+            },
+            "t_mapping(t_bytes32,t_struct(Space)1894_storage)": {
+              "label": "mapping(bytes32 => struct EthRioStays.Space)"
+            },
+            "t_mapping(t_uint16,t_uint16)": {
+              "label": "mapping(uint16 => uint16)"
+            },
+            "t_mapping(t_uint256,t_address)": {
+              "label": "mapping(uint256 => address)"
+            },
+            "t_mapping(t_uint256,t_string_storage)": {
+              "label": "mapping(uint256 => string)"
+            },
+            "t_mapping(t_uint256,t_struct(Stay)1907_storage)": {
+              "label": "mapping(uint256 => struct EthRioStays.Stay)"
+            },
+            "t_string_storage": {
+              "label": "string"
+            },
+            "t_struct(Counter)1524_storage": {
+              "label": "struct Counters.Counter",
+              "members": [
+                {
+                  "label": "_value",
+                  "type": "t_uint256"
+                }
+              ]
+            },
+            "t_struct(LodgingFacility)1881_storage": {
+              "label": "struct EthRioStays.LodgingFacility",
+              "members": [
+                {
+                  "label": "owner",
+                  "type": "t_address"
+                },
+                {
+                  "label": "active",
+                  "type": "t_bool"
+                },
+                {
+                  "label": "exists",
+                  "type": "t_bool"
+                },
+                {
+                  "label": "dataURI",
+                  "type": "t_string_storage"
+                },
+                {
+                  "label": "fren",
+                  "type": "t_address"
+                }
+              ]
+            },
+            "t_struct(Space)1894_storage": {
+              "label": "struct EthRioStays.Space",
+              "members": [
+                {
+                  "label": "lodgingFacilityId",
+                  "type": "t_bytes32"
+                },
+                {
+                  "label": "capacity",
+                  "type": "t_uint16"
+                },
+                {
+                  "label": "pricePerNightWei",
+                  "type": "t_uint256"
+                },
+                {
+                  "label": "active",
+                  "type": "t_bool"
+                },
+                {
+                  "label": "exists",
+                  "type": "t_bool"
+                },
+                {
+                  "label": "dataURI",
+                  "type": "t_string_storage"
+                }
+              ]
+            },
+            "t_struct(Stay)1907_storage": {
+              "label": "struct EthRioStays.Stay",
+              "members": [
+                {
+                  "label": "spaceId",
+                  "type": "t_bytes32"
+                },
+                {
+                  "label": "startDay",
+                  "type": "t_uint16"
+                },
+                {
+                  "label": "numberOfDays",
+                  "type": "t_uint16"
+                },
+                {
+                  "label": "quantity",
+                  "type": "t_uint16"
+                },
+                {
+                  "label": "checkIn",
+                  "type": "t_bool"
+                },
+                {
+                  "label": "checkOut",
+                  "type": "t_bool"
+                }
+              ]
+            },
+            "t_uint16": {
+              "label": "uint16"
+            },
+            "t_uint256": {
+              "label": "uint256"
+            }
+          },
+          "layoutVersion": "1.1",
+          "flat": true
+        }
+      },
+      "IEthRioStays": {
+        "src": "contracts/IEthRioStays.sol:5",
+        "inherit": [],
+        "libraries": [],
+        "methods": [
+          "getAllLodgingFacilityIds()",
+          "getActiveLodgingFacilityIds()",
+          "getSpaceIdsByFacilityId(bytes32)",
+          "getActiveSpaceIdsByFacilityId(bytes32)",
+          "getAvailability(bytes32,uint16,uint16)",
+          "getLodgingFacilityIdsByOwner(address)",
+          "getLodgingFacilityById(bytes32)",
+          "getSpaceById(bytes32)",
+          "registerLodgingFacility(string,bool,address)",
+          "registerLodgingFacility(string,bool)",
+          "updateLodgingFacility(bytes32,string)",
+          "activateLodgingFacility(bytes32)",
+          "deactivateLodgingFacility(bytes32)",
+          "yieldLodgingFacility(bytes32,address)",
+          "deleteLodgingFacility(bytes32)",
+          "newStay(bytes32,uint16,uint16,uint16)",
+          "checkIn(uint256)",
+          "checkOut(uint256)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "StayEscrow": {
+        "src": "contracts/StayEscrow.sol:7",
+        "inherit": [],
+        "libraries": [
+          "Address"
+        ],
+        "methods": [
+          "depositsOf(address,bytes32)",
+          "depositsState(address,bytes32)",
+          "deposit(address,bytes32)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [
+            {
+              "label": "_deposits",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_mapping(t_bytes32,t_mapping(t_address,t_uint256))",
+              "contract": "StayEscrow",
+              "src": "contracts/StayEscrow.sol:19"
+            },
+            {
+              "label": "_states",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_mapping(t_bytes32,t_mapping(t_address,t_enum(State)3389))",
+              "contract": "StayEscrow",
+              "src": "contracts/StayEscrow.sol:20"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address"
+            },
+            "t_bytes32": {
+              "label": "bytes32"
+            },
+            "t_enum(State)3389": {
+              "label": "enum StayEscrow.State",
+              "members": [
+                "Checkin",
+                "Checkout"
+              ]
+            },
+            "t_mapping(t_address,t_enum(State)3389)": {
+              "label": "mapping(address => enum StayEscrow.State)"
+            },
+            "t_mapping(t_address,t_uint256)": {
+              "label": "mapping(address => uint256)"
+            },
+            "t_mapping(t_bytes32,t_mapping(t_address,t_enum(State)3389))": {
+              "label": "mapping(bytes32 => mapping(address => enum StayEscrow.State))"
+            },
+            "t_mapping(t_bytes32,t_mapping(t_address,t_uint256))": {
+              "label": "mapping(bytes32 => mapping(address => uint256))"
+            },
+            "t_uint256": {
+              "label": "uint256"
+            }
+          },
+          "layoutVersion": "1.1",
+          "flat": true
+        }
+      },
+      "StayTokenMeta": {
+        "src": "contracts/libraries/StayTokenMeta.sol:6",
+        "version": {
+          "withMetadata": "a061875829cd0c277778fb10695874cd31ce5934750d8c90d4ecbe3ce65db9e3",
+          "withoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db",
+          "linkedWithoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db"
+        },
+        "inherit": [],
+        "libraries": [
+          "Base64"
+        ],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      }
+    },
+    {
+      "ERC721": {
+        "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:19",
+        "version": {
+          "withMetadata": "cabc01b7ec74fb616134e8328cdcfcabaeba668b21af818a61e7c9e07b805edf",
+          "withoutMetadata": "c5c5ff5da080427edccaceaef63efbea48b17fa97d3c1d2848b9e00cc70457d0",
+          "linkedWithoutMetadata": "c5c5ff5da080427edccaceaef63efbea48b17fa97d3c1d2848b9e00cc70457d0"
+        },
+        "inherit": [
+          "IERC721Metadata",
+          "IERC721",
+          "ERC165",
+          "IERC165",
+          "Context"
+        ],
+        "libraries": [
+          "Address",
+          "Strings"
+        ],
+        "methods": [
+          "(string,string)",
+          "supportsInterface(bytes4)",
+          "balanceOf(address)",
+          "ownerOf(uint256)",
+          "name()",
+          "symbol()",
+          "tokenURI(uint256)",
+          "approve(address,uint256)",
+          "getApproved(uint256)",
+          "setApprovalForAll(address,bool)",
+          "isApprovedForAll(address,address)",
+          "transferFrom(address,address,uint256)",
+          "safeTransferFrom(address,address,uint256)",
+          "safeTransferFrom(address,address,uint256,bytes)"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "ERC721",
+            "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:44"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_name",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_string_storage",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:24"
+            },
+            {
+              "label": "_symbol",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_string_storage",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:27"
+            },
+            {
+              "label": "_owners",
+              "offset": 0,
+              "slot": "2",
+              "type": "t_mapping(t_uint256,t_address)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:30"
+            },
+            {
+              "label": "_balances",
+              "offset": 0,
+              "slot": "3",
+              "type": "t_mapping(t_address,t_uint256)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:33"
+            },
+            {
+              "label": "_tokenApprovals",
+              "offset": 0,
+              "slot": "4",
+              "type": "t_mapping(t_uint256,t_address)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:36"
+            },
+            {
+              "label": "_operatorApprovals",
+              "offset": 0,
+              "slot": "5",
+              "type": "t_mapping(t_address,t_mapping(t_address,t_bool))",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:39"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address"
+            },
+            "t_bool": {
+              "label": "bool"
+            },
+            "t_mapping(t_address,t_bool)": {
+              "label": "mapping(address => bool)"
+            },
+            "t_mapping(t_address,t_mapping(t_address,t_bool))": {
+              "label": "mapping(address => mapping(address => bool))"
+            },
+            "t_mapping(t_address,t_uint256)": {
+              "label": "mapping(address => uint256)"
+            },
+            "t_mapping(t_uint256,t_address)": {
+              "label": "mapping(uint256 => address)"
+            },
+            "t_string_storage": {
+              "label": "string"
+            },
+            "t_uint256": {
+              "label": "uint256"
+            }
+          },
+          "layoutVersion": "1.1",
+          "flat": true
+        }
+      },
+      "IERC721": {
+        "src": "@openzeppelin/contracts/token/ERC721/IERC721.sol:11",
+        "inherit": [
+          "IERC165"
+        ],
+        "libraries": [],
+        "methods": [
+          "balanceOf(address)",
+          "ownerOf(uint256)",
+          "safeTransferFrom(address,address,uint256)",
+          "transferFrom(address,address,uint256)",
+          "approve(address,uint256)",
+          "getApproved(uint256)",
+          "setApprovalForAll(address,bool)",
+          "isApprovedForAll(address,address)",
+          "safeTransferFrom(address,address,uint256,bytes)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "IERC721Receiver": {
+        "src": "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol:11",
+        "inherit": [],
+        "libraries": [],
+        "methods": [
+          "onERC721Received(address,address,uint256,bytes)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "ERC721URIStorage": {
+        "src": "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol:11",
+        "inherit": [
+          "ERC721",
+          "IERC721Metadata",
+          "IERC721",
+          "ERC165",
+          "IERC165",
+          "Context"
+        ],
+        "libraries": [
+          "Strings"
+        ],
+        "methods": [
+          "tokenURI(uint256)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [
+            {
+              "label": "_name",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_string_storage",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:24"
+            },
+            {
+              "label": "_symbol",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_string_storage",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:27"
+            },
+            {
+              "label": "_owners",
+              "offset": 0,
+              "slot": "2",
+              "type": "t_mapping(t_uint256,t_address)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:30"
+            },
+            {
+              "label": "_balances",
+              "offset": 0,
+              "slot": "3",
+              "type": "t_mapping(t_address,t_uint256)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:33"
+            },
+            {
+              "label": "_tokenApprovals",
+              "offset": 0,
+              "slot": "4",
+              "type": "t_mapping(t_uint256,t_address)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:36"
+            },
+            {
+              "label": "_operatorApprovals",
+              "offset": 0,
+              "slot": "5",
+              "type": "t_mapping(t_address,t_mapping(t_address,t_bool))",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:39"
+            },
+            {
+              "label": "_tokenURIs",
+              "offset": 0,
+              "slot": "6",
+              "type": "t_mapping(t_uint256,t_string_storage)",
+              "contract": "ERC721URIStorage",
+              "src": "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol:15"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address"
+            },
+            "t_bool": {
+              "label": "bool"
+            },
+            "t_mapping(t_address,t_bool)": {
+              "label": "mapping(address => bool)"
+            },
+            "t_mapping(t_address,t_mapping(t_address,t_bool))": {
+              "label": "mapping(address => mapping(address => bool))"
+            },
+            "t_mapping(t_address,t_uint256)": {
+              "label": "mapping(address => uint256)"
+            },
+            "t_mapping(t_uint256,t_address)": {
+              "label": "mapping(uint256 => address)"
+            },
+            "t_mapping(t_uint256,t_string_storage)": {
+              "label": "mapping(uint256 => string)"
+            },
+            "t_string_storage": {
+              "label": "string"
+            },
+            "t_uint256": {
+              "label": "uint256"
+            }
+          },
+          "layoutVersion": "1.1",
+          "flat": true
+        }
+      },
+      "IERC721Metadata": {
+        "src": "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol:12",
+        "inherit": [
+          "IERC721",
+          "IERC165"
+        ],
+        "libraries": [],
+        "methods": [
+          "name()",
+          "symbol()",
+          "tokenURI(uint256)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "Address": {
+        "src": "@openzeppelin/contracts/utils/Address.sol:9",
+        "version": {
+          "withMetadata": "71ea15464a13e253b7edcff16f716b0ae3de5b105af42b441faf03bb267264a1",
+          "withoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db",
+          "linkedWithoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db"
+        },
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "delegatecall",
+            "src": "@openzeppelin/contracts/utils/Address.sol:191"
+          }
+        ],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "Base64": {
+        "src": "@openzeppelin/contracts/utils/Base64.sol:11",
+        "version": {
+          "withMetadata": "b2faa78829b20448d7cb4539cd2481ec53fb39d1acd96db6b1e5e9181afa4159",
+          "withoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db",
+          "linkedWithoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db"
+        },
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "Context": {
+        "src": "@openzeppelin/contracts/utils/Context.sol:16",
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "Counters": {
+        "src": "@openzeppelin/contracts/utils/Counters.sol:14",
+        "version": {
+          "withMetadata": "d87e8fe9a1ad0d439192200a9fbd2945faf7e2e7d55054798aedd52ec47c6a96",
+          "withoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db",
+          "linkedWithoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db"
+        },
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "Strings": {
+        "src": "@openzeppelin/contracts/utils/Strings.sol:9",
+        "version": {
+          "withMetadata": "110dc4744f3e3c59f1d44bb6173eff4c93982cc6cf1735ac9bc228bfaaed9bf0",
+          "withoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db",
+          "linkedWithoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db"
+        },
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "ERC165": {
+        "src": "@openzeppelin/contracts/utils/introspection/ERC165.sol:22",
+        "inherit": [
+          "IERC165"
+        ],
+        "libraries": [],
+        "methods": [
+          "supportsInterface(bytes4)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "IERC165": {
+        "src": "@openzeppelin/contracts/utils/introspection/IERC165.sol:15",
+        "inherit": [],
+        "libraries": [],
+        "methods": [
+          "supportsInterface(bytes4)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "EthRioStays": {
+        "src": "contracts/EthRioStays.sol:14",
+        "version": {
+          "withMetadata": "be398a426d0694400d0497bda193947de38296c4b3234923dbcf005e531689bd",
+          "withoutMetadata": "95c841834214feb9457589aa4f4d445054cbbff474387de84853627c527c53cf",
+          "linkedWithoutMetadata": "95c841834214feb9457589aa4f4d445054cbbff474387de84853627c527c53cf"
+        },
+        "inherit": [
+          "ERC721URIStorage",
+          "ERC721",
+          "IERC721Metadata",
+          "IERC721",
+          "ERC165",
+          "IERC165",
+          "Context",
+          "StayEscrow",
+          "IEthRioStays"
+        ],
+        "libraries": [
+          "Counters",
+          "StayTokenMeta"
+        ],
+        "methods": [
+          "()",
+          "getAllLodgingFacilityIds()",
+          "getActiveLodgingFacilityIds()",
+          "getSpaceIdsByFacilityId(bytes32)",
+          "getActiveSpaceIdsByFacilityId(bytes32)",
+          "getAvailability(bytes32,uint16,uint16)",
+          "getLodgingFacilityIdsByOwner(address)",
+          "getLodgingFacilityById(bytes32)",
+          "getSpaceById(bytes32)",
+          "registerLodgingFacility(string,bool,address)",
+          "registerLodgingFacility(string,bool)",
+          "updateLodgingFacility(bytes32,string)",
+          "activateLodgingFacility(bytes32)",
+          "deactivateLodgingFacility(bytes32)",
+          "yieldLodgingFacility(bytes32,address)",
+          "deleteLodgingFacility(bytes32)",
+          "addSpace(bytes32,uint16,uint64,bool,string)",
+          "updateSpace(uint256,uint16,uint64,bool,string)",
+          "deposit(address,bytes32)",
+          "newStay(bytes32,uint16,uint16,uint16)",
+          "checkIn(uint256)",
+          "checkOut(uint256)"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "EthRioStays",
+            "src": "contracts/EthRioStays.sol:76"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_deposits",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_mapping(t_bytes32,t_mapping(t_address,t_uint256))",
+              "contract": "StayEscrow",
+              "src": "contracts/StayEscrow.sol:19"
+            },
+            {
+              "label": "_states",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_mapping(t_bytes32,t_mapping(t_address,t_enum(State)3389))",
+              "contract": "StayEscrow",
+              "src": "contracts/StayEscrow.sol:20"
+            },
+            {
+              "label": "_name",
+              "offset": 0,
+              "slot": "2",
+              "type": "t_string_storage",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:24"
+            },
+            {
+              "label": "_symbol",
+              "offset": 0,
+              "slot": "3",
+              "type": "t_string_storage",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:27"
+            },
+            {
+              "label": "_owners",
+              "offset": 0,
+              "slot": "4",
+              "type": "t_mapping(t_uint256,t_address)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:30"
+            },
+            {
+              "label": "_balances",
+              "offset": 0,
+              "slot": "5",
+              "type": "t_mapping(t_address,t_uint256)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:33"
+            },
+            {
+              "label": "_tokenApprovals",
+              "offset": 0,
+              "slot": "6",
+              "type": "t_mapping(t_uint256,t_address)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:36"
+            },
+            {
+              "label": "_operatorApprovals",
+              "offset": 0,
+              "slot": "7",
+              "type": "t_mapping(t_address,t_mapping(t_address,t_bool))",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:39"
+            },
+            {
+              "label": "_tokenURIs",
+              "offset": 0,
+              "slot": "8",
+              "type": "t_mapping(t_uint256,t_string_storage)",
+              "contract": "ERC721URIStorage",
+              "src": "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol:15"
+            },
+            {
+              "label": "_stayTokenIds",
+              "offset": 0,
+              "slot": "9",
+              "type": "t_struct(Counter)1524_storage",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:16"
+            },
+            {
+              "label": "_lodgingFacilityIds",
+              "offset": 0,
+              "slot": "10",
+              "type": "t_array(t_bytes32)dyn_storage",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:56"
+            },
+            {
+              "label": "_facilityIdsByOwner",
+              "offset": 0,
+              "slot": "11",
+              "type": "t_mapping(t_address,t_array(t_bytes32)dyn_storage)",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:59"
+            },
+            {
+              "label": "lodgingFacilities",
+              "offset": 0,
+              "slot": "12",
+              "type": "t_mapping(t_bytes32,t_struct(LodgingFacility)1881_storage)",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:62"
+            },
+            {
+              "label": "_spaceIdsByFacilityId",
+              "offset": 0,
+              "slot": "13",
+              "type": "t_mapping(t_bytes32,t_array(t_bytes32)dyn_storage)",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:65"
+            },
+            {
+              "label": "spaces",
+              "offset": 0,
+              "slot": "14",
+              "type": "t_mapping(t_bytes32,t_struct(Space)1894_storage)",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:68"
+            },
+            {
+              "label": "_booked",
+              "offset": 0,
+              "slot": "15",
+              "type": "t_mapping(t_bytes32,t_mapping(t_uint16,t_uint16))",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:71"
+            },
+            {
+              "label": "_stays",
+              "offset": 0,
+              "slot": "16",
+              "type": "t_mapping(t_uint256,t_struct(Stay)1907_storage)",
+              "contract": "EthRioStays",
+              "src": "contracts/EthRioStays.sol:74"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address"
+            },
+            "t_array(t_bytes32)dyn_storage": {
+              "label": "bytes32[]"
+            },
+            "t_bool": {
+              "label": "bool"
+            },
+            "t_bytes32": {
+              "label": "bytes32"
+            },
+            "t_enum(State)3389": {
+              "label": "enum StayEscrow.State",
+              "members": [
+                "Checkin",
+                "Checkout"
+              ]
+            },
+            "t_mapping(t_address,t_array(t_bytes32)dyn_storage)": {
+              "label": "mapping(address => bytes32[])"
+            },
+            "t_mapping(t_address,t_bool)": {
+              "label": "mapping(address => bool)"
+            },
+            "t_mapping(t_address,t_enum(State)3389)": {
+              "label": "mapping(address => enum StayEscrow.State)"
+            },
+            "t_mapping(t_address,t_mapping(t_address,t_bool))": {
+              "label": "mapping(address => mapping(address => bool))"
+            },
+            "t_mapping(t_address,t_uint256)": {
+              "label": "mapping(address => uint256)"
+            },
+            "t_mapping(t_bytes32,t_array(t_bytes32)dyn_storage)": {
+              "label": "mapping(bytes32 => bytes32[])"
+            },
+            "t_mapping(t_bytes32,t_mapping(t_address,t_enum(State)3389))": {
+              "label": "mapping(bytes32 => mapping(address => enum StayEscrow.State))"
+            },
+            "t_mapping(t_bytes32,t_mapping(t_address,t_uint256))": {
+              "label": "mapping(bytes32 => mapping(address => uint256))"
+            },
+            "t_mapping(t_bytes32,t_mapping(t_uint16,t_uint16))": {
+              "label": "mapping(bytes32 => mapping(uint16 => uint16))"
+            },
+            "t_mapping(t_bytes32,t_struct(LodgingFacility)1881_storage)": {
+              "label": "mapping(bytes32 => struct EthRioStays.LodgingFacility)"
+            },
+            "t_mapping(t_bytes32,t_struct(Space)1894_storage)": {
+              "label": "mapping(bytes32 => struct EthRioStays.Space)"
+            },
+            "t_mapping(t_uint16,t_uint16)": {
+              "label": "mapping(uint16 => uint16)"
+            },
+            "t_mapping(t_uint256,t_address)": {
+              "label": "mapping(uint256 => address)"
+            },
+            "t_mapping(t_uint256,t_string_storage)": {
+              "label": "mapping(uint256 => string)"
+            },
+            "t_mapping(t_uint256,t_struct(Stay)1907_storage)": {
+              "label": "mapping(uint256 => struct EthRioStays.Stay)"
+            },
+            "t_string_storage": {
+              "label": "string"
+            },
+            "t_struct(Counter)1524_storage": {
+              "label": "struct Counters.Counter",
+              "members": [
+                {
+                  "label": "_value",
+                  "type": "t_uint256"
+                }
+              ]
+            },
+            "t_struct(LodgingFacility)1881_storage": {
+              "label": "struct EthRioStays.LodgingFacility",
+              "members": [
+                {
+                  "label": "owner",
+                  "type": "t_address"
+                },
+                {
+                  "label": "active",
+                  "type": "t_bool"
+                },
+                {
+                  "label": "exists",
+                  "type": "t_bool"
+                },
+                {
+                  "label": "dataURI",
+                  "type": "t_string_storage"
+                },
+                {
+                  "label": "fren",
+                  "type": "t_address"
+                }
+              ]
+            },
+            "t_struct(Space)1894_storage": {
+              "label": "struct EthRioStays.Space",
+              "members": [
+                {
+                  "label": "lodgingFacilityId",
+                  "type": "t_bytes32"
+                },
+                {
+                  "label": "capacity",
+                  "type": "t_uint16"
+                },
+                {
+                  "label": "pricePerNightWei",
+                  "type": "t_uint256"
+                },
+                {
+                  "label": "active",
+                  "type": "t_bool"
+                },
+                {
+                  "label": "exists",
+                  "type": "t_bool"
+                },
+                {
+                  "label": "dataURI",
+                  "type": "t_string_storage"
+                }
+              ]
+            },
+            "t_struct(Stay)1907_storage": {
+              "label": "struct EthRioStays.Stay",
+              "members": [
+                {
+                  "label": "spaceId",
+                  "type": "t_bytes32"
+                },
+                {
+                  "label": "startDay",
+                  "type": "t_uint16"
+                },
+                {
+                  "label": "numberOfDays",
+                  "type": "t_uint16"
+                },
+                {
+                  "label": "quantity",
+                  "type": "t_uint16"
+                },
+                {
+                  "label": "checkIn",
+                  "type": "t_bool"
+                },
+                {
+                  "label": "checkOut",
+                  "type": "t_bool"
+                }
+              ]
+            },
+            "t_uint16": {
+              "label": "uint16"
+            },
+            "t_uint256": {
+              "label": "uint256"
+            }
+          },
+          "layoutVersion": "1.1",
+          "flat": true
+        }
+      },
+      "IEthRioStays": {
+        "src": "contracts/IEthRioStays.sol:5",
+        "inherit": [],
+        "libraries": [],
+        "methods": [
+          "getAllLodgingFacilityIds()",
+          "getActiveLodgingFacilityIds()",
+          "getSpaceIdsByFacilityId(bytes32)",
+          "getActiveSpaceIdsByFacilityId(bytes32)",
+          "getAvailability(bytes32,uint16,uint16)",
+          "getLodgingFacilityIdsByOwner(address)",
+          "getLodgingFacilityById(bytes32)",
+          "getSpaceById(bytes32)",
+          "registerLodgingFacility(string,bool,address)",
+          "registerLodgingFacility(string,bool)",
+          "updateLodgingFacility(bytes32,string)",
+          "activateLodgingFacility(bytes32)",
+          "deactivateLodgingFacility(bytes32)",
+          "yieldLodgingFacility(bytes32,address)",
+          "deleteLodgingFacility(bytes32)",
+          "newStay(bytes32,uint16,uint16,uint16)",
+          "checkIn(uint256)",
+          "checkOut(uint256)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "StayEscrow": {
+        "src": "contracts/StayEscrow.sol:7",
+        "inherit": [],
+        "libraries": [
+          "Address"
+        ],
+        "methods": [
+          "depositsOf(address,bytes32)",
+          "depositsState(address,bytes32)",
+          "deposit(address,bytes32)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [
+            {
+              "label": "_deposits",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_mapping(t_bytes32,t_mapping(t_address,t_uint256))",
+              "contract": "StayEscrow",
+              "src": "contracts/StayEscrow.sol:19"
+            },
+            {
+              "label": "_states",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_mapping(t_bytes32,t_mapping(t_address,t_enum(State)3389))",
+              "contract": "StayEscrow",
+              "src": "contracts/StayEscrow.sol:20"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address"
+            },
+            "t_bytes32": {
+              "label": "bytes32"
+            },
+            "t_enum(State)3389": {
+              "label": "enum StayEscrow.State",
+              "members": [
+                "Checkin",
+                "Checkout"
+              ]
+            },
+            "t_mapping(t_address,t_enum(State)3389)": {
+              "label": "mapping(address => enum StayEscrow.State)"
+            },
+            "t_mapping(t_address,t_uint256)": {
+              "label": "mapping(address => uint256)"
+            },
+            "t_mapping(t_bytes32,t_mapping(t_address,t_enum(State)3389))": {
+              "label": "mapping(bytes32 => mapping(address => enum StayEscrow.State))"
+            },
+            "t_mapping(t_bytes32,t_mapping(t_address,t_uint256))": {
+              "label": "mapping(bytes32 => mapping(address => uint256))"
+            },
+            "t_uint256": {
+              "label": "uint256"
+            }
+          },
+          "layoutVersion": "1.1",
+          "flat": true
+        }
+      },
+      "StayTokenMeta": {
+        "src": "contracts/libraries/StayTokenMeta.sol:6",
+        "version": {
+          "withMetadata": "63d0db902a9bd0d2d3a8665bd65ae859e95fb39a2931b2470d5202c2eeafcfb3",
+          "withoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db",
+          "linkedWithoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db"
+        },
+        "inherit": [],
+        "libraries": [
+          "Base64"
+        ],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      }
+    },
+    {
+      "ERC721": {
+        "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:19",
+        "version": {
+          "withMetadata": "cabc01b7ec74fb616134e8328cdcfcabaeba668b21af818a61e7c9e07b805edf",
+          "withoutMetadata": "c5c5ff5da080427edccaceaef63efbea48b17fa97d3c1d2848b9e00cc70457d0",
+          "linkedWithoutMetadata": "c5c5ff5da080427edccaceaef63efbea48b17fa97d3c1d2848b9e00cc70457d0"
+        },
+        "inherit": [
+          "IERC721Metadata",
+          "IERC721",
+          "ERC165",
+          "IERC165",
+          "Context"
+        ],
+        "libraries": [
+          "Address",
+          "Strings"
+        ],
+        "methods": [
+          "(string,string)",
+          "supportsInterface(bytes4)",
+          "balanceOf(address)",
+          "ownerOf(uint256)",
+          "name()",
+          "symbol()",
+          "tokenURI(uint256)",
+          "approve(address,uint256)",
+          "getApproved(uint256)",
+          "setApprovalForAll(address,bool)",
+          "isApprovedForAll(address,address)",
+          "transferFrom(address,address,uint256)",
+          "safeTransferFrom(address,address,uint256)",
+          "safeTransferFrom(address,address,uint256,bytes)"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "ERC721",
+            "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:44"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_name",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_string_storage",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:24"
+            },
+            {
+              "label": "_symbol",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_string_storage",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:27"
+            },
+            {
+              "label": "_owners",
+              "offset": 0,
+              "slot": "2",
+              "type": "t_mapping(t_uint256,t_address)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:30"
+            },
+            {
+              "label": "_balances",
+              "offset": 0,
+              "slot": "3",
+              "type": "t_mapping(t_address,t_uint256)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:33"
+            },
+            {
+              "label": "_tokenApprovals",
+              "offset": 0,
+              "slot": "4",
+              "type": "t_mapping(t_uint256,t_address)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:36"
+            },
+            {
+              "label": "_operatorApprovals",
+              "offset": 0,
+              "slot": "5",
+              "type": "t_mapping(t_address,t_mapping(t_address,t_bool))",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:39"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address"
+            },
+            "t_bool": {
+              "label": "bool"
+            },
+            "t_mapping(t_address,t_bool)": {
+              "label": "mapping(address => bool)"
+            },
+            "t_mapping(t_address,t_mapping(t_address,t_bool))": {
+              "label": "mapping(address => mapping(address => bool))"
+            },
+            "t_mapping(t_address,t_uint256)": {
+              "label": "mapping(address => uint256)"
+            },
+            "t_mapping(t_uint256,t_address)": {
+              "label": "mapping(uint256 => address)"
+            },
+            "t_string_storage": {
+              "label": "string"
+            },
+            "t_uint256": {
+              "label": "uint256"
+            }
+          },
+          "layoutVersion": "1.1",
+          "flat": true
+        }
+      },
+      "IERC721": {
+        "src": "@openzeppelin/contracts/token/ERC721/IERC721.sol:11",
+        "inherit": [
+          "IERC165"
+        ],
+        "libraries": [],
+        "methods": [
+          "balanceOf(address)",
+          "ownerOf(uint256)",
+          "safeTransferFrom(address,address,uint256)",
+          "transferFrom(address,address,uint256)",
+          "approve(address,uint256)",
+          "getApproved(uint256)",
+          "setApprovalForAll(address,bool)",
+          "isApprovedForAll(address,address)",
+          "safeTransferFrom(address,address,uint256,bytes)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "IERC721Receiver": {
+        "src": "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol:11",
+        "inherit": [],
+        "libraries": [],
+        "methods": [
+          "onERC721Received(address,address,uint256,bytes)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "ERC721URIStorage": {
+        "src": "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol:11",
+        "inherit": [
+          "ERC721",
+          "IERC721Metadata",
+          "IERC721",
+          "ERC165",
+          "IERC165",
+          "Context"
+        ],
+        "libraries": [
+          "Strings"
+        ],
+        "methods": [
+          "tokenURI(uint256)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [
+            {
+              "label": "_name",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_string_storage",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:24"
+            },
+            {
+              "label": "_symbol",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_string_storage",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:27"
+            },
+            {
+              "label": "_owners",
+              "offset": 0,
+              "slot": "2",
+              "type": "t_mapping(t_uint256,t_address)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:30"
+            },
+            {
+              "label": "_balances",
+              "offset": 0,
+              "slot": "3",
+              "type": "t_mapping(t_address,t_uint256)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:33"
+            },
+            {
+              "label": "_tokenApprovals",
+              "offset": 0,
+              "slot": "4",
+              "type": "t_mapping(t_uint256,t_address)",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:36"
+            },
+            {
+              "label": "_operatorApprovals",
+              "offset": 0,
+              "slot": "5",
+              "type": "t_mapping(t_address,t_mapping(t_address,t_bool))",
+              "contract": "ERC721",
+              "src": "@openzeppelin/contracts/token/ERC721/ERC721.sol:39"
+            },
+            {
+              "label": "_tokenURIs",
+              "offset": 0,
+              "slot": "6",
+              "type": "t_mapping(t_uint256,t_string_storage)",
+              "contract": "ERC721URIStorage",
+              "src": "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol:15"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address"
+            },
+            "t_bool": {
+              "label": "bool"
+            },
+            "t_mapping(t_address,t_bool)": {
+              "label": "mapping(address => bool)"
+            },
+            "t_mapping(t_address,t_mapping(t_address,t_bool))": {
+              "label": "mapping(address => mapping(address => bool))"
+            },
+            "t_mapping(t_address,t_uint256)": {
+              "label": "mapping(address => uint256)"
+            },
+            "t_mapping(t_uint256,t_address)": {
+              "label": "mapping(uint256 => address)"
+            },
+            "t_mapping(t_uint256,t_string_storage)": {
+              "label": "mapping(uint256 => string)"
+            },
+            "t_string_storage": {
+              "label": "string"
+            },
+            "t_uint256": {
+              "label": "uint256"
+            }
+          },
+          "layoutVersion": "1.1",
+          "flat": true
+        }
+      },
+      "IERC721Metadata": {
+        "src": "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol:12",
+        "inherit": [
+          "IERC721",
+          "IERC165"
+        ],
+        "libraries": [],
+        "methods": [
+          "name()",
+          "symbol()",
+          "tokenURI(uint256)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "Address": {
+        "src": "@openzeppelin/contracts/utils/Address.sol:9",
+        "version": {
+          "withMetadata": "71ea15464a13e253b7edcff16f716b0ae3de5b105af42b441faf03bb267264a1",
+          "withoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db",
+          "linkedWithoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db"
+        },
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "delegatecall",
+            "src": "@openzeppelin/contracts/utils/Address.sol:191"
+          }
+        ],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "Base64": {
+        "src": "@openzeppelin/contracts/utils/Base64.sol:11",
+        "version": {
+          "withMetadata": "b2faa78829b20448d7cb4539cd2481ec53fb39d1acd96db6b1e5e9181afa4159",
+          "withoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db",
+          "linkedWithoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db"
+        },
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "Context": {
+        "src": "@openzeppelin/contracts/utils/Context.sol:16",
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "Counters": {
+        "src": "@openzeppelin/contracts/utils/Counters.sol:14",
+        "version": {
+          "withMetadata": "d87e8fe9a1ad0d439192200a9fbd2945faf7e2e7d55054798aedd52ec47c6a96",
+          "withoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db",
+          "linkedWithoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db"
+        },
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "Strings": {
+        "src": "@openzeppelin/contracts/utils/Strings.sol:9",
+        "version": {
+          "withMetadata": "110dc4744f3e3c59f1d44bb6173eff4c93982cc6cf1735ac9bc228bfaaed9bf0",
+          "withoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db",
+          "linkedWithoutMetadata": "a64c6cf9c6ba9368f5132c93a0196b3204a7963dbb4dd05dfddb4ab23126b8db"
+        },
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "ERC165": {
+        "src": "@openzeppelin/contracts/utils/introspection/ERC165.sol:22",
+        "inherit": [
+          "IERC165"
+        ],
+        "libraries": [],
+        "methods": [
+          "supportsInterface(bytes4)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "IERC165": {
+        "src": "@openzeppelin/contracts/utils/introspection/IERC165.sol:15",
+        "inherit": [],
+        "libraries": [],
+        "methods": [
+          "supportsInterface(bytes4)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.1",
+          "flat": false
+        }
+      },
+      "EthRioStays": {
+        "src": "contracts/EthRioStays.sol:14",
+        "version": {
           "withMetadata": "9c892d40b0d2d08c415e807c55f2ace64f3edcab09c577be63225851a9bacb45",
           "withoutMetadata": "78c4c4c9bf74b87e79c2cb61a9854b0c0fbe7cb53662e050d538f228cc8e3b45",
           "linkedWithoutMetadata": "78c4c4c9bf74b87e79c2cb61a9854b0c0fbe7cb53662e050d538f228cc8e3b45"

@@ -790,8 +790,8 @@
       ]
     },
     "/home/kostysh/dev/stays-remote/packages/smart-contracts/contracts/libraries/StayTokenMeta.sol": {
-      "lastModificationDate": 1646688831033,
-      "contentHash": "0e4fea3eea582ac3b244d6f7f70dc7a3",
+      "lastModificationDate": 1646736526825,
+      "contentHash": "4c11c5806dde12b9df23beff1fd98f82",
       "sourceName": "contracts/libraries/StayTokenMeta.sol",
       "solcConfig": {
         "version": "0.8.7",

@@ -15,6 +15,7 @@ import { expect } from "./utils/chai-setup";
 
 import { EthRioStays } from "../typechain";
 import { setupUser, setupUsers } from "./utils";
+import { decodeDataUri } from './utils/dataUri';
 
 const setup = deployments.createFixture(async () => {
   await deployments.fixture("EthRioStays");
@@ -126,7 +127,7 @@ describe("EthRioStays.sol", () => {
       );
     });
 
-    it("should return an array of all loding facility Ids", async () => {
+    it("should return an array of all lodging facility Ids", async () => {
       expect(
         await deployer.ethRioStays.getAllLodgingFacilityIds()
       ).to.be.of.length(3);
@@ -351,10 +352,10 @@ describe("EthRioStays.sol", () => {
           );
           expect(await deployer.ethRioStays.balanceOf(bob.address)).to.equal(0);
           expect(await deployer.ethRioStays.ownerOf(1)).to.equal(alice.address);
-          // @todo validate onchain uri
-          // expect(await deployer.ethRioStays.tokenURI(1)).to.equal(
-          //   testDataUri + "stay"
-          // );
+
+          const dataUri = decodeDataUri(await deployer.ethRioStays.tokenURI(1), true) as any;
+
+          expect(dataUri.name).to.equal('EthRioStays #1');
         });
 
         // it("should send the money to the facility escrow", async () => {
