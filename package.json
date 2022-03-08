@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "main": "index.js",
   "author": "Maksim Izmaylov <me@kvakes.com>",
-  "license": "GPL3",
+  "license": "GPL-3.0+",
   "private": true,
   "scripts": {
     "bootstrap": "npx lerna bootstrap",
