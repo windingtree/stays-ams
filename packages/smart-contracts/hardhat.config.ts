@@ -115,7 +115,7 @@ const config: HardhatUserConfig = {
     maxMethodDiff: 10
   },
   typechain: {
-    outDir: "typechain",
+    outDir: "typechain-types",
     target: "ethers-v5"
   },
   mocha: {
