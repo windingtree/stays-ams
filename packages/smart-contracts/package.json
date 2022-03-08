@@ -34,7 +34,7 @@
     "@windingtree/prettier-config": "^0.0.1"
   },
   "scripts": {
-    "test": "npx hardhat compile && npx hardhat test",
+    "test": "npx hardhat typechain && npx hardhat test",
     "compile": "npx hardhat compile",
     "typechain": "npx hardhat typechain"
   }
