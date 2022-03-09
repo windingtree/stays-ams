@@ -1,5 +1,0 @@
-{
-  "extends": [
-    "@windingtree/eslint-config"
-  ]
-}
