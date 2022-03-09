@@ -23,7 +23,7 @@ const fetchDataUri = (ipfsNode, uri) => __awaiter(void 0, void 0, void 0, functi
     let data;
     switch (tokenUriType) {
         case 'ipfs':
-            data = yield (0, ipfs_1.ipfsCidResolver)(ipfsNode)(uri);
+            data = yield (0, ipfs_1.ipfsCidResolver)(ipfsNode)(uri.replace('ipfs://', ''));
             break;
         case 'http':
             const response = yield org_id_utils_1.http.request(uri, 'GET');

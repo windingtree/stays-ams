@@ -19,7 +19,7 @@ export const fetchDataUri = async <DT>(ipfsNode: IPFS, uri: string): Promise<DT>
 
   switch (tokenUriType) {
     case 'ipfs':
-      data = await ipfsCidResolver(ipfsNode)(uri);
+      data = await ipfsCidResolver(ipfsNode)(uri.replace('ipfs://', ''));
       break;
 
     case 'http':
