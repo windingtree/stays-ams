@@ -4,38 +4,45 @@
   "license": "GPL-3.0+",
   "dependencies": {
     "@openzeppelin/contracts": "^4.5.0",
-    "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers",
+    "@openzeppelin/contracts-upgradeable": "^4.5.2"
+  },
+  "devDependencies": {
+    "hardhat": "^2.9.1",
+    "@openzeppelin/hardhat-upgrades": "^1.16.0",
+    "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers@^0.3.0-beta.13",
     "@nomiclabs/hardhat-solhint": "^2.0.0",
-    "@nomiclabs/hardhat-waffle": "^2.0.2",
-    "@openzeppelin/hardhat-upgrades": "^1.14.0",
+    "@nomiclabs/hardhat-waffle": "^2.0.3",
     "@typechain/ethers-v5": "^9.0.0",
-    "@typechain/hardhat": "^4.0.0",
+    "@typechain/hardhat": "^5.0.0",
+    "@types/node": "^17.0.21",
     "@types/chai": "^4.3.0",
     "@types/mocha": "^9.1.0",
-    "@types/node": "^17.0.18",
+    "@types/chai-as-promised": "^7.1.5",
+    "@typescript-eslint/eslint-plugin": "^5.14.0",
+    "@typescript-eslint/parser": "^5.14.0",
     "chai": "^4.3.6",
     "chai-ethers": "^0.0.1",
     "dotenv": "^16.0.0",
-    "ethereum-waffle": "^3.4.0",
+    "eslint": "^8.10.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-prettier": "^4.0.0",
     "ethers": "^5.5.4",
-    "hardhat": "^2.8.4",
     "hardhat-deploy": "^0.10.5",
-    "hardhat-gas-reporter": "^1.0.8",
-    "hardhat-upgrades": "^0.0.0",
-    "solidity-coverage": "^0.7.20",
-    "ts-node": "^10.5.0",
-    "typechain": "^7.0.0",
-    "typescript": "^4.5.5",
-    "solhint": "3.3.7",
-    "solc": "0.8.12"
-  },
-  "devDependencies": {
-    "@windingtree/eslint-config": "^0.0.1",
-    "@windingtree/prettier-config": "^0.0.1"
+    "hardhat-gas-reporter": "^1.0.6",
+    "prettier": "^2.5.1",
+    "prettier-plugin-solidity": "^1.0.0-beta.19",
+    "solc": "^0.8.10",
+    "solidity-coverage": "^0.7.17",
+    "ts-node": "^10.7.0",
+    "typechain": "^7.0.1",
+    "typescript": "^4.5.5"
   },
   "scripts": {
     "test": "npx hardhat typechain && npx hardhat test",
     "compile": "npx hardhat compile",
-    "typechain": "npx hardhat typechain"
+    "typechain": "npx hardhat typechain",
+    "coverage": "npx hardhat coverage"
   }
 }

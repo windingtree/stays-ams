@@ -2,10 +2,7 @@ import "dotenv/config"
 
 import { HardhatUserConfig } from "hardhat/types"
 
-import "@openzeppelin/hardhat-upgrades"
 import "@nomiclabs/hardhat-ethers"
-import "@nomiclabs/hardhat-waffle"
-// import "@nomiclabs/hardhat-ganache"
 import "@nomiclabs/hardhat-solhint"
 import "@typechain/hardhat"
 import "hardhat-deploy"
@@ -52,11 +49,6 @@ const config: HardhatUserConfig = {
       saveDeployments: true,
       tags: ["local", "forked"],
     },
-    // ganache: {
-    //   url: "http://127.0.0.1:7545/",
-    //   saveDeployments: true,
-    //   tags: ["local"]
-    // },
     localhost: {
       url: nodeUrl("localhost"),
       accounts: accounts(),
@@ -117,9 +109,6 @@ const config: HardhatUserConfig = {
   typechain: {
     outDir: "typechain",
     target: "ethers-v5"
-  },
-  mocha: {
-    timeout: 0
   }
 }
 
