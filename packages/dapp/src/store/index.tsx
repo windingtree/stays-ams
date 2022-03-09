@@ -10,6 +10,7 @@ import { useWeb3Modal } from '../hooks/useWeb3Modal';
 import { useNetworkId } from '../hooks/useNetworkId';
 import { useAccount } from '../hooks/useAccount';
 import { useIpfsNode } from '../hooks/useIpfsNode';
+import { useSmartContractData } from '../hooks/useSmartContractData';
 
 // Config
 import {
@@ -85,6 +86,8 @@ export const AppStateProvider = ({ children }: PropsType) => {
   ] = useNetworkId(provider, allowedNetworksIds);
   const [account, isAccountLoading, accountError] = useAccount(provider);
   const [ipfsNode, startIpfsNode, stopIpfsNode, ipfsNodeLoading, ipfsNodeError] = useIpfsNode();
+
+  const [lodgingFacilities] = useSmartContractData(provider);
 
   useEffect(() => {
     if (web3ModalError) {
@@ -180,6 +183,13 @@ export const AppStateProvider = ({ children }: PropsType) => {
         startIpfsNode,
         stopIpfsNode
       }
+    })
+  }, [dispatch, ipfsNode, startIpfsNode, stopIpfsNode]);
+
+  useEffect(() => {
+    dispatch({
+      type: 'SET_SMART_CONTRACT_DATA',
+      payload: lodgingFacilities
     })
   }, [dispatch, ipfsNode, startIpfsNode, stopIpfsNode]);
 

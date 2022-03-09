@@ -56,6 +56,11 @@ export const mainReducer = (state: State, action: Action): State => {
           signIn: action.payload.signIn,
           signOut: action.payload.signOut
         };
+      case 'SET_SMART_CONTRACT_DATA':
+        return {
+          ...state,
+          lodgingFacilities: action.payload
+        };
       case 'SET_IPFS_NODE_CONNECTING':
         return {
           ...state,

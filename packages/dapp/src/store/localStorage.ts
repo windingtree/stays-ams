@@ -15,7 +15,9 @@ export interface LocalStorageConnectorConfig {
 export const storageConnectorConfig: LocalStorageConnectorConfig = {
   properties: [
     'themeMode',
-    // add facilities and spaces records here
+    'lodgingFacilities',
+    'spaces'
+    // add lodgingFacilities and spaces records here
   ]
 };
 

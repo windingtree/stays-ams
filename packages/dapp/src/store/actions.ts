@@ -1,8 +1,8 @@
+import type { Space, LodgingFacility } from '../../../data-models';
 import type { Web3ModalProvider } from '../hooks/useWeb3Modal';
 import type { IPFS } from '@windingtree/ipfs-apis';
 import type { IProviderInfo } from 'web3modal';
 import { ThemeMode } from '../components/SwitchThemeMode';
-
 export interface GenericStateRecord {
   id: string;
   [key: string]: unknown;
@@ -69,7 +69,7 @@ export interface AddErrorAction {
   payload: string;
 }
 
-export interface RemoveErrorAction  {
+export interface RemoveErrorAction {
   type: 'ERROR_REMOVE';
   payload: number;
 }
@@ -114,19 +114,26 @@ export interface RemoveRecordAction {
   }
 }
 
+export interface SetSmartContractData {
+  type: 'SET_SMART_CONTRACT_DATA',
+  payload: LodgingFacility[]
+}
+
+
 export type Action =
-| SetConnectingAction
-| SetAccountAction
-| SetIsRightNetworkAction
-| SetNetworkIdAction
-| SetProviderAction
-| SetThemeModeAction
-| SetInjectedProviderAction
-| SetWeb3modalFunctionsAction
-| SetIpfsNodeConnectingAction
-| SetIpfsNodeAction
-| SetRecordAction
-| RemoveRecordAction
-| AddErrorAction
-| RemoveErrorAction
-| RemoveAllErrorsAction;
+  | SetConnectingAction
+  | SetAccountAction
+  | SetIsRightNetworkAction
+  | SetNetworkIdAction
+  | SetProviderAction
+  | SetThemeModeAction
+  | SetInjectedProviderAction
+  | SetWeb3modalFunctionsAction
+  | SetIpfsNodeConnectingAction
+  | SetIpfsNodeAction
+  | SetRecordAction
+  | RemoveRecordAction
+  | AddErrorAction
+  | RemoveErrorAction
+  | SetSmartContractData
+  | RemoveAllErrorsAction;
