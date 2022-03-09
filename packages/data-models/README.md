@@ -13,39 +13,39 @@ Dependency in package.json
 
 ```typescript
 import type {
+  SpaceRaw, // Original space data type
+  LodgingFacilityRaw, // Original lodging facility data type
   Space, // Space storage record typescript type
   LodgingFacility // Lodging facility record typescript type
-} from 'stays-data-model';
+} from 'stays-data-models';
 
 import {
   schemas, // json.schema's for raw space and lodging facility data
   validators, // ready made validators for data
   faker // helpers for generation of faked data sets
-} from 'stays-data-model';
+} from 'stays-data-models';
 ```
 
 ## Data schemas
 
 ```typescript
-import {
-  schemas: {
-    spaceSchema,
-    lodgingFacilitySchema
-  }
-} from 'stays-data-model';
+import { schemas } from 'stays-data-models';
+const {
+  spaceSchema,
+  lodgingFacilitySchema
+} = schemas;
 ```
 
 ## Faker
 
 ```typescript
-import {
-  faker: {
-    iterator,
-    createFakeSpace,
-    createFakeLodgingFacility,
-    ...// createFakeCompanyIdentifier, createFakeAddress, createFakeContact... etc.
-  }
-} from 'stays-data-model';
+import { faker } from 'stays-data-models';
+const {
+  iterator,
+  createFakeSpace,
+  createFakeLodgingFacility,
+  ...// createFakeCompanyIdentifier, createFakeAddress, createFakeContact... etc.
+} = faker;
 
 const fakeSpace = createFakeSpace();
 
@@ -318,12 +318,11 @@ iterator(
 ## Validators
 
 ```typescript
-import {
-  validators: {
-    validateSpaceData,
-    validateLodgingFacilityData
-  }
-} from 'stays-data-model';
+import { validators } from 'stays-data-models';
+const {
+  validateSpaceData,
+  validateLodgingFacilityData
+} = validators;
 
 const data = createFakeSpace();
 validateSpaceData(data); // Should throw an `Validation error:` in case of malformed data

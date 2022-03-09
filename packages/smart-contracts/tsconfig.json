@@ -1,11 +1,29 @@
 {
   "compilerOptions": {
-    "target": "es2018",
     "module": "commonjs",
-    "strict": true,
+    "target": "es6",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
     "esModuleInterop": true,
-    "outDir": "dist"
+    "noImplicitAny": false,
+    "sourceMap": true,
+    "outDir": "dist",
+    "declaration": true,
+    "baseUrl": ".",
+    "experimentalDecorators": true,
+    "strictNullChecks": true,
+    "skipLibCheck": true
   },
-  "include": ["./scripts", "./test", "./typechain"],
-  "files": ["./hardhat.config.ts"]
+  "include": [
+    "hardhat.config.ts",
+    "test",
+    "typechain",
+    "artifacts"
+  ],
+  "exclude": [
+    "node_modules"
+  ],
+  "files": [
+    "index.ts"
+  ]
 }

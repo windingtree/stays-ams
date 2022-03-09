@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "noImplicitAny": false,
+    "sourceMap": true,
+    "outDir": "dist",
+    "declaration": true,
+    "baseUrl": ".",
+    "experimentalDecorators": true,
+    "strictNullChecks": true,
+    "composite": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "src"
+  ]
+}
