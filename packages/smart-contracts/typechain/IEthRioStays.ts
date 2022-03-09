@@ -178,8 +178,8 @@ export interface IEthRioStaysInterface extends utils.Interface {
     "LodgingFacilityRemoved(bytes32)": EventFragment;
     "LodgingFacilityUpdated(bytes32,string)": EventFragment;
     "NewStay(bytes32,uint256)": EventFragment;
-    "SpaceAdded(bytes32,uint64,uint64,bool,string)": EventFragment;
-    "SpaceUpdated(bytes32,uint256,uint64,uint64,bool,string)": EventFragment;
+    "SpaceAdded(bytes32,uint64,uint256,bool,string)": EventFragment;
+    "SpaceUpdated(bytes32,uint256,uint64,uint256,bool,string)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "CheckIn"): EventFragment;
@@ -693,7 +693,7 @@ export interface IEthRioStays extends BaseContract {
     ): NewStayEventFilter;
     NewStay(spaceId?: null, tokenId?: null): NewStayEventFilter;
 
-    "SpaceAdded(bytes32,uint64,uint64,bool,string)"(
+    "SpaceAdded(bytes32,uint64,uint256,bool,string)"(
       facilityId?: null,
       capacity?: null,
       pricePerNightWei?: null,
@@ -708,7 +708,7 @@ export interface IEthRioStays extends BaseContract {
       dataURI?: null
     ): SpaceAddedEventFilter;
 
-    "SpaceUpdated(bytes32,uint256,uint64,uint64,bool,string)"(
+    "SpaceUpdated(bytes32,uint256,uint64,uint256,bool,string)"(
       facilityId?: null,
       index?: null,
       capacity?: null,

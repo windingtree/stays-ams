@@ -10,6 +10,9 @@ import "hardhat-gas-reporter"
 import "solidity-coverage"
 import { nodeUrl, accounts, getKey } from "./utils/network"
 
+import './scripts/tasks';
+import './scripts/testSetup';
+
 const config: HardhatUserConfig = {
   solidity: {
     compilers: [
@@ -50,6 +53,7 @@ const config: HardhatUserConfig = {
       tags: ["local", "forked"],
     },
     localhost: {
+      chainId: 1337,
       url: nodeUrl("localhost"),
       accounts: accounts(),
       saveDeployments: true,

@@ -10,8 +10,8 @@ abstract contract IEthRioStays {
   event LodgingFacilityActiveState(bytes32 facilityId, bool active);
   event LodgingFacilityOwnershipTransfer(bytes32 facilityId, address indexed prevOwner, address indexed newOwner);
   event LodgingFacilityRemoved(bytes32 facilityId);
-  event SpaceAdded(bytes32 facilityId, uint64 capacity, uint64 pricePerNightWei, bool active, string dataURI);
-  event SpaceUpdated(bytes32 facilityId, uint256 index, uint64 capacity, uint64 pricePerNightWei, bool active, string dataURI);
+  event SpaceAdded(bytes32 facilityId, uint64 capacity, uint256 pricePerNightWei, bool active, string dataURI);
+  event SpaceUpdated(bytes32 facilityId, uint256 index, uint64 capacity, uint256 pricePerNightWei, bool active, string dataURI);
   event NewStay(bytes32 spaceId, uint256 tokenId);
   event CheckIn(uint256 tokenId);
   event CheckOut(uint256 tokenId);

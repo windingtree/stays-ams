@@ -263,7 +263,7 @@ contract EthRioStays is IEthRioStays, StayEscrow, ERC721URIStorage {
   function addSpace(
     bytes32 _lodgingFacilityId,
     uint16 _capacity,
-    uint64 _pricePerNightWei,
+    uint256 _pricePerNightWei,
     bool _active,
     string calldata _dataURI
   ) public {
@@ -296,7 +296,7 @@ contract EthRioStays is IEthRioStays, StayEscrow, ERC721URIStorage {
   function updateSpace(
     uint256 _spaceIndex,
     uint16 _capacity,
-    uint64 _pricePerNightWei,
+    uint256 _pricePerNightWei,
     bool _active,
     string calldata _dataURI
   ) public {

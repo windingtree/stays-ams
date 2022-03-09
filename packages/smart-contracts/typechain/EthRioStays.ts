@@ -22,7 +22,7 @@ export interface EthRioStaysInterface extends utils.Interface {
   contractName: "EthRioStays";
   functions: {
     "activateLodgingFacility(bytes32)": FunctionFragment;
-    "addSpace(bytes32,uint16,uint64,bool,string)": FunctionFragment;
+    "addSpace(bytes32,uint16,uint256,bool,string)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "checkIn(uint256)": FunctionFragment;
@@ -59,7 +59,7 @@ export interface EthRioStaysInterface extends utils.Interface {
     "tokenURI(uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "updateLodgingFacility(bytes32,string)": FunctionFragment;
-    "updateSpace(uint256,uint16,uint64,bool,string)": FunctionFragment;
+    "updateSpace(uint256,uint16,uint256,bool,string)": FunctionFragment;
     "yieldLodgingFacility(bytes32,address)": FunctionFragment;
   };
 
@@ -340,8 +340,8 @@ export interface EthRioStaysInterface extends utils.Interface {
     "LodgingFacilityRemoved(bytes32)": EventFragment;
     "LodgingFacilityUpdated(bytes32,string)": EventFragment;
     "NewStay(bytes32,uint256)": EventFragment;
-    "SpaceAdded(bytes32,uint64,uint64,bool,string)": EventFragment;
-    "SpaceUpdated(bytes32,uint256,uint64,uint64,bool,string)": EventFragment;
+    "SpaceAdded(bytes32,uint64,uint256,bool,string)": EventFragment;
+    "SpaceUpdated(bytes32,uint256,uint64,uint256,bool,string)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
     "Withdrawn(address,uint256,bytes32)": EventFragment;
   };
@@ -1331,7 +1331,7 @@ export interface EthRioStays extends BaseContract {
     ): NewStayEventFilter;
     NewStay(spaceId?: null, tokenId?: null): NewStayEventFilter;
 
-    "SpaceAdded(bytes32,uint64,uint64,bool,string)"(
+    "SpaceAdded(bytes32,uint64,uint256,bool,string)"(
       facilityId?: null,
       capacity?: null,
       pricePerNightWei?: null,
@@ -1346,7 +1346,7 @@ export interface EthRioStays extends BaseContract {
       dataURI?: null
     ): SpaceAddedEventFilter;
 
-    "SpaceUpdated(bytes32,uint256,uint64,uint64,bool,string)"(
+    "SpaceUpdated(bytes32,uint256,uint64,uint256,bool,string)"(
       facilityId?: null,
       index?: null,
       capacity?: null,

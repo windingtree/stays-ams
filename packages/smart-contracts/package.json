@@ -43,13 +43,19 @@
     "solidity-coverage": "^0.7.17",
     "ts-node": "^10.7.0",
     "typechain": "^7.0.1",
-    "typescript": "^4.5.5"
+    "typescript": "^4.5.5",
+    "web3.storage": "3.5.7",
+    "@web-std/blob": "3.0.4",
+    "@web-std/file": "3.0.2",
+    "stays-data-models": "0.0.1"
   },
   "scripts": {
     "test": "npx hardhat typechain && npx hardhat test",
     "compile": "npx hardhat compile",
     "typechain": "npx hardhat typechain",
     "build": "yarn compile && tsc -p tsconfig-build.json",
-    "coverage": "npx hardhat coverage"
+    "coverage": "npx hardhat coverage",
+    "start:node": "npx hardhat --config hardhat.local.config.ts node",
+    "start:setup": "npx hardhat --config hardhat.local.config.ts --network local testSetup"
   }
 }

@@ -126,3 +126,28 @@ Here's a breakdown of on-/off-chain data.
 
 TODO
 
+
+## TESTING ENVIRONMENT SETUP FOR THE DAPP
+
+- `.env` in the ./packages/smart-contract
+
+```
+WEB3STORAGE_KEY=<WEB3_STORAGE_KEY>
+```
+
+- setup (command must be started from the ./smart-contract package directory)
+
+```bash
+yarn start:node
+yarn start:setup
+```
+
+Commands above will:
+
+- create a local Ethereum server
+- register 3 lodging facility with 3 spaces in each
+
+> To make available local node for Metamask the `http://127.0.0.1:8545/` must be registered as a custom RPC
+
+> Here the link where listed predefined accounts for the node: https://hardhat.org/hardhat-network/reference/#initial-state
+> First one is used for deployments
