@@ -129,13 +129,13 @@ TODO
 
 ## TESTING ENVIRONMENT SETUP FOR THE DAPP
 
-- `.env` in the ./packages/smart-contract
+- `.env` in the ./packages/smart-contracts
 
 ```
 WEB3STORAGE_KEY=<WEB3_STORAGE_KEY>
 ```
 
-- setup (command must be started from the ./smart-contract package directory)
+- setup (command must be started from the ./smart-contracts package directory)
 
 ```bash
 yarn start:node
