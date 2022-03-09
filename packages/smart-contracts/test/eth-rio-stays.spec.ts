@@ -6,7 +6,6 @@ import {
   deployments,
   getUnnamedAccounts,
   getNamedAccounts,
-  waffle,
   hardhatArguments,
   network,
 } from "hardhat";
