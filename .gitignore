@@ -1,4 +1,8 @@
 node_modules
 .DS_Store
+typechain
+typechain-types
+coverage
+coverage.json
 .env
 *.log
