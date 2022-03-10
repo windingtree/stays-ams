@@ -1,7 +1,8 @@
-import type { providers } from 'ethers';
+import type { BigNumber, providers } from 'ethers';
 import type { IPFS } from '@windingtree/ipfs-apis';
-import type { LodgingFacility, Space } from 'stays-data-models';
+import type { LodgingFacilityRaw, LodgingFacility, SpaceRaw, Space } from 'stays-data-models';
 import type { EthRioStays } from 'stays-smart-contracts';
+import type { MethodOverrides, TxHashCallbackFn } from './utils/sendHelper';
 export declare type KnownProvider = providers.ExternalProvider | providers.JsonRpcProvider | providers.Web3Provider | providers.Provider | string;
 export declare class EthRioContract {
     readonly address: string;
@@ -14,4 +15,7 @@ export declare class EthRioContract {
     getAvailability(spaceId: string, startDay: number, numberOfDays: number): Promise<number[]>;
     getLodgingFacility(lodgingFacilityId: string): Promise<LodgingFacility | null>;
     getSpace(spaceId: string): Promise<Space | null>;
+    registerLodgingFacility(profileData: LodgingFacilityRaw, active?: boolean, fren?: string, // address
+    overrides?: MethodOverrides, transactionHashCb?: TxHashCallbackFn, confirmations?: number): Promise<string>;
+    addSpace(profileData: SpaceRaw, lodgingFacilityId: string, capacity: number, pricePerNightWei: BigNumber, active?: boolean, overrides?: MethodOverrides, transactionHashCb?: TxHashCallbackFn, confirmations?: number): Promise<string>;
 }

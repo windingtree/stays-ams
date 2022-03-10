@@ -1,6 +1,11 @@
 import type { BigNumber, providers } from 'ethers';
 import type { IPFS } from '@windingtree/ipfs-apis';
-import type { LodgingFacility, Space } from 'stays-data-models';
+import type {
+  LodgingFacilityRaw,
+  LodgingFacility,
+  SpaceRaw,
+  Space
+} from 'stays-data-models';
 import type { EthRioStays } from 'stays-smart-contracts';
 import type { MethodOverrides, TxHashCallbackFn } from './utils/sendHelper';
 import { ethers } from 'ethers';
@@ -13,6 +18,8 @@ import { getSpaceIds } from './api/getSpaceIds';
 import { getAvailability } from './api/getAvailability';
 import { getLodgingFacility } from './api/getLodgingFacility';
 import { getSpace } from './api/getSpace';
+import { registerLodgingFacility } from './api/registerLodgingFacility';
+import { addSpace } from './api/addSpace';
 
 export type KnownProvider =
   | providers.ExternalProvider
@@ -105,6 +112,50 @@ export type KnownProvider =
         this.contract,
         this.ipfsNode,
         spaceId
+      );
+    }
+
+    registerLodgingFacility(
+      profileData: LodgingFacilityRaw,
+      active?: boolean,
+      fren?: string, // address
+      overrides?: MethodOverrides,
+      transactionHashCb?: TxHashCallbackFn,
+      confirmations?: number
+    ): Promise<string> {
+      return registerLodgingFacility(
+        this.contract,
+        this.ipfsNode,
+        profileData,
+        active,
+        fren,
+        overrides,
+        transactionHashCb,
+        confirmations
+      );
+    }
+
+    addSpace(
+      profileData: SpaceRaw,
+      lodgingFacilityId: string,
+      capacity: number,
+      pricePerNightWei: BigNumber,
+      active?: boolean,
+      overrides?: MethodOverrides,
+      transactionHashCb?: TxHashCallbackFn,
+      confirmations?: number
+    ): Promise<string> {
+      return addSpace(
+        this.contract,
+        this.ipfsNode,
+        profileData,
+        lodgingFacilityId,
+        capacity,
+        pricePerNightWei,
+        active,
+        overrides,
+        transactionHashCb,
+        confirmations
       );
     }
   }
