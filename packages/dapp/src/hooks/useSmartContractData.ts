@@ -1,9 +1,9 @@
-import { LodgingFacility, Space } from '../../../data-models';
+import { LodgingFacility, Space } from 'stays-data-models';
 import type { Web3ModalProvider } from './useWeb3Modal';
 import { useState, useCallback, useEffect } from 'react';
 import Logger from '../utils/logger';
 // import { ethers } from 'ethers';
-import { EthRioContract } from '../../../core';
+import { EthRioContract } from 'stays-core';
 
 // Initialize logger
 const logger = Logger('useSmartContractData');

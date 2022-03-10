@@ -78,6 +78,7 @@
 	},
 	"dependencies": {
 		"stays-data-models": "0.0.1",
+		"stays-core": "0.0.1",
 		"crypto-js": "4.1.1"
 	}
 }

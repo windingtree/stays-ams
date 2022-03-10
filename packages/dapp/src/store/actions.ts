@@ -1,4 +1,4 @@
-import type { Space, LodgingFacility } from '../../../data-models';
+import type { Space, LodgingFacility } from 'stays-data-models';
 import type { Web3ModalProvider } from '../hooks/useWeb3Modal';
 import type { IPFS } from '@windingtree/ipfs-apis';
 import type { IProviderInfo } from 'web3modal';
