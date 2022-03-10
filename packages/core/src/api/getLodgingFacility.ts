@@ -25,6 +25,7 @@ export const getLodgingFacility = async (
 
   return {
     ...data,
+    lodgingFacilityId,
     owner,
     active,
     dataURI,

@@ -56,10 +56,15 @@ export const mainReducer = (state: State, action: Action): State => {
           signIn: action.payload.signIn,
           signOut: action.payload.signOut
         };
-      case 'SET_SMART_CONTRACT_DATA':
+      case 'SET_BOOTSTRAP_LOADING':
         return {
           ...state,
-          lodgingFacilities: action.payload
+          isBootstrapLoading: action.payload
+        };
+      case 'SET_BOOTSTRAPPED':
+        return {
+          ...state,
+          bootstrapped: action.payload
         };
       case 'SET_IPFS_NODE_CONNECTING':
         return {
@@ -118,6 +123,14 @@ export const mainReducer = (state: State, action: Action): State => {
             (r: GenericStateRecord) => r.id !== action.payload.id
           )
         };
+      case 'RESET_RECORD':
+        if (!action.payload.name) {
+          throw new Error(`State record name must be provided with a payload`);
+        }
+        return {
+          ...state,
+          [action.payload.name]: []
+        };
       case 'ERROR_ADD':
         return {
           ...state,
@@ -155,6 +168,9 @@ const initialState: State = {
   themeMode:ThemeMode.light,
   startIpfsNode: () => {},
   stopIpfsNode: () => {},
+  isBootstrapLoading: false,
+  bootstrapped: false,
+  lodgingFacilities: []
 };
 
 export const combineReducers = (

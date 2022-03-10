@@ -27,6 +27,7 @@ export const getSpace = async (
 
   return {
     ...data,
+    spaceId,
     active,
     lodgingFacilityId,
     capacity,

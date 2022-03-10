@@ -1,4 +1,4 @@
-import type { Space, LodgingFacility } from 'stays-data-models';
+import type { LodgingFacility } from 'stays-data-models';
 import type { Web3ModalProvider } from '../hooks/useWeb3Modal';
 import type { IPFS } from '@windingtree/ipfs-apis';
 import type { IProviderInfo } from 'web3modal';
@@ -7,6 +7,8 @@ export interface GenericStateRecord {
   id: string;
   [key: string]: unknown;
 }
+
+export interface LodgingFacilityRecord extends LodgingFacility, GenericStateRecord {}
 
 export interface State {
   isConnecting: boolean;
@@ -23,6 +25,9 @@ export interface State {
   isIpfsNodeConnecting: boolean;
   startIpfsNode: Function;
   stopIpfsNode: Function;
+  isBootstrapLoading: boolean;
+  bootstrapped: boolean;
+  lodgingFacilities: LodgingFacilityRecord[];
   [key: string]: unknown | GenericStateRecord[];
 }
 
@@ -99,26 +104,37 @@ export interface SetIpfsNodeAction {
 }
 
 export interface SetRecordAction {
-  type: 'SET_RECORD',
+  type: 'SET_RECORD';
   payload: {
-    name: string,
-    record: GenericStateRecord
+    name: string;
+    record: GenericStateRecord;
   }
 }
 
 export interface RemoveRecordAction {
-  type: 'REMOVE_RECORD',
+  type: 'REMOVE_RECORD';
   payload: {
-    name: string,
-    id: string
+    name: string;
+    id: string;
   }
 }
 
-export interface SetSmartContractData {
-  type: 'SET_SMART_CONTRACT_DATA',
-  payload: LodgingFacility[]
+export interface ResetRecordAction {
+  type: 'RESET_RECORD';
+  payload: {
+    name: string;
+  }
 }
 
+export interface SetBootstrapLoadingAction {
+  type: 'SET_BOOTSTRAP_LOADING';
+  payload: boolean;
+}
+
+export interface SetBootstrappedAction {
+  type: 'SET_BOOTSTRAPPED';
+  payload: boolean;
+}
 
 export type Action =
   | SetConnectingAction
@@ -133,7 +149,9 @@ export type Action =
   | SetIpfsNodeAction
   | SetRecordAction
   | RemoveRecordAction
+  | ResetRecordAction
+  | SetBootstrapLoadingAction
+  | SetBootstrappedAction
   | AddErrorAction
   | RemoveErrorAction
-  | SetSmartContractData
   | RemoveAllErrorsAction;

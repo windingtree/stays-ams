@@ -19,7 +19,8 @@ const getSpace = (contract, ipfsNode, spaceId) => __awaiter(void 0, void 0, void
         return null;
     }
     const data = yield (0, dataUri_1.fetchDataUri)(ipfsNode, dataURI);
-    return Object.assign(Object.assign({}, data), { active,
+    return Object.assign(Object.assign({}, data), { spaceId,
+        active,
         lodgingFacilityId,
         capacity,
         pricePerNightWei,

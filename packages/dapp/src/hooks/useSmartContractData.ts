@@ -1,99 +1,141 @@
-import { LodgingFacility, Space } from 'stays-data-models';
-import type { Web3ModalProvider } from './useWeb3Modal';
-import { useState, useCallback, useEffect } from 'react';
+import type { LodgingFacility, Space } from 'stays-data-models';
+import type { IPFS } from '@windingtree/ipfs-apis';
+import type { Web3ModalProvider } from '../hooks/useWeb3Modal';
+import type {  } from '../hooks/useIpfsNode';
+import { useState, useEffect } from 'react';
+import { Dispatch } from '../store';
+import { useContract } from './useContract';
 import Logger from '../utils/logger';
-// import { ethers } from 'ethers';
-import { EthRioContract } from 'stays-core';
-import { useAppState } from '../store';
 
 // Initialize logger
 const logger = Logger('useSmartContractData');
 
 export type UseSmartContractData = [
-  lodgingFacilities: LodgingFacility[],
-  bootstraped: boolean,
-  error: string | undefined,
-  loading: boolean,
+  error: string | undefined
 ]
 
 // useSmartContractData react hook
 export const useSmartContractData = (
-  // provider: Web3ModalProvider | undefined
+  dispatch: Dispatch,
+  provider: Web3ModalProvider | undefined,
+  ipfsNode: IPFS | undefined,
+  networkId: number | undefined,
+  bootstrapped: boolean
 ): UseSmartContractData => {
-  const { ipfsNode,provider } = useAppState()
-  const [lodgingFacilities, setLodgingFacilities] = useState<LodgingFacility[]>([]);
-  const [bootstraped, setBootstraped] = useState<boolean>(false);
-
-  const [loading, setLoading] = useState(false);
+  const [contract, contractLoading, contractError] = useContract(provider, ipfsNode, networkId);
   const [error, setError] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    if (bootstraped) {
-      return
+    if (contractError) {
+      setError(contractError);
+    }
+  }, [contractError]);
+
+  useEffect(() => {
+    if (bootstrapped || !contract || contractLoading) {
+      return;
     }
 
-    const loadFacilities = async () => {
-      try {
-        setLoading(true);
-        setError(undefined);
-        if (!provider) {
-          throw new Error('Provider is undefined')
-        }
-        if (!ipfsNode) {
-
-        }
-        // contract
-        const contract = new EthRioContract('0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9',provider, ipfsNode)
-        const facilityIds = await contract.getLodgingFacilityIds(true)
-        // const promise = facilityIds.map((id) => {contract.getLodgingFacility(id)})
-        const promise = facilityIds.map(async (id) => {
-          try {
-            let facility = await contract.getLodgingFacility(id)
-            if (facility === null) {
-              throw new Error(`invalid lodgingFacility id`)
-            }
-            const spaceIds = await contract.getSpaceIds(id, true)
-            const spaces = await Promise
-              .all(spaceIds.map((id) => contract.getSpace(id)))
-              .then((res) => {
-                const f = res.filter((element): element is Space => {
-                  return element !== null;
-                });
-                return f
-              })
-            facility = { ...facility, spaces }
-            return facility
-          } catch (e) {
-            throw new Error((e as Error).message)
-          }
-        })
-
-        const facilities = await Promise.all(promise)
-        // const facilities = await Promise.all(facilityIds.map((id) => contract.getLodgingFacility(id)))
-
-        // const spaceIds = await Promise.all(facilityIds.map((id) => contract.getSpaceIds(id, true)))
-        // .then(response => {
-
-        //   return response
-        // })
-
-        setLodgingFacilities(facilities)
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-
-        if (error) {
-          logger.error(error);
-          setError((error as Error).message);
-        } else {
-          logger.error('Unknown error');
-        }
+    const loadSpace = async (spaceId: string): Promise<Space> => {
+      const space = await contract.getSpace(spaceId);
+      logger.debug('Loaded space:', spaceId, space);
+      if (space === null) {
+        throw new Error(`Space with Id: ${spaceId} not found`);
       }
+      return space;
     };
 
-    loadFacilities();
-    setBootstraped(true)
-  }, [bootstraped]);
+    const loadLodgingFacilities = async (): Promise<LodgingFacility[]> => {
+      const facilityIds = await contract.getLodgingFacilityIds(true);
+      logger.debug('Facilities Ids:', facilityIds);
 
-  return [lodgingFacilities, bootstraped, error, loading];
+      return Promise.all(
+        facilityIds.map(
+          async facilityId => {
+            const facility = await contract.getLodgingFacility(facilityId);
+            logger.debug('Loaded facility:', facilityId, facility);
+            if (facility === null) {
+              throw new Error(`Lodging facility with Id: ${facilityId} not found`);
+            }
+
+            const spaceIds = await contract.getSpaceIds(facilityId, true);
+            logger.debug('Spaces Ids:', facilityId, spaceIds);
+            const spaces = await Promise.all(
+              spaceIds.map(
+                spaceId => loadSpace(spaceId)
+              )
+            );
+
+            return {
+              ...facility,
+              spaces
+            };
+          }
+        )
+      );
+    };
+
+    setError(undefined);
+
+    // Remove all lodgingFacilities
+    dispatch({
+      type: 'RESET_RECORD',
+      payload: {
+        name: 'lodgingFacilities'
+      }
+    });
+
+    dispatch({
+      type: 'SET_BOOTSTRAP_LOADING',
+      payload: true
+    });
+
+    loadLodgingFacilities()
+      .then(
+        lodgingFacilities => {
+
+          // Add all obtained records
+          lodgingFacilities.forEach(
+            record => dispatch({
+              type: 'SET_RECORD',
+              payload: {
+                name: 'lodgingFacilities',
+                record: {
+                  ...record,
+                  id: record.lodgingFacilityId
+                }
+              }
+            })
+          );
+
+          // Set bootstrap procedure succeeded
+          dispatch({
+            type: 'SET_BOOTSTRAPPED',
+            payload: true
+          });
+        }
+      )
+      .catch(error => {
+        logger.error(error);
+        const message = (error as Error).message ||
+          'Unknown lodging facility loader error'
+        setError(message);
+
+        // Set bootstrap procedure failed
+        dispatch({
+          type: 'SET_BOOTSTRAPPED',
+          payload: false
+        });
+      })
+      .finally(() => {
+        dispatch({
+          type: 'SET_BOOTSTRAP_LOADING',
+          payload: false
+        });
+      });
+
+    ;
+  }, [dispatch, bootstrapped, contract, contractLoading]);
+
+  return [error];
 };

@@ -34,7 +34,7 @@ export const useNetworkId = (
         setIsLoading(true);
         const network = await provider.getNetwork();
         setIsLoading(false);
-        logger.info('getNetwork:', network);
+        logger.debug('getNetwork:', network);
 
         if (network) {
 

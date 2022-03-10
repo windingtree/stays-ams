@@ -4,7 +4,6 @@ import { Web3Storage } from 'web3.storage';
 import { Blob } from '@web-std/blob';
 import { File } from '@web-std/file';
 import { faker } from 'stays-data-models';
-import { ethers } from 'ethers';
 
 const weiEndPad = '000000000000000000';
 
@@ -23,7 +22,7 @@ const deployObjectsToIpfs = async (
 ): Promise<string[]> =>
 Promise.all(
   objects.map(
-    obj => ipfsApi.put(makeFileObject(obj, name))
+    obj => ipfsApi.put(makeFileObject(obj, name), { wrapWithDirectory: false })
   )
 );
 

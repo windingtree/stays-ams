@@ -86,8 +86,14 @@ export const AppStateProvider = ({ children }: PropsType) => {
   ] = useNetworkId(provider, allowedNetworksIds);
   const [account, isAccountLoading, accountError] = useAccount(provider);
   const [ipfsNode, startIpfsNode, stopIpfsNode, ipfsNodeLoading, ipfsNodeError] = useIpfsNode();
-
-  const [lodgingFacilities] = useSmartContractData(provider);
+  const { bootstrapped } = state;
+  const [bootstrapError] = useSmartContractData(
+    dispatch,
+    provider,
+    ipfsNode,
+    networkId,
+    bootstrapped
+  );
 
   useEffect(() => {
     if (web3ModalError) {
@@ -114,7 +120,13 @@ export const AppStateProvider = ({ children }: PropsType) => {
         payload: ipfsNodeError
       })
     }
-  }, [dispatch, web3ModalError, networkError, accountError, ipfsNodeError]);
+    if (bootstrapError) {
+      dispatch({
+        type: 'ERROR_ADD',
+        payload: bootstrapError
+      })
+    }
+  }, [dispatch, web3ModalError, networkError, accountError, ipfsNodeError, bootstrapError]);
 
   useEffect(() => {
     dispatch({
@@ -183,13 +195,6 @@ export const AppStateProvider = ({ children }: PropsType) => {
         startIpfsNode,
         stopIpfsNode
       }
-    })
-  }, [dispatch, ipfsNode, startIpfsNode, stopIpfsNode]);
-
-  useEffect(() => {
-    dispatch({
-      type: 'SET_SMART_CONTRACT_DATA',
-      payload: lodgingFacilities
     })
   }, [dispatch, ipfsNode, startIpfsNode, stopIpfsNode]);
 

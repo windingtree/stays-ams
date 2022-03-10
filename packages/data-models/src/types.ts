@@ -4,16 +4,12 @@ import type {
   OrganizationalUnitReference
 } from '@windingtree/org.json-schema/types/org.json';
 
-export interface GenericStateRecord {
-  id: string;
-  [key: string]: unknown;
-}
+export interface SpaceRaw extends OrganizationalUnitReference {}
 
-export interface SpaceRaw extends OrganizationalUnitReference, GenericStateRecord {}
-
-export interface LodgingFacilityRaw extends LegalEntityReference, GenericStateRecord {}
+export interface LodgingFacilityRaw extends LegalEntityReference {}
 
 export interface Space extends SpaceRaw {
+  spaceId: string;
   active: boolean;
   lodgingFacilityId: string;
   capacity: number;
@@ -23,6 +19,7 @@ export interface Space extends SpaceRaw {
 }
 
 export interface LodgingFacility extends LodgingFacilityRaw {
+  lodgingFacilityId: string;
   active: boolean;
   owner: string;
   dataURI: string;

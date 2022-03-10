@@ -43,8 +43,8 @@ if (
 const allowedNetworks: NetworkInfo[] = [
   {
     name: 'Hardhat Testnet',
-    chainId: 331337,
-    address: '',
+    chainId: 1337,
+    address: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
     blockExplorer: ''
   },
   {
@@ -145,6 +145,17 @@ export const getApiKey = (name: string): string => {
     throw new Error(`${name} API key not found`);
   }
   return config.apiKeys[name];
+};
+
+export const getContractAddress = (chainId: number | string) => {
+  const network = config.networks[Number(chainId)];
+  if (network === undefined) {
+    throw new Error(`Network with chainId ${chainId} is not found`);
+  }
+  if (!network.address) {
+    throw new Error('Contract address not found');
+  }
+  return network.address;
 };
 
 export default config;
