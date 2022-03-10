@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from 'react';
 import Logger from '../utils/logger';
 // import { ethers } from 'ethers';
 import { EthRioContract } from 'stays-core';
+import { useAppState } from '../store';
 
 // Initialize logger
 const logger = Logger('useSmartContractData');
@@ -17,8 +18,9 @@ export type UseSmartContractData = [
 
 // useSmartContractData react hook
 export const useSmartContractData = (
-  provider: Web3ModalProvider | undefined
+  // provider: Web3ModalProvider | undefined
 ): UseSmartContractData => {
+  const { ipfsNode,provider } = useAppState()
   const [lodgingFacilities, setLodgingFacilities] = useState<LodgingFacility[]>([]);
   const [bootstraped, setBootstraped] = useState<boolean>(false);
 
@@ -37,8 +39,11 @@ export const useSmartContractData = (
         if (!provider) {
           throw new Error('Provider is undefined')
         }
+        if (!ipfsNode) {
+
+        }
         // contract
-        const contract = new EthRioContract()
+        const contract = new EthRioContract('0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9',provider, ipfsNode)
         const facilityIds = await contract.getLodgingFacilityIds(true)
         // const promise = facilityIds.map((id) => {contract.getLodgingFacility(id)})
         const promise = facilityIds.map(async (id) => {
