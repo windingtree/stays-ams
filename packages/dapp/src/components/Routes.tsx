@@ -9,6 +9,7 @@ import { Protected } from './Protected';
 // Pages
 import { Home } from '../pages/Home';
 import { Search } from '../pages/Search';
+import { Manager } from '../pages/Manager';
 
 export interface RouteConfig {
   path: string;
@@ -32,6 +33,13 @@ export const pagesRoutesConfig: Routes = [
     element: <Search />,
     title: 'Search for lodging facility',
     label: 'Search'
+  },
+  {
+    path: '/manager',
+    element: <Manager />,
+    title: 'Lodging facility manager',
+    label: 'Manager',
+    protected: true
   },
 ];
 

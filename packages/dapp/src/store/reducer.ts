@@ -1,16 +1,17 @@
 import type { Reducer } from 'react';
-import type { Action, State, GenericStateRecord } from './actions';
+import type { Action, State } from './actions';
 import { useReducer } from 'react';
-import Logger from '../utils/logger';
-import { getState, storageReducer } from './localStorage';
 import { ThemeMode } from '../components/SwitchThemeMode';
+import { recordsReducer } from './recordsReducer';
+import { facilityManagerReducer } from './facilityManagerReducer';
+import { getState, storageReducer } from './localStorage';
+import Logger from '../utils/logger';
 
 // Initialize logger
 const logger = Logger('Reducer');
 
 export const mainReducer = (state: State, action: Action): State => {
   logger.debug('Dispatch', action);
-  let records: GenericStateRecord[];
   const type = action.type;
 
   try {
@@ -83,59 +84,6 @@ export const mainReducer = (state: State, action: Action): State => {
           startIpfsNode: action.payload.startIpfsNode,
           stopIpfsNode: action.payload.stopIpfsNode
         };
-      case 'SET_RECORD':
-        if (!action.payload.name) {
-          throw new Error(`State record name must be provided with a payload`);
-        }
-        if (typeof action.payload.record !== 'object') {
-          throw new Error(`State record name must be provided with a payload`);
-        }
-        if (!action.payload.record.id) {
-          throw new Error(`State record name must have Id property defined`);
-        }
-        // Add or update a record
-        records = state[action.payload.name] as GenericStateRecord[];
-        const knownRecord = records.filter(
-          (r: GenericStateRecord) => r.id === action.payload.record.id
-        )[0] || {};
-        const restRecords = records.filter(
-          (r: GenericStateRecord) => r.id !== action.payload.record.id
-        );
-        return {
-          ...state,
-          [action.payload.name]: [
-            ...restRecords,
-            ...[
-              {
-                ...knownRecord,
-                ...action.payload.record
-              }
-            ]
-          ]
-        };
-      case 'REMOVE_RECORD':
-        if (!action.payload.name) {
-          throw new Error(`State record name must be provided with a payload`);
-        }
-        if (!action.payload.id) {
-          throw new Error(`State record Id must be provided with a payload`);
-        }
-        // Remove record
-        records = state[action.payload.name] as GenericStateRecord[];
-        return {
-          ...state,
-          [action.payload.name]: records.filter(
-            (r: GenericStateRecord) => r.id !== action.payload.id
-          )
-        };
-      case 'RESET_RECORD':
-        if (!action.payload.name) {
-          throw new Error(`State record name must be provided with a payload`);
-        }
-        return {
-          ...state,
-          [action.payload.name]: []
-        };
       case 'ERROR_ADD':
         return {
           ...state,
@@ -155,7 +103,7 @@ export const mainReducer = (state: State, action: Action): State => {
           errors: []
         };
       default:
-        throw new Error(`Unknown state action type: ${type}`);
+        return state;
     }
   } catch(error) {
     logger.error((error as Error).message || 'Unknown state reducer error');
@@ -198,6 +146,8 @@ export const useAppReducer = () => {
     combineReducers(
       [
         mainReducer,
+        recordsReducer,
+        facilityManagerReducer,
         storageReducer() // Always must be the last
       ]
     ),
