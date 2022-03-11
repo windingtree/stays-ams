@@ -12,6 +12,7 @@ const getLodgingFacility_1 = require("./api/getLodgingFacility");
 const getSpace_1 = require("./api/getSpace");
 const registerLodgingFacility_1 = require("./api/registerLodgingFacility");
 const addSpace_1 = require("./api/addSpace");
+const book_1 = require("./api/book");
 class EthRioContract {
     constructor(contractAddress, providerOrUri, ipfsNode) {
         if (org_id_utils_1.regexp.ethereumAddress.exec(contractAddress)) {
@@ -61,6 +62,9 @@ class EthRioContract {
     }
     addSpace(profileData, lodgingFacilityId, capacity, pricePerNightWei, active, overrides, transactionHashCb, confirmations) {
         return (0, addSpace_1.addSpace)(this.contract, this.ipfsNode, profileData, lodgingFacilityId, capacity, pricePerNightWei, active, overrides, transactionHashCb, confirmations);
+    }
+    book(spaceId, startDay, numberOfDays, quantity, overrides, transactionHashCb, confirmations) {
+        return (0, book_1.book)(this.contract, spaceId, startDay, numberOfDays, quantity, overrides, transactionHashCb, confirmations);
     }
 }
 exports.EthRioContract = EthRioContract;

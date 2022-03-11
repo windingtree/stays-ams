@@ -20,6 +20,7 @@ import { getLodgingFacility } from './api/getLodgingFacility';
 import { getSpace } from './api/getSpace';
 import { registerLodgingFacility } from './api/registerLodgingFacility';
 import { addSpace } from './api/addSpace';
+import { book } from './api/book';
 
 export type KnownProvider =
   | providers.ExternalProvider
@@ -153,6 +154,27 @@ export type KnownProvider =
         capacity,
         pricePerNightWei,
         active,
+        overrides,
+        transactionHashCb,
+        confirmations
+      );
+    }
+
+    book(
+      spaceId: string,
+      startDay: number,
+      numberOfDays: number,
+      quantity: number,
+      overrides?: MethodOverrides,
+      transactionHashCb?: TxHashCallbackFn,
+      confirmations?: number
+    ): Promise<BigNumber> {
+      return book(
+        this.contract,
+        spaceId,
+        startDay,
+        numberOfDays,
+        quantity,
         overrides,
         transactionHashCb,
         confirmations

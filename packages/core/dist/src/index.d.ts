@@ -18,4 +18,5 @@ export declare class EthRioContract {
     registerLodgingFacility(profileData: LodgingFacilityRaw, active?: boolean, fren?: string, // address
     overrides?: MethodOverrides, transactionHashCb?: TxHashCallbackFn, confirmations?: number): Promise<string>;
     addSpace(profileData: SpaceRaw, lodgingFacilityId: string, capacity: number, pricePerNightWei: BigNumber, active?: boolean, overrides?: MethodOverrides, transactionHashCb?: TxHashCallbackFn, confirmations?: number): Promise<string>;
+    book(spaceId: string, startDay: number, numberOfDays: number, quantity: number, overrides?: MethodOverrides, transactionHashCb?: TxHashCallbackFn, confirmations?: number): Promise<BigNumber>;
 }

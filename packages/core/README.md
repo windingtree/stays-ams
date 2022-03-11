@@ -43,3 +43,39 @@ getLodgingFacility(lodgingFacilityId: string): Promise<LodgingFacility | null>
 ```typescript
 getSpace(spaceId: string): Promise<Space | null>
 ```
+
+```typescript
+registerLodgingFacility(
+  profileData: LodgingFacilityRaw,
+  active?: boolean,
+  fren?: string, // address
+  overrides?: MethodOverrides,
+  transactionHashCb?: TxHashCallbackFn,
+  confirmations?: number
+): Promise<string>
+```
+
+```typescript
+addSpace(
+  profileData: SpaceRaw,
+  lodgingFacilityId: string,
+  capacity: number,
+  pricePerNightWei: BigNumber,
+  active?: boolean,
+  overrides?: MethodOverrides,
+  transactionHashCb?: TxHashCallbackFn,
+  confirmations?: number
+): Promise<string>
+```
+
+```typescript
+book(
+  spaceId: string,
+  startDay: number,
+  numberOfDays: number,
+  quantity: number,
+  overrides?: MethodOverrides,
+  transactionHashCb?: TxHashCallbackFn,
+  confirmations?: number
+): Promise<BigNumber>
+```
