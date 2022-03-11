@@ -1,7 +1,7 @@
-import { Grid, Box, TextInput, Button, Text } from 'grommet';
+import { Grid, Box, TextInput, Button, Text, ResponsiveContext } from 'grommet';
 import { DateRangePickup, Label } from './date-range-pickup';
 import { useNavigate } from 'react-router-dom';
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useContext } from 'react'
 import { useAppState } from '../../store';
 import { ThemeMode } from '../SwitchThemeMode';
 
@@ -14,6 +14,7 @@ export const SearchForm: React.FC<{
   initGuestsAmount?: string | null,
 }> = ({ initDepartureDate, initReturnDate, initGuestsAmount }) => {
   const { themeMode } = useAppState();
+  const size = useContext(ResponsiveContext);
 
   const [departureDate, setDepartureDate] = useState(initDepartureDate ?? defaultDepartureDate);
   const [returnDate, setReturnDate] = useState(initReturnDate ?? defaultReturnDate);
@@ -28,7 +29,7 @@ export const SearchForm: React.FC<{
   const navigate = useNavigate()
 
   return (
-    <Box>
+    <Box pad={{ bottom: 'medium' }} >
       <Grid
         fill='horizontal'
         responsive
@@ -44,14 +45,16 @@ export const SearchForm: React.FC<{
           <Box
             border={{ color: themeMode === ThemeMode.light ? 'brand' : 'accent-1', size: 'small' }}
             round='small'
-            pad={{ bottom: 'xsmall' }}
-            justify='end'
+            pad='small'
+            justify='center'
             height='100%'
           >
-
+            <Text size='xlarge'>
+              Rio de Janeiro
+            </Text>
           </Box>
         </Box>
-        <Box pad='small'>
+        <Box pad='small' overflow='hidden'>
           <DateRangePickup
             onStartDateChanged={setDepartureDate}
             onEndDateChanged={setReturnDate}
@@ -70,8 +73,7 @@ export const SearchForm: React.FC<{
           <Box
             border={{ color: themeMode === ThemeMode.light ? 'brand' : 'accent-1', size: 'small' }}
             round='small'
-            pad={{ bottom: 'xsmall' }}
-            justify='end'
+            justify='center'
             height='100%'
           >
             <TextInput
