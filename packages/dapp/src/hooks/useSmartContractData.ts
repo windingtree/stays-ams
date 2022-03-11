@@ -1,6 +1,6 @@
+import type { providers } from 'ethers';
 import type { LodgingFacility, Space } from 'stays-data-models';
 import type { IPFS } from '@windingtree/ipfs-apis';
-import type { Web3ModalProvider } from '../hooks/useWeb3Modal';
 import type {  } from '../hooks/useIpfsNode';
 import { useState, useEffect } from 'react';
 import { Dispatch } from '../store';
@@ -17,12 +17,12 @@ export type UseSmartContractData = [
 // useSmartContractData react hook
 export const useSmartContractData = (
   dispatch: Dispatch,
-  provider: Web3ModalProvider | undefined,
+  provider: providers.JsonRpcProvider | undefined,
   ipfsNode: IPFS | undefined,
   networkId: number | undefined,
   bootstrapped: boolean
 ): UseSmartContractData => {
-  const [contract, contractLoading, contractError] = useContract(provider, ipfsNode, networkId);
+  const [contract,, contractError] = useContract(provider, ipfsNode, networkId);
   const [error, setError] = useState<string | undefined>(undefined);
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export const useSmartContractData = (
   }, [contractError]);
 
   useEffect(() => {
-    if (bootstrapped || !contract || contractLoading) {
+    if (bootstrapped || !contract) {
       return;
     }
 
@@ -135,7 +135,7 @@ export const useSmartContractData = (
       });
 
     ;
-  }, [dispatch, bootstrapped, contract, contractLoading]);
+  }, [dispatch, bootstrapped, contract]);
 
   return [error];
 };

@@ -34,6 +34,7 @@ export const MessageBox = ({
       align='center'
       gap={size}
       pad={size}
+      margin={{ bottom: 'small' }}
     >
       <Box>
         {type === 'info' &&

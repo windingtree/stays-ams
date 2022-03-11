@@ -9,16 +9,12 @@ export interface NetworkWithRpc extends NetworkInfo {
   rpc: string;
 };
 
-export interface Networks {
-  [chainId: number]: NetworkWithRpc;
-}
-
 export interface ApiKeys {
   [name: string]: string;
 }
 
 export interface DappConfig {
-  networks: Networks;
+  network: NetworkWithRpc;
   apiKeys: ApiKeys;
 }
 
@@ -27,10 +23,24 @@ export interface NetworkProviders {
 }
 
 if (
-  !process.env.REACT_APP_NETWORK_PROVIDERS ||
-  process.env.REACT_APP_NETWORK_PROVIDERS === ''
+  !process.env.REACT_APP_NETWORK_PROVIDER ||
+  process.env.REACT_APP_NETWORK_PROVIDER === ''
 ) {
-  throw new Error('REACT_APP_NETWORK_PROVIDERS must be provided in the ENV');
+  throw new Error('REACT_APP_NETWORK_PROVIDER must be provided in the ENV');
+}
+
+if (
+  !process.env.REACT_APP_NETWORK_ID ||
+  process.env.REACT_APP_NETWORK_ID === ''
+) {
+  throw new Error('REACT_APP_NETWORK_ID must be provided in the ENV');
+}
+
+if (
+  !process.env.REACT_APP_CONTRACT_ADDRESS ||
+  process.env.REACT_APP_CONTRACT_ADDRESS === ''
+) {
+  throw new Error('REACT_APP_CONTRACT_ADDRESS must be provided in the ENV');
 }
 
 if (
@@ -73,89 +83,33 @@ const allowedNetworks: NetworkInfo[] = [
   },
 ];
 
-let networks: Networks;
+const network = allowedNetworks.find(
+  n => n.chainId === Number(process.env.REACT_APP_NETWORK_ID)
+) as NetworkWithRpc;
 
-try {
-  const providers = JSON.parse(process.env.REACT_APP_NETWORK_PROVIDERS) as NetworkProviders;
-  networks = allowedNetworks
-    .map(
-      (n: NetworkInfo): NetworkWithRpc =>
-        ({
-          ...n,
-          rpc: providers[n.chainId] || ''
-        })
-    )
-    .reduce(
-      (a: Networks, v: NetworkWithRpc) => ({
-        ...a,
-        [v.chainId]: v
-      }),
-      {}
-    );
-} catch (_) {
-  throw new Error('Unable to parse networks providers configuration');
+if (network === undefined) {
+  throw new Error(
+    `Network with Id: ${process.env.REACT_APP_NETWORK_ID} is not allowed`
+  );
 }
 
-// All networks must have RPC configured
-Object
-  .entries(networks)
-  .forEach((n: [string, NetworkWithRpc]) => {
-  if (!n[1].rpc || n[1].rpc === '') {
-    throw new Error(`RPC URI not found for the ${n[1].name}`);
-  }
-});
+network.address = process.env.REACT_APP_CONTRACT_ADDRESS;
+network.rpc = process.env.REACT_APP_NETWORK_PROVIDER;
 
 const config: DappConfig = {
-  networks,
+  network,
   apiKeys: {
     web3Storage: process.env.REACT_APP_FILE_WEB3STORAGE_KEY
   }
 };
 
-export const getNetworks = (): Networks => config.networks;
-
-export const getNetworksIds = (): number[] => Object
-  .keys(config.networks)
-  .map(chainId => Number(chainId));
-
-export const getNetworksNames = (): string[] => Object
-  .entries(config.networks)
-  .map((n) => n[1].name);
-
-export const getNetworkByChainId = (chainId: number | string) => {
-  const network = config.networks[Number(chainId)];
-  if (network === undefined) {
-    throw new Error(`Network with chainId ${chainId} is not found`);
-  }
-  return network;
-};
-
-export const getNetworksRpcs = (): NetworkProviders => Object
-  .entries(config.networks)
-  .reduce(
-    (a: NetworkProviders, v: [string, NetworkWithRpc]) => ({
-      ...a,
-      [Number(v[0])]: v[1].rpc
-    }),
-    {}
-  );
+export const getNetwork = (): NetworkWithRpc => config.network;
 
 export const getApiKey = (name: string): string => {
   if (!config.apiKeys[name]) {
     throw new Error(`${name} API key not found`);
   }
   return config.apiKeys[name];
-};
-
-export const getContractAddress = (chainId: number | string) => {
-  const network = config.networks[Number(chainId)];
-  if (network === undefined) {
-    throw new Error(`Network with chainId ${chainId} is not found`);
-  }
-  if (!network.address) {
-    throw new Error('Contract address not found');
-  }
-  return network.address;
 };
 
 export default config;

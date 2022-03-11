@@ -50,6 +50,11 @@ export const mainReducer = (state: State, action: Action): State => {
           ...state,
           injectedProvider: action.payload
         };
+      case 'SET_RPC_PROVIDER':
+        return {
+          ...state,
+          rpcProvider: action.payload
+        };
       case 'SET_WEB3MODAL_FUNCTIONS':
         return {
           ...state,

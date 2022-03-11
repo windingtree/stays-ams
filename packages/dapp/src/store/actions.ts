@@ -2,6 +2,7 @@ import type { LodgingFacility } from 'stays-data-models';
 import type { Web3ModalProvider } from '../hooks/useWeb3Modal';
 import type { IPFS } from '@windingtree/ipfs-apis';
 import type { IProviderInfo } from 'web3modal';
+import type { providers } from 'ethers';
 import { ThemeMode } from '../components/SwitchThemeMode';
 export interface GenericStateRecord {
   id: string;
@@ -16,6 +17,7 @@ export interface State {
   isRightNetwork: boolean;
   provider?: Web3ModalProvider;
   injectedProvider?: IProviderInfo;
+  rpcProvider?: providers.JsonRpcProvider;
   account?: string;
   signIn: Function;
   signOut: Function;
@@ -59,6 +61,11 @@ export interface SetProviderAction {
 export interface SetInjectedProviderAction {
   type: 'SET_INJECTED_PROVIDER',
   payload: IProviderInfo | undefined;
+}
+
+export interface SetRpcProviderAction {
+  type: 'SET_RPC_PROVIDER',
+  payload: providers.JsonRpcProvider | undefined;
 }
 
 export interface SetWeb3modalFunctionsAction {
@@ -141,9 +148,10 @@ export type Action =
   | SetAccountAction
   | SetIsRightNetworkAction
   | SetNetworkIdAction
-  | SetProviderAction
   | SetThemeModeAction
+  | SetProviderAction
   | SetInjectedProviderAction
+  | SetRpcProviderAction
   | SetWeb3modalFunctionsAction
   | SetIpfsNodeConnectingAction
   | SetIpfsNodeAction

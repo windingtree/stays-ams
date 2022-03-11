@@ -1,25 +1,30 @@
-import { Text } from 'grommet';
+import { Box, Spinner } from 'grommet';
 import { useAppState } from '../store';
 import { PageWrapper } from '../pages/PageWrapper';
+import { MessageBox } from '../components/MessageBox';
 import { SearchForm } from '../components/search/SearchForm';
-import { getNetworksNames } from '../config';
-
-const allowedNetworksNames = getNetworksNames();
 
 export const Home = () => {
-  const { isRightNetwork, isBootstrapLoading } = useAppState();
+  const {
+    isIpfsNodeConnecting,
+    isBootstrapLoading,
+    bootstrapped
+  } = useAppState();
 
   return (
     <PageWrapper>
-      {!isRightNetwork &&
-        <Text>
-          You are connected to a wrong network. Please switch to one of: {allowedNetworksNames.join(', ')}
-        </Text>
+      <MessageBox type='info' show={isIpfsNodeConnecting || isBootstrapLoading}>
+        <Box direction='row'>
+          <Box>
+            The Dapp is synchronizing with the smart contract. Please wait..&nbsp;
+          </Box>
+          <Spinner />
+        </Box>
+      </MessageBox>
+
+      {bootstrapped &&
+        <SearchForm />
       }
-      {isBootstrapLoading &&
-        <Text>The Dapp is synchronizing with the smart contract. Please wait..</Text>
-      }
-      <SearchForm />
     </PageWrapper>
   );
 };

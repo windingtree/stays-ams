@@ -7,16 +7,14 @@ import { useAppReducer } from './reducer';
 
 // Custom hooks
 import { useWeb3Modal } from '../hooks/useWeb3Modal';
+import { useRpcProvider } from '../hooks/useRpcProvider';
 import { useNetworkId } from '../hooks/useNetworkId';
 import { useAccount } from '../hooks/useAccount';
 import { useIpfsNode } from '../hooks/useIpfsNode';
 import { useSmartContractData } from '../hooks/useSmartContractData';
 
 // Config
-import {
-  getNetworksIds,
-  getNetworksRpcs
-} from '../config';
+import { getNetwork } from '../config';
 
 // Initialize logger
 // const logger = Logger('Store');
@@ -52,8 +50,7 @@ export const useAppDispatch = () => {
   return ctx;
 }
 
-const allowedNetworksIds = getNetworksIds();
-const rpc = getNetworksRpcs();
+const { chainId, rpc } = getNetwork();
 
 // Web3Modal initialization
 const web3ModalConfig: Web3ModalConfig = {
@@ -62,7 +59,7 @@ const web3ModalConfig: Web3ModalConfig = {
     walletconnect: {
       package: WalletConnectProvider,
       options: {
-        rpc
+        [chainId]: rpc
       }
     }
   }
@@ -70,6 +67,7 @@ const web3ModalConfig: Web3ModalConfig = {
 
 export const AppStateProvider = ({ children }: PropsType) => {
   const [state, dispatch] = useAppReducer();
+  const [rpcProvider, rpcProviderError] = useRpcProvider();
   const [
     provider,
     injectedProvider,
@@ -83,15 +81,15 @@ export const AppStateProvider = ({ children }: PropsType) => {
     isNetworkIdLoading,
     isRightNetwork,
     networkError
-  ] = useNetworkId(provider, allowedNetworksIds);
+  ] = useNetworkId(provider, chainId);
   const [account, isAccountLoading, accountError] = useAccount(provider);
   const [ipfsNode, startIpfsNode, stopIpfsNode, ipfsNodeLoading, ipfsNodeError] = useIpfsNode();
   const { bootstrapped } = state;
   const [bootstrapError] = useSmartContractData(
     dispatch,
-    provider,
+    rpcProvider,
     ipfsNode,
-    networkId,
+    chainId,
     bootstrapped
   );
 
@@ -126,7 +124,17 @@ export const AppStateProvider = ({ children }: PropsType) => {
         payload: bootstrapError
       })
     }
-  }, [dispatch, web3ModalError, networkError, accountError, ipfsNodeError, bootstrapError]);
+    if (rpcProviderError) {
+      dispatch({
+        type: 'ERROR_ADD',
+        payload: rpcProviderError
+      })
+    }
+  }, [
+    dispatch, web3ModalError, networkError,
+    accountError, ipfsNodeError, bootstrapError,
+    rpcProviderError
+  ]);
 
   useEffect(() => {
     dispatch({
@@ -176,6 +184,13 @@ export const AppStateProvider = ({ children }: PropsType) => {
       payload: injectedProvider
     })
   }, [dispatch, injectedProvider]);
+
+  useEffect(() => {
+    dispatch({
+      type: 'SET_RPC_PROVIDER',
+      payload: rpcProvider
+    })
+  }, [dispatch, rpcProvider]);
 
   useEffect(() => {
     dispatch({

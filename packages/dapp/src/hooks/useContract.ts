@@ -1,9 +1,10 @@
+import type { providers } from 'ethers';
 import type { IPFS } from '@windingtree/ipfs-apis';
 import type { Web3ModalProvider } from './useWeb3Modal';
 import { useState, useEffect } from 'react';
 import { KnownProvider } from 'stays-core';
 import { EthRioContract } from 'stays-core';
-import { getContractAddress } from '../config';
+import { getNetwork } from '../config';
 import Logger from '../utils/logger';
 
 // Initialize logger
@@ -15,8 +16,10 @@ export type UseContractHook = [
   error: string | undefined
 ];
 
+const { address } = getNetwork();
+
 export const useContract = (
-  provider: Web3ModalProvider | undefined,
+  provider: providers.JsonRpcProvider | Web3ModalProvider | undefined,
   ipfsNode: IPFS | undefined,
   networkId: number | undefined
 ): UseContractHook => {
@@ -31,20 +34,16 @@ export const useContract = (
 
     try {
       const instance = new EthRioContract(
-        getContractAddress(networkId),
+        address,
         provider as KnownProvider,
         ipfsNode
       );
       setContract(instance);
     } catch (error) {
+      logger.error(error);
+      const message = (error as Error).message || 'Unknown contract library error';
+      setError(message);
       setLoading(false);
-
-      if (error) {
-        logger.error(error);
-        setError((error as Error).message);
-      } else {
-        logger.error('Unknown lodging facility loader error');
-      }
     }
   }, [provider, ipfsNode, networkId]);
 
