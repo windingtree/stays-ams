@@ -1,4 +1,6 @@
 import type { IPFS } from '@windingtree/ipfs-apis';
+import type { TokenData } from '../types';
+import { utils } from 'ethers';
 import { regexp, http }  from '@windingtree/org.id-utils';
 import { ipfsCidResolver } from '../utils/ipfs';
 
@@ -40,3 +42,15 @@ export const fetchDataUri = async <DT>(ipfsNode: IPFS, uri: string): Promise<DT>
 
   return data;
 }
+
+export const decodeDataUri = (
+  dataUri: string,
+  parse = false
+): TokenData | string => {
+  const decodedData = new TextDecoder().decode(
+    utils.base64.decode(
+      dataUri.replace(/^data:\w+\/\w+;base64,/, '')
+    )
+  );
+  return parse ? JSON.parse(decodedData) : decodedData;
+};

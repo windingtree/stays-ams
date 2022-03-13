@@ -9,7 +9,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fetchDataUri = void 0;
+exports.decodeDataUri = exports.fetchDataUri = void 0;
+const ethers_1 = require("ethers");
 const org_id_utils_1 = require("@windingtree/org.id-utils");
 const ipfs_1 = require("../utils/ipfs");
 const fetchDataUri = (ipfsNode, uri) => __awaiter(void 0, void 0, void 0, function* () {
@@ -40,4 +41,9 @@ const fetchDataUri = (ipfsNode, uri) => __awaiter(void 0, void 0, void 0, functi
     return data;
 });
 exports.fetchDataUri = fetchDataUri;
+const decodeDataUri = (dataUri, parse = false) => {
+    const decodedData = new TextDecoder().decode(ethers_1.utils.base64.decode(dataUri.replace(/^data:\w+\/\w+;base64,/, '')));
+    return parse ? JSON.parse(decodedData) : decodedData;
+};
+exports.decodeDataUri = decodeDataUri;
 //# sourceMappingURL=dataUri.js.map

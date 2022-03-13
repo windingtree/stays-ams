@@ -66,8 +66,8 @@ export interface IEthRioStaysInterface extends utils.Interface {
         "LodgingFacilityRemoved(bytes32)": EventFragment;
         "LodgingFacilityUpdated(bytes32,string)": EventFragment;
         "NewStay(bytes32,uint256)": EventFragment;
-        "SpaceAdded(bytes32,uint64,uint64,bool,string)": EventFragment;
-        "SpaceUpdated(bytes32,uint256,uint64,uint64,bool,string)": EventFragment;
+        "SpaceAdded(bytes32,uint64,uint256,bool,string)": EventFragment;
+        "SpaceUpdated(bytes32,uint256,uint64,uint256,bool,string)": EventFragment;
     };
     getEvent(nameOrSignatureOrTopic: "CheckIn"): EventFragment;
     getEvent(nameOrSignatureOrTopic: "CheckOut"): EventFragment;
@@ -382,9 +382,9 @@ export interface IEthRioStays extends BaseContract {
         LodgingFacilityUpdated(facilityId?: null, dataURI?: null): LodgingFacilityUpdatedEventFilter;
         "NewStay(bytes32,uint256)"(spaceId?: null, tokenId?: null): NewStayEventFilter;
         NewStay(spaceId?: null, tokenId?: null): NewStayEventFilter;
-        "SpaceAdded(bytes32,uint64,uint64,bool,string)"(facilityId?: null, capacity?: null, pricePerNightWei?: null, active?: null, dataURI?: null): SpaceAddedEventFilter;
+        "SpaceAdded(bytes32,uint64,uint256,bool,string)"(facilityId?: null, capacity?: null, pricePerNightWei?: null, active?: null, dataURI?: null): SpaceAddedEventFilter;
         SpaceAdded(facilityId?: null, capacity?: null, pricePerNightWei?: null, active?: null, dataURI?: null): SpaceAddedEventFilter;
-        "SpaceUpdated(bytes32,uint256,uint64,uint64,bool,string)"(facilityId?: null, index?: null, capacity?: null, pricePerNightWei?: null, active?: null, dataURI?: null): SpaceUpdatedEventFilter;
+        "SpaceUpdated(bytes32,uint256,uint64,uint256,bool,string)"(facilityId?: null, index?: null, capacity?: null, pricePerNightWei?: null, active?: null, dataURI?: null): SpaceUpdatedEventFilter;
         SpaceUpdated(facilityId?: null, index?: null, capacity?: null, pricePerNightWei?: null, active?: null, dataURI?: null): SpaceUpdatedEventFilter;
     };
     estimateGas: {

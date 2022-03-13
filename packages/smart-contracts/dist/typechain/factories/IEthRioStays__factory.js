@@ -169,9 +169,9 @@ const _abi = [
             },
             {
                 indexed: false,
-                internalType: "uint64",
+                internalType: "uint256",
                 name: "pricePerNightWei",
-                type: "uint64",
+                type: "uint256",
             },
             {
                 indexed: false,
@@ -212,9 +212,9 @@ const _abi = [
             },
             {
                 indexed: false,
-                internalType: "uint64",
+                internalType: "uint256",
                 name: "pricePerNightWei",
-                type: "uint64",
+                type: "uint256",
             },
             {
                 indexed: false,

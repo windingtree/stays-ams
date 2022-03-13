@@ -5,6 +5,8 @@ import "@openzeppelin/contracts/utils/Base64.sol";
 
 library StayTokenMeta {
 
+  string constant private _tokenImage = 'https://bafybeigg7mwwpnnm6mmk3twxc4arizoyc6ijnaye3pdciwcohheo7xi7hm.ipfs.dweb.link/token-image.png';
+
   function createTokenUri(
     uint256 tokenId,
     bytes32 facilityId,
@@ -13,30 +15,65 @@ library StayTokenMeta {
     uint16 numberOfDays,
     uint16 quantity
   ) internal pure returns (string memory) {
-    string memory json = Base64.encode(
-      bytes(
-        string(
-          abi.encodePacked(
-            '{"name": "EthRioStays #',
-            uintToString(tokenId),
-            '", "description": "Stay at lodging facility",',
-            '"attributes":[{"trait_type":"facilityId","value":"',
-            toHex(facilityId),
-            '"},{"trait_type":"spaceId","value":"',
-            toHex(spaceId),
-            '"},{"trait_type": "startDay","value":"',
-            uintToString(startDay),
-            '"},{"trait_type": "numberOfDays","value":"',
-            uintToString(numberOfDays),
-            '"},{"trait_type": "quantity","value":"',
-            uintToString(quantity),
-            '"}]}'
-          )
+    // Creation of data URI is split up into several functions because of
+    // variables stack number restriction in Solidity
+    return createDataUri(
+      string(
+        abi.encodePacked(
+          '{',
+          createMandatoryProps(tokenId),
+          ',',
+          createAttributesProps(facilityId, spaceId, startDay, numberOfDays, quantity),
+          '}'
         )
       )
     );
+  }
 
-    return string(abi.encodePacked('data:application/json;base64,', json));
+  function createMandatoryProps(uint256 tokenId) internal pure returns (string memory) {
+    return string(
+      abi.encodePacked(
+        '"name":"EthRioStays #',
+        '","description":"Stay at lodging facility",',
+        uintToString(tokenId),
+        '"image":"',
+        _tokenImage,
+        '"'
+      )
+    );
+  }
+
+  function createAttributesProps(
+    bytes32 facilityId,
+    bytes32 spaceId,
+    uint16 startDay,
+    uint16 numberOfDays,
+    uint16 quantity
+  ) internal pure returns (string memory) {
+    return string(
+      abi.encodePacked(
+        '"attributes":[{"trait_type":"facilityId","value":"',
+        toHex(facilityId),
+        '"},{"trait_type":"spaceId","value":"',
+        toHex(spaceId),
+        '"},{"trait_type":"startDay","value":"',
+        uintToString(startDay),
+        '"},{"trait_type":"numberOfDays","value":"',
+        uintToString(numberOfDays),
+        '"},{"trait_type":"quantity","value":"',
+        uintToString(quantity),
+        '"}]'
+      )
+    );
+  }
+
+  function createDataUri(string memory json) internal pure returns (string memory) {
+    return string(
+      abi.encodePacked(
+        'data:application/json;base64,',
+        Base64.encode(bytes(json))
+      )
+    );
   }
 
   function uintToString(uint256 value) internal pure returns (string memory) {

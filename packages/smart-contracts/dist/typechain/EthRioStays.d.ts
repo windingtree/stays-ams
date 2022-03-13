@@ -6,7 +6,7 @@ export interface EthRioStaysInterface extends utils.Interface {
     contractName: "EthRioStays";
     functions: {
         "activateLodgingFacility(bytes32)": FunctionFragment;
-        "addSpace(bytes32,uint16,uint64,bool,string)": FunctionFragment;
+        "addSpace(bytes32,uint16,uint256,bool,string)": FunctionFragment;
         "approve(address,uint256)": FunctionFragment;
         "balanceOf(address)": FunctionFragment;
         "checkIn(uint256)": FunctionFragment;
@@ -40,10 +40,13 @@ export interface EthRioStaysInterface extends utils.Interface {
         "staySchemaURI()": FunctionFragment;
         "supportsInterface(bytes4)": FunctionFragment;
         "symbol()": FunctionFragment;
+        "tokenByIndex(uint256)": FunctionFragment;
+        "tokenOfOwnerByIndex(address,uint256)": FunctionFragment;
         "tokenURI(uint256)": FunctionFragment;
+        "totalSupply()": FunctionFragment;
         "transferFrom(address,address,uint256)": FunctionFragment;
         "updateLodgingFacility(bytes32,string)": FunctionFragment;
-        "updateSpace(uint256,uint16,uint64,bool,string)": FunctionFragment;
+        "updateSpace(uint256,uint16,uint256,bool,string)": FunctionFragment;
         "yieldLodgingFacility(bytes32,address)": FunctionFragment;
     };
     encodeFunctionData(functionFragment: "activateLodgingFacility", values: [BytesLike]): string;
@@ -81,7 +84,10 @@ export interface EthRioStaysInterface extends utils.Interface {
     encodeFunctionData(functionFragment: "staySchemaURI", values?: undefined): string;
     encodeFunctionData(functionFragment: "supportsInterface", values: [BytesLike]): string;
     encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
+    encodeFunctionData(functionFragment: "tokenByIndex", values: [BigNumberish]): string;
+    encodeFunctionData(functionFragment: "tokenOfOwnerByIndex", values: [string, BigNumberish]): string;
     encodeFunctionData(functionFragment: "tokenURI", values: [BigNumberish]): string;
+    encodeFunctionData(functionFragment: "totalSupply", values?: undefined): string;
     encodeFunctionData(functionFragment: "transferFrom", values: [string, string, BigNumberish]): string;
     encodeFunctionData(functionFragment: "updateLodgingFacility", values: [BytesLike, string]): string;
     encodeFunctionData(functionFragment: "updateSpace", values: [BigNumberish, BigNumberish, BigNumberish, boolean, string]): string;
@@ -121,7 +127,10 @@ export interface EthRioStaysInterface extends utils.Interface {
     decodeFunctionResult(functionFragment: "staySchemaURI", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "supportsInterface", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
+    decodeFunctionResult(functionFragment: "tokenByIndex", data: BytesLike): Result;
+    decodeFunctionResult(functionFragment: "tokenOfOwnerByIndex", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "tokenURI", data: BytesLike): Result;
+    decodeFunctionResult(functionFragment: "totalSupply", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "transferFrom", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "updateLodgingFacility", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "updateSpace", data: BytesLike): Result;
@@ -138,8 +147,8 @@ export interface EthRioStaysInterface extends utils.Interface {
         "LodgingFacilityRemoved(bytes32)": EventFragment;
         "LodgingFacilityUpdated(bytes32,string)": EventFragment;
         "NewStay(bytes32,uint256)": EventFragment;
-        "SpaceAdded(bytes32,uint64,uint64,bool,string)": EventFragment;
-        "SpaceUpdated(bytes32,uint256,uint64,uint64,bool,string)": EventFragment;
+        "SpaceAdded(bytes32,uint64,uint256,bool,string)": EventFragment;
+        "SpaceUpdated(bytes32,uint256,uint64,uint256,bool,string)": EventFragment;
         "Transfer(address,address,uint256)": EventFragment;
         "Withdrawn(address,uint256,bytes32)": EventFragment;
     };
@@ -432,7 +441,10 @@ export interface EthRioStays extends BaseContract {
         staySchemaURI(overrides?: CallOverrides): Promise<[string]>;
         supportsInterface(interfaceId: BytesLike, overrides?: CallOverrides): Promise<[boolean]>;
         symbol(overrides?: CallOverrides): Promise<[string]>;
+        tokenByIndex(index: BigNumberish, overrides?: CallOverrides): Promise<[BigNumber]>;
+        tokenOfOwnerByIndex(owner: string, index: BigNumberish, overrides?: CallOverrides): Promise<[BigNumber]>;
         tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
+        totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
         transferFrom(from: string, to: string, tokenId: BigNumberish, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<ContractTransaction>;
@@ -561,7 +573,10 @@ export interface EthRioStays extends BaseContract {
     staySchemaURI(overrides?: CallOverrides): Promise<string>;
     supportsInterface(interfaceId: BytesLike, overrides?: CallOverrides): Promise<boolean>;
     symbol(overrides?: CallOverrides): Promise<string>;
+    tokenByIndex(index: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+    tokenOfOwnerByIndex(owner: string, index: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
     tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
+    totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
     transferFrom(from: string, to: string, tokenId: BigNumberish, overrides?: Overrides & {
         from?: string | Promise<string>;
     }): Promise<ContractTransaction>;
@@ -662,7 +677,10 @@ export interface EthRioStays extends BaseContract {
         staySchemaURI(overrides?: CallOverrides): Promise<string>;
         supportsInterface(interfaceId: BytesLike, overrides?: CallOverrides): Promise<boolean>;
         symbol(overrides?: CallOverrides): Promise<string>;
+        tokenByIndex(index: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+        tokenOfOwnerByIndex(owner: string, index: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
         tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
+        totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
         transferFrom(from: string, to: string, tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
         updateLodgingFacility(_lodgingFacilityId: BytesLike, _newDataURI: string, overrides?: CallOverrides): Promise<void>;
         updateSpace(_spaceIndex: BigNumberish, _capacity: BigNumberish, _pricePerNightWei: BigNumberish, _active: boolean, _dataURI: string, overrides?: CallOverrides): Promise<void>;
@@ -691,9 +709,9 @@ export interface EthRioStays extends BaseContract {
         LodgingFacilityUpdated(facilityId?: null, dataURI?: null): LodgingFacilityUpdatedEventFilter;
         "NewStay(bytes32,uint256)"(spaceId?: null, tokenId?: null): NewStayEventFilter;
         NewStay(spaceId?: null, tokenId?: null): NewStayEventFilter;
-        "SpaceAdded(bytes32,uint64,uint64,bool,string)"(facilityId?: null, capacity?: null, pricePerNightWei?: null, active?: null, dataURI?: null): SpaceAddedEventFilter;
+        "SpaceAdded(bytes32,uint64,uint256,bool,string)"(facilityId?: null, capacity?: null, pricePerNightWei?: null, active?: null, dataURI?: null): SpaceAddedEventFilter;
         SpaceAdded(facilityId?: null, capacity?: null, pricePerNightWei?: null, active?: null, dataURI?: null): SpaceAddedEventFilter;
-        "SpaceUpdated(bytes32,uint256,uint64,uint64,bool,string)"(facilityId?: null, index?: null, capacity?: null, pricePerNightWei?: null, active?: null, dataURI?: null): SpaceUpdatedEventFilter;
+        "SpaceUpdated(bytes32,uint256,uint64,uint256,bool,string)"(facilityId?: null, index?: null, capacity?: null, pricePerNightWei?: null, active?: null, dataURI?: null): SpaceUpdatedEventFilter;
         SpaceUpdated(facilityId?: null, index?: null, capacity?: null, pricePerNightWei?: null, active?: null, dataURI?: null): SpaceUpdatedEventFilter;
         "Transfer(address,address,uint256)"(from?: string | null, to?: string | null, tokenId?: BigNumberish | null): TransferEventFilter;
         Transfer(from?: string | null, to?: string | null, tokenId?: BigNumberish | null): TransferEventFilter;
@@ -766,7 +784,10 @@ export interface EthRioStays extends BaseContract {
         staySchemaURI(overrides?: CallOverrides): Promise<BigNumber>;
         supportsInterface(interfaceId: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
         symbol(overrides?: CallOverrides): Promise<BigNumber>;
+        tokenByIndex(index: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+        tokenOfOwnerByIndex(owner: string, index: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
         tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+        totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
         transferFrom(from: string, to: string, tokenId: BigNumberish, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<BigNumber>;
@@ -846,7 +867,10 @@ export interface EthRioStays extends BaseContract {
         staySchemaURI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
         supportsInterface(interfaceId: BytesLike, overrides?: CallOverrides): Promise<PopulatedTransaction>;
         symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+        tokenByIndex(index: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+        tokenOfOwnerByIndex(owner: string, index: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
         tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+        totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
         transferFrom(from: string, to: string, tokenId: BigNumberish, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<PopulatedTransaction>;
