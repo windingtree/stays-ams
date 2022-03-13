@@ -13,6 +13,7 @@ const getSpace_1 = require("./api/getSpace");
 const registerLodgingFacility_1 = require("./api/registerLodgingFacility");
 const addSpace_1 = require("./api/addSpace");
 const book_1 = require("./api/book");
+const nft_1 = require("./api/nft");
 class EthRioContract {
     constructor(contractAddress, providerOrUri, ipfsNode) {
         if (org_id_utils_1.regexp.ethereumAddress.exec(contractAddress)) {
@@ -55,6 +56,12 @@ class EthRioContract {
     }
     getSpace(spaceId) {
         return (0, getSpace_1.getSpace)(this.contract, this.ipfsNode, spaceId);
+    }
+    getTokensOfOwner(owner) {
+        return (0, nft_1.getTokensOfOwner)(this.contract, owner);
+    }
+    getToken(tokenId) {
+        return (0, nft_1.getToken)(this.contract, tokenId);
     }
     registerLodgingFacility(profileData, active, fren, // address
     overrides, transactionHashCb, confirmations) {
