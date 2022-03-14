@@ -28,7 +28,7 @@ export interface State {
   startIpfsNode: Function;
   stopIpfsNode: Function;
   isBootstrapLoading: boolean;
-  bootstrapped: boolean;
+  bootstrapped?: number;
   lodgingFacilities: LodgingFacilityRecord[];
   [key: string]: unknown | GenericStateRecord[];
 }
@@ -140,7 +140,7 @@ export interface SetBootstrapLoadingAction {
 
 export interface SetBootstrappedAction {
   type: 'SET_BOOTSTRAPPED';
-  payload: boolean;
+  payload: number;
 }
 
 export type Action =

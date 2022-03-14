@@ -122,7 +122,6 @@ const initialState: State = {
   startIpfsNode: () => {},
   stopIpfsNode: () => {},
   isBootstrapLoading: false,
-  bootstrapped: false,
   lodgingFacilities: []
 };
 

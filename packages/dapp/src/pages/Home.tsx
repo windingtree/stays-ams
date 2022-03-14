@@ -22,7 +22,7 @@ export const Home = () => {
         </Box>
       </MessageBox>
 
-      {bootstrapped &&
+      {!!bootstrapped &&
         <SearchForm />
       }
     </PageWrapper>
