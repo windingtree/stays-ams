@@ -34,9 +34,8 @@ library StayTokenMeta {
     return string(
       abi.encodePacked(
         '"name":"EthRioStays #',
-        '","description":"Stay at lodging facility",',
         uintToString(tokenId),
-        '"image":"',
+        '","description":"Stay at lodging facility","image":"',
         _tokenImage,
         '"'
       )

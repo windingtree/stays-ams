@@ -10,8 +10,9 @@ abstract contract IEthRioStays {
   event LodgingFacilityActiveState(bytes32 facilityId, bool active);
   event LodgingFacilityOwnershipTransfer(bytes32 facilityId, address indexed prevOwner, address indexed newOwner);
   event LodgingFacilityRemoved(bytes32 facilityId);
-  event SpaceAdded(bytes32 facilityId, uint64 capacity, uint256 pricePerNightWei, bool active, string dataURI);
-  event SpaceUpdated(bytes32 facilityId, uint256 index, uint64 capacity, uint256 pricePerNightWei, bool active, string dataURI);
+  event SpaceAdded(bytes32 spaceId, bytes32 facilityId, uint64 capacity, uint256 pricePerNightWei, bool active, string dataURI);
+  event SpaceUpdated(bytes32 spaceId, bytes32 facilityId, uint64 capacity, uint256 pricePerNightWei, bool active, string dataURI);
+  event SpaceRemoved(bytes32 spaceId);
   event NewStay(bytes32 spaceId, uint256 tokenId);
   event CheckIn(uint256 tokenId);
   event CheckOut(uint256 tokenId);
@@ -50,6 +51,11 @@ abstract contract IEthRioStays {
   function deactivateLodgingFacility(bytes32 _lodgingFacilityId) public virtual;
   function yieldLodgingFacility(bytes32 _lodgingFacilityId, address _newOwner) public virtual;
   function deleteLodgingFacility(bytes32 _lodgingFacilityId) public virtual;
+
+  // Space management
+  function addSpace(bytes32 _lodgingFacilityId, uint16 _capacity, uint256 _pricePerNightWei, bool _active, string calldata _dataURI) public virtual;
+  function updateSpace(bytes32 _spaceId, uint16 _capacity, uint256 _pricePerNightWei, bool _active, string calldata _dataURI) public virtual;
+  function deleteSpace(bytes32 _spaceId) public virtual;
 
   // Delegates (addresses that can perform certain actions, like check-in and check-out)
   // function addDelegate(bytes32 _lodgingFacilityId, address _delegate, uint8 _accessLevel) public virtual;

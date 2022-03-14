@@ -56,6 +56,7 @@
     "build": "yarn compile && tsc -p tsconfig-build.json",
     "coverage": "npx hardhat coverage",
     "start:node": "npx hardhat --config hardhat.local.config.ts node",
-    "start:setup": "npx hardhat --config hardhat.local.config.ts --network local testSetup"
+    "start:setup": "npx hardhat --config hardhat.local.config.ts --network local testSetup",
+    "start:more": "npx hardhat --config hardhat.local.config.ts --network local addFacilities --address 0x5FbDB2315678afecb367f032d93F642f64180aa3"
   }
 }

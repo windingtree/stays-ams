@@ -159,6 +159,12 @@ const _abi = [
       {
         indexed: false,
         internalType: "bytes32",
+        name: "spaceId",
+        type: "bytes32",
+      },
+      {
+        indexed: false,
+        internalType: "bytes32",
         name: "facilityId",
         type: "bytes32",
       },
@@ -196,14 +202,27 @@ const _abi = [
       {
         indexed: false,
         internalType: "bytes32",
-        name: "facilityId",
+        name: "spaceId",
+        type: "bytes32",
+      },
+    ],
+    name: "SpaceRemoved",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "bytes32",
+        name: "spaceId",
         type: "bytes32",
       },
       {
         indexed: false,
-        internalType: "uint256",
-        name: "index",
-        type: "uint256",
+        internalType: "bytes32",
+        name: "facilityId",
+        type: "bytes32",
       },
       {
         indexed: false,
@@ -242,6 +261,39 @@ const _abi = [
       },
     ],
     name: "activateLodgingFacility",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "_lodgingFacilityId",
+        type: "bytes32",
+      },
+      {
+        internalType: "uint16",
+        name: "_capacity",
+        type: "uint16",
+      },
+      {
+        internalType: "uint256",
+        name: "_pricePerNightWei",
+        type: "uint256",
+      },
+      {
+        internalType: "bool",
+        name: "_active",
+        type: "bool",
+      },
+      {
+        internalType: "string",
+        name: "_dataURI",
+        type: "string",
+      },
+    ],
+    name: "addSpace",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -294,6 +346,19 @@ const _abi = [
       },
     ],
     name: "deleteLodgingFacility",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "_spaceId",
+        type: "bytes32",
+      },
+    ],
+    name: "deleteSpace",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -577,6 +642,39 @@ const _abi = [
       },
     ],
     name: "updateLodgingFacility",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "_spaceId",
+        type: "bytes32",
+      },
+      {
+        internalType: "uint16",
+        name: "_capacity",
+        type: "uint16",
+      },
+      {
+        internalType: "uint256",
+        name: "_pricePerNightWei",
+        type: "uint256",
+      },
+      {
+        internalType: "bool",
+        name: "_active",
+        type: "bool",
+      },
+      {
+        internalType: "string",
+        name: "_dataURI",
+        type: "string",
+      },
+    ],
+    name: "updateSpace",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

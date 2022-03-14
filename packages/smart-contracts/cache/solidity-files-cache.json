@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/home/kostysh/dev/stays-remote/packages/smart-contracts/contracts/EthRioStays.sol": {
-      "lastModificationDate": 1647013194230,
-      "contentHash": "1c05b1b55692372a2495d5af95cb47f6",
+      "lastModificationDate": 1647283102730,
+      "contentHash": "09b28a5a70dd328b1aee37123fb6e791",
       "sourceName": "contracts/EthRioStays.sol",
       "solcConfig": {
         "version": "0.8.7",
@@ -188,8 +188,8 @@
       ]
     },
     "/home/kostysh/dev/stays-remote/packages/smart-contracts/contracts/IEthRioStays.sol": {
-      "lastModificationDate": 1646866413104,
-      "contentHash": "6de9d18542005b732d72ccca1d931ec5",
+      "lastModificationDate": 1647283069450,
+      "contentHash": "1ab931a871e276ad559450b4b1346bbc",
       "sourceName": "contracts/IEthRioStays.sol",
       "solcConfig": {
         "version": "0.8.7",
@@ -274,8 +274,8 @@
       ]
     },
     "/home/kostysh/dev/stays-remote/packages/smart-contracts/contracts/libraries/StayTokenMeta.sol": {
-      "lastModificationDate": 1647194064360,
-      "contentHash": "92fafbde3e11bfc47035d29a281f394f",
+      "lastModificationDate": 1647284047430,
+      "contentHash": "c814ebf87042712f857ec13fe8a6fe13",
       "sourceName": "contracts/libraries/StayTokenMeta.sol",
       "solcConfig": {
         "version": "0.8.7",

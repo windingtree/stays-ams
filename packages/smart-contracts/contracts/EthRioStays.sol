@@ -267,7 +267,7 @@ contract EthRioStays is IEthRioStays, StayEscrow, ERC721URIStorage, ERC721Enumer
     uint256 _pricePerNightWei,
     bool _active,
     string calldata _dataURI
-  ) public {
+  ) public override {
     bytes32 _i = _lodgingFacilityId;
 
     _facilityShouldExist(_i);
@@ -291,17 +291,30 @@ contract EthRioStays is IEthRioStays, StayEscrow, ERC721URIStorage, ERC721Enumer
     );
     _spaceIdsByFacilityId[_i].push(_id);
 
-    emit SpaceAdded(_i, _capacity, _pricePerNightWei, _active, _dataURI);
+    emit SpaceAdded(_id, _i, _capacity, _pricePerNightWei, _active, _dataURI);
   }
 
   function updateSpace(
-    uint256 _spaceIndex,
+    bytes32 _spaceId,
     uint16 _capacity,
     uint256 _pricePerNightWei,
     bool _active,
     string calldata _dataURI
-  ) public {
-    // TODO
+  ) public override onlySpaceOwner(_spaceId) {
+    Space storage space = spaces[_spaceId];
+    emit SpaceAdded(
+      _spaceId,
+      space.lodgingFacilityId,
+      _capacity,
+      _pricePerNightWei,
+      _active,
+      _dataURI
+    );
+  }
+
+  function deleteSpace(bytes32 _spaceId) public override onlySpaceOwner(_spaceId) {
+    spaces[_spaceId].exists = false;
+    emit SpaceRemoved(_spaceId);
   }
 
   /**

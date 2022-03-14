@@ -199,11 +199,13 @@ describe("EthRioStays.sol", () => {
     });
 
     it("should emit SpaceAdded with correct params", async () => {
-      await expect(
-        alice.ethRioStays.addSpace(facilityId, 1, 2, true, testDataUri)
-      )
+      const txRaw = alice.ethRioStays.addSpace(facilityId, 1, 2, true, testDataUri);
+      const tx = await txRaw;
+      const receipt = await tx.wait();
+      const event = receipt?.events?.find(e => e.event === 'SpaceAdded');
+      await expect(txRaw)
         .to.emit(alice.ethRioStays, "SpaceAdded")
-        .withArgs(facilityId, 1, 2, true, testDataUri);
+        .withArgs(event?.args?.spaceId, facilityId, 1, 2, true, testDataUri);
     });
   });
 

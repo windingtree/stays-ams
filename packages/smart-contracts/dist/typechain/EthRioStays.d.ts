@@ -14,6 +14,7 @@ export interface EthRioStaysInterface extends utils.Interface {
         "dayZero()": FunctionFragment;
         "deactivateLodgingFacility(bytes32)": FunctionFragment;
         "deleteLodgingFacility(bytes32)": FunctionFragment;
+        "deleteSpace(bytes32)": FunctionFragment;
         "deposit(address,bytes32)": FunctionFragment;
         "depositsOf(address,bytes32)": FunctionFragment;
         "depositsState(address,bytes32)": FunctionFragment;
@@ -46,7 +47,7 @@ export interface EthRioStaysInterface extends utils.Interface {
         "totalSupply()": FunctionFragment;
         "transferFrom(address,address,uint256)": FunctionFragment;
         "updateLodgingFacility(bytes32,string)": FunctionFragment;
-        "updateSpace(uint256,uint16,uint256,bool,string)": FunctionFragment;
+        "updateSpace(bytes32,uint16,uint256,bool,string)": FunctionFragment;
         "yieldLodgingFacility(bytes32,address)": FunctionFragment;
     };
     encodeFunctionData(functionFragment: "activateLodgingFacility", values: [BytesLike]): string;
@@ -58,6 +59,7 @@ export interface EthRioStaysInterface extends utils.Interface {
     encodeFunctionData(functionFragment: "dayZero", values?: undefined): string;
     encodeFunctionData(functionFragment: "deactivateLodgingFacility", values: [BytesLike]): string;
     encodeFunctionData(functionFragment: "deleteLodgingFacility", values: [BytesLike]): string;
+    encodeFunctionData(functionFragment: "deleteSpace", values: [BytesLike]): string;
     encodeFunctionData(functionFragment: "deposit", values: [string, BytesLike]): string;
     encodeFunctionData(functionFragment: "depositsOf", values: [string, BytesLike]): string;
     encodeFunctionData(functionFragment: "depositsState", values: [string, BytesLike]): string;
@@ -90,7 +92,7 @@ export interface EthRioStaysInterface extends utils.Interface {
     encodeFunctionData(functionFragment: "totalSupply", values?: undefined): string;
     encodeFunctionData(functionFragment: "transferFrom", values: [string, string, BigNumberish]): string;
     encodeFunctionData(functionFragment: "updateLodgingFacility", values: [BytesLike, string]): string;
-    encodeFunctionData(functionFragment: "updateSpace", values: [BigNumberish, BigNumberish, BigNumberish, boolean, string]): string;
+    encodeFunctionData(functionFragment: "updateSpace", values: [BytesLike, BigNumberish, BigNumberish, boolean, string]): string;
     encodeFunctionData(functionFragment: "yieldLodgingFacility", values: [BytesLike, string]): string;
     decodeFunctionResult(functionFragment: "activateLodgingFacility", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "addSpace", data: BytesLike): Result;
@@ -101,6 +103,7 @@ export interface EthRioStaysInterface extends utils.Interface {
     decodeFunctionResult(functionFragment: "dayZero", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "deactivateLodgingFacility", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "deleteLodgingFacility", data: BytesLike): Result;
+    decodeFunctionResult(functionFragment: "deleteSpace", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "depositsOf", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "depositsState", data: BytesLike): Result;
@@ -147,8 +150,9 @@ export interface EthRioStaysInterface extends utils.Interface {
         "LodgingFacilityRemoved(bytes32)": EventFragment;
         "LodgingFacilityUpdated(bytes32,string)": EventFragment;
         "NewStay(bytes32,uint256)": EventFragment;
-        "SpaceAdded(bytes32,uint64,uint256,bool,string)": EventFragment;
-        "SpaceUpdated(bytes32,uint256,uint64,uint256,bool,string)": EventFragment;
+        "SpaceAdded(bytes32,bytes32,uint64,uint256,bool,string)": EventFragment;
+        "SpaceRemoved(bytes32)": EventFragment;
+        "SpaceUpdated(bytes32,bytes32,uint64,uint256,bool,string)": EventFragment;
         "Transfer(address,address,uint256)": EventFragment;
         "Withdrawn(address,uint256,bytes32)": EventFragment;
     };
@@ -164,6 +168,7 @@ export interface EthRioStaysInterface extends utils.Interface {
     getEvent(nameOrSignatureOrTopic: "LodgingFacilityUpdated"): EventFragment;
     getEvent(nameOrSignatureOrTopic: "NewStay"): EventFragment;
     getEvent(nameOrSignatureOrTopic: "SpaceAdded"): EventFragment;
+    getEvent(nameOrSignatureOrTopic: "SpaceRemoved"): EventFragment;
     getEvent(nameOrSignatureOrTopic: "SpaceUpdated"): EventFragment;
     getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
     getEvent(nameOrSignatureOrTopic: "Withdrawn"): EventFragment;
@@ -258,11 +263,13 @@ export declare type NewStayEvent = TypedEvent<[
 export declare type NewStayEventFilter = TypedEventFilter<NewStayEvent>;
 export declare type SpaceAddedEvent = TypedEvent<[
     string,
+    string,
     BigNumber,
     BigNumber,
     boolean,
     string
 ], {
+    spaceId: string;
     facilityId: string;
     capacity: BigNumber;
     pricePerNightWei: BigNumber;
@@ -270,16 +277,20 @@ export declare type SpaceAddedEvent = TypedEvent<[
     dataURI: string;
 }>;
 export declare type SpaceAddedEventFilter = TypedEventFilter<SpaceAddedEvent>;
+export declare type SpaceRemovedEvent = TypedEvent<[string], {
+    spaceId: string;
+}>;
+export declare type SpaceRemovedEventFilter = TypedEventFilter<SpaceRemovedEvent>;
 export declare type SpaceUpdatedEvent = TypedEvent<[
     string,
-    BigNumber,
+    string,
     BigNumber,
     BigNumber,
     boolean,
     string
 ], {
+    spaceId: string;
     facilityId: string;
-    index: BigNumber;
     capacity: BigNumber;
     pricePerNightWei: BigNumber;
     active: boolean;
@@ -343,6 +354,9 @@ export interface EthRioStays extends BaseContract {
             from?: string | Promise<string>;
         }): Promise<ContractTransaction>;
         deleteLodgingFacility(_lodgingFacilityId: BytesLike, overrides?: Overrides & {
+            from?: string | Promise<string>;
+        }): Promise<ContractTransaction>;
+        deleteSpace(_spaceId: BytesLike, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<ContractTransaction>;
         deposit(payee: string, spaceId: BytesLike, overrides?: PayableOverrides & {
@@ -451,7 +465,7 @@ export interface EthRioStays extends BaseContract {
         updateLodgingFacility(_lodgingFacilityId: BytesLike, _newDataURI: string, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<ContractTransaction>;
-        updateSpace(_spaceIndex: BigNumberish, _capacity: BigNumberish, _pricePerNightWei: BigNumberish, _active: boolean, _dataURI: string, overrides?: Overrides & {
+        updateSpace(_spaceId: BytesLike, _capacity: BigNumberish, _pricePerNightWei: BigNumberish, _active: boolean, _dataURI: string, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<ContractTransaction>;
         yieldLodgingFacility(_lodgingFacilityId: BytesLike, _newOwner: string, overrides?: Overrides & {
@@ -479,6 +493,9 @@ export interface EthRioStays extends BaseContract {
         from?: string | Promise<string>;
     }): Promise<ContractTransaction>;
     deleteLodgingFacility(_lodgingFacilityId: BytesLike, overrides?: Overrides & {
+        from?: string | Promise<string>;
+    }): Promise<ContractTransaction>;
+    deleteSpace(_spaceId: BytesLike, overrides?: Overrides & {
         from?: string | Promise<string>;
     }): Promise<ContractTransaction>;
     deposit(payee: string, spaceId: BytesLike, overrides?: PayableOverrides & {
@@ -583,7 +600,7 @@ export interface EthRioStays extends BaseContract {
     updateLodgingFacility(_lodgingFacilityId: BytesLike, _newDataURI: string, overrides?: Overrides & {
         from?: string | Promise<string>;
     }): Promise<ContractTransaction>;
-    updateSpace(_spaceIndex: BigNumberish, _capacity: BigNumberish, _pricePerNightWei: BigNumberish, _active: boolean, _dataURI: string, overrides?: Overrides & {
+    updateSpace(_spaceId: BytesLike, _capacity: BigNumberish, _pricePerNightWei: BigNumberish, _active: boolean, _dataURI: string, overrides?: Overrides & {
         from?: string | Promise<string>;
     }): Promise<ContractTransaction>;
     yieldLodgingFacility(_lodgingFacilityId: BytesLike, _newOwner: string, overrides?: Overrides & {
@@ -599,6 +616,7 @@ export interface EthRioStays extends BaseContract {
         dayZero(overrides?: CallOverrides): Promise<number>;
         deactivateLodgingFacility(_lodgingFacilityId: BytesLike, overrides?: CallOverrides): Promise<void>;
         deleteLodgingFacility(_lodgingFacilityId: BytesLike, overrides?: CallOverrides): Promise<void>;
+        deleteSpace(_spaceId: BytesLike, overrides?: CallOverrides): Promise<void>;
         deposit(payee: string, spaceId: BytesLike, overrides?: CallOverrides): Promise<void>;
         depositsOf(payee: string, spaceId: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
         depositsState(payee: string, spaceId: BytesLike, overrides?: CallOverrides): Promise<number>;
@@ -683,7 +701,7 @@ export interface EthRioStays extends BaseContract {
         totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
         transferFrom(from: string, to: string, tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
         updateLodgingFacility(_lodgingFacilityId: BytesLike, _newDataURI: string, overrides?: CallOverrides): Promise<void>;
-        updateSpace(_spaceIndex: BigNumberish, _capacity: BigNumberish, _pricePerNightWei: BigNumberish, _active: boolean, _dataURI: string, overrides?: CallOverrides): Promise<void>;
+        updateSpace(_spaceId: BytesLike, _capacity: BigNumberish, _pricePerNightWei: BigNumberish, _active: boolean, _dataURI: string, overrides?: CallOverrides): Promise<void>;
         yieldLodgingFacility(_lodgingFacilityId: BytesLike, _newOwner: string, overrides?: CallOverrides): Promise<void>;
     };
     filters: {
@@ -709,10 +727,12 @@ export interface EthRioStays extends BaseContract {
         LodgingFacilityUpdated(facilityId?: null, dataURI?: null): LodgingFacilityUpdatedEventFilter;
         "NewStay(bytes32,uint256)"(spaceId?: null, tokenId?: null): NewStayEventFilter;
         NewStay(spaceId?: null, tokenId?: null): NewStayEventFilter;
-        "SpaceAdded(bytes32,uint64,uint256,bool,string)"(facilityId?: null, capacity?: null, pricePerNightWei?: null, active?: null, dataURI?: null): SpaceAddedEventFilter;
-        SpaceAdded(facilityId?: null, capacity?: null, pricePerNightWei?: null, active?: null, dataURI?: null): SpaceAddedEventFilter;
-        "SpaceUpdated(bytes32,uint256,uint64,uint256,bool,string)"(facilityId?: null, index?: null, capacity?: null, pricePerNightWei?: null, active?: null, dataURI?: null): SpaceUpdatedEventFilter;
-        SpaceUpdated(facilityId?: null, index?: null, capacity?: null, pricePerNightWei?: null, active?: null, dataURI?: null): SpaceUpdatedEventFilter;
+        "SpaceAdded(bytes32,bytes32,uint64,uint256,bool,string)"(spaceId?: null, facilityId?: null, capacity?: null, pricePerNightWei?: null, active?: null, dataURI?: null): SpaceAddedEventFilter;
+        SpaceAdded(spaceId?: null, facilityId?: null, capacity?: null, pricePerNightWei?: null, active?: null, dataURI?: null): SpaceAddedEventFilter;
+        "SpaceRemoved(bytes32)"(spaceId?: null): SpaceRemovedEventFilter;
+        SpaceRemoved(spaceId?: null): SpaceRemovedEventFilter;
+        "SpaceUpdated(bytes32,bytes32,uint64,uint256,bool,string)"(spaceId?: null, facilityId?: null, capacity?: null, pricePerNightWei?: null, active?: null, dataURI?: null): SpaceUpdatedEventFilter;
+        SpaceUpdated(spaceId?: null, facilityId?: null, capacity?: null, pricePerNightWei?: null, active?: null, dataURI?: null): SpaceUpdatedEventFilter;
         "Transfer(address,address,uint256)"(from?: string | null, to?: string | null, tokenId?: BigNumberish | null): TransferEventFilter;
         Transfer(from?: string | null, to?: string | null, tokenId?: BigNumberish | null): TransferEventFilter;
         "Withdrawn(address,uint256,bytes32)"(payee?: string | null, weiAmount?: null, spaceId?: null): WithdrawnEventFilter;
@@ -740,6 +760,9 @@ export interface EthRioStays extends BaseContract {
             from?: string | Promise<string>;
         }): Promise<BigNumber>;
         deleteLodgingFacility(_lodgingFacilityId: BytesLike, overrides?: Overrides & {
+            from?: string | Promise<string>;
+        }): Promise<BigNumber>;
+        deleteSpace(_spaceId: BytesLike, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<BigNumber>;
         deposit(payee: string, spaceId: BytesLike, overrides?: PayableOverrides & {
@@ -794,7 +817,7 @@ export interface EthRioStays extends BaseContract {
         updateLodgingFacility(_lodgingFacilityId: BytesLike, _newDataURI: string, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<BigNumber>;
-        updateSpace(_spaceIndex: BigNumberish, _capacity: BigNumberish, _pricePerNightWei: BigNumberish, _active: boolean, _dataURI: string, overrides?: Overrides & {
+        updateSpace(_spaceId: BytesLike, _capacity: BigNumberish, _pricePerNightWei: BigNumberish, _active: boolean, _dataURI: string, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<BigNumber>;
         yieldLodgingFacility(_lodgingFacilityId: BytesLike, _newOwner: string, overrides?: Overrides & {
@@ -823,6 +846,9 @@ export interface EthRioStays extends BaseContract {
             from?: string | Promise<string>;
         }): Promise<PopulatedTransaction>;
         deleteLodgingFacility(_lodgingFacilityId: BytesLike, overrides?: Overrides & {
+            from?: string | Promise<string>;
+        }): Promise<PopulatedTransaction>;
+        deleteSpace(_spaceId: BytesLike, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<PopulatedTransaction>;
         deposit(payee: string, spaceId: BytesLike, overrides?: PayableOverrides & {
@@ -877,7 +903,7 @@ export interface EthRioStays extends BaseContract {
         updateLodgingFacility(_lodgingFacilityId: BytesLike, _newDataURI: string, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<PopulatedTransaction>;
-        updateSpace(_spaceIndex: BigNumberish, _capacity: BigNumberish, _pricePerNightWei: BigNumberish, _active: boolean, _dataURI: string, overrides?: Overrides & {
+        updateSpace(_spaceId: BytesLike, _capacity: BigNumberish, _pricePerNightWei: BigNumberish, _active: boolean, _dataURI: string, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<PopulatedTransaction>;
         yieldLodgingFacility(_lodgingFacilityId: BytesLike, _newOwner: string, overrides?: Overrides & {
