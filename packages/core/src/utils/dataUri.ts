@@ -3,6 +3,7 @@ import type { TokenData } from '../types';
 import { utils } from 'ethers';
 import { regexp, http }  from '@windingtree/org.id-utils';
 import { ipfsCidResolver } from '../utils/ipfs';
+import { repeater } from '../utils/repeater';
 
 export type TokenUriType =
   | 'http'
@@ -21,7 +22,10 @@ export const fetchDataUri = async <DT>(ipfsNode: IPFS, uri: string): Promise<DT>
 
   switch (tokenUriType) {
     case 'ipfs':
-      data = await ipfsCidResolver(ipfsNode)(uri.replace('ipfs://', ''));
+      data = await repeater(
+        () => ipfsCidResolver(ipfsNode)(uri.replace('ipfs://', '')),
+        3
+      );
       break;
 
     case 'http':

@@ -15,6 +15,7 @@ import { regexp }  from '@windingtree/org.id-utils';
 
 // API
 import { getLodgingFacilityIds } from './api/getLodgingFacilityIds';
+import { getNewAndUpdatedFacilityIds } from './api/getNewAndUpdatedFacilityIds';
 import { getSpaceIds } from './api/getSpaceIds';
 import { getAvailability } from './api/getAvailability';
 import { getLodgingFacility } from './api/getLodgingFacility';
@@ -83,6 +84,10 @@ export class EthRioContract {
 
   getLodgingFacilityIds(active: boolean): Promise<string[]> {
     return getLodgingFacilityIds(this.contract, active);
+  }
+
+  getNewAndUpdatedFacilityIds(fromBlock: number): Promise<string[]> {
+    return getNewAndUpdatedFacilityIds(this.contract, fromBlock);
   }
 
   getSpaceIds(lodgingFacilityId: string, active: boolean): Promise<string[]> {

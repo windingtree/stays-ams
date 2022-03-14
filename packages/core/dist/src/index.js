@@ -6,6 +6,7 @@ const stays_smart_contracts_1 = require("stays-smart-contracts");
 const org_id_utils_1 = require("@windingtree/org.id-utils");
 // API
 const getLodgingFacilityIds_1 = require("./api/getLodgingFacilityIds");
+const getNewAndUpdatedFacilityIds_1 = require("./api/getNewAndUpdatedFacilityIds");
 const getSpaceIds_1 = require("./api/getSpaceIds");
 const getAvailability_1 = require("./api/getAvailability");
 const getLodgingFacility_1 = require("./api/getLodgingFacility");
@@ -44,6 +45,9 @@ class EthRioContract {
     }
     getLodgingFacilityIds(active) {
         return (0, getLodgingFacilityIds_1.getLodgingFacilityIds)(this.contract, active);
+    }
+    getNewAndUpdatedFacilityIds(fromBlock) {
+        return (0, getNewAndUpdatedFacilityIds_1.getNewAndUpdatedFacilityIds)(this.contract, fromBlock);
     }
     getSpaceIds(lodgingFacilityId, active) {
         return (0, getSpaceIds_1.getSpaceIds)(this.contract, lodgingFacilityId, active);

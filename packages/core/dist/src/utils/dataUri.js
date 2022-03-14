@@ -13,6 +13,7 @@ exports.decodeDataUri = exports.fetchDataUri = void 0;
 const ethers_1 = require("ethers");
 const org_id_utils_1 = require("@windingtree/org.id-utils");
 const ipfs_1 = require("../utils/ipfs");
+const repeater_1 = require("../utils/repeater");
 const fetchDataUri = (ipfsNode, uri) => __awaiter(void 0, void 0, void 0, function* () {
     let tokenUriType;
     if (org_id_utils_1.regexp.ipfs.exec(uri)) {
@@ -24,7 +25,7 @@ const fetchDataUri = (ipfsNode, uri) => __awaiter(void 0, void 0, void 0, functi
     let data;
     switch (tokenUriType) {
         case 'ipfs':
-            data = yield (0, ipfs_1.ipfsCidResolver)(ipfsNode)(uri.replace('ipfs://', ''));
+            data = yield (0, repeater_1.repeater)(() => (0, ipfs_1.ipfsCidResolver)(ipfsNode)(uri.replace('ipfs://', '')), 3);
             break;
         case 'http':
             const response = yield org_id_utils_1.http.request(uri, 'GET');
