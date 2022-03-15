@@ -89,7 +89,6 @@ export const AppStateProvider = ({ children }: PropsType) => {
     dispatch,
     rpcProvider,
     ipfsNode,
-    chainId,
     bootstrapped
   );
 

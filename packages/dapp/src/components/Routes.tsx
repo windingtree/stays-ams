@@ -10,6 +10,7 @@ import { Protected } from './Protected';
 import { Home } from '../pages/Home';
 import { Search } from '../pages/Search';
 import { Rooms } from "../pages/Rooms";
+import { Space } from '../pages/Space';
 
 export interface RouteConfig {
   path: string;
@@ -40,6 +41,11 @@ export const pagesRoutesConfig: Routes = [
     title: "Room | Lodging facility manager",
     label: "Rooms",
     protected: true,
+  },
+  {
+    path: '/space/:id',
+    element: <Space />,
+    title: 'Search for lodging facility',
   },
 ];
 

@@ -21,14 +21,13 @@ const { address } = getNetwork();
 export const useContract = (
   provider: providers.JsonRpcProvider | Web3ModalProvider | undefined,
   ipfsNode: IPFS | undefined,
-  networkId: number | undefined
 ): UseContractHook => {
   const [contract, setContract] = useState<EthRioContract | undefined>();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    if (!provider || !ipfsNode || !networkId) {
+    if (!provider || !ipfsNode) {
       return;
     }
 
@@ -45,7 +44,7 @@ export const useContract = (
       setError(message);
       setLoading(false);
     }
-  }, [provider, ipfsNode, networkId]);
+  }, [provider, ipfsNode]);
 
   return [contract, loading, error];
 };

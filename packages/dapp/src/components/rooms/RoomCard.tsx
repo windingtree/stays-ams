@@ -1,23 +1,14 @@
-import React from "react";
+import React from 'react';
 import {
   Card,
-  CardHeader,
   CardBody,
   CardFooter,
-  Header,
   Box,
-  TextInput,
-  Button,
   Image,
-  Stack,
   Text,
   ResponsiveContext,
-} from "grommet";
-import { useNavigate } from "react-router-dom";
-import { useState, useMemo } from "react";
-import { useAppState } from "../../store";
-import { ThemeMode } from "../SwitchThemeMode";
-import { Location } from "grommet-icons";
+} from 'grommet';
+import { Location } from 'grommet-icons';
 
 //export const RoomIndex = (): JSX.Element => {
 export const RoomCard: React.FC<{
@@ -26,8 +17,6 @@ export const RoomCard: React.FC<{
   location?: string | null;
   price?: string | null;
 }> = ({ imageUrl, name, location, price }) => {
-  const { themeMode } = useAppState();
-
   const size = React.useContext(ResponsiveContext);
 
   return (
