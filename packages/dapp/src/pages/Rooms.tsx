@@ -13,7 +13,7 @@ import { RoomCard } from "../components/rooms/RoomCard";
     WIRE-FRAME URL
     https://docs.google.com/drawings/d/1RXaaLQR0d-g7ReIkKaB4Sz5_JQpxhcqOWccTxmGE6Ag/edit
 
-    
+
     DESIGN URL
     https://dribbble.com/shots/16194078/attachments/8053310?mode=media
     
@@ -37,33 +37,33 @@ import { RoomCard } from "../components/rooms/RoomCard";
     const roomList = [
       {
         imageUrl:
-          "https://m.hotels.ng/img/h1398654/562/422/b1/demeg-hotel-and-suites-1398654-7.jpg",
-        name: "Shakira Hotel Room",
-        location: "Jl. Aston No. 72 Yagyakarta",
-        price: "350",
+          'https://m.hotels.ng/img/h1398654/562/422/b1/demeg-hotel-and-suites-1398654-7.jpg',
+        name: 'Shakira Hotel Room',
+        location: 'Jl. Aston No. 72 Yagyakarta',
+        price: '350',
       },
       {
         imageUrl:
-          "https://media.hotels.ng/img/h86784/562/422/b1/beni-gold-hotel-and-apartments-86784-6.jpg",
-        name: "Visala Hotel Room",
-        location: "Jl. Kebon, Thailand",
-        price: "55.80",
-      },
-
-      {
-        imageUrl:
-          "https://media.hotels.ng/img/h998818/562/422/b1/choice-suites-(formerly-chantella-suites)-998818-11.jpg",
-        name: "Hogi Hotel Room",
-        location: "Malina, Indonesia",
-        price: "45.20",
+          'https://media.hotels.ng/img/h86784/562/422/b1/beni-gold-hotel-and-apartments-86784-6.jpg',
+        name: 'Visala Hotel Room',
+        location: 'Jl. Kebon, Thailand',
+        price: '55.80',
       },
 
       {
         imageUrl:
-          "https://media.hotels.ng/img/h1007164/562/422/b1/extended-stay-grand-hotel-1007164-6.jpg",
-        name: "Hogi Hotel Room",
-        location: "Malina, Indonesia",
-        price: "45.20",
+          'https://media.hotels.ng/img/h998818/562/422/b1/choice-suites-(formerly-chantella-suites)-998818-11.jpg',
+        name: 'Hogi Hotel Room',
+        location: 'Malina, Indonesia',
+        price: '45.20',
+      },
+
+      {
+        imageUrl:
+          'https://media.hotels.ng/img/h1007164/562/422/b1/extended-stay-grand-hotel-1007164-6.jpg',
+        name: 'Oklahoma Hotel Room',
+        location: 'Malina, United Kingdom',
+        price: '125.20',
       },
     ];
 
