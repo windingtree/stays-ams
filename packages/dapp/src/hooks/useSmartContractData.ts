@@ -64,10 +64,9 @@ export const useSmartContractData = (
   dispatch: Dispatch,
   provider: providers.JsonRpcProvider | undefined,
   ipfsNode: IPFS | undefined,
-  networkId: number | undefined,
   bootstrapped: number | undefined
 ): UseSmartContractData => {
-  const [contract,, contractError] = useContract(provider, ipfsNode, networkId);
+  const [contract,, contractError] = useContract(provider, ipfsNode);
   const [error, setError] = useState<string | undefined>(undefined);
 
   useEffect(() => {
