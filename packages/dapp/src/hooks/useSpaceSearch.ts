@@ -46,7 +46,7 @@ export const useSpaceSearch = (
               const availability = await cb(space.spaceId, startDay, numberOfDays)
               return {
                 ...space,
-                available: Math.min(...availability)
+                available: availability === null ? availability : Math.min(...availability)
               }
             }
           )

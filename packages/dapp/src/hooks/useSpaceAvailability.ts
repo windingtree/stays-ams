@@ -1,13 +1,17 @@
 import { useContract } from './useContract';
 import { useAppState } from '../store';
 import { useCallback, useState, useEffect } from 'react';
+import Logger from '../utils/logger';
+
+// Initialize logger
+const logger = Logger('useSpaceAvailability');
 
 export type UseSpaceAvailabilityHook = [
   cb: (
     spaceId: string,
     startDay: number,
     numberOfDays: number
-  ) => Promise<number[]>,
+  ) => Promise<number[] | null>,
   isReady: boolean
 ];
 
@@ -25,12 +29,17 @@ export const useSpaceAvailability = (): UseSpaceAvailabilityHook => {
     spaceId: string,
     startDay: number,
     numberOfDays: number
-  ): Promise<number[]> => {
-    if (!contract) {
-      return [];
-    }
+  ): Promise<number[] | null> => {
+    try {
+      if (!contract) {
+        throw new Error('Contract is not connected');
+      }
+      return contract.getAvailability(spaceId, startDay, numberOfDays);
 
-    return contract.getAvailability(spaceId, startDay, numberOfDays);
+    } catch (error) {
+      logger.error(error);
+      return null
+    }
   }, [contract]);
 
   return [cb, isReady];
