@@ -1,23 +1,23 @@
-import React from "react";
+import React from 'react';
 
-import { Box, Text, Button, ResponsiveContext } from "grommet";
+import { Box, Text, Button, ResponsiveContext } from 'grommet';
 // import { useAppState } from '../store';
-import { PageWrapper } from "./PageWrapper";
-import { RoomCard } from "../components/rooms/RoomCard";
+import { PageWrapper } from './PageWrapper';
+import { RoomCard } from '../components/rooms/RoomCard';
 
 //export const Rooms = () => {
   export const Rooms = (): JSX.Element => {
     const size = React.useContext(ResponsiveContext);
 
-    /* 
+    /*
     WIRE-FRAME URL
     https://docs.google.com/drawings/d/1RXaaLQR0d-g7ReIkKaB4Sz5_JQpxhcqOWccTxmGE6Ag/edit
 
 
     DESIGN URL
     https://dribbble.com/shots/16194078/attachments/8053310?mode=media
-    
-    
+
+
     ROOM IMAGES
     https://m.hotels.ng/img/h1398654/562/422/b1/demeg-hotel-and-suites-1398654-7.jpg
     https://m.hotels.ng/img/h1443996/562/422/b1/embassy-classic-hotels-owerri-1443996-18.jpg
@@ -85,7 +85,7 @@ import { RoomCard } from "../components/rooms/RoomCard";
         >
           View all
         </Text>
-        <Box direction={size == "large" ? "row" : "column"} alignSelf="center">
+        <Box direction={size === "large" ? "row" : "column"} alignSelf="center">
           {roomList.map((data, index) => (
             <RoomCard
               imageUrl={data.imageUrl}
