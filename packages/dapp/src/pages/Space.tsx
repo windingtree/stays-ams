@@ -1,24 +1,14 @@
-import type { Space as SpaceType } from 'stays-data-models';
 import { PageWrapper } from './PageWrapper';
-import { Tag, Box, Text, Button, ResponsiveContext, Image, Card, Grid, InfiniteScroll, Carousel, Tabs, Tab, List } from 'grommet';
+import { Tag, Box, Text, Button, Image, Carousel } from 'grommet';
 import { useAppState } from '../store';
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { ThemeMode } from '../components/SwitchThemeMode';
 
 export const Space: React.FC = () => {
-  const { lodgingFacilities, themeMode } = useAppState();
+  const { spaces, themeMode } = useAppState();
   const searchParams = window.location.pathname.substring(7)
-  const [index, setIndex] = useState(0)
-  const lodgingFacility = lodgingFacilities.find((facility) => facility.id === searchParams)
-  // useEffect(() => {
-  //   setSpace
-  // })
-  const space = useMemo(() => lodgingFacility?.spaces[index], [index])
+  const space = useMemo(() => spaces.find((space) => space.id === searchParams), [spaces, searchParams])
 
-  if (lodgingFacility === undefined) {
-    return <></>
-  }
-  console.log('---HERE PARAMS', searchParams)
   const borderColor = themeMode === ThemeMode.light ? 'brand' : 'accent-1'
   return (
     <PageWrapper
@@ -30,7 +20,7 @@ export const Space: React.FC = () => {
       ]}
     >
       {space === undefined ? <>Space not found</> : <Box
-        border={{color:borderColor}}
+        border={{ color: borderColor }}
         flex={true}
         align='start'
         overflow='auto'
@@ -81,7 +71,7 @@ export const Space: React.FC = () => {
 
         </Box>
         <Box pad={{ right: 'medium' }} direction='row' width='100%' justify='between' align='center' gridArea="action">
-          <Text>Price per Night: <Text color={borderColor} size='large'>{parseInt('space.pricePerNightWei', 12)} DAI</Text></Text>
+          <Text>Price per Night: <Text color={borderColor} size='large'>{parseInt(`${space.pricePerNightWei}`)} DAI</Text></Text>
           <Button
             size='large'
             label='Buy with DAI'

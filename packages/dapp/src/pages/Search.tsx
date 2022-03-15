@@ -4,6 +4,7 @@ import { Spinner } from 'grommet';
 import { SearchResultCard } from '../components/SearchResultCard';
 import { useAppState } from '../store';
 import { useSpaceSearch } from '../hooks/useSpaceSearch';
+import { useMemo } from 'react';
 
 
 const parseDateToDays = (firstDate: string | null, secondDate: string | null) => {
@@ -19,15 +20,21 @@ const parseDateToDays = (firstDate: string | null, secondDate: string | null) =>
 };
 
 export const Search = () => {
-  const { lodgingFacilities } = useAppState();
-
-  const searchParams = new URLSearchParams(window.location.search)
-  const departureDate = searchParams.get('departureDate')
-  const returnDate = searchParams.get('returnDate')
-  const guestsAmount = searchParams.get('guestsAmount')
+  const { spaces } = useAppState();
+  const query = window.location.search
+  const {departureDate, returnDate, guestsAmount} = useMemo(() => {
+    const params = new URLSearchParams(query)
+    console.log('-->Here',params.get('guestsAmount'))
+    return {
+      departureDate: params.get('departureDate'),
+      returnDate: params.get('returnDate'),
+      guestsAmount: params.get('guestsAmount')
+    }
+  }, [query])
+  // const searchParams = new URLSearchParams(window.location.search)
 
   const { startDay, numberOfDays } = parseDateToDays(departureDate, returnDate)
-  const [spaces, loading] = useSpaceSearch(startDay, numberOfDays)
+  const [loading] = useSpaceSearch(startDay, numberOfDays)
 
   return (
     <PageWrapper
