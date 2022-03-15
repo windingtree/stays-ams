@@ -13,8 +13,8 @@ export type UseSpaceAvailabilityHook = [
 
 // This hook provides a callback function for getting a space availability
 export const useSpaceAvailability = (): UseSpaceAvailabilityHook => {
-  const { provider, ipfsNode, networkId } = useAppState();
-  const [contract] = useContract(provider, ipfsNode, networkId);
+  const { rpcProvider, ipfsNode } = useAppState();
+  const [contract] = useContract(rpcProvider, ipfsNode);
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
