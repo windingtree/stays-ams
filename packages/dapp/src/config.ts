@@ -52,34 +52,34 @@ if (
 
 const allowedNetworks: NetworkInfo[] = [
   {
-    name: "Hardhat Testnet",
-    chainId: 31337,
-    address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-    blockExplorer: "",
+    name: 'Hardhat Testnet',
+    chainId: 1337,
+    address: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
+    blockExplorer: '',
   },
   {
-    name: "Ropsten Testnet",
+    name: 'Ropsten Testnet',
     chainId: 3,
-    address: "",
-    blockExplorer: "https://ropsten.etherscan.io",
+    address: '',
+    blockExplorer: 'https://ropsten.etherscan.io',
   },
   {
-    name: "Rinkeby Testnet",
+    name: 'Rinkeby Testnet',
     chainId: 4,
-    address: "",
-    blockExplorer: "https://rinkeby.etherscan.io",
+    address: '',
+    blockExplorer: 'https://rinkeby.etherscan.io',
   },
   {
-    name: "Arbitrum Rinkeby",
+    name: 'Arbitrum Rinkeby',
     chainId: 421611,
-    address: "",
-    blockExplorer: "https://rinkeby-explorer.arbitrum.io",
+    address: '',
+    blockExplorer: 'https://rinkeby-explorer.arbitrum.io',
   },
   {
-    name: "Sokol Testnet (xDAI)",
+    name: 'Sokol Testnet (xDAI)',
     chainId: 77,
-    address: "",
-    blockExplorer: "https://blockscout.com/poa/sokol",
+    address: '',
+    blockExplorer: 'https://blockscout.com/poa/sokol',
   },
 ];
 
