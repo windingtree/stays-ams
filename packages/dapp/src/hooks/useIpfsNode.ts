@@ -52,7 +52,9 @@ export const useIpfsNode = (): UseIpfsNode => {
   }, [node]);
 
   useEffect(() => {
-    const ipfsNodePromise = start();
+    const ipfsNodePromise = start({
+      repoAutoMigrate: true
+    });
     return () => {
       doStop(ipfsNodePromise);
     };

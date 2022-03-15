@@ -62,13 +62,6 @@ abstract contract IEthRioStays {
   // function changeDelegateAccessLevel(bytes32 _lodgingFacilityId, address _delegate, uint8 _accessLevel) public virtual;
   // function removeDelegate(bytes32 _lodgingFacilityId, address _delegate) public virtual;
 
-  // Escrow
-  // function getEscrowAmountForMyFacilities() public view virtual returns (uint256);
-  // function getFacilityEscrowAmount(bytes32 _lodgingFacilityId) public view virtual returns (uint256);
-  // function getClaimableAmountForMyFacilities() public view virtual returns (uint256);
-  // function getClaimableFacilityAmount(bytes32 _lodgingFacilityId) public view virtual returns (uint256);
-  // function claimAllFromEscrow() public virtual;
-
   // Stays
   function newStay(bytes32 _spaceId, uint16 _startDay, uint16 _numberOfDays, uint16 _quantity) public payable virtual returns (uint256);
   // getting all my Stays is via built-in NFT contract getter
