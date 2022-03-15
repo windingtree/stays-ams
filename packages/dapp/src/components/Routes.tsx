@@ -9,7 +9,7 @@ import { Protected } from './Protected';
 // Pages
 import { Home } from '../pages/Home';
 import { Search } from '../pages/Search';
-import { Manager } from '../pages/Manager';
+import { Rooms } from "../pages/Rooms";
 
 export interface RouteConfig {
   path: string;
@@ -23,23 +23,23 @@ export type Routes = RouteConfig[];
 
 export const pagesRoutesConfig: Routes = [
   {
-    path: '/',
+    path: "/",
     element: <Home />,
-    title: 'EthRio Stays',
-    label: 'Home'
+    title: "EthRio Stays",
+    label: "Home",
   },
   {
-    path: '/search',
+    path: "/search",
     element: <Search />,
-    title: 'Search for lodging facility',
-    label: 'Search'
+    title: "Search for lodging facility",
+    label: "Search",
   },
   {
-    path: '/manager',
-    element: <Manager />,
-    title: 'Lodging facility manager',
-    label: 'Manager',
-    protected: true
+    path: "/rooms",
+    element: <Rooms />,
+    title: "Room | Lodging facility manager",
+    label: "Rooms",
+    protected: true,
   },
 ];
 
