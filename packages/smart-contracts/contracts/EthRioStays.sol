@@ -389,7 +389,7 @@ contract EthRioStays is IEthRioStays, StayEscrow, ERC721URIStorage, ERC721Enumer
       }
     }
 
-    bytes32[] memory stayIds = new bytes32[](0);
+    bytes32[] memory stayIds = new bytes32[](currentCount);
     uint256 index;
 
     for (uint256 i = 0; i < currentCount; i++) {
@@ -411,7 +411,39 @@ contract EthRioStays is IEthRioStays, StayEscrow, ERC721URIStorage, ERC721Enumer
   function getFutureStayIdsByFacilityId(bytes32 _lodgingFacilityId)
     public view override returns (bytes32[] memory)
   {
+    if (block.timestamp < dayZero) {
+      return new bytes32[](0);
+    }
 
+    bytes32[] memory _activeSpacesIds =
+      getActiveSpaceIdsByFacilityId(_lodgingFacilityId);
+
+    uint256 currentDay = (block.timestamp - dayZero) / 86400;
+    uint256 futureCount;
+    Stay memory stay;
+
+    for (uint256 i = 0; i < _activeSpacesIds.length; i++) {
+      for (uint256 t=0; t < _stayTokens[_activeSpacesIds[i]].length; t++) {
+        stay = _stays[_stayTokens[_activeSpacesIds[i]][t]];
+        if ((stay.startDay + stay.numberOfDays) > currentDay) {
+          futureCount++;
+        }
+      }
+    }
+
+    bytes32[] memory stayIds = new bytes32[](futureCount);
+    uint256 index;
+
+    for (uint256 i = 0; i < futureCount; i++) {
+      for (uint256 t=0; t < _stayTokens[_activeSpacesIds[i]].length; t++) {
+        stay = _stays[_stayTokens[_activeSpacesIds[i]][t]];
+        if ((stay.startDay + stay.numberOfDays) > currentDay) {
+          stayIds[index] = _activeSpacesIds[i];
+        }
+      }
+    }
+
+    return stayIds;
   }
 
   // Book a new stay in a space
