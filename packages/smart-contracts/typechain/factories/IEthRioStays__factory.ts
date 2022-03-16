@@ -445,6 +445,44 @@ const _abi = [
         type: "bytes32",
       },
     ],
+    name: "getCurrentStayIdsByFacilityId",
+    outputs: [
+      {
+        internalType: "bytes32[]",
+        name: "",
+        type: "bytes32[]",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "_lodgingFacilityId",
+        type: "bytes32",
+      },
+    ],
+    name: "getFutureStayIdsByFacilityId",
+    outputs: [
+      {
+        internalType: "bytes32[]",
+        name: "",
+        type: "bytes32[]",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "_lodgingFacilityId",
+        type: "bytes32",
+      },
+    ],
     name: "getLodgingFacilityById",
     outputs: [
       {

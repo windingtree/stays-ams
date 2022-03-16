@@ -67,19 +67,19 @@ abstract contract IEthRioStays {
   // getting all my Stays is via built-in NFT contract getter
   // getting Stay details is via NFT's tokenURI getter
   // function getAllStayIdsByFacilityId(bytes32 _lodgingFacilityId) public virtual returns (uint256[] memory);
-  // function getCurrentStayIdsByFacilityId(bytes32 _lodgingFacilityId) public virtual returns (uint256[] memory);
-  // function getFutureStayIdsByFacilityId(bytes32 _lodgingFacilityId) public virtual returns (uint256[] memory);
+  function getCurrentStayIdsByFacilityId(bytes32 _lodgingFacilityId) public virtual returns (bytes32[] memory);
+  function getFutureStayIdsByFacilityId(bytes32 _lodgingFacilityId) public virtual returns (bytes32[] memory);
   function checkIn(uint256 _tokenId) public virtual;
   function checkOut(uint256 _tokenId) public virtual;
 
   // function requestChange(uint256 _tokenId, bytes32 _spaceId, uint16 _startDay, uint16 _numberOfDays, uint16 _quantity) public payable virtual;
   // function requestCancel(int256 _tokenId) public virtual;
   // function requestResponse(uint256 _tokenId, bool _answer) public virtual;
-  // @todo: change my contact information
+  // @todo change my contact information
 
   // Reviews
-  // @todo: leave a LF review
-  // @todo: leave a Guest review
-  // @todo: answer a review
-  // @todo: start a dispute on a review
+  // @todo leave a LF review
+  // @todo leave a Guest review
+  // @todo answer a review
+  // @todo start a dispute on a review
 }

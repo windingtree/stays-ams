@@ -19,6 +19,9 @@ contract EthRioStays is IEthRioStays, StayEscrow, ERC721URIStorage, ERC721Enumer
   uint32 public constant dayZero = 1645567342; // 22 Feb 2022
   address private constant _ukraineDAO = 0x633b7218644b83D57d90e7299039ebAb19698e9C; // ukrainedao.eth https://twitter.com/Ukraine_DAO/status/1497274679823941632
   uint8 private constant _ukraineDAOfee = 2; // percents
+  string public constant serviceURI = "https://localhost:3000/";
+  string private constant tokenImageURI = 'https://bafybeigg7mwwpnnm6mmk3twxc4arizoyc6ijnaye3pdciwcohheo7xi7hm.ipfs.dweb.link/token-image.png';
+
 
   // Schema conformance URLs for reference
   string public constant lodgingFacilitySchemaURI = "";
@@ -73,6 +76,9 @@ contract EthRioStays is IEthRioStays, StayEscrow, ERC721URIStorage, ERC721Enumer
 
   // Stay token => Stay
   mapping(uint256 => Stay) private _stays;
+
+  // spaceId => tokenId[]
+  mapping(bytes32 => uint256[]) private _stayTokens;
 
   constructor() ERC721("EthRioStays", "ERS22") {}
 
@@ -155,7 +161,7 @@ contract EthRioStays is IEthRioStays, StayEscrow, ERC721URIStorage, ERC721Enumer
     uint16[] memory _availability = new uint16[](_numberOfDays);
 
     for (uint16 _x = 0; _x < _numberOfDays; _x++) {
-      _availability[_x] = _s.capacity - _booked[_spaceId][_startDay+_x];
+      _availability[_x] = _s.capacity - _booked[_spaceId][_startDay + _x];
     }
 
     return _availability;
@@ -353,8 +359,61 @@ contract EthRioStays is IEthRioStays, StayEscrow, ERC721URIStorage, ERC721Enumer
   }
 
   /**
-   * Glider
+   * Stays
    */
+
+  // Returns a list of currently occupied spaces
+  function getCurrentStayIdsByFacilityId(bytes32 _lodgingFacilityId)
+    public view override returns (bytes32[] memory)
+  {
+    if (block.timestamp < dayZero) {
+      return new bytes32[](0);
+    }
+
+    bytes32[] memory _activeSpacesIds =
+      getActiveSpaceIdsByFacilityId(_lodgingFacilityId);
+
+    uint256 currentDay = (block.timestamp - dayZero) / 86400;
+    uint256 currentCount;
+    Stay memory stay;
+
+    for (uint256 i = 0; i < _activeSpacesIds.length; i++) {
+      for (uint256 t=0; t < _stayTokens[_activeSpacesIds[i]].length; t++) {
+        stay = _stays[_stayTokens[_activeSpacesIds[i]][t]];
+        if (
+          currentDay >= stay.startDay &&
+          currentDay <= (stay.startDay + stay.numberOfDays)
+        ) {
+          currentCount++;
+        }
+      }
+    }
+
+    bytes32[] memory stayIds = new bytes32[](0);
+    uint256 index;
+
+    for (uint256 i = 0; i < currentCount; i++) {
+      for (uint256 t=0; t < _stayTokens[_activeSpacesIds[i]].length; t++) {
+        stay = _stays[_stayTokens[_activeSpacesIds[i]][t]];
+        if (
+          currentDay >= stay.startDay &&
+          currentDay <= (stay.startDay + stay.numberOfDays)
+        ) {
+          stayIds[index] = _activeSpacesIds[i];
+        }
+      }
+    }
+
+    return stayIds;
+  }
+
+  // Returns a list of booked spaces (except for checked in spaces)
+  function getFutureStayIdsByFacilityId(bytes32 _lodgingFacilityId)
+    public view override returns (bytes32[] memory)
+  {
+
+  }
+
   // Book a new stay in a space
   function newStay(
     bytes32 _spaceId,
@@ -390,7 +449,9 @@ contract EthRioStays is IEthRioStays, StayEscrow, ERC721URIStorage, ERC721Enumer
       _spaceId,
       _startDay,
       _numberOfDays,
-      _quantity
+      _quantity,
+      tokenImageURI,
+      serviceURI
     );
     _setTokenURI(_newStayTokenId, _tokenURI);
 
@@ -402,10 +463,7 @@ contract EthRioStays is IEthRioStays, StayEscrow, ERC721URIStorage, ERC721Enumer
       false,
       false
     );
-
-    // @todo: escrow
-    // facility owner should be able to claim 1-night amount during check-in
-    // then, facility owner should be able to claim full amount on check-out day
+    _stayTokens[_spaceId].push(_newStayTokenId);
 
     // @todo LIF/WIN
     // @todo LodgingFacility loyalty token
@@ -485,7 +543,7 @@ contract EthRioStays is IEthRioStays, StayEscrow, ERC721URIStorage, ERC721Enumer
   }
 
   function _checkBookingParams(bytes32 _spaceId, uint256 _startDay, uint16 _numberOfDays) internal view {
-    require(dayZero + _startDay * 86400 > block.timestamp - 86400 * 2, "Don't stay in the past"); // @todo this could be delegated to frontend
+    require(dayZero + _startDay * 86400 > block.timestamp - 86400 * 2, "Don't stay in the past");
     require(lodgingFacilities[spaces[_spaceId].lodgingFacilityId].active, "Lodging Facility is inactive");
     require(spaces[_spaceId].active, "Space is inactive");
     require(_numberOfDays > 0, "Number of days should be 1 or more");

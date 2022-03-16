@@ -5,15 +5,15 @@ import "@openzeppelin/contracts/utils/Base64.sol";
 
 library StayTokenMeta {
 
-  string constant private _tokenImage = 'https://bafybeigg7mwwpnnm6mmk3twxc4arizoyc6ijnaye3pdciwcohheo7xi7hm.ipfs.dweb.link/token-image.png';
-
   function createTokenUri(
     uint256 tokenId,
     bytes32 facilityId,
     bytes32 spaceId,
     uint16 startDay,
     uint16 numberOfDays,
-    uint16 quantity
+    uint16 quantity,
+    string memory tokenImageURI,
+    string memory serviceURI
   ) internal pure returns (string memory) {
     // Creation of data URI is split up into several functions because of
     // variables stack number restriction in Solidity
@@ -21,7 +21,7 @@ library StayTokenMeta {
       string(
         abi.encodePacked(
           '{',
-          createMandatoryProps(tokenId),
+          createMandatoryProps(tokenId, tokenImageURI, serviceURI, spaceId),
           ',',
           createAttributesProps(facilityId, spaceId, startDay, numberOfDays, quantity),
           '}'
@@ -30,13 +30,22 @@ library StayTokenMeta {
     );
   }
 
-  function createMandatoryProps(uint256 tokenId) internal pure returns (string memory) {
+  function createMandatoryProps(
+    uint256 tokenId,
+    string memory tokenImageURI,
+    string memory serviceURI,
+    bytes32 spaceId
+  ) internal pure returns (string memory) {
     return string(
       abi.encodePacked(
         '"name":"EthRioStays #',
         uintToString(tokenId),
         '","description":"Stay at lodging facility","image":"',
-        _tokenImage,
+        tokenImageURI,
+        '","external_url":"',
+        serviceURI,
+        'space/',
+        toHex(spaceId),
         '"'
       )
     );

@@ -32,6 +32,8 @@ export interface IEthRioStaysInterface extends utils.Interface {
     "getActiveSpaceIdsByFacilityId(bytes32)": FunctionFragment;
     "getAllLodgingFacilityIds()": FunctionFragment;
     "getAvailability(bytes32,uint16,uint16)": FunctionFragment;
+    "getCurrentStayIdsByFacilityId(bytes32)": FunctionFragment;
+    "getFutureStayIdsByFacilityId(bytes32)": FunctionFragment;
     "getLodgingFacilityById(bytes32)": FunctionFragment;
     "getLodgingFacilityIdsByOwner(address)": FunctionFragment;
     "getSpaceById(bytes32)": FunctionFragment;
@@ -86,6 +88,14 @@ export interface IEthRioStaysInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "getAvailability",
     values: [BytesLike, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getCurrentStayIdsByFacilityId",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getFutureStayIdsByFacilityId",
+    values: [BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "getLodgingFacilityById",
@@ -157,6 +167,14 @@ export interface IEthRioStaysInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getAvailability",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getCurrentStayIdsByFacilityId",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getFutureStayIdsByFacilityId",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -392,6 +410,16 @@ export interface IEthRioStays extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[number[]]>;
 
+    getCurrentStayIdsByFacilityId(
+      _lodgingFacilityId: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    getFutureStayIdsByFacilityId(
+      _lodgingFacilityId: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     getLodgingFacilityById(
       _lodgingFacilityId: BytesLike,
       overrides?: CallOverrides
@@ -526,6 +554,16 @@ export interface IEthRioStays extends BaseContract {
     overrides?: CallOverrides
   ): Promise<number[]>;
 
+  getCurrentStayIdsByFacilityId(
+    _lodgingFacilityId: BytesLike,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  getFutureStayIdsByFacilityId(
+    _lodgingFacilityId: BytesLike,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   getLodgingFacilityById(
     _lodgingFacilityId: BytesLike,
     overrides?: CallOverrides
@@ -650,6 +688,16 @@ export interface IEthRioStays extends BaseContract {
       _numberOfDays: BigNumberish,
       overrides?: CallOverrides
     ): Promise<number[]>;
+
+    getCurrentStayIdsByFacilityId(
+      _lodgingFacilityId: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<string[]>;
+
+    getFutureStayIdsByFacilityId(
+      _lodgingFacilityId: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<string[]>;
 
     getLodgingFacilityById(
       _lodgingFacilityId: BytesLike,
@@ -884,6 +932,16 @@ export interface IEthRioStays extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getCurrentStayIdsByFacilityId(
+      _lodgingFacilityId: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    getFutureStayIdsByFacilityId(
+      _lodgingFacilityId: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     getLodgingFacilityById(
       _lodgingFacilityId: BytesLike,
       overrides?: CallOverrides
@@ -1005,6 +1063,16 @@ export interface IEthRioStays extends BaseContract {
       _startDay: BigNumberish,
       _numberOfDays: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getCurrentStayIdsByFacilityId(
+      _lodgingFacilityId: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    getFutureStayIdsByFacilityId(
+      _lodgingFacilityId: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     getLodgingFacilityById(
