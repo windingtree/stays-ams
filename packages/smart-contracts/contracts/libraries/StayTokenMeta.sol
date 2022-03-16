@@ -9,9 +9,9 @@ library StayTokenMeta {
     uint256 tokenId,
     bytes32 facilityId,
     bytes32 spaceId,
-    uint16 startDay,
-    uint16 numberOfDays,
-    uint16 quantity,
+    uint256 startDay,
+    uint256 numberOfDays,
+    uint256 quantity,
     string memory tokenImageURI,
     string memory serviceURI
   ) internal pure returns (string memory) {
@@ -54,9 +54,9 @@ library StayTokenMeta {
   function createAttributesProps(
     bytes32 facilityId,
     bytes32 spaceId,
-    uint16 startDay,
-    uint16 numberOfDays,
-    uint16 quantity
+    uint256 startDay,
+    uint256 numberOfDays,
+    uint256 quantity
   ) internal pure returns (string memory) {
     return string(
       abi.encodePacked(

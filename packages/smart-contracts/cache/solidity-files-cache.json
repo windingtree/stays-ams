@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/home/kostysh/dev/stays-remote/packages/smart-contracts/contracts/EthRioStays.sol": {
-      "lastModificationDate": 1647434074429,
-      "contentHash": "4e23fd04e8394ccecb181093b6cf0a90",
+      "lastModificationDate": 1647459164641,
+      "contentHash": "7141141804e7631f3976802a508ef164",
       "sourceName": "contracts/EthRioStays.sol",
       "solcConfig": {
         "version": "0.8.7",
@@ -42,7 +42,8 @@
         "@openzeppelin/contracts/utils/Counters.sol",
         "./IEthRioStays.sol",
         "./StayEscrow.sol",
-        "./libraries/StayTokenMeta.sol"
+        "./libraries/StayTokenMeta.sol",
+        "hardhat/console.sol"
       ],
       "versionPragmas": [
         "^0.8.0"
@@ -188,8 +189,8 @@
       ]
     },
     "/home/kostysh/dev/stays-remote/packages/smart-contracts/contracts/IEthRioStays.sol": {
-      "lastModificationDate": 1647376625083,
-      "contentHash": "53734f5191c3db69f7098ed9dec9aee0",
+      "lastModificationDate": 1647457753227,
+      "contentHash": "effbc782e7fbc6ff642c36420c0175f8",
       "sourceName": "contracts/IEthRioStays.sol",
       "solcConfig": {
         "version": "0.8.7",
@@ -230,8 +231,8 @@
       ]
     },
     "/home/kostysh/dev/stays-remote/packages/smart-contracts/contracts/StayEscrow.sol": {
-      "lastModificationDate": 1646686135738,
-      "contentHash": "22b73dadf245d6a4e8d5fad8843edda6",
+      "lastModificationDate": 1647459928584,
+      "contentHash": "cef6499c4310bacc9caab6c10fc94d18",
       "sourceName": "contracts/StayEscrow.sol",
       "solcConfig": {
         "version": "0.8.7",
@@ -264,7 +265,8 @@
         }
       },
       "imports": [
-        "@openzeppelin/contracts/utils/Address.sol"
+        "@openzeppelin/contracts/utils/Address.sol",
+        "hardhat/console.sol"
       ],
       "versionPragmas": [
         "^0.8.0"
@@ -274,8 +276,8 @@
       ]
     },
     "/home/kostysh/dev/stays-remote/packages/smart-contracts/contracts/libraries/StayTokenMeta.sol": {
-      "lastModificationDate": 1647366276329,
-      "contentHash": "9463109baaef54f33c89348204aa3055",
+      "lastModificationDate": 1647457589108,
+      "contentHash": "519c24c897b2bfd296b0fabb1648d4f4",
       "sourceName": "contracts/libraries/StayTokenMeta.sol",
       "solcConfig": {
         "version": "0.8.7",
@@ -788,6 +790,48 @@
       ],
       "artifacts": [
         "IERC721Enumerable"
+      ]
+    },
+    "/home/kostysh/dev/stays-remote/packages/smart-contracts/node_modules/hardhat/console.sol": {
+      "lastModificationDate": 1646740970233,
+      "contentHash": "cc4777addd464ea56fa35b1c45df0591",
+      "sourceName": "hardhat/console.sol",
+      "solcConfig": {
+        "version": "0.8.7",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "devdoc",
+                "userdoc",
+                "storageLayout",
+                "evm.gasEstimates"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": true
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.4.22 <0.9.0"
+      ],
+      "artifacts": [
+        "console"
       ]
     }
   }

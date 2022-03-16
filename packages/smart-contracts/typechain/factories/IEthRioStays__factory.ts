@@ -170,9 +170,9 @@ const _abi = [
       },
       {
         indexed: false,
-        internalType: "uint64",
+        internalType: "uint256",
         name: "capacity",
-        type: "uint64",
+        type: "uint256",
       },
       {
         indexed: false,
@@ -226,9 +226,9 @@ const _abi = [
       },
       {
         indexed: false,
-        internalType: "uint64",
+        internalType: "uint256",
         name: "capacity",
-        type: "uint64",
+        type: "uint256",
       },
       {
         indexed: false,
@@ -273,9 +273,9 @@ const _abi = [
         type: "bytes32",
       },
       {
-        internalType: "uint16",
+        internalType: "uint256",
         name: "_capacity",
-        type: "uint16",
+        type: "uint256",
       },
       {
         internalType: "uint256",
@@ -416,22 +416,22 @@ const _abi = [
         type: "bytes32",
       },
       {
-        internalType: "uint16",
+        internalType: "uint256",
         name: "_startDay",
-        type: "uint16",
+        type: "uint256",
       },
       {
-        internalType: "uint16",
+        internalType: "uint256",
         name: "_numberOfDays",
-        type: "uint16",
+        type: "uint256",
       },
     ],
     name: "getAvailability",
     outputs: [
       {
-        internalType: "uint16[]",
+        internalType: "uint256[]",
         name: "",
-        type: "uint16[]",
+        type: "uint256[]",
       },
     ],
     stateMutability: "view",
@@ -549,9 +549,9 @@ const _abi = [
         type: "bytes32",
       },
       {
-        internalType: "uint16",
+        internalType: "uint256",
         name: "capacity",
-        type: "uint16",
+        type: "uint256",
       },
       {
         internalType: "uint256",
@@ -599,19 +599,19 @@ const _abi = [
         type: "bytes32",
       },
       {
-        internalType: "uint16",
+        internalType: "uint256",
         name: "_startDay",
-        type: "uint16",
+        type: "uint256",
       },
       {
-        internalType: "uint16",
+        internalType: "uint256",
         name: "_numberOfDays",
-        type: "uint16",
+        type: "uint256",
       },
       {
-        internalType: "uint16",
+        internalType: "uint256",
         name: "_quantity",
-        type: "uint16",
+        type: "uint256",
       },
     ],
     name: "newStay",
@@ -692,9 +692,9 @@ const _abi = [
         type: "bytes32",
       },
       {
-        internalType: "uint16",
+        internalType: "uint256",
         name: "_capacity",
-        type: "uint16",
+        type: "uint256",
       },
       {
         internalType: "uint256",

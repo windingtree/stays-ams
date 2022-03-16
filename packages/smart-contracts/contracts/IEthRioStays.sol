@@ -10,8 +10,8 @@ abstract contract IEthRioStays {
   event LodgingFacilityActiveState(bytes32 facilityId, bool active);
   event LodgingFacilityOwnershipTransfer(bytes32 facilityId, address indexed prevOwner, address indexed newOwner);
   event LodgingFacilityRemoved(bytes32 facilityId);
-  event SpaceAdded(bytes32 spaceId, bytes32 facilityId, uint64 capacity, uint256 pricePerNightWei, bool active, string dataURI);
-  event SpaceUpdated(bytes32 spaceId, bytes32 facilityId, uint64 capacity, uint256 pricePerNightWei, bool active, string dataURI);
+  event SpaceAdded(bytes32 spaceId, bytes32 facilityId, uint256 capacity, uint256 pricePerNightWei, bool active, string dataURI);
+  event SpaceUpdated(bytes32 spaceId, bytes32 facilityId, uint256 capacity, uint256 pricePerNightWei, bool active, string dataURI);
   event SpaceRemoved(bytes32 spaceId);
   event NewStay(bytes32 spaceId, uint256 tokenId);
   event CheckIn(uint256 tokenId);
@@ -22,7 +22,7 @@ abstract contract IEthRioStays {
   function getActiveLodgingFacilityIds() public view virtual returns (bytes32[] memory);
   function getSpaceIdsByFacilityId(bytes32 _lodgingFacilityId) public virtual returns (bytes32[] memory);
   function getActiveSpaceIdsByFacilityId(bytes32 _lodgingFacilityId) public virtual returns (bytes32[] memory);
-  function getAvailability(bytes32 _spaceId, uint16 _startDay, uint16 _numberOfDays) public view virtual returns (uint16[] memory);
+  function getAvailability(bytes32 _spaceId, uint256 _startDay, uint256 _numberOfDays) public view virtual returns (uint256[] memory);
 
   // For the lodging facility owner, to display their facilities
   function getLodgingFacilityIdsByOwner(address _owner) public virtual returns (bytes32[] memory);
@@ -37,7 +37,7 @@ abstract contract IEthRioStays {
   function getSpaceById(bytes32 _spaceId) public view virtual returns (
     bool exists,
     bytes32 lodgingFacilityId,
-    uint16 capacity,
+    uint256 capacity,
     uint256 pricePerNightWei,
     bool active,
     string memory dataURI
@@ -53,8 +53,8 @@ abstract contract IEthRioStays {
   function deleteLodgingFacility(bytes32 _lodgingFacilityId) public virtual;
 
   // Space management
-  function addSpace(bytes32 _lodgingFacilityId, uint16 _capacity, uint256 _pricePerNightWei, bool _active, string calldata _dataURI) public virtual;
-  function updateSpace(bytes32 _spaceId, uint16 _capacity, uint256 _pricePerNightWei, bool _active, string calldata _dataURI) public virtual;
+  function addSpace(bytes32 _lodgingFacilityId, uint256 _capacity, uint256 _pricePerNightWei, bool _active, string calldata _dataURI) public virtual;
+  function updateSpace(bytes32 _spaceId, uint256 _capacity, uint256 _pricePerNightWei, bool _active, string calldata _dataURI) public virtual;
   function deleteSpace(bytes32 _spaceId) public virtual;
 
   // Delegates (addresses that can perform certain actions, like check-in and check-out)
@@ -63,7 +63,7 @@ abstract contract IEthRioStays {
   // function removeDelegate(bytes32 _lodgingFacilityId, address _delegate) public virtual;
 
   // Stays
-  function newStay(bytes32 _spaceId, uint16 _startDay, uint16 _numberOfDays, uint16 _quantity) public payable virtual returns (uint256);
+  function newStay(bytes32 _spaceId, uint256 _startDay, uint256 _numberOfDays, uint256 _quantity) public payable virtual returns (uint256);
   // getting all my Stays is via built-in NFT contract getter
   // getting Stay details is via NFT's tokenURI getter
   // function getAllStayIdsByFacilityId(bytes32 _lodgingFacilityId) public virtual returns (uint256[] memory);
@@ -72,7 +72,7 @@ abstract contract IEthRioStays {
   function checkIn(uint256 _tokenId) public virtual;
   function checkOut(uint256 _tokenId) public virtual;
 
-  // function requestChange(uint256 _tokenId, bytes32 _spaceId, uint16 _startDay, uint16 _numberOfDays, uint16 _quantity) public payable virtual;
+  // function requestChange(uint256 _tokenId, bytes32 _spaceId, uint256 _startDay, uint256 _numberOfDays, uint256 _quantity) public payable virtual;
   // function requestCancel(int256 _tokenId) public virtual;
   // function requestResponse(uint256 _tokenId, bool _answer) public virtual;
   // @todo change my contact information

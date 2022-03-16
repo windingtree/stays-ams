@@ -20,8 +20,8 @@ export interface StayEscrowInterface extends utils.Interface {
   contractName: "StayEscrow";
   functions: {
     "deposit(address,bytes32)": FunctionFragment;
-    "depositsOf(address,bytes32)": FunctionFragment;
-    "depositsState(address,bytes32)": FunctionFragment;
+    "depositOf(address,bytes32)": FunctionFragment;
+    "depositState(address,bytes32)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -29,28 +29,28 @@ export interface StayEscrowInterface extends utils.Interface {
     values: [string, BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "depositsOf",
+    functionFragment: "depositOf",
     values: [string, BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "depositsState",
+    functionFragment: "depositState",
     values: [string, BytesLike]
   ): string;
 
   decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "depositsOf", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "depositOf", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "depositsState",
+    functionFragment: "depositState",
     data: BytesLike
   ): Result;
 
   events: {
     "Deposited(address,uint256,bytes32)": EventFragment;
-    "Withdrawn(address,uint256,bytes32)": EventFragment;
+    "Withdraw(address,address,uint256,bytes32)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Deposited"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Withdrawn"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Withdraw"): EventFragment;
 }
 
 export type DepositedEvent = TypedEvent<
@@ -60,12 +60,12 @@ export type DepositedEvent = TypedEvent<
 
 export type DepositedEventFilter = TypedEventFilter<DepositedEvent>;
 
-export type WithdrawnEvent = TypedEvent<
-  [string, BigNumber, string],
-  { payee: string; weiAmount: BigNumber; spaceId: string }
+export type WithdrawEvent = TypedEvent<
+  [string, string, BigNumber, string],
+  { payer: string; payee: string; weiAmount: BigNumber; spaceId: string }
 >;
 
-export type WithdrawnEventFilter = TypedEventFilter<WithdrawnEvent>;
+export type WithdrawEventFilter = TypedEventFilter<WithdrawEvent>;
 
 export interface StayEscrow extends BaseContract {
   contractName: "StayEscrow";
@@ -96,57 +96,57 @@ export interface StayEscrow extends BaseContract {
 
   functions: {
     deposit(
-      payee: string,
+      payer: string,
       spaceId: BytesLike,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    depositsOf(
-      payee: string,
+    depositOf(
+      payer: string,
       spaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    depositsState(
-      payee: string,
+    depositState(
+      payer: string,
       spaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<[number]>;
   };
 
   deposit(
-    payee: string,
+    payer: string,
     spaceId: BytesLike,
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  depositsOf(
-    payee: string,
+  depositOf(
+    payer: string,
     spaceId: BytesLike,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  depositsState(
-    payee: string,
+  depositState(
+    payer: string,
     spaceId: BytesLike,
     overrides?: CallOverrides
   ): Promise<number>;
 
   callStatic: {
     deposit(
-      payee: string,
+      payer: string,
       spaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    depositsOf(
-      payee: string,
+    depositOf(
+      payer: string,
       spaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    depositsState(
-      payee: string,
+    depositState(
+      payer: string,
       spaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<number>;
@@ -164,33 +164,35 @@ export interface StayEscrow extends BaseContract {
       spaceId?: null
     ): DepositedEventFilter;
 
-    "Withdrawn(address,uint256,bytes32)"(
+    "Withdraw(address,address,uint256,bytes32)"(
+      payer?: string | null,
       payee?: string | null,
       weiAmount?: null,
       spaceId?: null
-    ): WithdrawnEventFilter;
-    Withdrawn(
+    ): WithdrawEventFilter;
+    Withdraw(
+      payer?: string | null,
       payee?: string | null,
       weiAmount?: null,
       spaceId?: null
-    ): WithdrawnEventFilter;
+    ): WithdrawEventFilter;
   };
 
   estimateGas: {
     deposit(
-      payee: string,
+      payer: string,
       spaceId: BytesLike,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    depositsOf(
-      payee: string,
+    depositOf(
+      payer: string,
       spaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    depositsState(
-      payee: string,
+    depositState(
+      payer: string,
       spaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -198,19 +200,19 @@ export interface StayEscrow extends BaseContract {
 
   populateTransaction: {
     deposit(
-      payee: string,
+      payer: string,
       spaceId: BytesLike,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    depositsOf(
-      payee: string,
+    depositOf(
+      payer: string,
       spaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    depositsState(
-      payee: string,
+    depositState(
+      payer: string,
       spaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

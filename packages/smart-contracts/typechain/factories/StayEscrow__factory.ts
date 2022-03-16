@@ -38,6 +38,12 @@ const _abi = [
       {
         indexed: true,
         internalType: "address",
+        name: "payer",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
         name: "payee",
         type: "address",
       },
@@ -54,14 +60,14 @@ const _abi = [
         type: "bytes32",
       },
     ],
-    name: "Withdrawn",
+    name: "Withdraw",
     type: "event",
   },
   {
     inputs: [
       {
         internalType: "address",
-        name: "payee",
+        name: "payer",
         type: "address",
       },
       {
@@ -79,7 +85,7 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "payee",
+        name: "payer",
         type: "address",
       },
       {
@@ -88,7 +94,7 @@ const _abi = [
         type: "bytes32",
       },
     ],
-    name: "depositsOf",
+    name: "depositOf",
     outputs: [
       {
         internalType: "uint256",
@@ -103,7 +109,7 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "payee",
+        name: "payer",
         type: "address",
       },
       {
@@ -112,7 +118,7 @@ const _abi = [
         type: "bytes32",
       },
     ],
-    name: "depositsState",
+    name: "depositState",
     outputs: [
       {
         internalType: "enum StayEscrow.State",

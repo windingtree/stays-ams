@@ -6,15 +6,14 @@ import {
   deployments,
   getUnnamedAccounts,
   getNamedAccounts,
-  hardhatArguments,
-  network,
 } from "hardhat";
-import { BytesLike, utils } from "ethers";
+import { BytesLike, BigNumber, utils } from "ethers";
 import { expect } from "./utils/chai-setup";
 
 import { EthRioStays } from "../typechain";
 import { setupUser, setupUsers } from "./utils";
 import { decodeDataUri } from './utils/dataUri';
+import { extractEventFromTx } from './utils'
 
 const setup = deployments.createFixture(async () => {
   await deployments.fixture("EthRioStays");
@@ -242,7 +241,9 @@ describe("EthRioStays.sol", () => {
         it("should return correct initial values", async () => {
           expect(
             await alice.ethRioStays.getAvailability(sid, 100, 3)
-          ).to.deep.equal([10, 10, 10]);
+          ).to.deep.equal([
+            BigNumber.from(10), BigNumber.from(10), BigNumber.from(10)
+          ]);
         });
 
         it("should return correct values", async () => {
@@ -256,7 +257,10 @@ describe("EthRioStays.sol", () => {
           );
           expect(
             await alice.ethRioStays.getAvailability(sid, 99, 5)
-          ).to.deep.equal([10, 5, 10, 10, 10]);
+          ).to.deep.equal([
+            BigNumber.from(10), BigNumber.from(5), BigNumber.from(10),
+            BigNumber.from(10), BigNumber.from(10)
+          ]);
           await alice.ethRioStays.newStay(
             sid,
             101,
@@ -266,7 +270,10 @@ describe("EthRioStays.sol", () => {
           );
           expect(
             await alice.ethRioStays.getAvailability(sid, 99, 5)
-          ).to.deep.equal([10, 5, 7, 7, 10]);
+          ).to.deep.equal([
+            BigNumber.from(10), BigNumber.from(5), BigNumber.from(7),
+            BigNumber.from(7), BigNumber.from(10)
+          ]);
           await alice.ethRioStays.newStay(
             sid,
             102,
@@ -276,7 +283,10 @@ describe("EthRioStays.sol", () => {
           );
           expect(
             await alice.ethRioStays.getAvailability(sid, 99, 5)
-          ).to.deep.equal([10, 5, 7, 6, 10]);
+          ).to.deep.equal([
+            BigNumber.from(10), BigNumber.from(5), BigNumber.from(7),
+            BigNumber.from(6), BigNumber.from(10)
+          ]);
           await alice.ethRioStays.newStay(
             sid, 99, 2, 2,
              {
@@ -284,13 +294,18 @@ describe("EthRioStays.sol", () => {
           });
           expect(
             await alice.ethRioStays.getAvailability(sid, 99, 5)
-          ).to.deep.equal([8, 3, 7, 6, 10]);
+          ).to.deep.equal([
+            BigNumber.from(8), BigNumber.from(3), BigNumber.from(7),
+            BigNumber.from(6), BigNumber.from(10)]);
           await alice.ethRioStays.newStay(sid, 99, 5, 3, {
             value: 1000000,
           });
           expect(
             await alice.ethRioStays.getAvailability(sid, 99, 5)
-          ).to.deep.equal([5, 0, 4, 3, 7]);
+          ).to.deep.equal([
+            BigNumber.from(5), BigNumber.from(0), BigNumber.from(4),
+            BigNumber.from(3), BigNumber.from(7)
+          ]);
         });
       });
 
@@ -357,6 +372,7 @@ describe("EthRioStays.sol", () => {
           const dataUri = decodeDataUri(await deployer.ethRioStays.tokenURI(1), true) as any;
 
           expect(dataUri.name).to.equal('EthRioStays #1');
+          // @todo add all props
         });
 
         // it("should send the money to the facility escrow", async () => {
@@ -381,71 +397,125 @@ describe("EthRioStays.sol", () => {
     }
   );
 
-  // describe("modifications, cancellations", async () => {
-  //   describe("modifyStay()", async () => {
-  //     it("should revert if there is no availability", async () => {
+  describe("modifications, cancellations", async () => {
+    const valuePerNight = 100;
+    let fid;
+    let f;
+    let sid: BytesLike;
+    let s;
 
-  //     })
+    beforeEach(async () => {
+      await bob.ethRioStays["registerLodgingFacility(string,bool)"](
+        testDataUri,
+        true
+      );
+      // eslint-disable-next-line prefer-destructuring
+      fid = (await bob.ethRioStays.getAllLodgingFacilityIds())[0];
+      f = await bob.ethRioStays.lodgingFacilities(fid);
 
-  //     it("should revert if payment is not provided", async () => {
+      await bob.ethRioStays.addSpace(
+        fid,
+        10,
+        valuePerNight,
+        true,
+        testDataUri + "space"
+      );
+      // eslint-disable-next-line prefer-destructuring
+      sid = (await bob.ethRioStays.getSpaceIdsByFacilityId(fid))[0];
+      s = await bob.ethRioStays.spaces(sid);
+    });
 
-  //     })
+    describe("check in, check out", async () => {
+      const startDay = 100;
+      const numDays = 3;
+      let tokenId;
+      let initialBalanceBob;
 
-  //     it("should modify the Stay", async () => {
+      describe("checkIn()", async () => {
+        let eventNewStay;
+        let eventCheckIn;
+        let txCheckIn;
 
-  //     })
+        beforeEach(async () => {
+          initialBalanceBob = await bob.ethRioStays.provider.getBalance(bob.address);
+          let tx = await alice.ethRioStays.newStay(
+            sid,
+            startDay,
+            numDays,
+            1,
+            { value: valuePerNight * numDays }
+          );
 
-  //     it("should divert a % to UkraineDAO", async () => {
+          eventNewStay = await extractEventFromTx(tx, 'NewStay');
+          tokenId = eventNewStay.tokenId;
+          const deposit = await alice.ethRioStays.depositOf(alice.address, sid);
 
-  //     })
+          expect(deposit.toNumber()).to.equal(valuePerNight * numDays);
 
-  //     it("should emit...", async () => {
+          txCheckIn = await alice.ethRioStays.checkIn(tokenId);
+          eventCheckIn = await extractEventFromTx(txCheckIn, 'CheckIn');
 
-  //     })
-  //   })
+          await expect(
+            alice.ethRioStays.checkIn(tokenId)
+          ).to.revertedWith('Already checked in');
+        });
 
-  //   describe("cancelStay()", async () => {
-  //     it("should refund the user and burn the NFT", async () => {
+        it("should change Stay status to 'checked_in'", async () => {
+          expect(
+            await alice.ethRioStays.depositState(alice.address, sid)
+          ).to.equal(1);
+        })
 
-  //     })
+        it("should send the first day escrow amount to the facility address", async () => {
+          const {
+            payer,
+            payee,
+            weiAmount,
+            spaceId
+          } = await extractEventFromTx(txCheckIn, 'Withdraw');
+          expect(payer).to.equal(alice.address);
+          expect(payee).to.equal(bob.address);
+          expect(weiAmount).to.equal(BigNumber.from(valuePerNight));
+          expect(spaceId).to.equal(sid);
+          const newBalanceBob = await bob.ethRioStays.provider.getBalance(bob.address);
+          expect(newBalanceBob).to.equal(initialBalanceBob.add(BigNumber.from(valuePerNight)));
+        });
 
-  //     it("should emit...", async () => {
+        it("should emit...", async () => {
+          expect(eventCheckIn.tokenId).to.equal(tokenId);
+        });
+      })
 
-  //     })
-  //   })
-  // })
+      describe("checkOut()", async () => {
+        let txCheckOut;
+        let eventCheckOut;
 
-  // describe("check in, check out", async () => {
-  //   describe("checkIn()", async () => {
-  //     it("should change Stay status to 'checked_in'", async () => {
+        beforeAll(async () => {
+          await expect(
+            bob.ethRioStays.checkOut(tokenId)
+          ).to.revertedWith('Forbidden unless checkout date');
 
-  //     })
+          await ethers.provider.send('evm_increaseTime', [(startDay + 1) * 86400]);
 
-  //     it("should send the first day escrow amount to the facility address", async () => {
+          await expect(
+            alice.ethRioStays.checkOut(tokenId)
+          ).to.revertedWith('Only space owner is allowed');
 
-  //     })
+          txCheckOut = await bob.ethRioStays.checkOut(tokenId);
+          eventCheckOut = await extractEventFromTx(txCheckOut, 'CheckOut');
+        });
 
-  //     it("should divert a % to UkraineDAO", async () => {
+        it("should send remaining escrow amount to the facility address", async () => {
+          const finalBalanceBob = await bob.ethRioStays.provider.getBalance(bob.address);
+          expect(finalBalanceBob).to.equal(initialBalanceBob.add(BigNumber.from((numDays - 1) * valuePerNight)));
+        });
 
-  //     })
+        it("should emit...", async () => {
+          expect(eventCheckOut.tokenId).to.equal(tokenId);
+        });
+      })
+    });
 
-  //     it("should emit...", async () => {
+  });
 
-  //     })
-  //   })
-
-  //   describe("checkOut()", async () => {
-  //     it("should send remaining escrow amount to the facility address", async () => {
-
-  //     })
-
-  //     it("should divert a % to UkraineDAO", async () => {
-
-  //     })
-
-  //     it("should emit...", async () => {
-
-  //     })
-  //   })
-  // })
 });
