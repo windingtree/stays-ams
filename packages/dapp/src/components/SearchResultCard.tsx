@@ -1,17 +1,11 @@
-import { useContext } from 'react';
-import { Box, Text, ResponsiveContext, Image, Grid, Button } from 'grommet';
-import Logger from '../utils/logger';
+import { Box, Text, Image, Grid, Button } from 'grommet';
 import type { Space } from 'stays-data-models'
 import { useNavigate } from 'react-router-dom';
 import { useAppState } from '../store';
 import { ThemeMode } from './SwitchThemeMode';
 
-// Initialize logger
-const logger = Logger('Account');
-
 export const SearchResultCard: React.FC<{ space: Space }> = ({ space }) => {
   const { themeMode } = useAppState();
-  const size = useContext(ResponsiveContext);
   const navigate = useNavigate();
 
   return (
