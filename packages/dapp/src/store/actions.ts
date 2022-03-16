@@ -30,8 +30,9 @@ export interface State {
   stopIpfsNode: Function;
   isBootstrapLoading: boolean;
   bootstrapped?: number;
+  searchTimestamp?: number;
   lodgingFacilities: LodgingFacilityRecord[];
-  spaces: SpaceRecord[];
+  searchSpaces: SpaceRecord[];
   [key: string]: unknown | GenericStateRecord[];
 }
 
@@ -145,6 +146,11 @@ export interface SetBootstrappedAction {
   payload: number;
 }
 
+export interface SetAvailabilityTimestampAction {
+  type: 'SET_AVAILABILITY_TIMESTAMP';
+  payload: number;
+}
+
 export type Action =
   | SetConnectingAction
   | SetAccountAction
@@ -162,6 +168,7 @@ export type Action =
   | ResetRecordAction
   | SetBootstrapLoadingAction
   | SetBootstrappedAction
+  | SetAvailabilityTimestampAction
   | AddErrorAction
   | RemoveErrorAction
   | RemoveAllErrorsAction;

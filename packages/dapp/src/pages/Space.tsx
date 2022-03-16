@@ -5,16 +5,16 @@ import { useMemo } from 'react';
 import { ThemeMode } from '../components/SwitchThemeMode';
 
 export const Space: React.FC = () => {
-  const { spaces, themeMode } = useAppState();
+  const { searchSpaces, themeMode } = useAppState();
   const searchParams = window.location.pathname.substring(7)
-  const space = useMemo(() => spaces.find((space) => space.id === searchParams), [spaces, searchParams])
+
+  const space = useMemo(() => searchSpaces.find((space) => space.id === searchParams), [searchSpaces, searchParams])
 
   const borderColor = themeMode === ThemeMode.light ? 'brand' : 'accent-1'
   return (
     <PageWrapper
       breadcrumbs={[
         {
-          path: '/search',
           label: 'Search'
         }
       ]}

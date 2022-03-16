@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { FormPrevious } from 'grommet-icons';
 
 export interface Breadcrumb {
-  path: string;
+  path?: string;
   label: string;
 }
 
@@ -14,7 +14,7 @@ export interface BreadcrumbsProps {
   size?: TextProps['size'];
 }
 
-export const Breadcrumbs = ({ breadcrumbs, size }: BreadcrumbsProps) =>{
+export const Breadcrumbs = ({ breadcrumbs, size }: BreadcrumbsProps) => {
   const navigate = useNavigate();
 
   const items = useMemo(
@@ -23,8 +23,8 @@ export const Breadcrumbs = ({ breadcrumbs, size }: BreadcrumbsProps) =>{
         <Anchor
           key={i}
           label={label}
-          onClick={() => navigate(path)}
-          icon={<FormPrevious/>}
+          onClick={() => path === undefined ? navigate(-1) : navigate(path)}
+          icon={<FormPrevious />}
           gap='xsmall'
         />
       )
