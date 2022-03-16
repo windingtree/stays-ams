@@ -29,7 +29,7 @@ export const SearchForm: React.FC<{
   const navigate = useNavigate()
 
   return (
-    <Box pad={{ bottom: 'medium' }} >
+    <Box pad={{ bottom: 'medium' }}>
       <Grid
         fill='horizontal'
         responsive
@@ -54,7 +54,7 @@ export const SearchForm: React.FC<{
             </Text>
           </Box>
         </Box>
-        <Box pad='small' overflow='hidden'>
+        <Box pad='small'>
           <DateRangePickup
             onStartDateChanged={setDepartureDate}
             onEndDateChanged={setReturnDate}
@@ -92,7 +92,7 @@ export const SearchForm: React.FC<{
         </Box>
       </Grid>
       <Box pad='small'>
-        <Button onClick={() => navigate(`/search?${query}`)}>
+        <Button onClick={() => navigate(`/search?${query}`,{replace:true})}>
           {() => (
             <Box direction='row' justify='center' align='center' pad='small'>
               <Text>

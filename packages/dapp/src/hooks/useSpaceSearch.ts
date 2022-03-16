@@ -1,15 +1,13 @@
 import { useState, useEffect } from 'react';
 import Logger from '../utils/logger';
-import { useAppState } from '../store';
+import { useAppDispatch, useAppState } from '../store';
 import { LodgingFacility, Space } from 'stays-data-models';
 import { useSpaceAvailability } from './useSpaceAvailability';
-import { json } from 'stream/consumers';
 
 // Initialize logger
 const logger = Logger('useSpaceSearch');
 
 export type UseSpaceSearchHook = [
-  spaces: Space[],
   isLoading: boolean,
   error: string | undefined
 ];
@@ -19,16 +17,23 @@ export const useSpaceSearch = (
   startDay: number,
   numberOfDays: number
 ): UseSpaceSearchHook => {
+  const dispatch = useAppDispatch();
   const { lodgingFacilities } = useAppState();
   const [cb, isReady] = useSpaceAvailability();
 
-  const [spaces, setSpaces] = useState<Space[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>();
 
   useEffect(() => {
     setLoading(true);
     setError(undefined);
+    dispatch({
+      type: 'RESET_RECORD',
+      payload: {
+        name: 'spaces'
+      }
+    });
+
     if (!isReady) {
       return
     }
@@ -51,9 +56,20 @@ export const useSpaceSearch = (
             }
           )
         );
-        setSpaces(newSpaces)
         setLoading(false);
-
+        // Add all obtained records to state
+        for (const record of newSpaces) {
+          dispatch({
+            type: 'SET_RECORD',
+            payload: {
+              name: 'spaces',
+              record: {
+                ...record,
+                id: record.spaceId
+              }
+            }
+          });
+        }
       } catch (error) {
         setLoading(false);
         if (error) {
@@ -66,10 +82,9 @@ export const useSpaceSearch = (
     };
 
     getSpacesAvelability();
-  }, [lodgingFacilities, isReady]);
+  }, [lodgingFacilities, isReady, cb, dispatch, numberOfDays, startDay]);
 
   return [
-    spaces,
     loading,
     error
   ];

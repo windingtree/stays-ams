@@ -122,7 +122,8 @@ const initialState: State = {
   startIpfsNode: () => {},
   stopIpfsNode: () => {},
   isBootstrapLoading: false,
-  lodgingFacilities: []
+  lodgingFacilities: [],
+  spaces: []
 };
 
 export const combineReducers = (
