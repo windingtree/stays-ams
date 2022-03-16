@@ -17,7 +17,8 @@ export const storageConnectorConfig: LocalStorageConnectorConfig = {
     'themeMode',
     'bootstrapped',
     'lodgingFacilities',
-    'spaces',
+    'searchSpaces',
+    'searchTimestamp',
   ]
 };
 

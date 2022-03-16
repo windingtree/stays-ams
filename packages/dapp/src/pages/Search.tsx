@@ -4,8 +4,8 @@ import { Spinner } from 'grommet';
 import { SearchResultCard } from '../components/SearchResultCard';
 import { useAppState } from '../store';
 import { useSpaceSearch } from '../hooks/useSpaceSearch';
-import { useEffect, useMemo } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useMemo } from 'react';
+import { useLocation } from 'react-router-dom';
 
 
 const parseDateToDays = (firstDate: string | null, secondDate: string | null) => {
@@ -21,24 +21,25 @@ const parseDateToDays = (firstDate: string | null, secondDate: string | null) =>
 };
 
 export const Search = () => {
-  const { spaces } = useAppState();
+  const { searchSpaces } = useAppState();
   const { search } = useLocation();
 
-  const { departureDate, returnDate, guestsAmount } = useMemo(() => {
+  const { departureDate, returnDate, guestsAmount, timestamp } = useMemo(() => {
     const params = new URLSearchParams(search)
     return {
       departureDate: params.get('departureDate'),
       returnDate: params.get('returnDate'),
-      guestsAmount: params.get('guestsAmount')
+      guestsAmount: params.get('guestsAmount'),
+      timestamp: Number(params.get('timestamp'))
     }
   }, [search])
-  
+
   const { startDay, numberOfDays } = parseDateToDays(departureDate, returnDate)
-  const [loading] = useSpaceSearch(startDay, numberOfDays)
+  const [loading] = useSpaceSearch(startDay, numberOfDays, timestamp)
 
   const filteredSpaces = useMemo(() => {
-    return spaces.filter((space) => space.capacity >= (guestsAmount ?? 1))
-  }, [spaces, guestsAmount])
+    return searchSpaces.filter((space) => space.capacity >= (guestsAmount ?? 1))
+  }, [searchSpaces, guestsAmount])
 
   return (
     <PageWrapper
