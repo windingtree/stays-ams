@@ -15,10 +15,11 @@ export type UseSpaceSearchHook = [
 // useSpaceSearch react hook
 export const useSpaceSearch = (
   startDay: number,
-  numberOfDays: number
+  numberOfDays: number,
+  timestamp: number
 ): UseSpaceSearchHook => {
   const dispatch = useAppDispatch();
-  const { lodgingFacilities } = useAppState();
+  const { lodgingFacilities, searchTimestamp } = useAppState();
   const [cb, isReady] = useSpaceAvailability();
 
   const [loading, setLoading] = useState(false);
@@ -27,10 +28,16 @@ export const useSpaceSearch = (
   useEffect(() => {
     setLoading(true);
     setError(undefined);
+
+    if (searchTimestamp === timestamp && (timestamp ?? 0) + 5 * 60 * 60 > Date.now()) {
+      setLoading(false);
+      return
+    }
+
     dispatch({
       type: 'RESET_RECORD',
       payload: {
-        name: 'spaces'
+        name: 'searchSpaces'
       }
     });
 
@@ -62,7 +69,7 @@ export const useSpaceSearch = (
           dispatch({
             type: 'SET_RECORD',
             payload: {
-              name: 'spaces',
+              name: 'searchSpaces',
               record: {
                 ...record,
                 id: record.spaceId
@@ -70,6 +77,12 @@ export const useSpaceSearch = (
             }
           });
         }
+        //Set timestamp to storage
+        dispatch({
+          type: 'SET_AVAILABILITY_TIMESTAMP',
+          payload: Date.now() / 1000 | 0
+        });
+
       } catch (error) {
         setLoading(false);
         if (error) {
@@ -82,7 +95,7 @@ export const useSpaceSearch = (
     };
 
     getSpacesAvelability();
-  }, [lodgingFacilities, isReady, cb, dispatch, numberOfDays, startDay]);
+  }, [lodgingFacilities, isReady, cb, dispatch, numberOfDays, startDay, timestamp, searchTimestamp]);
 
   return [
     loading,
