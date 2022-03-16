@@ -1,15 +1,17 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
 
-import { Box, Text, Button, ResponsiveContext } from 'grommet';
+import { Box, Text, Button, Grid, ResponsiveContext } from "grommet";
 // import { useAppState } from '../store';
-import { PageWrapper } from './PageWrapper';
-import { RoomCard } from '../components/rooms/RoomCard';
+import { PageWrapper } from "./PageWrapper";
+import { RoomCard } from "../components/rooms/RoomCard";
+import { useWindowsDimension } from "../hooks/useWindowsDimension";
 
 //export const Rooms = () => {
-  export const Rooms = (): JSX.Element => {
-    const size = React.useContext(ResponsiveContext);
-
-    /*
+export const Rooms = (): JSX.Element => {
+  const size = React.useContext(ResponsiveContext);
+  const { winWidth, winHeight } = useWindowsDimension();
+  
+  /* 
     WIRE-FRAME URL
     https://docs.google.com/drawings/d/1RXaaLQR0d-g7ReIkKaB4Sz5_JQpxhcqOWccTxmGE6Ag/edit
 
@@ -34,58 +36,105 @@ import { RoomCard } from '../components/rooms/RoomCard';
     https://media.hotels.ng/img/h86784/562/422/b1/beni-gold-hotel-and-apartments-86784-6.jpg
     */
 
-    const roomList = [
-      {
-        imageUrl:
-          'https://m.hotels.ng/img/h1398654/562/422/b1/demeg-hotel-and-suites-1398654-7.jpg',
-        name: 'Shakira Hotel Room',
-        location: 'Jl. Aston No. 72 Yagyakarta',
-        price: '350',
-      },
-      {
-        imageUrl:
-          'https://media.hotels.ng/img/h86784/562/422/b1/beni-gold-hotel-and-apartments-86784-6.jpg',
-        name: 'Visala Hotel Room',
-        location: 'Jl. Kebon, Thailand',
-        price: '55.80',
-      },
+  const roomList = [
+    {
+      imageUrl:
+        "https://m.hotels.ng/img/h1398654/562/422/b1/demeg-hotel-and-suites-1398654-7.jpg",
+      name: "Shakira Hotel Room",
+      location: "Jl. Aston No. 72 Yagyakarta",
+      price: "350",
+    },
+    {
+      imageUrl:
+        "https://media.hotels.ng/img/h86784/562/422/b1/beni-gold-hotel-and-apartments-86784-6.jpg",
+      name: "Visala Hotel Room",
+      location: "Jl. Kebon, Thailand",
+      price: "55.80",
+    },
 
-      {
-        imageUrl:
-          'https://media.hotels.ng/img/h998818/562/422/b1/choice-suites-(formerly-chantella-suites)-998818-11.jpg',
-        name: 'Hogi Hotel Room',
-        location: 'Malina, Indonesia',
-        price: '45.20',
-      },
+    {
+      imageUrl:
+        "https://media.hotels.ng/img/h998818/562/422/b1/choice-suites-(formerly-chantella-suites)-998818-11.jpg",
+      name: "Hogi Hotel Room",
+      location: "Malina, Indonesia",
+      price: "45.20",
+    },
 
-      {
-        imageUrl:
-          'https://media.hotels.ng/img/h1007164/562/422/b1/extended-stay-grand-hotel-1007164-6.jpg',
-        name: 'Oklahoma Hotel Room',
-        location: 'Malina, United Kingdom',
-        price: '125.20',
-      },
-    ];
+    {
+      imageUrl:
+        "https://media.hotels.ng/img/h1007164/562/422/b1/extended-stay-grand-hotel-1007164-6.jpg",
+      name: "Oklahoma Hotel Room",
+      location: "Malina, United Kingdom",
+      price: "125.20",
+    },
+    {
+      imageUrl:
+        "https://media.hotels.ng/img/h86784/562/422/b1/beni-gold-hotel-and-apartments-86784-6.jpg",
+      name: "Phyroma Hotel Room",
+      location: "Jl. Kebon, Thailand",
+      price: "55.80",
+    },
 
-    return (
-      <PageWrapper
-        breadcrumbs={[
-          {
-            path: "/",
-            label: "Home",
-          },
-        ]}
+    {
+      imageUrl:
+        "https://m.hotels.ng/img/h1438118/562/422/b1/swiss-international-beland-hotel-(formerly-beland-hotel-owerri)-1438118-26.jpg",
+      name: "Valera Hotel Room",
+      location: "Jl. Bryta, Poland",
+      price: "105.20",
+    },
+  ];
+
+  const ResponsiveColumn = () => {
+     if (winWidth >= 1300) {
+      return ['21rem', '21rem', '21rem', '21rem'];
+    } else if (winWidth >= 1000) {
+      return ['21rem', '21rem', '21rem'];
+    } else if (winWidth >= 768) {
+      return ['23rem', '23rem'];
+    } else if (winWidth >= 600) {
+      return ['31rem'];
+    } else if (winWidth <= 500) {
+      return ['24rem'];
+    
+     } else if (winWidth <= 400) {
+      
+      return ['16rem'];
+    } 
+  
+  }
+
+  return (
+    <PageWrapper
+      breadcrumbs={[
+        {
+          path: "/",
+          label: "Home",
+        },
+      ]}
+    >
+      
+
+      <Box
+        alignSelf="center"
+        style={{paddingBottom:50}}
       >
         <Text
           alignSelf="end"
           size="14px"
           color="brand"
-          style={{ marginRight: 90, marginBottom: 15 }}
+          style={{ marginRight: 30, marginBottom: 15 }}
           weight="normal"
         >
           View all
         </Text>
-        <Box direction={size === "large" ? "row" : "column"} alignSelf="center">
+
+        <Grid
+          alignSelf="center"
+          //rows={[""]}
+          columns={ResponsiveColumn()}
+          //gap="xxsmall"
+          responsive={true}
+        >
           {roomList.map((data, index) => (
             <RoomCard
               imageUrl={data.imageUrl}
@@ -94,7 +143,7 @@ import { RoomCard } from '../components/rooms/RoomCard';
               price={data.price}
             />
           ))}
-        </Box>
+        </Grid>
 
         <Button
           primary
@@ -103,11 +152,13 @@ import { RoomCard } from '../components/rooms/RoomCard';
           style={{
             width: 150,
             height: 50,
+            
             color: "white",
             fontSize: 15,
             marginTop: 80,
           }}
         />
-      </PageWrapper>
-    );
-  };
+      </Box>
+    </PageWrapper>
+  );
+};

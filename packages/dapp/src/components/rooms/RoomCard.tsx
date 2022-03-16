@@ -21,12 +21,12 @@ export const RoomCard: React.FC<{
 
   return (
     <>
-      <Box margin="medium">
+      <Box margin="medium" >
         <Card
-          //height="medium"
-          height={size === "large" ? "21rem" : "large"}
-          width={size === "large" ? "21rem" : "auto"}
-          // width="large"
+         
+          //height={size == "large" ? "18rem" : "large"}
+          //width={size == "large" ? "21rem" : "auto"}
+         
           background="light-1"
           elevation="small"
         >
