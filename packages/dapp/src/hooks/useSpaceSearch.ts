@@ -27,16 +27,16 @@ export const useSpaceSearch = (
   useEffect(() => {
     setLoading(true);
     setError(undefined);
-    if (!isReady) {
-      return
-    }
-
     dispatch({
       type: 'RESET_RECORD',
       payload: {
         name: 'spaces'
       }
     });
+
+    if (!isReady) {
+      return
+    }
 
     const getSpacesAvelability = async () => {
       try {

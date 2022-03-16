@@ -54,7 +54,7 @@ export const SearchForm: React.FC<{
             </Text>
           </Box>
         </Box>
-        <Box pad='small' overflow='hidden'>
+        <Box pad='small'>
           <DateRangePickup
             onStartDateChanged={setDepartureDate}
             onEndDateChanged={setReturnDate}
