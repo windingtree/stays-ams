@@ -10,6 +10,7 @@ import { Protected } from './Protected';
 import { Home } from '../pages/Home';
 import { Search } from '../pages/Search';
 import { Rooms } from "../pages/Rooms";
+import { RoomProfile } from "../pages/RoomProfile";
 import { Space } from '../pages/Space';
 
 export interface RouteConfig {
@@ -42,10 +43,18 @@ export const pagesRoutesConfig: Routes = [
     label: "Rooms",
     protected: true,
   },
+
   {
-    path: '/space/:id',
+    path: "/rooms/add",
+    element: <RoomProfile />,
+    title: "ADD NEW ROOM",
+    label: "Add Room",
+    protected: true,
+  },
+  {
+    path: "/space/:id",
     element: <Space />,
-    title: 'Search for lodging facility',
+    title: "Search for lodging facility",
   },
 ];
 
