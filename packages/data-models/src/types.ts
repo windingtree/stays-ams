@@ -48,7 +48,7 @@ export interface Space extends SpaceRaw {
     spaceId: string;
     active: boolean;
     lodgingFacilityId: string;
-    capacity: number;
+    capacity: BigNumber;
     pricePerNightWei: BigNumber;
     dataURI: string;
   }

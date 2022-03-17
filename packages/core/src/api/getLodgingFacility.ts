@@ -25,10 +25,12 @@ export const getLodgingFacility = async (
 
   return {
     ...data,
-    lodgingFacilityId,
-    owner,
-    active,
-    dataURI,
+    contractData: {
+      lodgingFacilityId,
+      owner,
+      active,
+      dataURI,
+    },
     spaces: [],
     updated: DateTime.now().toISO()
   };

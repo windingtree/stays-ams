@@ -14,6 +14,7 @@ export interface ApiKeys {
 }
 
 export interface DappConfig {
+  mode: string;
   network: NetworkWithRpc;
   apiKeys: ApiKeys;
 }
@@ -97,11 +98,14 @@ network.address = process.env.REACT_APP_CONTRACT_ADDRESS;
 network.rpc = process.env.REACT_APP_NETWORK_PROVIDER;
 
 const config: DappConfig = {
+  mode: process.env.REACT_APP_MODE || 'development',
   network,
   apiKeys: {
     web3Storage: process.env.REACT_APP_FILE_WEB3STORAGE_KEY
   }
 };
+
+export const getDappMode = (): string => config.mode;
 
 export const getNetwork = (): NetworkWithRpc => config.network;
 
