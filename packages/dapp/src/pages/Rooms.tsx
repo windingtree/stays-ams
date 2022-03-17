@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 
+import { Link } from "react-router-dom";
+
 import { Box, Text, Button, Grid, ResponsiveContext } from "grommet";
 // import { useAppState } from '../store';
 import { PageWrapper } from "./PageWrapper";
@@ -10,7 +12,7 @@ import { useWindowsDimension } from "../hooks/useWindowsDimension";
 export const Rooms = (): JSX.Element => {
   const size = React.useContext(ResponsiveContext);
   const { winWidth, winHeight } = useWindowsDimension();
-  
+
   /* 
     WIRE-FRAME URL
     https://docs.google.com/drawings/d/1RXaaLQR0d-g7ReIkKaB4Sz5_JQpxhcqOWccTxmGE6Ag/edit
@@ -38,6 +40,7 @@ export const Rooms = (): JSX.Element => {
 
   const roomList = [
     {
+      RoomId: 10000,
       imageUrl:
         "https://m.hotels.ng/img/h1398654/562/422/b1/demeg-hotel-and-suites-1398654-7.jpg",
       name: "Shakira Hotel Room",
@@ -45,6 +48,7 @@ export const Rooms = (): JSX.Element => {
       price: "350",
     },
     {
+      RoomId: 10480,
       imageUrl:
         "https://media.hotels.ng/img/h86784/562/422/b1/beni-gold-hotel-and-apartments-86784-6.jpg",
       name: "Visala Hotel Room",
@@ -53,6 +57,7 @@ export const Rooms = (): JSX.Element => {
     },
 
     {
+      RoomId: 19874,
       imageUrl:
         "https://media.hotels.ng/img/h998818/562/422/b1/choice-suites-(formerly-chantella-suites)-998818-11.jpg",
       name: "Hogi Hotel Room",
@@ -61,6 +66,7 @@ export const Rooms = (): JSX.Element => {
     },
 
     {
+      RoomId: 12086,
       imageUrl:
         "https://media.hotels.ng/img/h1007164/562/422/b1/extended-stay-grand-hotel-1007164-6.jpg",
       name: "Oklahoma Hotel Room",
@@ -68,6 +74,7 @@ export const Rooms = (): JSX.Element => {
       price: "125.20",
     },
     {
+      RoomId: 13413,
       imageUrl:
         "https://media.hotels.ng/img/h86784/562/422/b1/beni-gold-hotel-and-apartments-86784-6.jpg",
       name: "Phyroma Hotel Room",
@@ -76,6 +83,7 @@ export const Rooms = (): JSX.Element => {
     },
 
     {
+      RoomId: 11182,
       imageUrl:
         "https://m.hotels.ng/img/h1438118/562/422/b1/swiss-international-beland-hotel-(formerly-beland-hotel-owerri)-1438118-26.jpg",
       name: "Valera Hotel Room",
@@ -85,23 +93,20 @@ export const Rooms = (): JSX.Element => {
   ];
 
   const ResponsiveColumn = () => {
-     if (winWidth >= 1300) {
-      return ['21rem', '21rem', '21rem', '21rem'];
+    if (winWidth >= 1300) {
+      return ["21rem", "21rem", "21rem", "21rem"];
     } else if (winWidth >= 1000) {
-      return ['21rem', '21rem', '21rem'];
+      return ["21rem", "21rem", "21rem"];
     } else if (winWidth >= 768) {
-      return ['23rem', '23rem'];
+      return ["23rem", "23rem"];
     } else if (winWidth >= 600) {
-      return ['31rem'];
+      return ["31rem"];
     } else if (winWidth <= 500) {
-      return ['24rem'];
-    
-     } else if (winWidth <= 400) {
-      
-      return ['16rem'];
-    } 
-  
-  }
+      return ["24rem"];
+    } else if (winWidth <= 400) {
+      return ["16rem"];
+    }
+  };
 
   return (
     <PageWrapper
@@ -112,17 +117,15 @@ export const Rooms = (): JSX.Element => {
         },
       ]}
     >
-      
-
       <Box
         alignSelf="center"
-        style={{paddingBottom:50}}
+        style={{ paddingBottom: 50, border: "0px solid red", width: "100%" }}
       >
         <Text
           alignSelf="end"
           size="14px"
           color="brand"
-          style={{ marginRight: 30, marginBottom: 15 }}
+          style={{ marginRight: 0, marginBottom: 15 }}
           weight="normal"
         >
           View all
@@ -137,6 +140,7 @@ export const Rooms = (): JSX.Element => {
         >
           {roomList.map((data, index) => (
             <RoomCard
+              key={index}
               imageUrl={data.imageUrl}
               name={data.name}
               location={data.location}
@@ -145,19 +149,28 @@ export const Rooms = (): JSX.Element => {
           ))}
         </Grid>
 
-        <Button
-          primary
-          color="status-ok"
-          label="Add Room"
-          style={{
-            width: 150,
-            height: 50,
-            
-            color: "white",
-            fontSize: 15,
-            marginTop: 80,
+        <Link
+          to={{
+            pathname: "/rooms/add",
+            //code: rowData.code,
           }}
-        />
+        >
+          
+
+          <Button
+            primary
+            color="status-ok"
+            label="Add Room"
+            style={{
+              width: 150,
+              height: 50,
+
+              color: "white",
+              fontSize: 15,
+              marginTop: 80,
+            }}
+          />
+        </Link>
       </Box>
     </PageWrapper>
   );
