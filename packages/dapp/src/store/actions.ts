@@ -1,4 +1,4 @@
-import type { LodgingFacility } from 'stays-data-models';
+import type { LodgingFacility, Space } from 'stays-data-models';
 import type { Web3ModalProvider } from '../hooks/useWeb3Modal';
 import type { IPFS } from '@windingtree/ipfs-apis';
 import type { IProviderInfo } from 'web3modal';
@@ -9,7 +9,8 @@ export interface GenericStateRecord {
   [key: string]: unknown;
 }
 
-export interface LodgingFacilityRecord extends LodgingFacility, GenericStateRecord {}
+export interface LodgingFacilityRecord extends LodgingFacility, GenericStateRecord { }
+export interface SpaceRecord extends Space, GenericStateRecord { }
 
 export interface State {
   isConnecting: boolean;
@@ -30,6 +31,7 @@ export interface State {
   isBootstrapLoading: boolean;
   bootstrapped?: number;
   lodgingFacilities: LodgingFacilityRecord[];
+  spaces: SpaceRecord[];
   [key: string]: unknown | GenericStateRecord[];
 }
 
