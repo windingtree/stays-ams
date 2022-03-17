@@ -19,11 +19,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.faker = exports.validators = exports.schemas = void 0;
+exports.faker = exports.enumerators = exports.validators = exports.schemas = void 0;
 const schemas = __importStar(require("./schemas"));
 exports.schemas = schemas;
 const validators = __importStar(require("./validators"));
 exports.validators = validators;
 const faker = __importStar(require("./faker"));
 exports.faker = faker;
+const enumerators = __importStar(require("./enum"));
+exports.enumerators = enumerators;
 //# sourceMappingURL=index.js.map

@@ -21,6 +21,7 @@ import type {
 
 import {
   schemas, // json.schema's for raw space and lodging facility data
+  enumerators, // arrays with allowed data for types
   validators, // ready made validators for data
   faker // helpers for generation of faked data sets
 } from 'stays-data-models';
@@ -44,113 +45,45 @@ const {
   iterator,
   createFakeSpace,
   createFakeLodgingFacility,
-  ...// createFakeCompanyIdentifier, createFakeAddress, createFakeContact... etc.
+  ...// etc.
 } = faker;
 
 const fakeSpace = createFakeSpace();
 
 /*
 {
-  "name": "Cremin Group",
-  "type": [
-    "communities",
-    "e-services",
-    "blockchains"
-  ],
-  "description": "Saepe sequi ab illum iure.\nEligendi velit quidem.",
-  "longDescription": "Ducimus velit quia ducimus recusandae.\nNostrum explicabo illum cumque occaecati ipsum omnis atque.\nImpedit natus et cum soluta consequatur voluptatum culpa adipisci omnis.\nEsse illum expedita consectetur perferendis.\nOmnis incidunt ut ut laboriosam.",
-  "address": {
-    "country": "BN",
-    "subdivision": "83",
-    "locality": "Burke",
-    "postalCode": "06128-6690",
-    "streetAddress": "0056 Amir Common",
-    "premise": "Suite 280",
-    "gps": "-35.0422,-118.5810",
-    "geocodes": [
-      {
-        "type": "tun",
-        "value": "5klkkyxd Longview"
-      }
-    ]
-  },
-  "openingHours": [
-    {
-      "weekDay": "tuesday,tuesday,monday",
-      "hours": "9:00-18:00"
-    },
-    {
-      "weekDay": "monday,monday,saturday",
-      "hours": "9:00-18:00"
-    }
-  ],
-  "contacts": [
-    {
-      "function": "District Implementation Engineer",
-      "name": "Stanley Wilderman",
-      "phone": "(929) 207-8371",
-      "email": "Domenick.Zieme80@hotmail.com",
-      "messengers": [
-        {
-          "type": "whatsapp",
-          "value": "1-865-398-9198 x763"
-        },
-        {
-          "type": "whatsapp",
-          "value": "1-737-350-4370"
-        },
-        {
-          "type": "whatsapp",
-          "value": "889-202-6590"
-        }
-      ]
-    },
-    {
-      "function": "Central Accounts Associate",
-      "name": "James Leffler",
-      "phone": "1-882-866-5035 x66202",
-      "email": "Rico28@gmail.com",
-      "messengers": [
-        {
-          "type": "whatsapp",
-          "value": "(771) 807-5698 x78420"
-        },
-        {
-          "type": "whatsapp",
-          "value": "1-420-970-6875 x16999"
-        },
-        {
-          "type": "whatsapp",
-          "value": "914.762.8775 x32144"
-        }
-      ]
-    }
-  ],
+  "name": "Hessel, Heller and Kozey",
+  "description": "Blanditiis officia distinctio omnis.\nDeleniti sint saepe.\nNecessitatibus sit et delectus corrupti.",
+  "type": "room",
+  "capacity": 4,
+  "guestsNumber": 5,
+  "beds": 3,
+  "price": 59,
   "media": {
     "logo": "http://placeimg.com/640/480/abstract",
     "images": [
       {
-        "description": "Illum est suscipit assumenda est doloribus porro.",
+        "description": "Quo officiis neque veniam aut cumque non saepe et dolorum.",
         "uri": "http://placeimg.com/640/480/city",
         "thumbnail": "http://placeimg.com/150/150/city"
       },
       {
-        "description": "Beatae veritatis et necessitatibus doloribus blanditiis animi deserunt hic.",
+        "description": "Fuga dolores velit veritatis dolores sed.",
         "uri": "http://placeimg.com/640/480/city",
         "thumbnail": "http://placeimg.com/150/150/city"
       },
       {
-        "description": "Voluptatum officia commodi.",
+        "description": "Repellendus maiores officiis.",
         "uri": "http://placeimg.com/640/480/city",
         "thumbnail": "http://placeimg.com/150/150/city"
       },
       {
-        "description": "Molestiae fuga suscipit ut.",
+        "description": "Voluptatem et accusamus perferendis porro sunt deleniti nihil.",
         "uri": "http://placeimg.com/640/480/city",
         "thumbnail": "http://placeimg.com/150/150/city"
       },
       {
-        "description": "Sed repudiandae necessitatibus perspiciatis eos.",
+        "description": "Commodi vel ab culpa laudantium corrupti.",
         "uri": "http://placeimg.com/640/480/city",
         "thumbnail": "http://placeimg.com/150/150/city"
       }
@@ -163,136 +96,60 @@ const fakeLodgingFacility = createFakeLodgingFacility();
 
 /*
 {
-  "legalName": "Heathcote - Robel",
-  "alternativeName": "Bartoletti - Bogan",
-  "registryCode": "W1SH3F0MMT",
-  "identifiers": [
-    {
-      "type": "Z8AO",
-      "value": "q88ahia9j2"
-    },
-    {
-      "type": "3VLI",
-      "value": "b2qyiinap8"
-    },
-    {
-      "type": "3UOS",
-      "value": "3haxwuq9aa"
-    }
-  ],
-  "legalType": "LLC",
-  "registeredAddress": {
-    "country": "HT",
-    "subdivision": "81",
-    "locality": "Roswell",
-    "postalCode": "36810-4604",
-    "streetAddress": "6629 Katelin Point",
-    "premise": "Suite 968"
+  "name": "Price, Feest and Harvey",
+  "description": "Reiciendis ut cupiditate voluptatibus numquam molestias tenetur non.\nMaxime quis earum autem illum voluptatem voluptas sequi.\nImpedit voluptate accusantium iusto ut voluptatem excepturi perferendis aspernatur.",
+  "type": "boatel",
+  "tier": "basic",
+  "address": {
+    "country": "MO",
+    "subdivision": "22",
+    "locality": "Salina",
+    "postalCode": "55919-9454",
+    "streetAddress": "968 Selmer Point",
+    "premise": "Apt. 851",
+    "gps": "42.3028,158.1222"
   },
-  "locations": [
-    {
-      "name": "Main Office",
-      "description": "This is our main office",
-      "address": {
-        "country": "EE",
-        "subdivision": "94",
-        "locality": "Washington",
-        "postalCode": "53007",
-        "streetAddress": "616 Sonny Shoals",
-        "premise": "Apt. 796",
-        "geocodes": [
-          {
-            "type": "kvw",
-            "value": "h9j9itxn Spring"
-          },
-          {
-            "type": "tbm",
-            "value": "70nrrlfo Indio"
-          }
-        ]
-      },
-      "openingHours": [
-        {
-          "weekDay": "tuesday,tuesday,thursday",
-          "hours": "9:00-15:00"
-        },
-        {
-          "weekDay": "wednesday,wednesday,saturday",
-          "hours": "9:00-18:00"
-        },
-        {
-          "weekDay": "monday,tuesday,saturday",
-          "hours": "9:00-18:00"
-        }
-      ],
-      "contacts": [
-        {
-          "function": "Internal Integration Architect",
-          "name": "Melinda Lakin",
-          "phone": "(422) 956-9383 x2701",
-          "email": "Abe.Blanda@yahoo.com",
-          "messengers": [
-            {
-              "type": "whatsapp",
-              "value": "299.694.8964"
-            },
-            {
-              "type": "whatsapp",
-              "value": "1-637-857-1873 x32232"
-            },
-            {
-              "type": "whatsapp",
-              "value": "852.328.4829 x714"
-            }
-          ]
-        }
-      ]
+  "operator": {
+    "name": "Franey, Beer and O'Keefe",
+    "address": {
+      "country": "FO",
+      "subdivision": "66",
+      "locality": "Augusta-Richmond County",
+      "postalCode": "70278-6130",
+      "streetAddress": "816 Sipes Junctions",
+      "premise": "Suite 316",
+      "gps": "-89.5376,143.8844"
     }
-  ],
-  "contacts": [
-    {
-      "function": "Legacy Marketing Administrator",
-      "name": "Fred Littel",
-      "phone": "485-321-5479",
-      "email": "Bonita_Champlin81@hotmail.com",
-      "messengers": [
-        {
-          "type": "whatsapp",
-          "value": "458.217.6926"
-        },
-        {
-          "type": "whatsapp",
-          "value": "(465) 913-2206 x5782"
-        },
-        {
-          "type": "whatsapp",
-          "value": "833-214-3453 x23686"
-        }
-      ]
-    },
-    {
-      "function": "Human Identity Director",
-      "name": "Drew Kozey I",
-      "phone": "264.508.0309",
-      "email": "Cullen.Okuneva@hotmail.com",
-      "messengers": [
-        {
-          "type": "whatsapp",
-          "value": "582-223-6716"
-        },
-        {
-          "type": "whatsapp",
-          "value": "793.327.8458 x06767"
-        },
-        {
-          "type": "whatsapp",
-          "value": "(567) 269-3481 x3518"
-        }
-      ]
-    }
-  ],
+  },
   "media": {
-    "logo": "http://placeimg.com/640/480/abstract"
+    "logo": "http://placeimg.com/640/480/abstract",
+    "images": [
+      {
+        "description": "Aut nostrum et voluptates sed qui ullam ducimus rerum enim.",
+        "uri": "http://placeimg.com/640/480/city",
+        "thumbnail": "http://placeimg.com/150/150/city"
+      },
+      {
+        "description": "Dolorum et sint neque eos corrupti et aspernatur deserunt corporis.",
+        "uri": "http://placeimg.com/640/480/city",
+        "thumbnail": "http://placeimg.com/150/150/city"
+      },
+      {
+        "description": "Eius doloremque assumenda.",
+        "uri": "http://placeimg.com/640/480/city",
+        "thumbnail": "http://placeimg.com/150/150/city"
+      },
+      {
+        "description": "Iste iste quo.",
+        "uri": "http://placeimg.com/640/480/city",
+        "thumbnail": "http://placeimg.com/150/150/city"
+      },
+      {
+        "description": "Veritatis et deleniti ad enim velit.",
+        "uri": "http://placeimg.com/640/480/city",
+        "thumbnail": "http://placeimg.com/150/150/city"
+      }
+    ]
   }
 }
 */
@@ -313,6 +170,17 @@ iterator(
   { ... }
 ]
 */
+```
+
+## Enumerators
+
+```typescript
+import { enumerators } from 'stays-data-models';
+const {
+  allowedLodgingFacilityTypes, // Lodging facility types
+  allowedLodgingFacilityTiers, // Lodging facility tiers
+  allowedSpaceTypes // Space types
+} = enumerators;
 ```
 
 ## Validators

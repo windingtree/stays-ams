@@ -1,3 +1,3 @@
-import type { LegalEntityReference, OrganizationalUnitReference } from '@windingtree/org.json-schema/types/org.json';
-export declare const validateSpaceData: (spaceData: OrganizationalUnitReference) => void;
-export declare const validateLodgingFacilityData: (lodgingFacility: LegalEntityReference) => void;
+import type { LodgingFacilityRaw, SpaceRaw } from './types';
+export declare const validateSpaceData: (spaceData: SpaceRaw) => void;
+export declare const validateLodgingFacilityData: (lodgingFacility: LodgingFacilityRaw) => void;

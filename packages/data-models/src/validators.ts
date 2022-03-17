@@ -1,11 +1,11 @@
 import type {
-  LegalEntityReference,
-  OrganizationalUnitReference
-} from '@windingtree/org.json-schema/types/org.json';
+  LodgingFacilityRaw,
+  SpaceRaw
+} from './types';
 import { object } from '@windingtree/org.id-utils';
 import { spaceSchema, lodgingFacilitySchema } from './schemas';
 
-export const validateSpaceData = (spaceData: OrganizationalUnitReference) => {
+export const validateSpaceData = (spaceData: SpaceRaw) => {
   const validationResult = object.validateWithSchemaOrRef(
     spaceSchema,
     '',
@@ -19,7 +19,7 @@ export const validateSpaceData = (spaceData: OrganizationalUnitReference) => {
   }
 };
 
-export const validateLodgingFacilityData = (lodgingFacility: LegalEntityReference) => {
+export const validateLodgingFacilityData = (lodgingFacility: LodgingFacilityRaw) => {
   const validationResult = object.validateWithSchemaOrRef(
     lodgingFacilitySchema,
     '',
