@@ -20,14 +20,14 @@ const addSpace = (contract, ipfsNode, profileData, lodgingFacilityId, capacity, 
     const ipfsCid = yield ipfsNode.add(profileDataFile);
     const dataURI = `ipfs://${ipfsCid}`;
     overrides = overrides ? overrides : {};
-    const owner = contract.provider.getSigner();
     const receipt = yield (0, sendHelper_1.sendHelper)(contract, 'addSpace', [
         lodgingFacilityId,
         capacity,
         pricePerNightWei,
         active,
         dataURI
-    ], owner, overrides, transactionHashCb, confirmations);
+    ], undefined, // use already connected signer,
+    overrides, transactionHashCb, confirmations);
     const event = (_a = receipt.events) === null || _a === void 0 ? void 0 : _a.find(e => e.event == 'SpaceAdded');
     const spaceId = (_b = event === null || event === void 0 ? void 0 : event.args) === null || _b === void 0 ? void 0 : _b.spaceId;
     if (!spaceId) {

@@ -30,7 +30,6 @@ export const addSpace = async (
   const dataURI = `ipfs://${ipfsCid}`;
 
   overrides = overrides ? overrides : {};
-  const owner = (contract.provider as providers.Web3Provider).getSigner();
 
   const receipt = await sendHelper(
     contract,
@@ -42,7 +41,7 @@ export const addSpace = async (
       active,
       dataURI
     ],
-    owner,
+    undefined, // use already connected signer,
     overrides,
     transactionHashCb,
     confirmations
