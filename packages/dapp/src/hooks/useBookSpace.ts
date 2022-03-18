@@ -17,14 +17,20 @@ export type UseBookSpaceHook = [
     transactionHashCb?: TxHashCallbackFn,
     confirmations?: number
   ) => Promise<string | null>,
-  isReady: boolean
+  isReady: boolean,
+  error: string | undefined
 ];
 
 // This hook provides a callback function for booking space
 export const useBookSpace = (): UseBookSpaceHook => {
   const { provider, ipfsNode } = useAppState();
-  const [contract] = useContract(provider, ipfsNode);
+  const [contract,, errorContract] = useContract(provider, ipfsNode);
+  const [error, setError] = useState<string | undefined>();
   const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    setError(errorContract);
+  }, [errorContract]);
 
   useEffect(() => {
     setIsReady(!!contract);
@@ -44,19 +50,18 @@ export const useBookSpace = (): UseBookSpaceHook => {
       if (!contract) {
         throw new Error('Contract is not connected');
       }
-      // const order = {
-      //   spaceId,
-      //   startDay,
-      //   numberOfDays,
-      //   quantity,
-      //   overrides: undefined,
-      //   transactionHashCb: undefined,
-      //   confirmations: undefined
-      // }
-      console.log( spaceId,
+
+      setError(undefined);
+
+      console.log(
+        spaceId,
         startDay,
         numberOfDays,
-        quantity)
+        quantity
+      );
+
+      // console.log('@@@@@@@@', (contract.provider as any).getSigner());
+
       return contract.book(
         spaceId,
         startDay,
@@ -72,5 +77,5 @@ export const useBookSpace = (): UseBookSpaceHook => {
     }
   }, [contract]);
 
-  return [cb, isReady];
+  return [cb, isReady, error];
 };

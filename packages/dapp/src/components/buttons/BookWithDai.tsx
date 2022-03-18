@@ -12,7 +12,7 @@ const InnerSpinner = styled(Spinner)`
 export const BookWithDai: React.FC<{ spaceId: string }> = ({ spaceId }) => {
   const size = useContext(ResponsiveContext);
   const { searchParams, signIn } = useAppState();
-  const [cb] = useBookSpace()
+  const [cb, isReady, error] = useBookSpace();
 
   return (
     searchParams !== undefined ?
