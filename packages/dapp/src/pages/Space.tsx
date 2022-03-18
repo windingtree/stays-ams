@@ -32,13 +32,13 @@ export const Space: React.FC = () => {
           <Text size='xxlarge'>
             {space.name}
           </Text>
-          <Text size='large'>
+          {/* <Text size='large'>
             {space.address === undefined ? '' : <Box>
               <Text>{space.address.country}</Text>
               <Text>{space.address.locality}</Text>
               <Text>{space.address.streetAddress}</Text>
             </Box>}
-          </Text>
+          </Text> */}
         </Box>
         <Box width='100%' align='center' gridArea="img" height="xlarge" pad={{ bottom: 'medium' }}>
           <Carousel height='xxlarge' width='xlarge'>
@@ -58,15 +58,15 @@ export const Space: React.FC = () => {
           </Text>
         </Box>
         <Box pad={{ bottom: 'medium', left: 'small' }}>
-          <Text>{space.longDescription}</Text>
+          <Text>{space.description}</Text>
         </Box>
         <Box>
           <Box pad={{ bottom: 'small' }} direction='row'>
             <Text size='xxlarge'>Room type</Text>
           </Box>
-          <Box pad={{ bottom: 'small' }} direction='row'>
+          {/* <Box pad={{ bottom: 'small' }} direction='row'>
             {space.type?.map((t) => <Tag value={t} />)}
-          </Box>
+          </Box> */}
         </Box>
         <Box pad={{ right: 'medium' }} direction='row' justify='between' align='center' gridArea="action">
 

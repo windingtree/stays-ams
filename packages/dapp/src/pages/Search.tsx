@@ -75,7 +75,7 @@ export const Search = () => {
       />
       {loading ? <Spinner color='accent-1' alignSelf='center' size='medium' /> : null}
       {filteredSpaces !== undefined ? filteredSpaces.map((space) =>
-        <SearchResultCard key={space.spaceId} space={space} />
+        <SearchResultCard key={space.contractData.spaceId} space={space} />
       ) : null}
     </PageWrapper>
   );

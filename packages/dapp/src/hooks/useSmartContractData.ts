@@ -83,6 +83,7 @@ export const useSmartContractData = (
 
       // Add all obtained records to state
       for (const record of lodgingFacilities) {
+        console.log('@@@', record);
         dispatch({
           type: 'SET_RECORD',
           payload: {

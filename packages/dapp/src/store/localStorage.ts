@@ -112,9 +112,12 @@ export const setState = (
   state: StoredState,
   transform?: TransformCallback
 ): void => {
+  const storage = getDappMode() === 'development'
+    ? sessionStorage
+    : localStorage;
   try {
     const serializedState = safeObjectStringify(state);
-    localStorage.setItem(
+    storage.setItem(
       storagePropertyName,
       transform ? transform<string>(serializedState) : serializedState
     );
