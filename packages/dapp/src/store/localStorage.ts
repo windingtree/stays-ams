@@ -19,6 +19,7 @@ export const storageConnectorConfig: LocalStorageConnectorConfig = {
     'lodgingFacilities',
     'searchSpaces',
     'searchTimestamp',
+    'searchParams',
   ]
 };
 

@@ -72,6 +72,11 @@ export const mainReducer = (state: State, action: Action): State => {
           ...state,
           searchTimestamp: action.payload
         };
+      case 'SET_SEARCH_PARAMS':
+        return {
+          ...state,
+          searchParams: action.payload
+        };
       case 'SET_BOOTSTRAPPED':
         return {
           ...state,

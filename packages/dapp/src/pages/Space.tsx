@@ -3,6 +3,7 @@ import { Tag, Box, Text, Button, Image, Carousel } from 'grommet';
 import { useAppState } from '../store';
 import { useMemo } from 'react';
 import { ThemeMode } from '../components/SwitchThemeMode';
+import { BookWithDai } from '../components/buttons/BookWithDai';
 
 export const Space: React.FC = () => {
   const { searchSpaces, themeMode } = useAppState();
@@ -72,11 +73,7 @@ export const Space: React.FC = () => {
         </Box>
         <Box pad={{ right: 'medium' }} direction='row' width='100%' justify='between' align='center' gridArea="action">
           <Text>Price per Night: <Text color={borderColor} size='large'>{parseInt(`${space.pricePerNightWei}`)} DAI</Text></Text>
-          <Button
-            size='large'
-            label='Buy with DAI'
-            onClick={() => console.log(`/space/${space.id}`)}
-          />
+          <BookWithDai spaceId={space.id} />
         </Box>
       </Box>
       }
