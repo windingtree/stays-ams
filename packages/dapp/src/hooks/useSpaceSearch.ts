@@ -46,17 +46,17 @@ export const useSpaceSearch = (
       return
     }
 
-    const getSpacesAvelability = async () => {
+    const getSpacesAvailability = async () => {
       try {
-        const facilies: LodgingFacility[] = JSON.parse(JSON.stringify(lodgingFacilities))
-        const spaces = facilies.reduce(
+        const facilities: LodgingFacility[] = JSON.parse(JSON.stringify(lodgingFacilities))
+        const spaces = facilities.reduce(
           (previousValue, currentValue) => [...previousValue, ...currentValue.spaces as Space[]],
           [] as Space[]
         );
         const newSpaces = await Promise.all(
           spaces.map(
             async space => {
-              const availability = await cb(space.spaceId, startDay, numberOfDays)
+              const availability = await cb(space.contractData.spaceId, startDay, numberOfDays)
               return {
                 ...space,
                 available: availability === null ? availability : Math.min(...availability)
@@ -73,7 +73,7 @@ export const useSpaceSearch = (
               name: 'searchSpaces',
               record: {
                 ...record,
-                id: record.spaceId
+                id: record.contractData.spaceId
               }
             }
           });
@@ -95,7 +95,7 @@ export const useSpaceSearch = (
       }
     };
 
-    getSpacesAvelability();
+    getSpacesAvailability();
   }, [lodgingFacilities, isReady, cb, dispatch, numberOfDays, startDay]);
 
   return [

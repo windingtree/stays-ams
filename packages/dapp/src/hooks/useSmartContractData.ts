@@ -89,7 +89,7 @@ export const useSmartContractData = (
             name: 'lodgingFacilities',
             record: {
               ...record,
-              id: record.lodgingFacilityId
+              id: record.contractData.lodgingFacilityId
             }
           }
         });

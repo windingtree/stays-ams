@@ -1,23 +1,23 @@
 import type {
-  LegalEntityReference,
-  OrganizationalUnitReference,
-  IdentifierReference,
   AddressReference,
-  GeoCodeReference,
-  OpeningHoursRangeReference,
-  ContactReference,
-  MessengerReference,
   MediaReference
 } from '@windingtree/org.json-schema/types/org.json';
+import {
+  LodgingFacilityRaw,
+  SpaceRaw
+} from './types';
 import { faker } from '@faker-js/faker';
+import {
+  allowedLodgingFacilityTypes,
+  allowedLodgingFacilityTiers,
+  allowedSpaceTypes
+} from './enum';
+
+export const randomItem = (array: any[]) =>
+  array[Math.floor(Math.random() * array.length)];
 
 export const iterator = <T>(count: number, callback: () => T): T[] =>
   Array(count).fill(null).map(() => callback());
-
-export const createFakeCompanyIdentifier = (): IdentifierReference => ({
-  type: faker.random.alphaNumeric(4).toUpperCase(),
-  value: faker.random.alphaNumeric(10)
-});
 
 export const createFakeAddress = (): AddressReference => ({
   country: faker.address.countryCode(),
@@ -25,30 +25,8 @@ export const createFakeAddress = (): AddressReference => ({
   locality: faker.address.cityName(),
   postalCode: faker.address.zipCode(),
   streetAddress: faker.address.streetAddress(),
-  premise: faker.address.secondaryAddress()
-});
-
-export const createFakeGeocode = (): GeoCodeReference => ({
-  'type': faker.random.alpha(3),
-  'value': `${faker.random.alphaNumeric(8)} ${faker.address.cityName()}`
-});
-
-export const createFakeOpeningHours = (): OpeningHoursRangeReference => ({
-  weekDay: iterator(3, () => faker.date.weekday({ context: true }).toLowerCase()).join(','),
-  hours: faker.datatype.boolean() ? '9:00-18:00' : '9:00-15:00'
-});
-
-export const createFakeMessenger = (): MessengerReference => ({
-  type: 'whatsapp', // @todo generate more messengers types
-  value: faker.phone.phoneNumber()
-});
-
-export const createFakeContact = (): ContactReference => ({
-  function: faker.name.jobTitle(),
-  name: faker.name.findName(),
-  phone: faker.phone.phoneNumber(),
-  email: faker.internet.email(),
-  messengers: iterator(3, createFakeMessenger)
+  premise: faker.address.secondaryAddress(),
+  gps: `${faker.address.latitude()},${faker.address.longitude()}`
 });
 
 export const createFakeImage = (): MediaReference => ({
@@ -57,43 +35,30 @@ export const createFakeImage = (): MediaReference => ({
   thumbnail: faker.image.city(150, 150)
 });
 
-export const createFakeLodgingFacility = (): LegalEntityReference => ({
-  legalName: faker.company.companyName(),
-  alternativeName: faker.company.companyName(),
-  registryCode: faker.random.alphaNumeric(10).toUpperCase(),
-  identifiers: iterator(3, createFakeCompanyIdentifier),
-  legalType: faker.company.companySuffix(),
-  registeredAddress: createFakeAddress(),
-  locations: [
-    {
-      name: 'Main Office',
-      description: 'This is our main office',
-      address: {
-        ...createFakeAddress(),
-        geocodes: iterator(2, createFakeGeocode)
-      },
-      openingHours: iterator(3, createFakeOpeningHours),
-      contacts: iterator(1, createFakeContact)
-    }
-  ],
-  contacts: iterator(2, createFakeContact),
+export const createFakeLodgingFacility = (): LodgingFacilityRaw => ({
+  name: faker.company.companyName(),
+  description: faker.lorem.lines(3),
+  type: randomItem(allowedLodgingFacilityTypes),
+  tier: randomItem(allowedLodgingFacilityTiers),
+  address: createFakeAddress(),
+  operator: {
+    name: faker.company.companyName(),
+    address: createFakeAddress()
+  },
   media: {
-    logo: faker.image.abstract()
+    logo: faker.image.abstract(),
+    images: iterator(5, createFakeImage)
   }
 });
 
-export const createFakeSpace = (): OrganizationalUnitReference => ({
+export const createFakeSpace = (): SpaceRaw => ({
   name: faker.company.companyName(),
-  type: iterator(3, faker.company.bsNoun),
-  description: faker.lorem.lines(2),
-  longDescription: faker.lorem.lines(5),
-  address: {
-    ...createFakeAddress(),
-    gps: `${faker.address.latitude()},${faker.address.longitude()}`,
-    geocodes: iterator(1, createFakeGeocode)
-  },
-  openingHours: iterator(2, createFakeOpeningHours),
-  contacts: iterator(2, createFakeContact),
+  description: faker.lorem.lines(3),
+  type: randomItem(allowedSpaceTypes),
+  capacity: faker.datatype.number({ max: 5 }),
+  guestsNumber: faker.datatype.number({ max: 5 }),
+  beds: faker.datatype.number({ max: 3 }),
+  price: faker.datatype.number({ min: 35, max: 250 }),
   media: {
     logo: faker.image.abstract(),
     images: iterator(5, createFakeImage)
