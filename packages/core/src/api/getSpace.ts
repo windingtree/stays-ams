@@ -31,8 +31,8 @@ export const getSpace = async (
       spaceId,
       active,
       lodgingFacilityId,
-      capacity,
-      pricePerNightWei,
+      capacity: capacity.toNumber(),
+      pricePerNightWei: pricePerNightWei.toString(),
       dataURI,
     },
     updated: DateTime.now().toISO()

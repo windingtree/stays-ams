@@ -64,9 +64,9 @@ export const Space: React.FC = () => {
           <Box pad={{ bottom: 'small' }} direction='row'>
             <Text size='xxlarge'>Room type</Text>
           </Box>
-          {/* <Box pad={{ bottom: 'small' }} direction='row'>
-            {space.type?.map((t) => <Tag value={t} />)}
-          </Box> */}
+          <Box pad={{ bottom: 'small' }} direction='row'>
+            <Tag value={space.type} />
+          </Box>
         </Box>
         <Box pad={{ right: 'medium' }} direction='row' justify='between' align='center' gridArea="action">
 

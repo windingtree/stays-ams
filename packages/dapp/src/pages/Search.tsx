@@ -56,7 +56,7 @@ export const Search = () => {
   const [loading] = useSpaceSearch(startDay, numberOfDays, timestamp)
 
   const filteredSpaces = useMemo(() => {
-    return searchSpaces.filter((space: any) => space.capacity.hex >= guestsAmount)
+    return searchSpaces.filter((space: any) => space.capacity >= guestsAmount)
   }, [searchSpaces, guestsAmount])
 
   return (

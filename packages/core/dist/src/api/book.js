@@ -19,8 +19,7 @@ const book = (contract, spaceId, startDay, numberOfDays, quantity, overrides, tr
     const owner = contract.provider.getSigner();
     const space = yield contract.getSpaceById(spaceId);
     // value = pricePerNightWei * numberOfDays * quantity
-    const value = space
-        .pricePerNightWei
+    const value = space.pricePerNightWei
         .mul(ethers_1.BigNumber.from(numberOfDays))
         .mul(ethers_1.BigNumber.from(quantity));
     const receipt = yield (0, sendHelper_1.sendHelper)(contract, 'newStay', [
@@ -34,7 +33,7 @@ const book = (contract, spaceId, startDay, numberOfDays, quantity, overrides, tr
     if (!spaceId) {
         throw new Error(`Unable to find "tokenId" in the transaction receipt`);
     }
-    return tokenId;
+    return tokenId.toString();
 });
 exports.book = book;
 //# sourceMappingURL=book.js.map

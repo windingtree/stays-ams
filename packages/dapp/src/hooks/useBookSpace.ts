@@ -1,9 +1,8 @@
+import type { MethodOverrides, TxHashCallbackFn } from 'stays-core/dist/src/utils/sendHelper';
+import { useCallback, useState, useEffect } from 'react';
 import { useContract } from './useContract';
 import { useAppState } from '../store';
-import { useCallback, useState, useEffect } from 'react';
 import Logger from '../utils/logger';
-import { BigNumber } from 'ethers';
-import { MethodOverrides, TxHashCallbackFn } from 'stays-core/dist/src/utils/sendHelper';
 
 // Initialize logger
 const logger = Logger('useBookSpace');
@@ -17,14 +16,14 @@ export type UseBookSpaceHook = [
     overrides?: MethodOverrides,
     transactionHashCb?: TxHashCallbackFn,
     confirmations?: number
-  ) => Promise<BigNumber | null>,
+  ) => Promise<string | null>,
   isReady: boolean
 ];
 
 // This hook provides a callback function for booking space
 export const useBookSpace = (): UseBookSpaceHook => {
-  const { rpcProvider, ipfsNode } = useAppState();
-  const [contract] = useContract(rpcProvider, ipfsNode);
+  const { provider, ipfsNode } = useAppState();
+  const [contract] = useContract(provider, ipfsNode);
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
@@ -39,7 +38,7 @@ export const useBookSpace = (): UseBookSpaceHook => {
     overrides?: MethodOverrides,
     transactionHashCb?: TxHashCallbackFn,
     confirmations?: number
-  ): Promise<BigNumber | null> => {
+  ): Promise<string | null> => {
     try {
 
       if (!contract) {
@@ -63,9 +62,9 @@ export const useBookSpace = (): UseBookSpaceHook => {
         startDay,
         numberOfDays,
         quantity,
-        undefined,
-        undefined,
-        undefined
+        overrides,
+        transactionHashCb,
+        confirmations
       );
     } catch (error) {
       logger.error(error);

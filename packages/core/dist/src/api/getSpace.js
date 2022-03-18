@@ -23,8 +23,8 @@ const getSpace = (contract, ipfsNode, spaceId) => __awaiter(void 0, void 0, void
             spaceId,
             active,
             lodgingFacilityId,
-            capacity,
-            pricePerNightWei,
+            capacity: capacity.toNumber(),
+            pricePerNightWei: pricePerNightWei.toString(),
             dataURI,
         }, updated: luxon_1.DateTime.now().toISO() });
 });
