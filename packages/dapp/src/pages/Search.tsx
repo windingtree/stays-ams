@@ -52,7 +52,7 @@ export const Search = () => {
         guestsAmount
       }
     });
-  }, [startDay, numberOfDays, guestsAmount])
+  }, [dispatch, startDay, numberOfDays, guestsAmount])
   const [loading] = useSpaceSearch(startDay, numberOfDays, timestamp)
 
   const filteredSpaces = useMemo(() => {

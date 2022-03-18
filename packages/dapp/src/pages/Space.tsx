@@ -1,5 +1,5 @@
 import { PageWrapper } from './PageWrapper';
-import { Tag, Box, Text, Button, Image, Carousel } from 'grommet';
+import { Tag, Box, Text, Image, Carousel } from 'grommet';
 import { useAppState } from '../store';
 import { useMemo } from 'react';
 import { ThemeMode } from '../components/SwitchThemeMode';
