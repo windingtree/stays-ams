@@ -6,7 +6,6 @@ import {
   Box,
   Image,
   Text,
-  ResponsiveContext,
 } from 'grommet';
 import { Location } from 'grommet-icons';
 
@@ -17,16 +16,14 @@ export const RoomCard: React.FC<{
   location?: string | null;
   price?: string | null;
 }> = ({ imageUrl, name, location, price }) => {
-  const size = React.useContext(ResponsiveContext);
-
   return (
     <>
       <Box margin="medium" >
         <Card
-         
+
           //height={size == "large" ? "18rem" : "large"}
           //width={size == "large" ? "21rem" : "auto"}
-         
+
           background="light-1"
           elevation="small"
         >

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Card,
   CardBody,
@@ -250,13 +250,13 @@ export const RoomProfileCard: React.FC<{
                         removeAll: "remove all",
                         maxFile: "Attach a maximum of {max} files only.",
                       }}
-                      onChange={(event) => {
-                        const fileList = event.target.files;
-                        if (typeof fileList == "object" && fileList != null) {
-                          for (let i = 0; i < fileList.length; i += 1) {
-                            const file = fileList[i];
-                          }
-                        }
+                      onChange={(/* event */) => {
+                        // const fileList = event.target.files;
+                        // if (typeof fileList == "object" && fileList != null) {
+                        //   for (let i = 0; i < fileList.length; i += 1) {
+                        //     const file = fileList[i];
+                        //   }
+                        // }
                       }}
                     />
                   </FormField>
