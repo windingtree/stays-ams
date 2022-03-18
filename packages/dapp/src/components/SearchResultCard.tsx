@@ -43,10 +43,9 @@ export const SearchResultCard: React.FC<{ space: Space }> = ({ space }) => {
             {space.name}
           </Text>
           <Text size='large'>
-            {space.address === undefined ? '' : <Box direction='row'>
-              <Text>{space.address.country},</Text>
-              <Text>{space.address.locality},</Text>
-              <Text>{space.address.streetAddress}</Text>
+            {!space.contractData ? '' : <Box direction='row'>
+              <Text>space ID: {space.contractData.spaceId},</Text>
+              <Text>lodging facility ID: {space.contractData.lodgingFacilityId}</Text>
             </Box>}
           </Text>
         </Box>
@@ -58,7 +57,7 @@ export const SearchResultCard: React.FC<{ space: Space }> = ({ space }) => {
           <Button
             size='large'
             label='Check Spaces'
-            onClick={() => navigate(`/space/${space.id}`)}
+            onClick={() => navigate(`/space/${!space.contractData ? '' : space.contractData.spaceId}`)}
           />
         </Box>
       </Grid>
