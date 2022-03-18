@@ -60,8 +60,6 @@ export const useBookSpace = (): UseBookSpaceHook => {
         quantity
       );
 
-      // console.log('@@@@@@@@', (contract.provider as any).getSigner());
-
       return contract.book(
         spaceId,
         startDay,
