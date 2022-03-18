@@ -43,9 +43,9 @@ const createFakeSpace = () => ({
     name: faker_1.faker.company.companyName(),
     description: faker_1.faker.lorem.lines(3),
     type: (0, exports.randomItem)(enum_1.allowedSpaceTypes),
-    capacity: faker_1.faker.datatype.number({ max: 5 }),
-    guestsNumber: faker_1.faker.datatype.number({ max: 5 }),
-    beds: faker_1.faker.datatype.number({ max: 3 }),
+    capacity: faker_1.faker.datatype.number({ min: 1, max: 5 }),
+    guestsNumber: faker_1.faker.datatype.number({ min: 1, max: 5 }),
+    beds: faker_1.faker.datatype.number({ min: 1, max: 3 }),
     price: faker_1.faker.datatype.number({ min: 35, max: 250 }),
     media: {
         logo: faker_1.faker.image.abstract(),

@@ -55,9 +55,9 @@ export const createFakeSpace = (): SpaceRaw => ({
   name: faker.company.companyName(),
   description: faker.lorem.lines(3),
   type: randomItem(allowedSpaceTypes),
-  capacity: faker.datatype.number({ max: 5 }),
-  guestsNumber: faker.datatype.number({ max: 5 }),
-  beds: faker.datatype.number({ max: 3 }),
+  capacity: faker.datatype.number({ min: 1, max: 5 }),
+  guestsNumber: faker.datatype.number({ min: 1, max: 5 }),
+  beds: faker.datatype.number({ min: 1, max: 3 }),
   price: faker.datatype.number({ min: 35, max: 250 }),
   media: {
     logo: faker.image.abstract(),

@@ -1,4 +1,3 @@
-import type { BigNumber } from 'ethers';
 export interface TokenAttribute {
     trait_type: string;
     value: string;
@@ -15,7 +14,7 @@ export interface TokenData {
     attributes?: TokenAttribute[];
 }
 export interface StayToken {
-    tokenId: BigNumber;
+    tokenId: string;
     owner: string;
     tokenUri: string;
     data: TokenData;

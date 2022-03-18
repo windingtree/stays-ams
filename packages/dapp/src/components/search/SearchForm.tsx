@@ -11,13 +11,13 @@ const defaultReturnDate = new Date('03/20/2022').toISOString()
 export const SearchForm: React.FC<{
   initDepartureDate?: string | null,
   initReturnDate?: string | null,
-  initGuestsAmount?: string | null,
+  initGuestsAmount?: number,
 }> = ({ initDepartureDate, initReturnDate, initGuestsAmount }) => {
   const { themeMode } = useAppState();
 
   const [departureDate, setDepartureDate] = useState(initDepartureDate ?? defaultDepartureDate);
   const [returnDate, setReturnDate] = useState(initReturnDate ?? defaultReturnDate);
-  const [guestsAmount, setGuestsAmount] = useState(Number(initGuestsAmount ?? 1));
+  const [guestsAmount, setGuestsAmount] = useState(initGuestsAmount ?? 1);
 
   const query = useMemo(() => new URLSearchParams([
     ['returnDate', String(returnDate)],

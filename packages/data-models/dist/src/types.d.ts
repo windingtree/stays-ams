@@ -1,4 +1,3 @@
-import { BigNumber } from 'ethers';
 import type { MediaListReference, AddressReference } from '@windingtree/org.json-schema/types/org.json';
 import { allowedSpaceTypes, allowedLodgingFacilityTypes, allowedLodgingFacilityTiers } from './enum';
 export declare type SpaceType = typeof allowedSpaceTypes[number];
@@ -32,8 +31,8 @@ export interface Space extends SpaceRaw {
         spaceId: string;
         active: boolean;
         lodgingFacilityId: string;
-        capacity: BigNumber;
-        pricePerNightWei: BigNumber;
+        capacity: number;
+        pricePerNightWei: string;
         dataURI: string;
     };
     updated: string;

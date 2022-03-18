@@ -29,10 +29,11 @@ export const useSpaceSearch = (
     setLoading(true);
     setError(undefined);
 
-    if (searchTimestamp === timestamp && (timestamp ?? 0) + 5 * 60 * 60 > Date.now()) {
-      setLoading(false);
-      return
-    }
+    // @todo fix timestamp currently not connected
+    // if (searchTimestamp === timestamp && (timestamp ?? 0) + 5 * 60 * 60 > Date.now()) {
+    //   setLoading(false);
+    //   return
+    // }
 
     dispatch({
       type: 'RESET_RECORD',
@@ -95,7 +96,7 @@ export const useSpaceSearch = (
     };
 
     getSpacesAvailability();
-  }, [lodgingFacilities, isReady, cb, dispatch, numberOfDays, startDay, timestamp, searchTimestamp]);
+  }, [lodgingFacilities, isReady, cb, dispatch, numberOfDays, startDay]);
 
   return [
     loading,

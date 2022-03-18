@@ -123,11 +123,11 @@ export class EthRioContract {
     );
   }
 
-  getTokensOfOwner(owner: string): Promise<BigNumber[]> {
+  getTokensOfOwner(owner: string): Promise<string[]> {
     return getTokensOfOwner(this.contract, owner);
   }
 
-  getToken(tokenId: BigNumber): Promise<StayToken> {
+  getToken(tokenId: string): Promise<StayToken> {
     return getToken(this.contract, tokenId);
   }
 
@@ -155,7 +155,7 @@ export class EthRioContract {
     profileData: SpaceRaw,
     lodgingFacilityId: string,
     capacity: number,
-    pricePerNightWei: BigNumber,
+    pricePerNightWei: string,
     active?: boolean,
     overrides?: MethodOverrides,
     transactionHashCb?: TxHashCallbackFn,
@@ -183,7 +183,7 @@ export class EthRioContract {
     overrides?: MethodOverrides,
     transactionHashCb?: TxHashCallbackFn,
     confirmations?: number
-  ): Promise<BigNumber> {
+  ): Promise<string> {
     return book(
       this.contract,
       spaceId,

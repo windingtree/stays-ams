@@ -19,7 +19,7 @@ const getTokensOfOwner = (contract, owner) => __awaiter(void 0, void 0, void 0, 
         const token = yield contract.tokenOfOwnerByIndex(owner, i);
         tokens.push(token);
     }
-    return tokens;
+    return tokens.map(t => t.toString());
 });
 exports.getTokensOfOwner = getTokensOfOwner;
 const getToken = (contract, tokenId) => __awaiter(void 0, void 0, void 0, function* () {
