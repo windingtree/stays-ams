@@ -19,7 +19,7 @@ export const useSpaceSearch = (
   timestamp: number
 ): UseSpaceSearchHook => {
   const dispatch = useAppDispatch();
-  const { lodgingFacilities, searchTimestamp } = useAppState();
+  const { lodgingFacilities } = useAppState();
   const [cb, isReady] = useSpaceAvailability();
 
   const [loading, setLoading] = useState(false);
