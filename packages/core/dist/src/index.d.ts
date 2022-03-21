@@ -4,6 +4,7 @@ import type { LodgingFacilityRaw, LodgingFacility, SpaceRaw, Space } from 'stays
 import type { EthRioStays } from 'stays-smart-contracts';
 import type { MethodOverrides, TxHashCallbackFn } from './utils/sendHelper';
 import type { StayToken } from './types';
+export * from './types';
 export declare type KnownProvider = providers.ExternalProvider | providers.JsonRpcProvider | providers.Web3Provider | providers.Provider | string;
 export declare class EthRioContract {
     readonly address: string;
@@ -11,6 +12,7 @@ export declare class EthRioContract {
     readonly contract: EthRioStays;
     readonly ipfsNode: IPFS;
     constructor(contractAddress: string, providerOrUri: KnownProvider, ipfsNode: IPFS);
+    getDayZero(): Promise<number>;
     getLodgingFacilityIds(active: boolean): Promise<string[]>;
     getNewAndUpdatedFacilityIds(fromBlock: number): Promise<string[]>;
     getSpaceIds(lodgingFacilityId: string, active: boolean): Promise<string[]>;

@@ -1,4 +1,14 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EthRioContract = void 0;
 const ethers_1 = require("ethers");
@@ -15,6 +25,8 @@ const registerLodgingFacility_1 = require("./api/registerLodgingFacility");
 const addSpace_1 = require("./api/addSpace");
 const book_1 = require("./api/book");
 const nft_1 = require("./api/nft");
+const getDayZero_1 = require("./api/getDayZero");
+__exportStar(require("./types"), exports);
 class EthRioContract {
     constructor(contractAddress, providerOrUri, ipfsNode) {
         if (org_id_utils_1.regexp.ethereumAddress.exec(contractAddress)) {
@@ -42,6 +54,9 @@ class EthRioContract {
         // @todo Implement ipfsNode validity check
         this.ipfsNode = ipfsNode;
         this.contract = new ethers_1.ethers.Contract(this.address, stays_smart_contracts_1.EthRioStaysContract.abi, this.provider);
+    }
+    getDayZero() {
+        return (0, getDayZero_1.getDayZero)(this.contract);
     }
     getLodgingFacilityIds(active) {
         return (0, getLodgingFacilityIds_1.getLodgingFacilityIds)(this.contract, active);

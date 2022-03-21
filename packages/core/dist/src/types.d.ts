@@ -1,7 +1,7 @@
 export interface TokenAttribute {
     trait_type: string;
     value: string;
-    display_type: 'number' | 'boost_number' | 'boost_percentage' | 'date';
+    display_type?: 'number' | 'boost_number' | 'boost_percentage' | 'date';
 }
 export interface TokenData {
     name: string;
