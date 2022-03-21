@@ -16,10 +16,10 @@ export type UseSpaceSearchHook = [
 export const useSpaceSearch = (
   startDay: number,
   numberOfDays: number,
-  timestamp: number
+  guestsAmount: number
 ): UseSpaceSearchHook => {
   const dispatch = useAppDispatch();
-  const { lodgingFacilities, searchTimestamp } = useAppState();
+  const { lodgingFacilities, searchTimestamp, searchParams } = useAppState();
   const [cb, isReady] = useSpaceAvailability();
 
   const [loading, setLoading] = useState(false);
@@ -29,11 +29,20 @@ export const useSpaceSearch = (
     setLoading(true);
     setError(undefined);
 
-    // @todo fix timestamp currently not connected
-    // if (searchTimestamp === timestamp && (timestamp ?? 0) + 5 * 60 * 60 > Date.now()) {
-    //   setLoading(false);
-    //   return
-    // }
+    if (!isReady) {
+      return
+    }
+
+    if (
+      searchParams !== undefined &&
+      searchTimestamp !== undefined &&
+      searchTimestamp + 5 * 60 > Date.now() / 1000 &&
+      searchParams.numberOfDays === numberOfDays &&
+      searchParams.startDay === startDay
+    ) {
+      setLoading(false);
+      return
+    }
 
     dispatch({
       type: 'RESET_RECORD',
@@ -41,10 +50,6 @@ export const useSpaceSearch = (
         name: 'searchSpaces'
       }
     });
-
-    if (!isReady) {
-      return
-    }
 
     const getSpacesAvailability = async () => {
       try {
@@ -64,7 +69,7 @@ export const useSpaceSearch = (
             }
           )
         );
-        setLoading(false);
+
         // Add all obtained records to state
         for (const record of newSpaces) {
           dispatch({
@@ -81,9 +86,18 @@ export const useSpaceSearch = (
         //Set timestamp to storage
         dispatch({
           type: 'SET_AVAILABILITY_TIMESTAMP',
-          payload: Date.now() / 1000 | 0
+          payload: Date.now() / 1000
+        });
+        dispatch({
+          type: 'SET_SEARCH_PARAMS',
+          payload: {
+            startDay,
+            numberOfDays,
+            guestsAmount
+          }
         });
 
+        setLoading(false);
       } catch (error) {
         setLoading(false);
         if (error) {
@@ -96,7 +110,7 @@ export const useSpaceSearch = (
     };
 
     getSpacesAvailability();
-  }, [lodgingFacilities, isReady, cb, dispatch, numberOfDays, startDay]);
+  }, [lodgingFacilities, isReady, cb, dispatch, numberOfDays, startDay, searchParams, searchTimestamp, guestsAmount]);
 
   return [
     loading,

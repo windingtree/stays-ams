@@ -23,7 +23,6 @@ export const SearchForm: React.FC<{
     ['returnDate', String(returnDate)],
     ['departureDate', String(departureDate)],
     ['guestsAmount', String(guestsAmount)],
-    ['timestamp', String(Date.now())]
   ]), [returnDate, departureDate, guestsAmount])
 
   const navigate = useNavigate()
