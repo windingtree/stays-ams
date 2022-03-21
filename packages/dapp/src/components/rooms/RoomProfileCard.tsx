@@ -22,7 +22,7 @@ import {
 import { HelpOption } from "grommet-icons";
 import { useWindowsDimension } from "../../hooks/useWindowsDimension";
 import {
-    LoadScript,
+  LoadScript,
   defaultRoomTypes,
   defaultCountries,
   defaultRoomTier,
@@ -36,45 +36,29 @@ export const RoomProfileCard: React.FC<{
   location?: string | null;
   price?: string | null;
 }> = ({ imageUrl, name, location, price }) => {
-    let autoComplete: any;
-    let autoComplete2: any;
-    
+  let autoComplete: any;
+  let autoComplete2: any;
 
-
-    
-    
   const autoCompleteRef = useRef(null);
   const autoCompleteRef2 = useRef(null);
-    const [query, setQuery] = useState("");
+  const [query, setQuery] = useState("");
   const [query2, setQuery2] = useState("");
-    
 
-    useEffect(() => {
-      
+  useEffect(() => {
+    LoadScript(
+      `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&libraries=places`,
+      () => handleScriptLoad2(autoComplete2, setQuery2, autoCompleteRef2)
+    );
 
-      
-          
-
-            LoadScript(
-                `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&libraries=places`,
-                () => handleScriptLoad2(autoComplete2, setQuery2, autoCompleteRef2)
-            );
-        
-        
-         LoadScript(
-           `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&libraries=places`,
-           () => handleScriptLoad(autoComplete, setQuery, autoCompleteRef)
-         );
-        
-   
-   
-    
+    LoadScript(
+      `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&libraries=places`,
+      () => handleScriptLoad(autoComplete, setQuery, autoCompleteRef)
+    );
   }, []);
 
   const [valid, setValid] = useState(false);
-    const [isConntryOpen, setIsConntryOpen] = useState(false);
+  const [isConntryOpen, setIsConntryOpen] = useState(false);
   const [isConntryOpen2, setIsConntryOpen2] = useState(false);
-    
 
   //
 
@@ -85,101 +69,107 @@ export const RoomProfileCard: React.FC<{
   const [roomTypeOption, setRoomTypeOption] = useState(defaultRoomTypes);
   const [roomTierOption, setRoomTierOption] = useState(defaultRoomTier);
   const [addressCountry, setAddressCountry] = useState(defaultCountries);
+  const [addressObject, setaddressObject] = useState<any[]>([]);
+  const [addressGeometry, setaddressGeometry] = useState<any>("");
 
-    const [operatorCountry, setOperatorCountry] = useState(defaultCountries);
-    
+  useEffect(() => {
+    value.addressGeometry = addressGeometry;
+  }, [addressGeometry]);
 
-    //const [addressPostalCode, setaddressPostalCode] = useState('');
-
-    
-    const handlePlaceSelect2 = async (autoComplete: any, updateQuery: any) => {
-      const operatorObject = autoComplete.getPlace();
-      const query2 = operatorObject.formatted_address;
-      updateQuery(query2);
-
-      value.operatorGeometry = `${operatorObject.geometry.location.lat()},${operatorObject.geometry.location.lng()}`;
-
-      for (const component of operatorObject.address_components) {
+  useEffect(() => {
+    if (Object.keys(addressObject).length > 0) {
+      for (const component of addressObject) {
         const componentType = component.types[0];
 
-          
         switch (componentType) {
           case "postal_code": {
-            value.operatorPostalCode = component.long_name;
+            value.addressPostalCode = component.long_name;
             break;
           }
           case "locality":
-            console.log("locality", component.long_name);
-            value.operatorLocality = component.long_name;
+            value.addressLocality = component.long_name;
 
             break;
 
           case "administrative_area_level_1":
-            console.log("administrative_area_level_1", component.long_name);
-            if (value.operatorLocality == null || value.operatorLocality === "") {
-              value.operatorLocality = component.long_name;
+            if (value.addressLocality == null || value.addressLocality === "") {
+              value.addressLocality = component.long_name;
             }
 
             break;
           case "country":
-            value.operatorCountry = component.long_name;
+            value.addressCountry = component.long_name;
             break;
         }
-        setIsConntryOpen2(true);
-        let tm2 = setTimeout(() => {
-          setIsConntryOpen2(false);
-          clearTimeout(tm2);
-        }, 10);
       }
 
-      console.log("operatorObject", operatorObject);
-
-      //return operatorObject;
-    }; 
-  const handlePlaceSelect = async (autoComplete: any, updateQuery: any) => {
-    const addressObject = autoComplete.getPlace();
-    const query = addressObject.formatted_address;
-    updateQuery(query);
-
-       
-    value.addressGeometry = `${addressObject.geometry.location.lat()},${addressObject.geometry.location.lng()}`;
-
-    for (const component of addressObject.address_components) {
-      const componentType = component.types[0];
-
-       // console.log("component", component);
-      switch (componentType) {
-          case "postal_code": {
-              console.log("postal_code", component.long_name);
-              //setaddressPostalCode(component.long_name);
-              value.addressPostalCode = component.long_name;
-          break;
-        }
-        case "locality":
-          //console.log("locality", component.long_name);
-          value.addressLocality = component.long_name;
-
-          break;
-
-        case "administrative_area_level_1":
-         // console.log("administrative_area_level_1", component.long_name);
-          if (value.addressLocality == null || value.addressLocality === "") {
-            value.addressLocality = component.long_name;
-          }
-
-          break;
-        case "country":
-          value.addressCountry = component.long_name;
-          break;
-      }
       setIsConntryOpen(true);
       let tm = setTimeout(() => {
         setIsConntryOpen(false);
         clearTimeout(tm);
       }, 10);
     }
+  }, [addressObject]);
+  //
 
-    console.log("addressObject", addressObject);
+  const [operatorCountry, setOperatorCountry] = useState(defaultCountries);
+
+
+  const handlePlaceSelect2 = async (autoComplete2: any, updateQuery2: any) => {
+    const operatorObject = autoComplete2.getPlace();
+    const query2 = operatorObject.formatted_address;
+    updateQuery2(query2);
+
+    value.operatorGeometry = `${operatorObject.geometry.location.lat()},${operatorObject.geometry.location.lng()}`;
+
+    for (const component of operatorObject.address_components) {
+      const componentType = component.types[0];
+
+      switch (componentType) {
+        case "postal_code": {
+          value.operatorPostalCode = component.long_name;
+          break;
+        }
+        case "locality":
+          console.log("locality", component.long_name);
+          value.operatorLocality = component.long_name;
+
+          break;
+
+        case "administrative_area_level_1":
+          console.log("administrative_area_level_1", component.long_name);
+          if (value.operatorLocality == null || value.operatorLocality === "") {
+            value.operatorLocality = component.long_name;
+          }
+
+          break;
+        case "country":
+          value.operatorCountry = component.long_name;
+          break;
+      }
+      setIsConntryOpen2(true);
+      let tm2 = setTimeout(() => {
+        setIsConntryOpen2(false);
+        clearTimeout(tm2);
+      }, 10);
+    }
+
+    console.log("operatorObject", operatorObject);
+
+    //return operatorObject;
+  };
+  const handlePlaceSelect = async (autoComplete: any, updateQuery: any) => {
+    const addressObject = autoComplete.getPlace();
+    const query = addressObject.formatted_address;
+    updateQuery(query);
+    setaddressObject(addressObject.address_components);
+    setaddressGeometry(
+      `${addressObject.geometry.location.lat()},${addressObject.geometry.location.lng()}`
+    );
+
+   
+
+    //console.log("addressObject", addressObject);
 
     return addressObject;
   };
@@ -213,16 +203,15 @@ export const RoomProfileCard: React.FC<{
     updateQuery2: any,
     autoCompleteRef2: any
   ): any {
-      
     autoComplete2 = new window.google.maps.places.Autocomplete(
       autoCompleteRef2.current,
       { types: ["address"] }
       //    { types: ["(cities)"], componentRestrictions: { country: "us" } }
     );
-      
-      
-      console.log("autoComplete2", autoComplete2);
-      
+
+     // alert("autoComplete2");
+    console.log("autoComplete2", autoComplete2);
+
     autoComplete2.setFields([
       "formatted_address",
       "address_components",
@@ -234,7 +223,7 @@ export const RoomProfileCard: React.FC<{
       () => handlePlaceSelect2(autoComplete2, updateQuery2)
       //handlePlaceSelect(autoComplete,updateQuery)
     );
-  } 
+  }
 
   return (
     <>

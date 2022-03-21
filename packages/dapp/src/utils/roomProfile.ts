@@ -69,7 +69,7 @@ export const LoadScript = (url: string, callback: Function): void => {
     addressLocality: "",
     addressPostalCode: "",
     addressGeometry: "",
-    addressPremise: "prem 1",
+    addressPremise: "",
 
     operatorGeometry: "",
     operatorPostalCode: "",
