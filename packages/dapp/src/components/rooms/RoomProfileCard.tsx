@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Card,
   CardBody,
@@ -16,10 +16,19 @@ import {
   Layer,
   Heading,
   Select,
+  TextInput,
 } from "grommet";
 
 import { HelpOption } from "grommet-icons";
 import { useWindowsDimension } from "../../hooks/useWindowsDimension";
+import {
+    LoadScript,
+  defaultRoomTypes,
+  defaultCountries,
+  defaultRoomTier,
+  defaultFormValue,
+  ResponsiveColumn,
+} from "../../utils/roomProfile";
 
 export const RoomProfileCard: React.FC<{
   imageUrl?: string;
@@ -27,47 +36,205 @@ export const RoomProfileCard: React.FC<{
   location?: string | null;
   price?: string | null;
 }> = ({ imageUrl, name, location, price }) => {
-  const defaultValue = {
-    roomName: "",
-    description: "",
-    roomType: [],
-  };
+    let autoComplete: any;
+    let autoComplete2: any;
+    
 
-  const defaultSelectOptions: any[] = [
-    { label: "Superior Single", value: 1 },
-    { label: "Superior Twin", value: 2 },
-    { label: "Deluxe King", value: 3 },
-    { label: "Swiss Suite", value: 4 },
-    { label: "Diplomatic Suite", value: 5 },
-    { label: "Presidential Suite", value: 6 },
-    { label: "Event Hall", value: 7 },
-  ];
 
-  //const [selectValue, setSelectValue] = useState("");
+    
+    
+  const autoCompleteRef = useRef(null);
+  const autoCompleteRef2 = useRef(null);
+    const [query, setQuery] = useState("");
+  const [query2, setQuery2] = useState("");
+    
+
+    useEffect(() => {
+      
+
+      
+          
+
+            LoadScript(
+                `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&libraries=places`,
+                () => handleScriptLoad2(autoComplete2, setQuery2, autoCompleteRef2)
+            );
+        
+        
+         LoadScript(
+           `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&libraries=places`,
+           () => handleScriptLoad(autoComplete, setQuery, autoCompleteRef)
+         );
+        
+   
+   
+    
+  }, []);
 
   const [valid, setValid] = useState(false);
+    const [isConntryOpen, setIsConntryOpen] = useState(false);
+  const [isConntryOpen2, setIsConntryOpen2] = useState(false);
+    
 
-  const [value, setValue] = useState(defaultValue);
+  //
+
+  const [value, setValue] = useState(defaultFormValue);
 
   const { winWidth } = useWindowsDimension();
 
-  const [options, setOptions] = useState(defaultSelectOptions);
+  const [roomTypeOption, setRoomTypeOption] = useState(defaultRoomTypes);
+  const [roomTierOption, setRoomTierOption] = useState(defaultRoomTier);
+  const [addressCountry, setAddressCountry] = useState(defaultCountries);
 
-  const ResponsiveColumn = () => {
-    if (winWidth >= 1300) {
-      return ["65%", "35%"];
-    } else if (winWidth >= 1000) {
-      return ["65%", "35%"];
-    } else if (winWidth >= 768) {
-      return ["60%", "40%"];
-    } else if (winWidth >= 600) {
-      return ["large"];
-    } else if (winWidth <= 500) {
-      return ["xlarge"];
-    } else if (winWidth <= 400) {
-      return ["large"];
+    const [operatorCountry, setOperatorCountry] = useState(defaultCountries);
+    
+
+    //const [addressPostalCode, setaddressPostalCode] = useState('');
+
+    
+    const handlePlaceSelect2 = async (autoComplete: any, updateQuery: any) => {
+      const operatorObject = autoComplete.getPlace();
+      const query2 = operatorObject.formatted_address;
+      updateQuery(query2);
+
+      value.operatorGeometry = `${operatorObject.geometry.location.lat()},${operatorObject.geometry.location.lng()}`;
+
+      for (const component of operatorObject.address_components) {
+        const componentType = component.types[0];
+
+          
+        switch (componentType) {
+          case "postal_code": {
+            value.operatorPostalCode = component.long_name;
+            break;
+          }
+          case "locality":
+            console.log("locality", component.long_name);
+            value.operatorLocality = component.long_name;
+
+            break;
+
+          case "administrative_area_level_1":
+            console.log("administrative_area_level_1", component.long_name);
+            if (value.operatorLocality == null || value.operatorLocality === "") {
+              value.operatorLocality = component.long_name;
+            }
+
+            break;
+          case "country":
+            value.operatorCountry = component.long_name;
+            break;
+        }
+        setIsConntryOpen2(true);
+        let tm2 = setTimeout(() => {
+          setIsConntryOpen2(false);
+          clearTimeout(tm2);
+        }, 10);
+      }
+
+      console.log("operatorObject", operatorObject);
+
+      //return operatorObject;
+    }; 
+  const handlePlaceSelect = async (autoComplete: any, updateQuery: any) => {
+    const addressObject = autoComplete.getPlace();
+    const query = addressObject.formatted_address;
+    updateQuery(query);
+
+       
+    value.addressGeometry = `${addressObject.geometry.location.lat()},${addressObject.geometry.location.lng()}`;
+
+    for (const component of addressObject.address_components) {
+      const componentType = component.types[0];
+
+       // console.log("component", component);
+      switch (componentType) {
+          case "postal_code": {
+              console.log("postal_code", component.long_name);
+              //setaddressPostalCode(component.long_name);
+              value.addressPostalCode = component.long_name;
+          break;
+        }
+        case "locality":
+          //console.log("locality", component.long_name);
+          value.addressLocality = component.long_name;
+
+          break;
+
+        case "administrative_area_level_1":
+         // console.log("administrative_area_level_1", component.long_name);
+          if (value.addressLocality == null || value.addressLocality === "") {
+            value.addressLocality = component.long_name;
+          }
+
+          break;
+        case "country":
+          value.addressCountry = component.long_name;
+          break;
+      }
+      setIsConntryOpen(true);
+      let tm = setTimeout(() => {
+        setIsConntryOpen(false);
+        clearTimeout(tm);
+      }, 10);
     }
+
+    console.log("addressObject", addressObject);
+
+    return addressObject;
   };
+
+  function handleScriptLoad(
+    autoComplete: any,
+    updateQuery: any,
+    autoCompleteRef: any
+  ): any {
+    autoComplete = new window.google.maps.places.Autocomplete(
+      autoCompleteRef.current,
+      { types: ["address"] }
+      //    { types: ["(cities)"], componentRestrictions: { country: "us" } }
+    );
+    autoComplete.setFields([
+      "formatted_address",
+      "address_components",
+      "geometry",
+      //"name"
+    ]);
+    return autoComplete.addListener(
+      "place_changed",
+      () => handlePlaceSelect(autoComplete, updateQuery)
+      //handlePlaceSelect(autoComplete,updateQuery)
+    );
+  }
+
+  function handleScriptLoad2(
+    //handlePlaceSelect: Function,
+    autoComplete2: any,
+    updateQuery2: any,
+    autoCompleteRef2: any
+  ): any {
+      
+    autoComplete2 = new window.google.maps.places.Autocomplete(
+      autoCompleteRef2.current,
+      { types: ["address"] }
+      //    { types: ["(cities)"], componentRestrictions: { country: "us" } }
+    );
+      
+      
+      console.log("autoComplete2", autoComplete2);
+      
+    autoComplete2.setFields([
+      "formatted_address",
+      "address_components",
+      "geometry",
+      //"name"
+    ]);
+    return autoComplete2.addListener(
+      "place_changed",
+      () => handlePlaceSelect2(autoComplete2, updateQuery2)
+      //handlePlaceSelect(autoComplete,updateQuery)
+    );
+  } 
 
   return (
     <>
@@ -75,7 +242,7 @@ export const RoomProfileCard: React.FC<{
         value={value}
         validate="change"
         onReset={(event) => {
-          setValue(defaultValue);
+          setValue(defaultFormValue);
           console.log(event);
         }}
         onSubmit={(event) => console.log("Submit", event.value, event.touched)}
@@ -84,7 +251,7 @@ export const RoomProfileCard: React.FC<{
           setValue(nextValue);
         }}
         onValidate={(validationResults) => {
-          console.log("validationResults = ", validationResults);
+          // console.log("validationResults = ", validationResults);
           setValid(validationResults.valid);
         }}
       >
@@ -103,14 +270,14 @@ export const RoomProfileCard: React.FC<{
             <Grid
               // alignSelf="center"
               //rows={[""]}
-              columns={ResponsiveColumn()}
+              columns={ResponsiveColumn(winWidth)}
               //gap="xxsmall"
               responsive={true}
             >
               <Box>
                 <FormField
-                  style={{ padding: 20 }}
-                  label="Room Name"
+                  style={{ padding: 10 }}
+                  label="Name"
                   name="roomName"
                   required
                   validate={[
@@ -122,35 +289,32 @@ export const RoomProfileCard: React.FC<{
                     },
                   ]}
                 />
-
-                <FormField
-                  style={{ padding: 20 }}
-                  label="Room Type"
-                  name="roomType"
-                >
+                <FormField style={{ padding: 10 }} label="Type" name="roomType">
                   <Select
-                    // size="medium"
+                    name="roomType"
+                    id="roomType"
                     placeholder="Select Room Type"
                     required
                     clear
-                    labelKey="label"
-                    valueKey="value"
-                    value={value}
-                    options={options}
-                    //onChange={({ option }) => setValue(option)}
-                    onChange={(nextValue) => {
-                      console.log("Change", nextValue.option);
-                      value.roomType = nextValue.option;
-                      console.log(value);
-                      //setValue();
-                    }}
-                    onClose={() => setOptions(defaultSelectOptions)}
+                    options={roomTypeOption}
+                    onClose={() => setRoomTypeOption(defaultRoomTypes)}
+                  />
+                </FormField>
+                <FormField style={{ padding: 10 }} label="Tier" name="roomTier">
+                  <Select
+                    name="roomTier"
+                    id="roomTier"
+                    placeholder="Select Room Tier"
+                    required
+                    clear
+                    options={roomTierOption}
+                    onClose={() => setRoomTierOption(defaultRoomTier)}
                   />
                 </FormField>
 
                 <FormField
-                  style={{ padding: 20 }}
-                  label="Room Description"
+                  style={{ padding: 10 }}
+                  label="Description"
                   name="description"
                   id="description"
                   htmlFor="text-area"
@@ -166,23 +330,225 @@ export const RoomProfileCard: React.FC<{
                   ]}
                 />
 
-                <FormField
-                  style={{ padding: 20 }}
-                  label="Room Terms & Conditions"
-                  name="roomTerms"
-                  id="roomTerms"
-                  htmlFor="text-area"
-                  component={TextArea}
-                  required
-                  validate={[
-                    { regexp: /^[a-z]/i },
-                    (description) => {
-                      if (description && description.length === 1)
-                        return "must be >1 character";
-                      return undefined;
-                    },
-                  ]}
-                />
+                <div
+                /*  style={{
+                    display:
+                      value.description === "" || value.description === null
+                        ? "none"
+                        : "block",
+                  }}  */
+                >
+                  <br />
+                  <br />
+                  <br />
+                  <div style={{ padding: 10, paddingBottom: 0 }}>
+                    <Heading
+                      margin="none"
+                      level="3"
+                      style={{ paddingLeft: 10 }}
+                    >
+                      Address
+                    </Heading>
+                  </div>
+                  <FormField
+                    label="Street Address"
+                    style={{ padding: 10, marginLeft: 10, marginTop: 10 }}
+                    name="streetAddress"
+                  >
+                    <TextInput
+                      required
+                      name="streetAddress"
+                      id="streetAddress"
+                      className="input"
+                      ref={autoCompleteRef}
+                      onChange={(event) => setQuery(event.target.value)}
+                      placeholder="Enter Address, City, location or postal code to continnue"
+                      value={query}
+                    />
+                  </FormField>
+
+                  <FormField
+                    style={{ padding: 10, marginLeft: 10 }}
+                    label="Locality"
+                    name="addressLocality"
+                  >
+                    <TextInput
+                      required
+                      id="addressLocality"
+                      name="addressLocality"
+                      //value={addressLocality}
+                    />
+                  </FormField>
+
+                  <FormField
+                    style={{ padding: 10, marginLeft: 10 }}
+                    label="Postal Code"
+                    name="addressPostalCode"
+                    id="addressPostalCode"
+                    //value={addressPostalCode}
+                    required
+                  />
+
+                  <FormField
+                    style={{ padding: 10, marginLeft: 10, marginTop: 0 }}
+                    label="Country"
+                    name="addressCountry"
+                  >
+                    <Select
+                      name="addressCountry"
+                      id="addressCountry"
+                      placeholder="Country"
+                      required
+                      clear
+                      open={isConntryOpen}
+                      // value={addressCountryValue}
+                      options={addressCountry}
+                      onSearch={(text) => {
+                        const escapedText = text.replace(
+                          /[-\\^$*+?.()|[\]{}]/g,
+                          "\\$&"
+                        );
+
+                        const exp = new RegExp(escapedText, "i");
+                        setAddressCountry(
+                          defaultCountries.filter((o) => exp.test(o))
+                        );
+                      }}
+                      onClose={() => setAddressCountry(defaultCountries)}
+                    />
+                  </FormField>
+
+                  <FormField
+                    style={{ padding: 10, marginLeft: 10 }}
+                    label="Subdivision"
+                    name="addressSubdivision"
+                    required
+                  />
+
+                  <FormField
+                    style={{ padding: 10, marginLeft: 10 }}
+                    label="Premise"
+                    name="addressPremise"
+                    required
+                  />
+
+                  <FormField
+                    style={{ padding: 10, marginLeft: 10 }}
+                    label="Geometry"
+                    name="addressGeometry"
+                    id="addressGeometry"
+                    //value={addressGeometry}
+                    required
+                  />
+                </div>
+
+                <div
+                /* style={{
+                    display:
+                      value.addressGeometry === "" ||
+                      value.addressGeometry === null
+                       ? "none"
+                        : "block",
+                  }}  */
+                >
+                  <br />
+                  <br />
+                  <br />
+                  <div style={{ padding: 10, paddingBottom: 0 }}>
+                    <Heading
+                      margin="none"
+                      level="3"
+                      style={{ paddingLeft: 10 }}
+                    >
+                      Operator Address
+                    </Heading>
+                  </div>
+                  <FormField
+                    label="Street Address"
+                    style={{ padding: 10, marginLeft: 10, marginTop: 10 }}
+                    name="operatorStreetAddress"
+                  >
+                    <TextInput
+                      required
+                      name="operatorStreetAddress"
+                      id="operatorStreetAddress"
+                      className="input"
+                      ref={autoCompleteRef2}
+                      onChange={(event) => setQuery2(event.target.value)}
+                      placeholder="Enter Operator Address, City, location or postal code to continnue"
+                      value={query2}
+                    />
+                  </FormField>
+                  <FormField
+                    style={{ padding: 10, marginLeft: 10 }}
+                    label="Locality"
+                    name="operatorLocality"
+                  >
+                    <TextInput
+                      required
+                      id="operatorLocality"
+                      name="operatorLocality"
+                      //value={operatorLocality}
+                    />
+                  </FormField>
+                  <FormField
+                    style={{ padding: 10, marginLeft: 10 }}
+                    label="Postal Code"
+                    name="operatorPostalCode"
+                    id="operatorPostalCode"
+                    // value={operatorPostalCode}
+                    required
+                  />
+                  <FormField
+                    style={{ padding: 10, marginLeft: 10, marginTop: 0 }}
+                    label="Country"
+                    name="operatorCountry"
+                  >
+                    <Select
+                      name="operatorCountry"
+                      id="operatorCountry"
+                      placeholder="Country"
+                      required
+                      clear
+                      open={isConntryOpen2}
+                      // value={operatorCountryValue}
+                      options={operatorCountry}
+                      onSearch={(text) => {
+                        const escapedText = text.replace(
+                          /[-\\^$*+?.()|[\]{}]/g,
+                          "\\$&"
+                        );
+
+                        const exp = new RegExp(escapedText, "i");
+                        setOperatorCountry(
+                          defaultCountries.filter((o) => exp.test(o))
+                        );
+                      }}
+                      onClose={() => setOperatorCountry(defaultCountries)}
+                    />
+                  </FormField>
+                  <FormField
+                    style={{ padding: 10, marginLeft: 10 }}
+                    label="Subdivision"
+                    name="operatorSubdivision"
+                    required
+                  />
+                  <FormField
+                    style={{ padding: 10, marginLeft: 10 }}
+                    label="Premise"
+                    name="operatorPremise"
+                    required
+                  />
+
+                  <FormField
+                    style={{ padding: 10, marginLeft: 10 }}
+                    label="Geometry"
+                    name="operatorGeometry"
+                    id="operatorGeometry"
+                    //value={operatorGeometry}
+                    required
+                  />
+                </div>
               </Box>
               <Box alignSelf="start" align="center">
                 <Box
@@ -211,7 +577,7 @@ export const RoomProfileCard: React.FC<{
                       accept="image/*"
                       name="roomLogo"
                       id="roomLogo"
-                      maxSize={500}
+                      maxSize={50000}
                       confirmRemove={({ onConfirm, onCancel }) => (
                         <Layer onClickOutside={onCancel} onEsc={onCancel}>
                           <Box

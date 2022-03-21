@@ -1,0 +1,344 @@
+
+
+
+//Source https://betterprogramming.pub/the-best-practice-with-google-place-autocomplete-api-on-react-939211e8b4ce
+export const LoadScript = (url: string, callback: Function): void => {
+  try {
+    let script: any = document.createElement("script"); // create script tag
+    script.type = "text/javascript";
+
+    // when script state is ready and loaded or complete we will call callback
+    if (script.readyState) {
+      script.onreadystatechange = function () {
+        if (
+          script.readyState === "loaded" ||
+          script.readyState === "complete"
+        ) {
+          console.log('1')
+          script.onreadystatechange = null;
+          callback();
+           console.log("2");
+        }
+      };
+    } else {
+       console.log("3");
+      script.onload = () => callback();
+    }
+
+    script.src = url; // load by url
+    document.getElementsByTagName("head")[0].appendChild(script); // append to head
+
+    //console.log(script.src);
+  } catch (error) {
+    alert(JSON.stringify(error));
+    throw Error("Unable to encrypt");
+  }
+};
+
+
+
+
+
+
+  export const defaultRoomTier: any[] = ["Basic", "Swiss", "Presidential", "Premium"];
+
+
+  export const ResponsiveColumn = (winWidth: number) => {
+    if (winWidth >= 1300) {
+      return ["65%", "35%"];
+    } else if (winWidth >= 1000) {
+      return ["65%", "35%"];
+    } else if (winWidth >= 768) {
+      return ["60%", "40%"];
+    } else if (winWidth >= 600) {
+      return ["large"];
+    } else if (winWidth <= 500) {
+      return ["100%"];
+    } else if (winWidth <= 400) {
+      return ["100%"];
+    }
+  };
+
+  export const defaultFormValue = {
+    roomName: "Madagaska room",
+    roomType: "Deluxe King",
+    roomTier: "Basic",
+    description: "",
+    addressCountry: "",
+    addressSubdivision: "",
+    addressLocality: "",
+    addressPostalCode: "",
+    addressGeometry: "",
+    addressPremise: "prem 1",
+
+    operatorGeometry: "",
+    operatorPostalCode: "",
+    operatorLocality: "",
+    operatorCountry: "",
+    operatorPremise: "", //addressPremise
+  };
+  export const defaultRoomTypes: any[] = [
+    "Superior Single",
+    "Superior Twin",
+    "Deluxe King",
+    "Swiss Suite",
+    "Diplomatic Suite",
+    "Presidential Suite",
+    "Event Hall",
+  ];
+
+
+  export const defaultCountries: any[] = [
+    "Afghanistan",
+    "Aland Islands",
+    "Albania",
+    "Algeria",
+    "American Samoa",
+    "Andorra",
+    "Angola",
+    "Anguilla",
+    "Antarctica",
+    "Antigua and Barbuda",
+    "Argentina",
+    "Armenia",
+    "Aruba",
+    "Australia",
+    "Austria",
+    "Azerbaijan",
+    "Bahamas",
+    "Bahrain",
+    "Bangladesh",
+    "Barbados",
+    "Belarus",
+    "Belgium",
+    "Belize",
+    "Benin",
+    "Bermuda",
+    "Bhutan",
+    "Bolivia",
+    "Bonaire, Sint Eustatius and Saba",
+    "Bosnia and Herzegovina",
+    "Botswana",
+    "Bouvet Island",
+    "Brazil",
+    "British Indian Ocean Territory",
+    "Brunei Darussalam",
+    "Bulgaria",
+    "Burkina Faso",
+    "Burundi",
+    "Cambodia",
+    "Cameroon",
+    "Canada",
+    "Cape Verde",
+    "Cayman Islands",
+    "Central African Republic",
+    "Chad",
+    "Chile",
+    "China",
+    "Christmas Island",
+    "Cocos (Keeling) Islands",
+    "Colombia",
+    "Comoros",
+    "Congo",
+    "Congo, Democratic Republic of the Congo",
+    "Cook Islands",
+    "Costa Rica",
+    "Cote D'Ivoire",
+    "Croatia",
+    "Cuba",
+    "Curacao",
+    "Cyprus",
+    "Czech Republic",
+    "Denmark",
+    "Djibouti",
+    "Dominica",
+    "Dominican Republic",
+    "Ecuador",
+    "Egypt",
+    "El Salvador",
+    "Equatorial Guinea",
+    "Eritrea",
+    "Estonia",
+    "Ethiopia",
+    "Falkland Islands (Malvinas)",
+    "Faroe Islands",
+    "Fiji",
+    "Finland",
+    "France",
+    "French Guiana",
+    "French Polynesia",
+    "French Southern Territories",
+    "Gabon",
+    "Gambia",
+    "Georgia",
+    "Germany",
+    "Ghana",
+    "Gibraltar",
+    "Greece",
+    "Greenland",
+    "Grenada",
+    "Guadeloupe",
+    "Guam",
+    "Guatemala",
+    "Guernsey",
+    "Guinea",
+    "Guinea-Bissau",
+    "Guyana",
+    "Haiti",
+    "Heard Island and Mcdonald Islands",
+    "Holy See (Vatican City State)",
+    "Honduras",
+    "Hong Kong",
+    "Hungary",
+    "Iceland",
+    "India",
+    "Indonesia",
+    "Iran, Islamic Republic of",
+    "Iraq",
+    "Ireland",
+    "Isle of Man",
+    "Israel",
+    "Italy",
+    "Jamaica",
+    "Japan",
+    "Jersey",
+    "Jordan",
+    "Kazakhstan",
+    "Kenya",
+    "Kiribati",
+    "Korea, Democratic People's Republic of",
+    "Korea, Republic of",
+    "Kosovo",
+    "Kuwait",
+    "Kyrgyzstan",
+    "Lao People's Democratic Republic",
+    "Latvia",
+    "Lebanon",
+    "Lesotho",
+    "Liberia",
+    "Libyan Arab Jamahiriya",
+    "Liechtenstein",
+    "Lithuania",
+    "Luxembourg",
+    "Macao",
+    "Macedonia, the Former Yugoslav Republic of",
+    "Madagascar",
+    "Malawi",
+    "Malaysia",
+    "Maldives",
+    "Mali",
+    "Malta",
+    "Marshall Islands",
+    "Martinique",
+    "Mauritania",
+    "Mauritius",
+    "Mayotte",
+    "Mexico",
+    "Micronesia, Federated States of",
+    "Moldova, Republic of",
+    "Monaco",
+    "Mongolia",
+    "Montenegro",
+    "Montserrat",
+    "Morocco",
+    "Mozambique",
+    "Myanmar",
+    "Namibia",
+    "Nauru",
+    "Nepal",
+    "Netherlands",
+    "Netherlands Antilles",
+    "New Caledonia",
+    "New Zealand",
+    "Nicaragua",
+    "Niger",
+    "Nigeria",
+    "Niue",
+    "Norfolk Island",
+    "Northern Mariana Islands",
+    "Norway",
+    "Oman",
+    "Pakistan",
+    "Palau",
+    "Palestinian Territory, Occupied",
+    "Panama",
+    "Papua New Guinea",
+    "Paraguay",
+    "Peru",
+    "Philippines",
+    "Pitcairn",
+    "Poland",
+    "Portugal",
+    "Puerto Rico",
+    "Qatar",
+    "Reunion",
+    "Romania",
+    "Russian Federation",
+    "Rwanda",
+    "Saint Barthelemy",
+    "Saint Helena",
+    "Saint Kitts and Nevis",
+    "Saint Lucia",
+    "Saint Martin",
+    "Saint Pierre and Miquelon",
+    "Saint Vincent and the Grenadines",
+    "Samoa",
+    "San Marino",
+    "Sao Tome and Principe",
+    "Saudi Arabia",
+    "Senegal",
+    "Serbia",
+    "Serbia and Montenegro",
+    "Seychelles",
+    "Sierra Leone",
+    "Singapore",
+    "Sint Maarten",
+    "Slovakia",
+    "Slovenia",
+    "Solomon Islands",
+    "Somalia",
+    "South Africa",
+    "South Georgia and the South Sandwich Islands",
+    "South Sudan",
+    "Spain",
+    "Sri Lanka",
+    "Sudan",
+    "Suriname",
+    "Svalbard and Jan Mayen",
+    "Swaziland",
+    "Sweden",
+    "Switzerland",
+    "Syrian Arab Republic",
+    "Taiwan, Province of China",
+    "Tajikistan",
+    "Tanzania, United Republic of",
+    "Thailand",
+    "Timor-Leste",
+    "Togo",
+    "Tokelau",
+    "Tonga",
+    "Trinidad and Tobago",
+    "Tunisia",
+    "Turkey",
+    "Turkmenistan",
+    "Turks and Caicos Islands",
+    "Tuvalu",
+    "Uganda",
+    "Ukraine",
+    "United Arab Emirates",
+    "United Kingdom",
+    "United States",
+    "United States Minor Outlying Islands",
+    "Uruguay",
+    "Uzbekistan",
+    "Vanuatu",
+    "Venezuela",
+    "Viet Nam",
+    "Virgin Islands, British",
+    "Virgin Islands, U.s.",
+    "Wallis and Futuna",
+    "Western Sahara",
+    "Yemen",
+    "Zambia",
+    "Zimbabwe",
+  ];
