@@ -19,10 +19,12 @@ const getLodgingFacility = (contract, ipfsNode, lodgingFacilityId) => __awaiter(
         return null;
     }
     const data = yield (0, dataUri_1.fetchDataUri)(ipfsNode, dataURI);
-    return Object.assign(Object.assign({}, data), { lodgingFacilityId,
-        owner,
-        active,
-        dataURI, spaces: [], updated: luxon_1.DateTime.now().toISO() });
+    return Object.assign(Object.assign({}, data), { contractData: {
+            lodgingFacilityId,
+            owner,
+            active,
+            dataURI,
+        }, spaces: [], updated: luxon_1.DateTime.now().toISO() });
 });
 exports.getLodgingFacility = getLodgingFacility;
 //# sourceMappingURL=getLodgingFacility.js.map

@@ -7,7 +7,7 @@ import { decodeDataUri } from '../utils/dataUri';
 export const getTokensOfOwner = async (
   contract: EthRioStays,
   owner: string
-): Promise<BigNumber[]> => {
+): Promise<string[]> => {
   const balance = await contract.balanceOf(owner);
 
   let tokens: BigNumber[] = [];
@@ -17,12 +17,12 @@ export const getTokensOfOwner = async (
     tokens.push(token);
   }
 
-  return tokens;
+  return tokens.map(t => t.toString());
 };
 
 export const getToken = async (
   contract: EthRioStays,
-  tokenId: BigNumber
+  tokenId: string
 ): Promise<StayToken> => {
   const owner = await contract.ownerOf(tokenId);
   const tokenUri = await contract.tokenURI(tokenId);

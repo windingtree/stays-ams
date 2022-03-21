@@ -67,6 +67,16 @@ export const mainReducer = (state: State, action: Action): State => {
           ...state,
           isBootstrapLoading: action.payload
         };
+      case 'SET_AVAILABILITY_TIMESTAMP':
+        return {
+          ...state,
+          searchTimestamp: action.payload
+        };
+      case 'SET_SEARCH_PARAMS':
+        return {
+          ...state,
+          searchParams: action.payload
+        };
       case 'SET_BOOTSTRAPPED':
         return {
           ...state,
@@ -105,7 +115,7 @@ export const mainReducer = (state: State, action: Action): State => {
       default:
         return state;
     }
-  } catch(error) {
+  } catch (error) {
     logger.error((error as Error).message || 'Unknown state reducer error');
     return state;
   }
@@ -115,15 +125,15 @@ const initialState: State = {
   isConnecting: false,
   isRightNetwork: true,
   isIpfsNodeConnecting: false,
-  signIn: () => {},
-  signOut: () => {},
+  signIn: () => { },
+  signOut: () => { },
   errors: [],
-  themeMode:ThemeMode.light,
-  startIpfsNode: () => {},
-  stopIpfsNode: () => {},
+  themeMode: ThemeMode.light,
+  startIpfsNode: () => { },
+  stopIpfsNode: () => { },
   isBootstrapLoading: false,
   lodgingFacilities: [],
-  spaces: []
+  searchSpaces: []
 };
 
 export const combineReducers = (

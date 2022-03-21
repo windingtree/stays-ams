@@ -38,7 +38,7 @@ export const useSpaceAvailability = (): UseSpaceAvailabilityHook => {
 
     } catch (error) {
       logger.error(error);
-      return null
+      return null;
     }
   }, [contract]);
 

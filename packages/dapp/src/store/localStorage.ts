@@ -1,4 +1,5 @@
 import type { Action, State } from './actions';
+import { getDappMode } from '../config';
 import Logger from '../utils/logger';
 
 // Initialize logger
@@ -17,7 +18,9 @@ export const storageConnectorConfig: LocalStorageConnectorConfig = {
     'themeMode',
     'bootstrapped',
     'lodgingFacilities',
-    'spaces',
+    'searchSpaces',
+    'searchTimestamp',
+    'searchParams',
   ]
 };
 
@@ -78,13 +81,16 @@ export const selectedState = (state: State): StoredState =>
 
 // Return stored sate
 export const getState = (transform?: TransformCallback): StoredState => {
+  const storage = getDappMode() === 'development'
+    ? sessionStorage
+    : localStorage;
   try {
-    let serializedState = localStorage.getItem(storagePropertyName);
+    let serializedState = storage.getItem(storagePropertyName);
 
     if (serializedState === null) {
       // storage not initialized yet
       const emptyStorage = safeObjectStringify({});
-      localStorage.setItem(storagePropertyName, emptyStorage);
+      storage.setItem(storagePropertyName, emptyStorage);
       serializedState = emptyStorage;
     }
 
@@ -106,9 +112,12 @@ export const setState = (
   state: StoredState,
   transform?: TransformCallback
 ): void => {
+  const storage = getDappMode() === 'development'
+    ? sessionStorage
+    : localStorage;
   try {
     const serializedState = safeObjectStringify(state);
-    localStorage.setItem(
+    storage.setItem(
       storagePropertyName,
       transform ? transform<string>(serializedState) : serializedState
     );

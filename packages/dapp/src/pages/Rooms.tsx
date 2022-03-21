@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import { Link } from "react-router-dom";
 
-import { Box, Text, Button, Grid, ResponsiveContext } from "grommet";
+import { Box, Text, Button, Grid /*, ResponsiveContext */ } from "grommet";
 // import { useAppState } from '../store';
 import { PageWrapper } from "./PageWrapper";
 import { RoomCard } from "../components/rooms/RoomCard";
@@ -10,10 +10,10 @@ import { useWindowsDimension } from "../hooks/useWindowsDimension";
 
 //export const Rooms = () => {
 export const Rooms = (): JSX.Element => {
-  const size = React.useContext(ResponsiveContext);
-  const { winWidth, winHeight } = useWindowsDimension();
+  // const size = React.useContext(ResponsiveContext);
+  const { winWidth /*, winHeight */ } = useWindowsDimension();
 
-  /* 
+  /*
     WIRE-FRAME URL
     https://docs.google.com/drawings/d/1RXaaLQR0d-g7ReIkKaB4Sz5_JQpxhcqOWccTxmGE6Ag/edit
 
@@ -155,7 +155,7 @@ export const Rooms = (): JSX.Element => {
             //code: rowData.code,
           }}
         >
-          
+
 
           <Button
             primary

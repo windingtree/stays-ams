@@ -23,3 +23,9 @@ export async function setupUser<T extends { [contractName: string]: Contract }>(
   }
   return user as { address: string } & T
 }
+
+export const extractEventFromTx = async (tx, eventName) => {
+  const receipt = await tx.wait();
+  const event = receipt.events.find(e => e.event === eventName);
+  return event.args;
+};

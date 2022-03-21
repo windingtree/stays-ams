@@ -1,4 +1,4 @@
-import type { providers, BigNumber } from 'ethers';
+import type { providers } from 'ethers';
 import type { EthRioStays } from 'stays-smart-contracts';
 import type { MethodOverrides, TxHashCallbackFn } from '../utils/sendHelper';
 import { BigNumber as BN } from 'ethers';
@@ -14,14 +14,13 @@ export const book = async (
   overrides?: MethodOverrides,
   transactionHashCb?: TxHashCallbackFn,
   confirmations = 1
-): Promise<BigNumber> => {
+): Promise<string> => {
   overrides = overrides ? overrides : {};
   const owner = (contract.provider as providers.Web3Provider).getSigner();
 
   const space = await contract.getSpaceById(spaceId);
   // value = pricePerNightWei * numberOfDays * quantity
-  const value = space
-    .pricePerNightWei
+  const value = space.pricePerNightWei
     .mul(BN.from(numberOfDays))
     .mul(BN.from(quantity));
 
@@ -50,5 +49,5 @@ export const book = async (
     throw new Error(`Unable to find "tokenId" in the transaction receipt`);
   }
 
-  return tokenId;
+  return tokenId.toString();
 };

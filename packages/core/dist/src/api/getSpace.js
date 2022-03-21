@@ -19,12 +19,14 @@ const getSpace = (contract, ipfsNode, spaceId) => __awaiter(void 0, void 0, void
         return null;
     }
     const data = yield (0, dataUri_1.fetchDataUri)(ipfsNode, dataURI);
-    return Object.assign(Object.assign({}, data), { spaceId,
-        active,
-        lodgingFacilityId,
-        capacity,
-        pricePerNightWei,
-        dataURI, updated: luxon_1.DateTime.now().toISO() });
+    return Object.assign(Object.assign({}, data), { contractData: {
+            spaceId,
+            active,
+            lodgingFacilityId,
+            capacity: capacity.toNumber(),
+            pricePerNightWei: pricePerNightWei.toString(),
+            dataURI,
+        }, updated: luxon_1.DateTime.now().toISO() });
 });
 exports.getSpace = getSpace;
 //# sourceMappingURL=getSpace.js.map

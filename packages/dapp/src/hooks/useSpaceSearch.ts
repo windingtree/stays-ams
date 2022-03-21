@@ -15,7 +15,8 @@ export type UseSpaceSearchHook = [
 // useSpaceSearch react hook
 export const useSpaceSearch = (
   startDay: number,
-  numberOfDays: number
+  numberOfDays: number,
+  timestamp: number
 ): UseSpaceSearchHook => {
   const dispatch = useAppDispatch();
   const { lodgingFacilities } = useAppState();
@@ -27,10 +28,17 @@ export const useSpaceSearch = (
   useEffect(() => {
     setLoading(true);
     setError(undefined);
+
+    // @todo fix timestamp currently not connected
+    // if (searchTimestamp === timestamp && (timestamp ?? 0) + 5 * 60 * 60 > Date.now()) {
+    //   setLoading(false);
+    //   return
+    // }
+
     dispatch({
       type: 'RESET_RECORD',
       payload: {
-        name: 'spaces'
+        name: 'searchSpaces'
       }
     });
 
@@ -38,17 +46,17 @@ export const useSpaceSearch = (
       return
     }
 
-    const getSpacesAvelability = async () => {
+    const getSpacesAvailability = async () => {
       try {
-        const facilies: LodgingFacility[] = JSON.parse(JSON.stringify(lodgingFacilities))
-        const spaces = facilies.reduce(
+        const facilities: LodgingFacility[] = JSON.parse(JSON.stringify(lodgingFacilities))
+        const spaces = facilities.reduce(
           (previousValue, currentValue) => [...previousValue, ...currentValue.spaces as Space[]],
           [] as Space[]
         );
         const newSpaces = await Promise.all(
           spaces.map(
             async space => {
-              const availability = await cb(space.spaceId, startDay, numberOfDays)
+              const availability = await cb(space.contractData.spaceId, startDay, numberOfDays)
               return {
                 ...space,
                 available: availability === null ? availability : Math.min(...availability)
@@ -62,14 +70,20 @@ export const useSpaceSearch = (
           dispatch({
             type: 'SET_RECORD',
             payload: {
-              name: 'spaces',
+              name: 'searchSpaces',
               record: {
                 ...record,
-                id: record.spaceId
+                id: record.contractData.spaceId
               }
             }
           });
         }
+        //Set timestamp to storage
+        dispatch({
+          type: 'SET_AVAILABILITY_TIMESTAMP',
+          payload: Date.now() / 1000 | 0
+        });
+
       } catch (error) {
         setLoading(false);
         if (error) {
@@ -81,7 +95,7 @@ export const useSpaceSearch = (
       }
     };
 
-    getSpacesAvelability();
+    getSpacesAvailability();
   }, [lodgingFacilities, isReady, cb, dispatch, numberOfDays, startDay]);
 
   return [

@@ -1,4 +1,4 @@
-import type { providers, BigNumber } from 'ethers';
+import type { providers } from 'ethers';
 import type { EthRioStays } from 'stays-smart-contracts';
 import type { SpaceRaw } from 'stays-data-models';
 import type { IPFS } from '@windingtree/ipfs-apis';
@@ -14,7 +14,7 @@ export const addSpace = async (
   profileData: SpaceRaw,
   lodgingFacilityId: string,
   capacity: number,
-  pricePerNightWei: BigNumber,
+  pricePerNightWei: string,
   active = true,
   overrides?: MethodOverrides,
   transactionHashCb?: TxHashCallbackFn,

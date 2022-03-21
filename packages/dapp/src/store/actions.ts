@@ -12,6 +12,13 @@ export interface GenericStateRecord {
 export interface LodgingFacilityRecord extends LodgingFacility, GenericStateRecord { }
 export interface SpaceRecord extends Space, GenericStateRecord { }
 
+export interface SearchParams {
+  // timestamp: number;
+  startDay: number;
+  numberOfDays: number;
+  guestsAmount: number;
+}
+
 export interface State {
   isConnecting: boolean;
   networkId?: number;
@@ -30,8 +37,10 @@ export interface State {
   stopIpfsNode: Function;
   isBootstrapLoading: boolean;
   bootstrapped?: number;
+  searchTimestamp?: number;
   lodgingFacilities: LodgingFacilityRecord[];
-  spaces: SpaceRecord[];
+  searchSpaces: SpaceRecord[];
+  searchParams?: SearchParams;
   [key: string]: unknown | GenericStateRecord[];
 }
 
@@ -145,6 +154,16 @@ export interface SetBootstrappedAction {
   payload: number;
 }
 
+export interface SetAvailabilityTimestampAction {
+  type: 'SET_AVAILABILITY_TIMESTAMP';
+  payload: number;
+}
+
+export interface SetSearchParamsAction {
+  type: 'SET_SEARCH_PARAMS';
+  payload: SearchParams;
+}
+
 export type Action =
   | SetConnectingAction
   | SetAccountAction
@@ -162,6 +181,8 @@ export type Action =
   | ResetRecordAction
   | SetBootstrapLoadingAction
   | SetBootstrappedAction
+  | SetAvailabilityTimestampAction
+  | SetSearchParamsAction
   | AddErrorAction
   | RemoveErrorAction
   | RemoveAllErrorsAction;

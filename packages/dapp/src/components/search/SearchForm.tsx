@@ -1,7 +1,7 @@
-import { Grid, Box, TextInput, Button, Text, ResponsiveContext } from 'grommet';
+import { Grid, Box, TextInput, Button, Text } from 'grommet';
 import { DateRangePickup, Label } from './date-range-pickup';
 import { useNavigate } from 'react-router-dom';
-import { useState, useMemo, useContext } from 'react'
+import { useState, useMemo } from 'react'
 import { useAppState } from '../../store';
 import { ThemeMode } from '../SwitchThemeMode';
 
@@ -11,19 +11,19 @@ const defaultReturnDate = new Date('03/20/2022').toISOString()
 export const SearchForm: React.FC<{
   initDepartureDate?: string | null,
   initReturnDate?: string | null,
-  initGuestsAmount?: string | null,
+  initGuestsAmount?: number,
 }> = ({ initDepartureDate, initReturnDate, initGuestsAmount }) => {
   const { themeMode } = useAppState();
-  const size = useContext(ResponsiveContext);
 
   const [departureDate, setDepartureDate] = useState(initDepartureDate ?? defaultDepartureDate);
   const [returnDate, setReturnDate] = useState(initReturnDate ?? defaultReturnDate);
-  const [guestsAmount, setGuestsAmount] = useState(Number(initGuestsAmount ?? 1));
+  const [guestsAmount, setGuestsAmount] = useState(initGuestsAmount ?? 1);
 
   const query = useMemo(() => new URLSearchParams([
     ['returnDate', String(returnDate)],
     ['departureDate', String(departureDate)],
     ['guestsAmount', String(guestsAmount)],
+    ['timestamp', String(Date.now())]
   ]), [returnDate, departureDate, guestsAmount])
 
   const navigate = useNavigate()
@@ -92,7 +92,7 @@ export const SearchForm: React.FC<{
         </Box>
       </Grid>
       <Box pad='small'>
-        <Button onClick={() => navigate(`/search?${query}`,{replace:true})}>
+        <Button onClick={() => navigate(`/search?${query}`, { replace: true })}>
           {() => (
             <Box direction='row' justify='center' align='center' pad='small'>
               <Text>

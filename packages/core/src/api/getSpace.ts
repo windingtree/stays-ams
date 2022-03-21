@@ -27,12 +27,14 @@ export const getSpace = async (
 
   return {
     ...data,
-    spaceId,
-    active,
-    lodgingFacilityId,
-    capacity,
-    pricePerNightWei,
-    dataURI,
+    contractData: {
+      spaceId,
+      active,
+      lodgingFacilityId,
+      capacity: capacity.toNumber(),
+      pricePerNightWei: pricePerNightWei.toString(),
+      dataURI,
+    },
     updated: DateTime.now().toISO()
   };
 };
