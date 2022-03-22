@@ -56,11 +56,12 @@ export const RoomProfileCard: React.FC<{
     );
   }, [autoComplete, autoComplete2, handleScriptLoad, handleScriptLoad2]);
 
-  const [valid, setValid] = useState(false);
-  //const [isConntryOpen, setIsConntryOpen] = useState(false);
-  //const [isConntryOpen2, setIsConntryOpen2] = useState(false);
-
-  //
+    const [valid, setValid] = useState(false);
+    const [, setIsConntryOpen] = useState(false);
+  const [, setIsConntryOpen2] = useState(false);
+    
+    
+  
 
   const [value, setValue] = useState(defaultFormValue);
 
@@ -88,11 +89,11 @@ export const RoomProfileCard: React.FC<{
       for (const component of addressObject2) {
         const componentType2 = component.types[0];
 
-          console.log(addressObject2);
+        console.log(addressObject2);
         switch (componentType2) {
           case "postal_code": {
-                value.operatorPostalCode = component.long_name;
-                console.log("operatorPostalCode", component.long_name);
+            value.operatorPostalCode = component.long_name;
+            console.log("operatorPostalCode", component.long_name);
             break;
           }
           case "locality":
@@ -117,11 +118,11 @@ export const RoomProfileCard: React.FC<{
         }
       }
 
-      /*  setIsConntryOpen2(true);
+        setIsConntryOpen2(true);
       let tm2 = setTimeout(() => {
         setIsConntryOpen2(false);
         clearTimeout(tm2);
-      }, 10); */
+      }, 10); 
     }
   }, [addressObject2, value]);
 
@@ -152,11 +153,11 @@ export const RoomProfileCard: React.FC<{
         }
       }
 
-      /* setIsConntryOpen(true);
+      /* */ setIsConntryOpen(true);
       let tm = setTimeout(() => {
         setIsConntryOpen(false);
         clearTimeout(tm);
-      }, 10); */
+      }, 10); /* */
     }
   }, [addressObject, value]);
   //
@@ -184,6 +185,7 @@ export const RoomProfileCard: React.FC<{
     );
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   function handleScriptLoad(
     autoComplete: any,
     updateQuery: any,
@@ -203,12 +205,11 @@ export const RoomProfileCard: React.FC<{
     return autoComplete.addListener(
       "place_changed",
       () => handlePlaceSelect(autoComplete, updateQuery)
-      //handlePlaceSelect(autoComplete,updateQuery)
     );
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   function handleScriptLoad2(
-    //handlePlaceSelect: Function,
     autoComplete2: any,
     updateQuery2: any,
     autoCompleteRef2: any
@@ -219,19 +220,17 @@ export const RoomProfileCard: React.FC<{
       //    { types: ["(cities)"], componentRestrictions: { country: "us" } }
     );
 
-    // alert("autoComplete2");
-    console.log("autoComplete2", autoComplete2);
 
     autoComplete2.setFields([
       "formatted_address",
       "address_components",
       "geometry",
-      //"name"
+      
     ]);
     return autoComplete2.addListener(
       "place_changed",
       () => handlePlaceSelect2(autoComplete2, updateQuery2)
-      //handlePlaceSelect(autoComplete,updateQuery)
+      
     );
   }
 
@@ -250,7 +249,6 @@ export const RoomProfileCard: React.FC<{
           setValue(nextValue);
         }}
         onValidate={(validationResults) => {
-          // console.log("validationResults = ", validationResults);
           setValid(validationResults.valid);
         }}
       >
@@ -330,12 +328,12 @@ export const RoomProfileCard: React.FC<{
                 />
 
                 <div
-                /*  style={{
+                /* */  style={{
                     display:
                       value.description === "" || value.description === null
                         ? "none"
                         : "block",
-                  }}  */
+                  }}  /**/
                 >
                   <br />
                   <br />
@@ -442,13 +440,13 @@ export const RoomProfileCard: React.FC<{
                 </div>
 
                 <div
-                /* style={{
+                /* */ style={{
                     display:
                       value.addressGeometry === "" ||
                       value.addressGeometry === null
                        ? "none"
                         : "block",
-                  }}  */
+                  }}  /* */
                 >
                   <br />
                   <br />
