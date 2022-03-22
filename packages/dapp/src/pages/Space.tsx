@@ -1,5 +1,5 @@
 import { PageWrapper } from './PageWrapper';
-import { Tag, Box, Text, Image, Carousel, Spinner } from 'grommet';
+import { Tag, Box, Text, Image, Carousel } from 'grommet';
 import { useAppState } from '../store';
 import { useMemo, useEffect, useState } from 'react';
 import { ThemeMode } from '../components/SwitchThemeMode';
@@ -75,7 +75,7 @@ export const Space: React.FC = () => {
         <Box direction='row'>
           <Box>
             Booked succesfully!
-            <NavLink to={`/tokens/${tokenId}`}> Check details </NavLink>
+            <NavLink to={`/tokens?tokenId=${tokenId}`}> Check details </NavLink>
           </Box>
         </Box>
       </MessageBox>
