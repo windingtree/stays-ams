@@ -25,7 +25,7 @@ exports.getTokensOfOwner = getTokensOfOwner;
 const getToken = (contract, tokenId) => __awaiter(void 0, void 0, void 0, function* () {
     const owner = yield contract.ownerOf(tokenId);
     const tokenUri = yield contract.tokenURI(tokenId);
-    const data = (0, dataUri_1.decodeDataUri)(tokenUri);
+    const data = (0, dataUri_1.decodeDataUri)(tokenUri, true);
     return {
         tokenId,
         owner,

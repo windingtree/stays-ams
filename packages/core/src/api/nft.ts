@@ -26,7 +26,7 @@ export const getToken = async (
 ): Promise<StayToken> => {
   const owner = await contract.ownerOf(tokenId);
   const tokenUri = await contract.tokenURI(tokenId);
-  const data = decodeDataUri(tokenUri) as TokenData;
+  const data = decodeDataUri(tokenUri, true) as TokenData;
 
   return {
     tokenId,
