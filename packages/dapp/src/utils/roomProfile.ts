@@ -21,7 +21,7 @@ export const LoadScript = (url: string, callback: Function): void => {
         }
       };
     } else {
-       console.log("3");
+       //console.log("3");
       script.onload = () => callback();
     }
 

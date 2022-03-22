@@ -54,11 +54,11 @@ export const RoomProfileCard: React.FC<{
       `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&libraries=places`,
       () => handleScriptLoad(autoComplete, setQuery, autoCompleteRef)
     );
-  }, []);
+  }, [autoComplete, autoComplete2, handleScriptLoad, handleScriptLoad2]);
 
   const [valid, setValid] = useState(false);
-  const [isConntryOpen, setIsConntryOpen] = useState(false);
-  const [isConntryOpen2, setIsConntryOpen2] = useState(false);
+  //const [isConntryOpen, setIsConntryOpen] = useState(false);
+  //const [isConntryOpen2, setIsConntryOpen2] = useState(false);
 
   //
 
@@ -72,9 +72,58 @@ export const RoomProfileCard: React.FC<{
   const [addressObject, setaddressObject] = useState<any[]>([]);
   const [addressGeometry, setaddressGeometry] = useState<any>("");
 
+  const [addressObject2, setaddressObject2] = useState<any[]>([]);
+  const [addressGeometry2, setaddressGeometry2] = useState<any>("");
+
   useEffect(() => {
     value.addressGeometry = addressGeometry;
-  }, [addressGeometry]);
+  }, [addressGeometry, value]);
+
+  useEffect(() => {
+    value.operatorGeometry = addressGeometry2;
+  }, [addressGeometry2, value]);
+
+  useEffect(() => {
+    if (Object.keys(addressObject2).length > 0) {
+      for (const component of addressObject2) {
+        const componentType2 = component.types[0];
+
+          console.log(addressObject2);
+        switch (componentType2) {
+          case "postal_code": {
+                value.operatorPostalCode = component.long_name;
+                console.log("operatorPostalCode", component.long_name);
+            break;
+          }
+          case "locality":
+            console.log("locality", component.long_name);
+            value.operatorLocality = component.long_name;
+
+            break;
+
+          case "administrative_area_level_1":
+            console.log("administrative_area_level_1", component.long_name);
+            if (
+              value.operatorLocality == null ||
+              value.operatorLocality === ""
+            ) {
+              value.operatorLocality = component.long_name;
+            }
+
+            break;
+          case "country":
+            value.operatorCountry = component.long_name;
+            break;
+        }
+      }
+
+      /*  setIsConntryOpen2(true);
+      let tm2 = setTimeout(() => {
+        setIsConntryOpen2(false);
+        clearTimeout(tm2);
+      }, 10); */
+    }
+  }, [addressObject2, value]);
 
   useEffect(() => {
     if (Object.keys(addressObject).length > 0) {
@@ -103,60 +152,27 @@ export const RoomProfileCard: React.FC<{
         }
       }
 
-      setIsConntryOpen(true);
+      /* setIsConntryOpen(true);
       let tm = setTimeout(() => {
         setIsConntryOpen(false);
         clearTimeout(tm);
-      }, 10);
+      }, 10); */
     }
-  }, [addressObject]);
+  }, [addressObject, value]);
   //
 
   const [operatorCountry, setOperatorCountry] = useState(defaultCountries);
-
 
   const handlePlaceSelect2 = async (autoComplete2: any, updateQuery2: any) => {
     const operatorObject = autoComplete2.getPlace();
     const query2 = operatorObject.formatted_address;
     updateQuery2(query2);
 
-    value.operatorGeometry = `${operatorObject.geometry.location.lat()},${operatorObject.geometry.location.lng()}`;
+    setaddressGeometry2(
+      `${operatorObject.geometry.location.lat()},${operatorObject.geometry.location.lng()}`
+    );
 
-    for (const component of operatorObject.address_components) {
-      const componentType = component.types[0];
-
-      switch (componentType) {
-        case "postal_code": {
-          value.operatorPostalCode = component.long_name;
-          break;
-        }
-        case "locality":
-          console.log("locality", component.long_name);
-          value.operatorLocality = component.long_name;
-
-          break;
-
-        case "administrative_area_level_1":
-          console.log("administrative_area_level_1", component.long_name);
-          if (value.operatorLocality == null || value.operatorLocality === "") {
-            value.operatorLocality = component.long_name;
-          }
-
-          break;
-        case "country":
-          value.operatorCountry = component.long_name;
-          break;
-      }
-      setIsConntryOpen2(true);
-      let tm2 = setTimeout(() => {
-        setIsConntryOpen2(false);
-        clearTimeout(tm2);
-      }, 10);
-    }
-
-    console.log("operatorObject", operatorObject);
-
-    //return operatorObject;
+    setaddressObject2(operatorObject.address_components);
   };
   const handlePlaceSelect = async (autoComplete: any, updateQuery: any) => {
     const addressObject = autoComplete.getPlace();
@@ -166,12 +182,6 @@ export const RoomProfileCard: React.FC<{
     setaddressGeometry(
       `${addressObject.geometry.location.lat()},${addressObject.geometry.location.lng()}`
     );
-
-   
-
-    //console.log("addressObject", addressObject);
-
-    return addressObject;
   };
 
   function handleScriptLoad(
@@ -209,7 +219,7 @@ export const RoomProfileCard: React.FC<{
       //    { types: ["(cities)"], componentRestrictions: { country: "us" } }
     );
 
-     // alert("autoComplete2");
+    // alert("autoComplete2");
     console.log("autoComplete2", autoComplete2);
 
     autoComplete2.setFields([
@@ -389,7 +399,7 @@ export const RoomProfileCard: React.FC<{
                       placeholder="Country"
                       required
                       clear
-                      open={isConntryOpen}
+                      //open={isConntryOpen}
                       // value={addressCountryValue}
                       options={addressCountry}
                       onSearch={(text) => {
@@ -499,7 +509,7 @@ export const RoomProfileCard: React.FC<{
                       placeholder="Country"
                       required
                       clear
-                      open={isConntryOpen2}
+                      //open={isConntryOpen2}
                       // value={operatorCountryValue}
                       options={operatorCountry}
                       onSearch={(text) => {
@@ -605,14 +615,16 @@ export const RoomProfileCard: React.FC<{
                         removeAll: "remove all",
                         maxFile: "Attach a maximum of {max} files only.",
                       }}
-                      onChange={(/* event */) => {
-                        // const fileList = event.target.files;
-                        // if (typeof fileList == "object" && fileList != null) {
-                        //   for (let i = 0; i < fileList.length; i += 1) {
-                        //     const file = fileList[i];
-                        //   }
-                        // }
-                      }}
+                      onChange={
+                        (/* event */) => {
+                          // const fileList = event.target.files;
+                          // if (typeof fileList == "object" && fileList != null) {
+                          //   for (let i = 0; i < fileList.length; i += 1) {
+                          //     const file = fileList[i];
+                          //   }
+                          // }
+                        }
+                      }
                     />
                   </FormField>
                 </Box>
