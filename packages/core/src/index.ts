@@ -1,4 +1,4 @@
-import type { BigNumber, providers } from 'ethers';
+import type { providers } from 'ethers';
 import type { IPFS } from '@windingtree/ipfs-apis';
 import type {
   LodgingFacilityRaw,
@@ -24,6 +24,9 @@ import { registerLodgingFacility } from './api/registerLodgingFacility';
 import { addSpace } from './api/addSpace';
 import { book } from './api/book';
 import { getTokensOfOwner, getToken } from './api/nft';
+import { getDayZero } from './api/getDayZero';
+
+export * from './types';
 
 export type KnownProvider =
   | providers.ExternalProvider
@@ -80,6 +83,15 @@ export class EthRioContract {
       EthRioStaysContract.abi,
       this.provider
     ) as EthRioStays;
+
+    // Apply the default Signer
+    this.contract = this.contract.connect(
+      (this.provider as providers.Web3Provider).getSigner()
+    );
+  }
+
+  getDayZero(): Promise<number> {
+    return getDayZero(this.contract);
   }
 
   getLodgingFacilityIds(active: boolean): Promise<string[]> {

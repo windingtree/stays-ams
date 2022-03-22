@@ -12,6 +12,7 @@ import { Search } from '../pages/Search';
 import { Rooms } from "../pages/Rooms";
 import { RoomProfile } from "../pages/RoomProfile";
 import { Space } from '../pages/Space';
+import { MyTokens } from '../pages/MyTokens';
 
 export interface RouteConfig {
   path: string;
@@ -27,19 +28,18 @@ export const pagesRoutesConfig: Routes = [
   {
     path: "/",
     element: <Home />,
-    title: "EthRio Stays",
+    title: "Stays",
     label: "Home",
   },
   {
     path: "/search",
     element: <Search />,
     title: "Search for lodging facility",
-    label: "Search",
   },
   {
     path: "/rooms",
     element: <Rooms />,
-    title: "Room | Lodging facility manager",
+    title: "Rooms",
     label: "Rooms",
     protected: true,
   },
@@ -47,14 +47,21 @@ export const pagesRoutesConfig: Routes = [
   {
     path: "/rooms/add",
     element: <RoomProfile />,
-    title: "ADD NEW ROOM",
-    label: "Add Room",
+    title: "Add New Room",
     protected: true,
   },
   {
     path: "/space/:id",
     element: <Space />,
     title: "Search for lodging facility",
+    protected: true,
+  },
+  {
+    path: '/tokens',
+    element: <MyTokens />,
+    title: 'My Stay Tokens',
+    label: "My Tokens",
+    protected: true,
   },
 ];
 

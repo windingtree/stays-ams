@@ -16,7 +16,6 @@ const sendHelper_1 = require("../utils/sendHelper");
 const book = (contract, spaceId, startDay, numberOfDays, quantity, overrides, transactionHashCb, confirmations = 1) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
     overrides = overrides ? overrides : {};
-    const owner = contract.provider.getSigner();
     const space = yield contract.getSpaceById(spaceId);
     // value = pricePerNightWei * numberOfDays * quantity
     const value = space.pricePerNightWei
@@ -27,7 +26,7 @@ const book = (contract, spaceId, startDay, numberOfDays, quantity, overrides, tr
         startDay,
         numberOfDays,
         quantity
-    ], owner, Object.assign(Object.assign({}, overrides), { value }), transactionHashCb, confirmations);
+    ], undefined, Object.assign(Object.assign({}, overrides), { value }), transactionHashCb, confirmations);
     const event = (_a = receipt.events) === null || _a === void 0 ? void 0 : _a.find(e => e.event == 'NewStay');
     const tokenId = (_b = event === null || event === void 0 ? void 0 : event.args) === null || _b === void 0 ? void 0 : _b.tokenId;
     if (!spaceId) {
