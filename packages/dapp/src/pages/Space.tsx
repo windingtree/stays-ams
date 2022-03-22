@@ -1,19 +1,27 @@
 import { PageWrapper } from './PageWrapper';
-import { Tag, Box, Text, Image, Carousel } from 'grommet';
+import { Tag, Box, Text, Image, Carousel, Spinner } from 'grommet';
 import { useAppState } from '../store';
 import { useMemo, useEffect, useState } from 'react';
 import { ThemeMode } from '../components/SwitchThemeMode';
 import { BookWithDai } from '../components/buttons/BookWithDai';
-import { SignInButton } from '../components/buttons/web3Modal';
 import { MessageBox } from '../components/MessageBox';
 import { ExternalLink } from '../components/ExternalLink';
 import { getNetwork } from '../config';
 import { centerEllipsis } from '../utils/strings';
 import { useContract } from '../hooks/useContract';
 import { NavLink } from 'react-router-dom';
+import { utils } from 'ethers'
 
 export const Space: React.FC = () => {
-  const { account, searchSpaces, themeMode, searchParams, provider, ipfsNode } = useAppState();
+  const {
+    searchSpaces,
+    themeMode,
+    searchParams,
+    provider,
+    ipfsNode,
+    bootstrapped
+  } = useAppState();
+
   const query = window.location.pathname.substring(7)
   const space = useMemo(() => searchSpaces.find((space) => space.id === query), [searchSpaces, query])
 
@@ -58,11 +66,14 @@ export const Space: React.FC = () => {
       setTokenId(res)
       setLoading(false)
     } catch (error) {
+      setLoading(false)
       setError((error as Error).message);
     }
   }
 
+  const isLoading = useMemo(() => !!bootstrapped && !!contract, [bootstrapped, contract])
   const borderColor = themeMode === ThemeMode.light ? 'brand' : 'accent-1'
+
   return (
     <PageWrapper
       breadcrumbs={[
@@ -71,6 +82,15 @@ export const Space: React.FC = () => {
         }
       ]}
     >
+      <MessageBox type='info' show={!isLoading}>
+        <Box direction='row'>
+          <Box>
+            The Dapp is synchronizing with the smart contract. Please wait..&nbsp;
+          </Box>
+          <Spinner />
+        </Box>
+      </MessageBox>
+
       <MessageBox type='info' show={!!tokenId}>
         <Box direction='row'>
           <Box>
@@ -79,14 +99,10 @@ export const Space: React.FC = () => {
           </Box>
         </Box>
       </MessageBox>
-      <MessageBox type='error' show={!!error}>
-        <Box direction='row'>
-          <Box>
-            {error}
-          </Box>
-        </Box>
-      </MessageBox>
-      {space === undefined ? <>Space not found</> : <Box
+
+
+      {isLoading && !space && <Box> No space with given id </Box>}
+      {isLoading && !!space && !tokenId && <Box
         border={{ color: borderColor }}
         flex={true}
         align='start'
@@ -139,23 +155,33 @@ export const Space: React.FC = () => {
 
         </Box>
         <Box pad={{ right: 'medium' }} direction='row' width='100%' justify='between' align='center' gridArea="action">
-          <Text>Price per Night: <Text color={borderColor} size='large'>{parseInt(`${space.pricePerNightWei}`)} DAI</Text></Text>
+          <Text>Price per Night: <Text color={borderColor} size='large'>
+            {utils.formatUnits(space.contractData.pricePerNightWei, 'ether')}
+            DAI
+          </Text></Text>
           <Box align='center'>
-            {account ? <BookWithDai
+            <BookWithDai
               onClick={handler}
               loading={loading}
-              disabled={!!error || !!tokenId}
+              disabled={!!tokenId}
             />
-              : <SignInButton />
-            }
+
             {hashLink !== null ?
               <ExternalLink href={hashLink} label={centerEllipsis(hash)} />
-              : null
-            }
+              : null}
           </Box>
         </Box>
-      </Box>
-      }
+
+        <Box width='xxlarge' pad={{ top: 'medium' }}>
+          <MessageBox type='error' show={!!error}>
+            <Box direction='row'>
+              <Box>
+                {error}
+              </Box>
+            </Box>
+          </MessageBox>
+        </Box>
+      </Box>}
     </PageWrapper>
   );
 };

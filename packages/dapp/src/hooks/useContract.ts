@@ -27,6 +27,7 @@ export const useContract = (
   const [error, setError] = useState<string | undefined>(undefined);
 
   useEffect(() => {
+    setLoading(true);
     if (!provider || !ipfsNode) {
       return;
     }
@@ -39,6 +40,7 @@ export const useContract = (
           ipfsNode
         )
       );
+      setLoading(false);
     } catch (error) {
       logger.error(error);
       const message = (error as Error).message || 'Unknown contract library error';
