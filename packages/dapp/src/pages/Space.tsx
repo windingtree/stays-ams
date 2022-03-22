@@ -10,6 +10,7 @@ import { getNetwork } from '../config';
 import { centerEllipsis } from '../utils/strings';
 import { useContract } from '../hooks/useContract';
 import { NavLink } from 'react-router-dom';
+import { utils } from 'ethers'
 
 export const Space: React.FC = () => {
   const {
@@ -18,8 +19,6 @@ export const Space: React.FC = () => {
     searchParams,
     provider,
     ipfsNode,
-    isIpfsNodeConnecting,
-    isBootstrapLoading,
     bootstrapped
   } = useAppState();
 
@@ -36,12 +35,6 @@ export const Space: React.FC = () => {
   useEffect(() => {
     setError(errorContract);
   }, [errorContract]);
-
-  useEffect(() => {
-    if (!!error) {
-      window.scrollTo(0, 0)
-    }
-  }, [error]);
 
   const hashLink = useMemo(() => {
     const network = getNetwork()
@@ -72,14 +65,15 @@ export const Space: React.FC = () => {
       )
       setTokenId(res)
       setLoading(false)
-      window.scrollTo(0, 0)
     } catch (error) {
       setLoading(false)
       setError((error as Error).message);
     }
   }
 
+  const isLoading = useMemo(() => !!bootstrapped && !!contract, [bootstrapped, contract])
   const borderColor = themeMode === ThemeMode.light ? 'brand' : 'accent-1'
+
   return (
     <PageWrapper
       breadcrumbs={[
@@ -88,7 +82,7 @@ export const Space: React.FC = () => {
         }
       ]}
     >
-      <MessageBox type='info' show={isIpfsNodeConnecting || isBootstrapLoading}>
+      <MessageBox type='info' show={!isLoading}>
         <Box direction='row'>
           <Box>
             The Dapp is synchronizing with the smart contract. Please wait..&nbsp;
@@ -106,15 +100,9 @@ export const Space: React.FC = () => {
         </Box>
       </MessageBox>
 
-      <MessageBox type='error' show={!!error}>
-        <Box direction='row'>
-          <Box>
-            {error}
-          </Box>
-        </Box>
-      </MessageBox>
 
-      {!!bootstrapped && !!contract && !!space && <Box
+      {isLoading && !space && <Box> No space with given id </Box>}
+      {isLoading && !!space && !tokenId && <Box
         border={{ color: borderColor }}
         flex={true}
         align='start'
@@ -167,7 +155,10 @@ export const Space: React.FC = () => {
 
         </Box>
         <Box pad={{ right: 'medium' }} direction='row' width='100%' justify='between' align='center' gridArea="action">
-          <Text>Price per Night: <Text color={borderColor} size='large'>{parseInt(`${space.pricePerNightWei}`)} DAI</Text></Text>
+          <Text>Price per Night: <Text color={borderColor} size='large'>
+            {utils.formatUnits(space.contractData.pricePerNightWei, 'ether')}
+            DAI
+          </Text></Text>
           <Box align='center'>
             <BookWithDai
               onClick={handler}
@@ -179,6 +170,16 @@ export const Space: React.FC = () => {
               <ExternalLink href={hashLink} label={centerEllipsis(hash)} />
               : null}
           </Box>
+        </Box>
+
+        <Box width='xxlarge' pad={{ top: 'medium' }}>
+          <MessageBox type='error' show={!!error}>
+            <Box direction='row'>
+              <Box>
+                {error}
+              </Box>
+            </Box>
+          </MessageBox>
         </Box>
       </Box>}
     </PageWrapper>
