@@ -20,7 +20,8 @@ export const BookWithDai: React.FC<{
             Book with DAI
           </Text>
           {loading && <InnerSpinner />}
-        </Box>)}
+        </Box>
+      )}
     </Button>
   )
 };

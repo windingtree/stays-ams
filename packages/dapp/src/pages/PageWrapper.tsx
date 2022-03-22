@@ -24,8 +24,8 @@ export const PageWrapper = ({ children, breadcrumbs }: PageWrapperProps) => {
         breadcrumbs={breadcrumbs}
         size={size}
       />
-      <Box flex={true} align='center' overflow='auto'>
-        <Box flex={false} width='xxlarge'>
+      <Box align='center'>
+        <Box width='xxlarge'>
           <MessageBox type='warn' show={!isRightNetwork}>
             You are connected to a wrong network. Please switch to: {allowedNetworkName}
           </MessageBox>

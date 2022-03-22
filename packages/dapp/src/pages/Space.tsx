@@ -28,6 +28,12 @@ export const Space: React.FC = () => {
     setError(errorContract);
   }, [errorContract]);
 
+  useEffect(() => {
+    if (!!error) {
+      window.scrollTo(0, 0)
+    }
+  }, [error]);
+
   const hashLink = useMemo(() => {
     const network = getNetwork()
     return hash ? `${network.blockExplorer}/tx/${hash}` : null
@@ -57,7 +63,9 @@ export const Space: React.FC = () => {
       )
       setTokenId(res)
       setLoading(false)
+      window.scrollTo(0, 0)
     } catch (error) {
+      setLoading(false)
       setError((error as Error).message);
     }
   }
@@ -79,6 +87,7 @@ export const Space: React.FC = () => {
           </Box>
         </Box>
       </MessageBox>
+
       <MessageBox type='error' show={!!error}>
         <Box direction='row'>
           <Box>
@@ -86,6 +95,7 @@ export const Space: React.FC = () => {
           </Box>
         </Box>
       </MessageBox>
+
       {space === undefined ? <>Space not found</> : <Box
         border={{ color: borderColor }}
         flex={true}
@@ -144,7 +154,7 @@ export const Space: React.FC = () => {
             {account ? <BookWithDai
               onClick={handler}
               loading={loading}
-              disabled={!!error || !!tokenId}
+              disabled={!!tokenId}
             />
               : <SignInButton />
             }
@@ -154,8 +164,7 @@ export const Space: React.FC = () => {
             }
           </Box>
         </Box>
-      </Box>
-      }
+      </Box>}
     </PageWrapper>
   );
 };
