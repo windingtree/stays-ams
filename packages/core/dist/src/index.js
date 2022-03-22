@@ -54,6 +54,8 @@ class EthRioContract {
         // @todo Implement ipfsNode validity check
         this.ipfsNode = ipfsNode;
         this.contract = new ethers_1.ethers.Contract(this.address, stays_smart_contracts_1.EthRioStaysContract.abi, this.provider);
+        // Apply the default Signer
+        this.contract = this.contract.connect(this.provider.getSigner());
     }
     getDayZero() {
         return (0, getDayZero_1.getDayZero)(this.contract);

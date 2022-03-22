@@ -16,7 +16,6 @@ export const book = async (
   confirmations = 1
 ): Promise<string> => {
   overrides = overrides ? overrides : {};
-  const owner = (contract.provider as providers.Web3Provider).getSigner();
 
   const space = await contract.getSpaceById(spaceId);
   // value = pricePerNightWei * numberOfDays * quantity
@@ -33,7 +32,7 @@ export const book = async (
       numberOfDays,
       quantity
     ],
-    owner,
+    undefined, // use already connected signer
     {
       ...overrides,
       value

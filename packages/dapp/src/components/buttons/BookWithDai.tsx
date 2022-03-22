@@ -1,25 +1,26 @@
-import {Button} from 'grommet';
-import {useAppState} from '../../store';
-import {useBookSpace} from '../../hooks/useBookSpace';
+import { Button, Text, Spinner, Box } from 'grommet';
+import styled from 'styled-components';
 
-export const BookWithDai: React.FC<{ spaceId: string }> = ({spaceId}) => {
-  const {searchParams} = useAppState();
-  const [cb] = useBookSpace();
+const InnerSpinner = styled(Spinner)`
+  margin-left: 8px;
+`;
+
+export const BookWithDai: React.FC<{
+  loading: boolean; disabled: boolean; onClick: () => void
+}> = ({ loading, disabled, onClick }) => {
 
   return (
-    searchParams !== undefined ?
-      <Button
-        onClick={() => cb(
-          spaceId,
-          searchParams.startDay,
-          searchParams.numberOfDays,
-          searchParams.guestsAmount
-        )}
-        label='Book with DAI'
-      /> :
-      <Button
-        disabled={true}
-        label='Book with DAI'
-      />
+    <Button
+      onClick={() => onClick()}
+      disabled={disabled}
+    >
+      {() => (
+        <Box direction='row' align='center' pad='small'>
+          <Text>
+            Book with DAI
+          </Text>
+          {loading && <InnerSpinner />}
+        </Box>)}
+    </Button>
   )
 };

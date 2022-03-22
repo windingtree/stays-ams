@@ -83,6 +83,11 @@ export class EthRioContract {
       EthRioStaysContract.abi,
       this.provider
     ) as EthRioStays;
+
+    // Apply the default Signer
+    this.contract = this.contract.connect(
+      (this.provider as providers.Web3Provider).getSigner()
+    );
   }
 
   getDayZero(): Promise<number> {

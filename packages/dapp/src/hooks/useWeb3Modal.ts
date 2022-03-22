@@ -45,37 +45,41 @@ export const useWeb3Modal = (web3ModalConfig: Web3ModalConfig): Web3ModalHook =>
     try {
       setError(null);
       setIsConnecting(true);
+
       setInjectedProvider(
         (web3Modal as any).providerController.cachedProvider === 'injected'
           ? (web3Modal as any).providerController.injectedProvider
           : undefined
       );
 
-      const web3ModalProvider = await web3Modal.connect();
+      const updateProvider = async () => {
+        const web3ModalProvider = await web3Modal.connect();
 
-      const updateProvider = () => setProvider(
-        new ethers.providers.Web3Provider(web3ModalProvider)
-      );
+        // Subscribe to provider events compatible with EIP-1193 standard
+        // Subscribe to accounts change
+        web3ModalProvider.on('chainChanged', (chainId: number) => {
+          logger.info(`Chain changed: ${chainId}`);
+          updateProvider();
+        });
+
+        // Subscribe to chainId change
+        web3ModalProvider.on('accountsChanged', () => {
+          logger.info(`Accounts changed`);
+          updateProvider();
+        });
+
+        // Subscribe to provider disconnection
+        web3ModalProvider.on('disconnect', (code: number, reason: string) => {
+          logger.info(`Disconnected with code: ${code} and reason: ${reason}`);
+          signOut();
+        });
+
+        setProvider(
+          new ethers.providers.Web3Provider(web3ModalProvider)
+        );
+      };
+
       updateProvider();
-
-      // Subscribe to provider events compatible with EIP-1193 standard
-      // Subscribe to accounts change
-      web3ModalProvider.on('chainChanged', (chainId: number) => {
-        logger.info(`Chain changed: ${chainId}`);
-        updateProvider();
-      });
-
-      // Subscribe to chainId change
-      web3ModalProvider.on('accountsChanged', () => {
-        logger.info(`Accounts changed`);
-        updateProvider();
-      });
-
-      // Subscribe to provider disconnection
-      web3ModalProvider.on('disconnect', (code: number, reason: string) => {
-        logger.info(`Disconnected with code: ${code} and reason: ${reason}`);
-        signOut();
-      });
 
       logger.info(`Logged In`);
     } catch (error) {

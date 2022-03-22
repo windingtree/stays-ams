@@ -32,12 +32,13 @@ export const useContract = (
     }
 
     try {
-      const instance = new EthRioContract(
-        address,
-        provider as KnownProvider,
-        ipfsNode
+      setContract(
+        new EthRioContract(
+          address,
+          provider as KnownProvider,
+          ipfsNode
+        )
       );
-      setContract(instance);
     } catch (error) {
       logger.error(error);
       const message = (error as Error).message || 'Unknown contract library error';

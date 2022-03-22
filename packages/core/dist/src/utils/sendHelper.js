@@ -14,11 +14,13 @@ const ethers_1 = require("ethers");
 const sendHelper = (contract, method, args, sender, overrides, 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 transactionHashCb, confirmations = 1) => __awaiter(void 0, void 0, void 0, function* () {
-    if (sender instanceof ethers_1.Signer === false) {
+    if (sender &&
+        (sender instanceof ethers_1.Signer === false ||
+            sender instanceof ethers_1.providers.JsonRpcSigner === false)) {
         throw new Error('Invalid transaction signer');
     }
     // Assign sender as a Signer
-    const contractWithSigner = contract.connect(sender);
+    const contractWithSigner = sender ? contract.connect(sender) : contract;
     // Add overrides to arguments
     if (overrides) {
         args.push(overrides);
@@ -28,7 +30,9 @@ transactionHashCb, confirmations = 1) => __awaiter(void 0, void 0, void 0, funct
         .estimateGas[method](...args);
     // Validate available gas
     if (overrides && overrides.gasPrice) {
-        const balance = yield sender.getBalance();
+        const balance = yield contract.provider
+            .getSigner()
+            .getBalance();
         if (!ethers_1.BigNumber.isBigNumber(overrides.gasPrice)) {
             overrides.gasPrice = ethers_1.BigNumber.from(overrides.gasPrice);
         }
