@@ -25,9 +25,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-    - run: npm install -g eslint
-    - run: npm install -g lerna
     - run: npm install -g yarn
     - run: yarn install
     - run: yarn bootstrap
-    - run: eslint --max-warnings=0 ./packages/dapp/
+    - run: npx eslint --max-warnings=0 ./packages/dapp/

@@ -371,6 +371,8 @@ describe("EthRioStays.sol", () => {
 
           const dataUri = decodeDataUri(await deployer.ethRioStays.tokenURI(1), true) as any;
 
+          // console.log(JSON.stringify(dataUri, null, 2));
+
           expect(dataUri.name).to.equal('EthRioStays #1');
           // @todo add all props
         });
