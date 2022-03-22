@@ -3,9 +3,10 @@ import type { Space } from 'stays-data-models'
 import { useNavigate } from 'react-router-dom';
 import { useAppState } from '../store';
 import { ThemeMode } from './SwitchThemeMode';
+import { SignInButton } from './buttons/web3Modal';
 
 export const SearchResultCard: React.FC<{ space: Space }> = ({ space }) => {
-  const { themeMode } = useAppState();
+  const { themeMode, account } = useAppState();
   const navigate = useNavigate();
 
   return (
@@ -55,11 +56,11 @@ export const SearchResultCard: React.FC<{ space: Space }> = ({ space }) => {
         </Box>
         <Box pad={{ right: 'medium' }} direction='row' justify='between' align='center' gridArea="action">
           <Text size='large'>From: $$$</Text>
-          <Button
+          {account ? <Button
             size='large'
             label='Check Spaces'
             onClick={() => navigate(`/space/${space.contractData.spaceId}`)}
-          />
+          /> : <SignInButton />}
         </Box>
       </Grid>
     </Box>
