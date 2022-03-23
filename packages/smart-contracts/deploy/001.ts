@@ -12,7 +12,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   console.log(`Test users: ${users}`)
 
   // --- Deploy the contracts ---
-  await deploy("EthRioStays", {
+  await deploy("Stays", {
     from: deployer,
     // args: ['TestToken', 'TEST'],
     log: true,
@@ -22,4 +22,4 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 }
 
 export default func
-func.tags = ["EthRioStays"]
+func.tags = ["Stays"]

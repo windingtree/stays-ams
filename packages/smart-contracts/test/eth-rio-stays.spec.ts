@@ -10,16 +10,16 @@ import {
 import { BytesLike, BigNumber, utils } from "ethers";
 import { expect } from "./utils/chai-setup";
 
-import { EthRioStays } from "../typechain";
+import { Stays } from "../typechain";
 import { setupUser, setupUsers } from "./utils";
 import { decodeDataUri } from './utils/dataUri';
 import { extractEventFromTx } from './utils'
 
 const setup = deployments.createFixture(async () => {
-  await deployments.fixture("EthRioStays");
+  await deployments.fixture("Stays");
   const { deployer, alice, bob } = await getNamedAccounts();
   const contracts = {
-    ethRioStays: <EthRioStays>await ethers.getContract("EthRioStays"),
+    ethRioStays: <Stays>await ethers.getContract("Stays"),
   };
   const users = await setupUsers(await getUnnamedAccounts(), contracts);
 
@@ -32,11 +32,11 @@ const setup = deployments.createFixture(async () => {
   };
 });
 
-describe("EthRioStays.sol", () => {
-  let users: ({ address: string } & { ethRioStays: EthRioStays })[];
-  let deployer: { address: string } & { ethRioStays: EthRioStays };
-  let alice: { address: string } & { ethRioStays: EthRioStays };
-  let bob: { address: string } & { ethRioStays: EthRioStays };
+describe("Stays.sol", () => {
+  let users: ({ address: string } & { ethRioStays: Stays })[];
+  let deployer: { address: string } & { ethRioStays: Stays };
+  let alice: { address: string } & { ethRioStays: Stays };
+  let bob: { address: string } & { ethRioStays: Stays };
   const testDataUri = "https://some.uri";
 
   beforeEach("load fixture", async () => {
@@ -45,7 +45,7 @@ describe("EthRioStays.sol", () => {
 
   describe("Correct Setup", () => {
     it("should have the right name and symbol", async () => {
-      expect(await deployer.ethRioStays.name()).to.be.eq("EthRioStays");
+      expect(await deployer.ethRioStays.name()).to.be.eq("Stays");
       expect(await deployer.ethRioStays.symbol()).to.be.eq("ERS22");
     });
     it("should have 0 facilities first", async () => {
@@ -373,7 +373,7 @@ describe("EthRioStays.sol", () => {
 
           // console.log(JSON.stringify(dataUri, null, 2));
 
-          expect(dataUri.name).to.equal('EthRioStays #1');
+          expect(dataUri.name).to.equal('Stays #1');
           // @todo add all props
         });
 

@@ -1,11 +1,9 @@
-import type { EthRioStays } from '../typechain';
+import type { Stays } from '../typechain';
 import { task } from 'hardhat/config';
 import { Web3Storage } from 'web3.storage';
 import { Blob } from '@web-std/blob';
 import { File } from '@web-std/file';
 import { faker } from 'stays-data-models';
-
-const weiEndPad = '000000000000000000';
 
 const makeFileObject = (obj: {}, name: string) => {
   const blob = new Blob([JSON.stringify(obj)], { type : 'application/json' });
@@ -32,101 +30,100 @@ const getRandomInt = (min: number, max: number): number => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-const setupNewFacilities = async (contract: EthRioStays, ipfsApi: Web3Storage, count: number) => {
-  // Generate and upload 3 lodging facilities
-  console.log('🚀 Start generation and deployment of lodging facilities profiles...');
-  const lodgingFacilities = faker.iterator(count, faker.createFakeLodgingFacility);
+const setupNewSpace = async (contract: Stays, ipfsApi: Web3Storage, facilityId: string) => {
+  console.log('🚀 Start generation and deployment of space profile...');
+  const space = faker.createFakeSpace();
+  const spacesUris = await deployObjectsToIpfs(
+    ipfsApi,
+    [space],
+    'space.json'
+  );
+  console.log(
+    `✅ Uploaded profiles for spaces of the ${facilityId} lodging facility:`, spacesUris
+  );
+
+  console.log('🚀 Start creation of the space...');
+  console.log('Params:', {
+    facilityId,
+    capacity: getRandomInt(10, 50),
+    price: space.price,
+    active: true,
+    uri: `ipfs://${spacesUris[0]}`
+  });
+  const tx = await contract.addSpace(
+    facilityId,
+    getRandomInt(10, 50),
+    space.price,
+    true,
+    `ipfs://${spacesUris[0]}`
+  );
+  const receipt = await tx.wait();
+  const event = receipt.events?.find(e => e.event == 'SpaceAdded');
+  console.log(
+    `✅ Added space:`, event?.args
+  );
+  console.log('✅ spaceId', event?.args?.spaceId);
+};
+
+const setupOneLodgingFacility = async (contract: Stays, ipfsApi: Web3Storage) => {
+  console.log('🚀 Start generation and deployment of lodging facility profile...');
+  const lodgingFacility = faker.createFakeLodgingFacility();
   const lfUris = await deployObjectsToIpfs(
     ipfsApi,
-    lodgingFacilities,
+    [lodgingFacility],
     'lodgingFacility.json'
   );
-
   console.log('✅ Lodging facilities profiles uploaded to IPFS:', lfUris);
 
-  // Registering of Lodging facilities
-  console.log('🚀 Registering of Lodging facilities...');
-  const registeredLf = await Promise.all(
-    lfUris.map(
-      async uri => {
-        const tx = await contract['registerLodgingFacility(string,bool)'](`ipfs://${uri}`, true);
-        const receipt = await tx.wait();
-        const event = receipt.events?.find(e => e.event == 'LodgingFacilityCreated');
-        return event?.args?.facilityId;
-      }
-    )
-  );
-  console.log('✅ Registered Lodging Facilities:', registeredLf);
+  const lfTx = await contract['registerLodgingFacility(string,bool)'](`ipfs://${lfUris[0]}`, true);
+  const receipt = await lfTx.wait();
+  const event = receipt.events?.find(e => e.event == 'LodgingFacilityCreated');
+  const facilityId = event?.args?.facilityId;
+  console.log('✅ Lodging facility Id:', facilityId);
 
-  // Spaces
-  console.log('🚀 Adding spaces to Lodging facilities...');
-  await Promise.all(
-    registeredLf.map(
-      async facilityId => {
-        const spaces = faker.iterator(3, faker.createFakeSpace);
-        const spacesUris = await deployObjectsToIpfs(
-          ipfsApi,
-          spaces,
-          'space.json'
-        );
-        console.log(
-          `✅ Uploaded profiles for spaces of the ${facilityId} lodging facility:`, spacesUris
-        );
-
-        await Promise.all(
-          spacesUris.map(
-            async uri => {
-              const tx = await contract.addSpace(
-                facilityId,
-                getRandomInt(10, 50),
-                `${getRandomInt(35, 70)}${weiEndPad}`,
-                true,
-                `ipfs://${uri}`
-              );
-              const receipt = await tx.wait();
-              const event = receipt.events?.find(e => e.event == 'SpaceAdded');
-              console.log(
-                `✅ Added space:`, event?.args
-              );
-
-              return event?.args?.spaceId;
-            }
-          )
-        );
-      }
-    )
-  );
+  for (let i=0; i < 3; i++) {
+    await setupNewSpace(contract, ipfsApi, facilityId);
+  }
 };
 
 // Deployment task
-task('testSetup', 'Deploys the EthRioStays contract')
+task('testSetup', 'Deploys the Stays contract')
   .setAction(async (_, hre) => {
-    const contractName = 'EthRioStays';
+    const contractName = 'Stays';
     const contractFactory = await hre.ethers.getContractFactory(contractName);
     console.log(`🚀 Deploying the ${contractName}...`);
-    const contract = await contractFactory.deploy() as EthRioStays;
+    const contract = await contractFactory.deploy() as Stays;
     await contract.deployed();
     console.log(`✅ ${contractName} deployed to:`, contract.address);
-
-    // Init ipfs API
-    const apiKey = process.env['WEB3STORAGE_KEY'] as string;
-    const ipfsApi = new Web3Storage({ token: apiKey });
-
-    await setupNewFacilities(contract, ipfsApi, 3);
   });
 
-task('addFacilities', 'Deploys the EthRioStays contract')
+task('addFacility', 'Add ONE lodging facility')
   .addParam('address', 'Contract address')
   .setAction(async (args, hre) => {
-    const contractName = 'EthRioStays';
+    const contractName = 'Stays';
     const contractFactory = await hre.ethers.getContractFactory(contractName);
-    const contract = contractFactory.attach(args.address) as EthRioStays;
+    const contract = contractFactory.attach(args.address) as Stays;
 
     // Init ipfs API
     const apiKey = process.env['WEB3STORAGE_KEY'] as string;
     const ipfsApi = new Web3Storage({ token: apiKey });
 
-    await setupNewFacilities(contract, ipfsApi, 3);
+    await setupOneLodgingFacility(contract, ipfsApi);
+  });
+
+task('addSpace', 'Add ONE space to lodging facility')
+  .addParam('address', 'Contract address')
+  .addParam('facility', 'Facility Id')
+  .setAction(async (args, hre) => {
+    const contractName = 'Stays';
+    const contractFactory = await hre.ethers.getContractFactory(contractName);
+    const contract = contractFactory.attach(args.address) as Stays;
+
+    // Init ipfs API
+    const apiKey = process.env['WEB3STORAGE_KEY'] as string;
+    const ipfsApi = new Web3Storage({ token: apiKey });
+
+    await setupNewSpace(contract, ipfsApi, args.facility);
   });
 
 // task('call', 'Call function')

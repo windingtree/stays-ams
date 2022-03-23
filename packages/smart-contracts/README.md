@@ -151,3 +151,44 @@ Commands above will:
 
 > Here the link where listed predefined accounts for the node: https://hardhat.org/hardhat-network/reference/#initial-state
 > First one is used for deployments
+
+
+## Working on Sokol POA (xDAI Testnet)
+
+- Faucet: https://faucet.poa.network/
+- Contract: https://blockscout.com/poa/sokol/address/0x0cc294153cE26686DE79E2c6bD76027D136ddfF7
+
+### Deployment
+
+.env
+
+```text
+PRIVATE_KEY_SOKOL=<YOUR_PRIVATE_KEY>
+WEB3STORAGE_KEY=<YOUR_WEB3_STORAGE_KEY>
+```
+
+Start deployment:
+
+```bash
+npx hardhat --config hardhat.config.ts --network sokol testSetup
+```
+
+### Contract verification
+
+```bash
+npx hardhat --config hardhat.config.ts verify --network sokol <CONTRACT_ADDRESS>
+```
+
+### Add test data
+
+Add one lodging facility with 3 spaces
+
+```bash
+npx hardhat --config hardhat.config.ts --network sokol addFacility --address <CONTRACT_ADDRESS>
+```
+
+Add one space to the lodging facility
+
+```bash
+npx hardhat --config hardhat.config.ts --network sokol addSpace --address <CONTRACT_ADDRESS> --facility <FACILITY_ID>
+```

@@ -1,7 +1,7 @@
-import EthRioStaysContract from './artifacts/contracts/EthRioStays.sol/EthRioStays.json';
+import StaysContract from './artifacts/contracts/Stays.sol/Stays.json';
 
 export * from './typechain';
 
 export {
-  EthRioStaysContract
+  StaysContract
 }

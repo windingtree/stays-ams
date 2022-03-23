@@ -24,7 +24,7 @@ export interface SpaceRaw {
   capacity: number;
   guestsNumber: number;
   beds: number;
-  price: number;
+  price: string;
   type: SpaceType;
   media: MediaListReference;
 }
@@ -48,8 +48,8 @@ export interface Space extends SpaceRaw {
     spaceId: string;
     active: boolean;
     lodgingFacilityId: string;
-    capacity: BigNumber;
-    pricePerNightWei: BigNumber;
+    capacity: number;
+    pricePerNightWei: string;
     dataURI: string;
   }
   updated: string;

@@ -1,9 +1,9 @@
 import { task } from 'hardhat/config';
 
 // Deployment task
-task('deploy', 'Deploys the EthRioStays contract')
+task('deploy', 'Deploys the Stays contract')
   .setAction(async (_, hre) => {
-    const contractName = 'EthRioStays';
+    const contractName = 'Stays';
     const contractFactory = await hre.ethers.getContractFactory(contractName);
     console.log(`Deploying the ${contractName}...`);
     const contract = await contractFactory.deploy();

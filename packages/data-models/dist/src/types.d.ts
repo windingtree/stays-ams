@@ -9,7 +9,7 @@ export interface SpaceRaw {
     capacity: number;
     guestsNumber: number;
     beds: number;
-    price: number;
+    price: string;
     type: SpaceType;
     media: MediaListReference;
 }

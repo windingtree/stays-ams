@@ -62,7 +62,7 @@ exports.spaceSchema = {
                 price: {
                     description: 'Price per Night',
                     example: 100,
-                    type: 'number'
+                    type: 'string'
                 },
                 media: {
                     $ref: '#/definitions/MediaListReference'
