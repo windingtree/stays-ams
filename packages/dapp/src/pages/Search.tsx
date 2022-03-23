@@ -8,15 +8,27 @@ import { useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 
 
-const parseDateToDays = (firstDate: string | null, secondDate: string | null) => {
-  const DEFAULT_START_DAY = new Date(2022, 4, 22)
+export const parseDateToDays = (firstDate: Date, secondDate: Date) => {
+  const DAY_ZERO = new Date('05/11/2022')
   const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
 
-  const startDay = Math.round(Math.abs((new Date(firstDate ?? '').getTime() - new Date(DEFAULT_START_DAY).getTime()) / oneDay))
-  const numberOfDays = Math.round(Math.abs((new Date(secondDate ?? '').getTime() - new Date(firstDate ?? '').getTime()) / oneDay))
+  const startDay = Math.floor((new Date(firstDate).getTime() - new Date(DAY_ZERO).getTime()) / oneDay)
+  const numberOfDays = Math.floor((new Date(secondDate).getTime() - new Date(firstDate ?? '').getTime()) / oneDay)
   return {
     startDay,
     numberOfDays
+  }
+};
+
+export const parseDaysToDate = (startDay: number, numberOfDays: number) => {
+  const DAY_ZERO = new Date('05/11/2022').getTime()
+  const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+
+  const departureDate = new Date(DAY_ZERO + oneDay * (startDay))
+  const returnDate = new Date(DAY_ZERO + oneDay * (startDay + numberOfDays))
+  return {
+    departureDate,
+    returnDate
   }
 };
 
@@ -24,22 +36,24 @@ export const Search = () => {
   const { searchSpaces } = useAppState();
   const { search } = useLocation();
 
-  const { departureDate, returnDate, guestsAmount } = useMemo(() => {
+  const { startDay, numberOfDays, guestsAmount } = useMemo(() => {
     const params = new URLSearchParams(search)
+    const startDay = Number(params.get('startDay'))
+    const numberOfDays = Number(params.get('numberOfDays'))
     return {
-      departureDate: params.get('departureDate'),
-      returnDate: params.get('returnDate'),
+      startDay,
+      numberOfDays,
       guestsAmount: Number(params.get('guestsAmount')),
     }
   }, [search])
 
-  const { startDay, numberOfDays } = useMemo(() => {
-    const { startDay, numberOfDays } = parseDateToDays(departureDate, returnDate)
+  const { departureDate, returnDate } = useMemo(() => {
+    const { departureDate, returnDate } = parseDaysToDate(startDay, numberOfDays)
     return {
-      startDay,
-      numberOfDays
+      departureDate,
+      returnDate
     }
-  }, [departureDate, returnDate])
+  }, [startDay, numberOfDays])
 
   const [loading] = useSpaceSearch(startDay, numberOfDays, guestsAmount)
 

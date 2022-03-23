@@ -4,13 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useMemo } from 'react'
 import { useAppState } from '../../store';
 import { ThemeMode } from '../SwitchThemeMode';
+import { parseDateToDays } from '../../pages/Search';
 
-const defaultDepartureDate = new Date('03/11/2022').toISOString()
-const defaultReturnDate = new Date('03/20/2022').toISOString()
+const defaultDepartureDate = new Date('05/12/2022')
+const defaultReturnDate = new Date('05/20/2022')
 
 export const SearchForm: React.FC<{
-  initDepartureDate?: string | null,
-  initReturnDate?: string | null,
+  initDepartureDate?: Date | null,
+  initReturnDate?: Date | null,
   initGuestsAmount?: number,
 }> = ({ initDepartureDate, initReturnDate, initGuestsAmount }) => {
   const { themeMode } = useAppState();
@@ -19,11 +20,14 @@ export const SearchForm: React.FC<{
   const [returnDate, setReturnDate] = useState(initReturnDate ?? defaultReturnDate);
   const [guestsAmount, setGuestsAmount] = useState(initGuestsAmount ?? 1);
 
-  const query = useMemo(() => new URLSearchParams([
-    ['returnDate', String(returnDate)],
-    ['departureDate', String(departureDate)],
-    ['guestsAmount', String(guestsAmount)],
-  ]), [returnDate, departureDate, guestsAmount])
+  const query = useMemo(() => {
+    const { startDay, numberOfDays } = parseDateToDays(departureDate, returnDate)
+    return new URLSearchParams([
+      ['startDay', String(startDay)],
+      ['numberOfDays', String(numberOfDays)],
+      ['guestsAmount', String(guestsAmount)],
+    ])
+  }, [departureDate, returnDate, guestsAmount])
 
   const navigate = useNavigate()
 
