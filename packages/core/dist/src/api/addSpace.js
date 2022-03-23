@@ -14,10 +14,10 @@ const org_id_utils_1 = require("@windingtree/org.id-utils");
 const ipfs_apis_1 = require("@windingtree/ipfs-apis");
 const sendHelper_1 = require("../utils/sendHelper");
 // Register space
-const addSpace = (contract, ipfsNode, profileData, lodgingFacilityId, capacity, pricePerNightWei, active = true, overrides, transactionHashCb, confirmations = 1) => __awaiter(void 0, void 0, void 0, function* () {
+const addSpace = (contract, web3Storage, profileData, lodgingFacilityId, capacity, pricePerNightWei, active = true, overrides, transactionHashCb, confirmations = 1) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
     const profileDataFile = ipfs_apis_1.utils.obj2File(profileData, `space_${org_id_utils_1.uid.simpleUid()}.json`);
-    const ipfsCid = yield ipfsNode.add(profileDataFile);
+    const ipfsCid = yield web3Storage.add(profileDataFile);
     const dataURI = `ipfs://${ipfsCid}`;
     overrides = overrides ? overrides : {};
     const receipt = yield (0, sendHelper_1.sendHelper)(contract, 'addSpace', [

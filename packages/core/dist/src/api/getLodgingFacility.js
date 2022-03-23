@@ -13,12 +13,12 @@ exports.getLodgingFacility = void 0;
 const luxon_1 = require("luxon");
 const dataUri_1 = require("../utils/dataUri");
 // Get facility by Id
-const getLodgingFacility = (contract, ipfsNode, lodgingFacilityId) => __awaiter(void 0, void 0, void 0, function* () {
+const getLodgingFacility = (contract, web3Storage, lodgingFacilityId) => __awaiter(void 0, void 0, void 0, function* () {
     const [exists, owner, active, dataURI] = yield contract.getLodgingFacilityById(lodgingFacilityId);
     if (!exists) {
         return null;
     }
-    const data = yield (0, dataUri_1.fetchDataUri)(ipfsNode, dataURI);
+    const data = yield (0, dataUri_1.fetchDataUri)(web3Storage, dataURI);
     return Object.assign(Object.assign({}, data), { contractData: {
             lodgingFacilityId,
             owner,

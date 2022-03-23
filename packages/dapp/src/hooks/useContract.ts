@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { KnownProvider } from 'stays-core';
 import { EthRioContract } from 'stays-core';
 import { getNetwork } from '../config';
+import { useWeb3StorageApi } from './useWeb3StorageApi';
 import Logger from '../utils/logger';
 
 // Initialize logger
@@ -22,13 +23,14 @@ export const useContract = (
   provider: providers.JsonRpcProvider | Web3ModalProvider | undefined,
   ipfsNode: IPFS | undefined,
 ): UseContractHook => {
+  const web3Storage = useWeb3StorageApi(ipfsNode);
   const [contract, setContract] = useState<EthRioContract | undefined>();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     setLoading(true);
-    if (!provider || !ipfsNode) {
+    if (!provider || !web3Storage) {
       return;
     }
 
@@ -37,7 +39,7 @@ export const useContract = (
         new EthRioContract(
           address,
           provider as KnownProvider,
-          ipfsNode
+          web3Storage
         )
       );
       setLoading(false);
@@ -47,7 +49,7 @@ export const useContract = (
       setError(message);
       setLoading(false);
     }
-  }, [provider, ipfsNode]);
+  }, [provider, web3Storage]);
 
   return [contract, loading, error];
 };

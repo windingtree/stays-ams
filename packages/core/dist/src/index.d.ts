@@ -1,5 +1,5 @@
 import type { providers } from 'ethers';
-import type { IPFS } from '@windingtree/ipfs-apis';
+import type { Web3StorageApi } from '@windingtree/ipfs-apis';
 import type { LodgingFacilityRaw, LodgingFacility, SpaceRaw, Space } from 'stays-data-models';
 import type { EthRioStays } from 'stays-smart-contracts';
 import type { MethodOverrides, TxHashCallbackFn } from './utils/sendHelper';
@@ -10,8 +10,8 @@ export declare class EthRioContract {
     readonly address: string;
     readonly provider: providers.Provider;
     readonly contract: EthRioStays;
-    readonly ipfsNode: IPFS;
-    constructor(contractAddress: string, providerOrUri: KnownProvider, ipfsNode: IPFS);
+    readonly web3Storage: Web3StorageApi;
+    constructor(contractAddress: string, providerOrUri: KnownProvider, web3Storage: Web3StorageApi);
     getDayZero(): Promise<number>;
     getLodgingFacilityIds(active: boolean): Promise<string[]>;
     getNewAndUpdatedFacilityIds(fromBlock: number): Promise<string[]>;

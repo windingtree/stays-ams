@@ -1,5 +1,5 @@
 import type { providers } from 'ethers';
-import type { IPFS } from '@windingtree/ipfs-apis';
+import type { Web3StorageApi } from '@windingtree/ipfs-apis';
 import type {
   LodgingFacilityRaw,
   LodgingFacility,
@@ -39,12 +39,12 @@ export class EthRioContract {
   readonly address: string;
   readonly provider: providers.Provider;
   readonly contract: EthRioStays;
-  readonly ipfsNode: IPFS;
+  readonly web3Storage: Web3StorageApi;
 
   constructor(
     contractAddress: string,
     providerOrUri: KnownProvider,
-    ipfsNode: IPFS
+    web3Storage: Web3StorageApi
   ) {
     if (regexp.ethereumAddress.exec(contractAddress)) {
       this.address = contractAddress;
@@ -76,7 +76,7 @@ export class EthRioContract {
     }
 
     // @todo Implement ipfsNode validity check
-    this.ipfsNode = ipfsNode;
+    this.web3Storage = web3Storage;
 
     this.contract = new ethers.Contract(
       this.address,
@@ -122,7 +122,7 @@ export class EthRioContract {
   getLodgingFacility(lodgingFacilityId: string): Promise<LodgingFacility | null> {
     return getLodgingFacility(
       this.contract,
-      this.ipfsNode,
+      this.web3Storage,
       lodgingFacilityId
     );
   }
@@ -130,7 +130,7 @@ export class EthRioContract {
   getSpace(spaceId: string): Promise<Space | null> {
     return getSpace(
       this.contract,
-      this.ipfsNode,
+      this.web3Storage,
       spaceId
     );
   }
@@ -153,7 +153,7 @@ export class EthRioContract {
   ): Promise<string> {
     return registerLodgingFacility(
       this.contract,
-      this.ipfsNode,
+      this.web3Storage,
       profileData,
       active,
       fren,
@@ -175,7 +175,7 @@ export class EthRioContract {
   ): Promise<string> {
     return addSpace(
       this.contract,
-      this.ipfsNode,
+      this.web3Storage,
       profileData,
       lodgingFacilityId,
       capacity,

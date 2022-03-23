@@ -28,7 +28,7 @@ const nft_1 = require("./api/nft");
 const getDayZero_1 = require("./api/getDayZero");
 __exportStar(require("./types"), exports);
 class EthRioContract {
-    constructor(contractAddress, providerOrUri, ipfsNode) {
+    constructor(contractAddress, providerOrUri, web3Storage) {
         if (org_id_utils_1.regexp.ethereumAddress.exec(contractAddress)) {
             this.address = contractAddress;
         }
@@ -52,7 +52,7 @@ class EthRioContract {
             throw new Error(`Unable to initialize provider': ${providerOrUri}`);
         }
         // @todo Implement ipfsNode validity check
-        this.ipfsNode = ipfsNode;
+        this.web3Storage = web3Storage;
         this.contract = new ethers_1.ethers.Contract(this.address, stays_smart_contracts_1.EthRioStaysContract.abi, this.provider);
         // Apply the default Signer
         this.contract = this.contract.connect(this.provider.getSigner());
@@ -73,10 +73,10 @@ class EthRioContract {
         return (0, getAvailability_1.getAvailability)(this.contract, spaceId, startDay, numberOfDays);
     }
     getLodgingFacility(lodgingFacilityId) {
-        return (0, getLodgingFacility_1.getLodgingFacility)(this.contract, this.ipfsNode, lodgingFacilityId);
+        return (0, getLodgingFacility_1.getLodgingFacility)(this.contract, this.web3Storage, lodgingFacilityId);
     }
     getSpace(spaceId) {
-        return (0, getSpace_1.getSpace)(this.contract, this.ipfsNode, spaceId);
+        return (0, getSpace_1.getSpace)(this.contract, this.web3Storage, spaceId);
     }
     getTokensOfOwner(owner) {
         return (0, nft_1.getTokensOfOwner)(this.contract, owner);
@@ -86,10 +86,10 @@ class EthRioContract {
     }
     registerLodgingFacility(profileData, active, fren, // address
     overrides, transactionHashCb, confirmations) {
-        return (0, registerLodgingFacility_1.registerLodgingFacility)(this.contract, this.ipfsNode, profileData, active, fren, overrides, transactionHashCb, confirmations);
+        return (0, registerLodgingFacility_1.registerLodgingFacility)(this.contract, this.web3Storage, profileData, active, fren, overrides, transactionHashCb, confirmations);
     }
     addSpace(profileData, lodgingFacilityId, capacity, pricePerNightWei, active, overrides, transactionHashCb, confirmations) {
-        return (0, addSpace_1.addSpace)(this.contract, this.ipfsNode, profileData, lodgingFacilityId, capacity, pricePerNightWei, active, overrides, transactionHashCb, confirmations);
+        return (0, addSpace_1.addSpace)(this.contract, this.web3Storage, profileData, lodgingFacilityId, capacity, pricePerNightWei, active, overrides, transactionHashCb, confirmations);
     }
     book(spaceId, startDay, numberOfDays, quantity, overrides, transactionHashCb, confirmations) {
         return (0, book_1.book)(this.contract, spaceId, startDay, numberOfDays, quantity, overrides, transactionHashCb, confirmations);

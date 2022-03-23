@@ -1,7 +1,6 @@
-import type { providers } from 'ethers';
 import type { EthRioStays } from 'stays-smart-contracts';
 import type { SpaceRaw } from 'stays-data-models';
-import type { IPFS } from '@windingtree/ipfs-apis';
+import type { Web3StorageApi } from '@windingtree/ipfs-apis';
 import type { MethodOverrides, TxHashCallbackFn } from '../utils/sendHelper';
 import { uid } from '@windingtree/org.id-utils';
 import { utils as ipfsUtils } from '@windingtree/ipfs-apis';
@@ -10,7 +9,7 @@ import { sendHelper } from '../utils/sendHelper';
 // Register space
 export const addSpace = async (
   contract: EthRioStays,
-  ipfsNode: IPFS,
+  web3Storage: Web3StorageApi,
   profileData: SpaceRaw,
   lodgingFacilityId: string,
   capacity: number,
@@ -26,7 +25,7 @@ export const addSpace = async (
     `space_${uid.simpleUid()}.json`
   );
 
-  const ipfsCid = await ipfsNode.add(profileDataFile);
+  const ipfsCid = await web3Storage.add(profileDataFile);
   const dataURI = `ipfs://${ipfsCid}`;
 
   overrides = overrides ? overrides : {};

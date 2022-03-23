@@ -1,10 +1,9 @@
-import type { IPFS } from '@windingtree/ipfs-apis';
-import { utils as ipfsNodeUtils } from '@windingtree/ipfs-apis';
+import type { Web3StorageApi } from '@windingtree/ipfs-apis';
 
-export const ipfsCidResolver = (ipfsNode: IPFS) => async (cid: string) => {
+export const ipfsCidResolver = (web3Storage: Web3StorageApi) => async (cid: string) => {
   try {
     const rawResource = await Promise.race([
-      ipfsNodeUtils.getIpfsChunks(ipfsNode.cat(cid)),
+      web3Storage.get(cid),
       new Promise(
         (_, reject) => setTimeout(
           () => reject(new Error(`Timeout occurred during getting cid: ${cid}`)),

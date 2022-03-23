@@ -1,4 +1,4 @@
-import type { IPFS } from '@windingtree/ipfs-apis';
+import type { Web3StorageApi } from '@windingtree/ipfs-apis';
 import type { TokenData } from '../types';
 import { utils } from 'ethers';
 import { regexp, http }  from '@windingtree/org.id-utils';
@@ -9,7 +9,7 @@ export type TokenUriType =
   | 'http'
   | 'ipfs';
 
-export const fetchDataUri = async <DT>(ipfsNode: IPFS, uri: string): Promise<DT> => {
+export const fetchDataUri = async <DT>(web3Storage: Web3StorageApi, uri: string): Promise<DT> => {
   let tokenUriType: TokenUriType | undefined;
 
   if (regexp.ipfs.exec(uri)) {
@@ -23,7 +23,7 @@ export const fetchDataUri = async <DT>(ipfsNode: IPFS, uri: string): Promise<DT>
   switch (tokenUriType) {
     case 'ipfs':
       data = await repeater(
-        () => ipfsCidResolver(ipfsNode)(uri.replace('ipfs://', '')),
+        () => ipfsCidResolver(web3Storage)(uri.replace('ipfs://', '')),
         3
       );
       break;
