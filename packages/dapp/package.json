@@ -6,10 +6,11 @@
   "scripts": {
     "start": "SKIP_PREFLIGHT_CHECK=true react-scripts start",
     "start:senv": "npx senv ./dapp.senv yarn start",
-    "build": "react-scripts build",
+    "build": "SKIP_PREFLIGHT_CHECK=true react-scripts build",
     "test": "CI=true react-scripts test",
     "eject": "react-scripts eject",
-    "storybook": "start-storybook -p 6006 -s public"
+    "storybook": "start-storybook -p 6006 -s public",
+    "ghpages": "yarn build && cp -r ./build ../ghpages"
   },
   "eslintConfig": {
     "extends": [

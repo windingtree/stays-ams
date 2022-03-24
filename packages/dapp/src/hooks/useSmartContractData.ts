@@ -1,7 +1,7 @@
 import type { providers } from 'ethers';
 import type { LodgingFacility, Space } from 'stays-data-models';
 import type { IPFS } from '@windingtree/ipfs-apis';
-import type { EthRioContract } from 'stays-core';
+import type { Contract } from 'stays-core';
 import { useState, useEffect, useCallback } from 'react';
 import { Dispatch } from '../store';
 import { useContract } from './useContract';
@@ -15,7 +15,7 @@ export type UseSmartContractData = [
   error: string | undefined
 ];
 
-const loadSpace = async (contract: EthRioContract, spaceId: string): Promise<Space> => {
+const loadSpace = async (contract: Contract, spaceId: string): Promise<Space> => {
   const space = await contract.getSpace(spaceId);
   logger.debug('Loaded space:', spaceId, space);
   if (space === null) {
@@ -25,7 +25,7 @@ const loadSpace = async (contract: EthRioContract, spaceId: string): Promise<Spa
 }
 
 const loadLodgingFacilities = async (
-  contract: EthRioContract,
+  contract: Contract,
   fromBlock?: number
 ): Promise<LodgingFacility[]> => {
   const facilityIds = !!fromBlock
@@ -76,7 +76,7 @@ export const useSmartContractData = (
   }, [contractError]);
 
   const loadAndDispatchFacilities = useCallback(
-    async (contract: EthRioContract, fromBlock?: number) => {
+    async (contract: Contract, fromBlock?: number) => {
       const lodgingFacilities = await loadLodgingFacilities(contract, fromBlock);
       logger.debug(`Facilities from block ${fromBlock ? fromBlock : 0}`, lodgingFacilities);
       const blockNumber = await contract.provider.getBlockNumber();

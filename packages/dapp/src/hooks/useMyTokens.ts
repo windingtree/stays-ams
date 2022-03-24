@@ -95,7 +95,7 @@ export const useGetToken = (
         //   owner: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
         //   tokenUri: '',
         //   data: {
-        //     name: 'EthRioStays #1',
+        //     name: 'Stays #1',
         //     description: 'Stay at lodging facility',
         //     image: 'https://bafybeigg7mwwpnnm6mmk3twxc4arizoyc6ijnaye3pdciwcohheo7xi7hm.ipfs.dweb.link/token-image.png',
         //     external_url: 'https://localhost:3000/space/0xC742BE735817045D0344EFB3770EACD7FE22863EE6BF1B062351235ADEE2277F',

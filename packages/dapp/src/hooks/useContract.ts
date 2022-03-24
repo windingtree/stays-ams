@@ -3,7 +3,7 @@ import type { IPFS } from '@windingtree/ipfs-apis';
 import type { Web3ModalProvider } from './useWeb3Modal';
 import { useState, useEffect } from 'react';
 import { KnownProvider } from 'stays-core';
-import { EthRioContract } from 'stays-core';
+import { Contract } from 'stays-core';
 import { getNetwork } from '../config';
 import { useWeb3StorageApi } from './useWeb3StorageApi';
 import Logger from '../utils/logger';
@@ -12,7 +12,7 @@ import Logger from '../utils/logger';
 const logger = Logger('useContract');
 
 export type UseContractHook = [
-  contract: EthRioContract | undefined,
+  contract: Contract | undefined,
   loading: boolean,
   error: string | undefined
 ];
@@ -24,7 +24,7 @@ export const useContract = (
   ipfsNode: IPFS | undefined,
 ): UseContractHook => {
   const web3Storage = useWeb3StorageApi(ipfsNode);
-  const [contract, setContract] = useState<EthRioContract | undefined>();
+  const [contract, setContract] = useState<Contract | undefined>();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | undefined>(undefined);
 
@@ -36,7 +36,7 @@ export const useContract = (
 
     try {
       setContract(
-        new EthRioContract(
+        new Contract(
           address,
           provider as KnownProvider,
           web3Storage
