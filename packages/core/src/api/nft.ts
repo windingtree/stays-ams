@@ -1,11 +1,11 @@
 import type { BigNumber } from 'ethers';
-import type { EthRioStays } from 'stays-smart-contracts';
+import type { Stays } from 'stays-smart-contracts';
 import type { StayToken, TokenData } from '../types';
 import { decodeDataUri } from '../utils/dataUri';
 
 // Get NFT of the owner
 export const getTokensOfOwner = async (
-  contract: EthRioStays,
+  contract: Stays,
   owner: string
 ): Promise<string[]> => {
   const balance = await contract.balanceOf(owner);
@@ -21,7 +21,7 @@ export const getTokensOfOwner = async (
 };
 
 export const getToken = async (
-  contract: EthRioStays,
+  contract: Stays,
   tokenId: string
 ): Promise<StayToken> => {
   const owner = await contract.ownerOf(tokenId);

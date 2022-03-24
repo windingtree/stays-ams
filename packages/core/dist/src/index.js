@@ -10,7 +10,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EthRioContract = void 0;
+exports.Contract = void 0;
 const ethers_1 = require("ethers");
 const stays_smart_contracts_1 = require("stays-smart-contracts");
 const org_id_utils_1 = require("@windingtree/org.id-utils");
@@ -27,7 +27,7 @@ const book_1 = require("./api/book");
 const nft_1 = require("./api/nft");
 const getDayZero_1 = require("./api/getDayZero");
 __exportStar(require("./types"), exports);
-class EthRioContract {
+class Contract {
     constructor(contractAddress, providerOrUri, web3Storage) {
         if (org_id_utils_1.regexp.ethereumAddress.exec(contractAddress)) {
             this.address = contractAddress;
@@ -53,7 +53,7 @@ class EthRioContract {
         }
         // @todo Implement ipfsNode validity check
         this.web3Storage = web3Storage;
-        this.contract = new ethers_1.ethers.Contract(this.address, stays_smart_contracts_1.EthRioStaysContract.abi, this.provider);
+        this.contract = new ethers_1.ethers.Contract(this.address, stays_smart_contracts_1.StaysContract.abi, this.provider);
         // Apply the default Signer
         this.contract = this.contract.connect(this.provider.getSigner());
     }
@@ -95,5 +95,5 @@ class EthRioContract {
         return (0, book_1.book)(this.contract, spaceId, startDay, numberOfDays, quantity, overrides, transactionHashCb, confirmations);
     }
 }
-exports.EthRioContract = EthRioContract;
+exports.Contract = Contract;
 //# sourceMappingURL=index.js.map

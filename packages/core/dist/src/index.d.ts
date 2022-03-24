@@ -1,15 +1,15 @@
 import type { providers } from 'ethers';
 import type { Web3StorageApi } from '@windingtree/ipfs-apis';
 import type { LodgingFacilityRaw, LodgingFacility, SpaceRaw, Space } from 'stays-data-models';
-import type { EthRioStays } from 'stays-smart-contracts';
+import type { Stays } from 'stays-smart-contracts';
 import type { MethodOverrides, TxHashCallbackFn } from './utils/sendHelper';
 import type { StayToken } from './types';
 export * from './types';
 export declare type KnownProvider = providers.ExternalProvider | providers.JsonRpcProvider | providers.Web3Provider | providers.Provider | string;
-export declare class EthRioContract {
+export declare class Contract {
     readonly address: string;
     readonly provider: providers.Provider;
-    readonly contract: EthRioStays;
+    readonly contract: Stays;
     readonly web3Storage: Web3StorageApi;
     constructor(contractAddress: string, providerOrUri: KnownProvider, web3Storage: Web3StorageApi);
     getDayZero(): Promise<number>;

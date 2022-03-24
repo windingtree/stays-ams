@@ -1,5 +1,5 @@
 import type { providers } from 'ethers';
-import type { EthRioStays } from 'stays-smart-contracts';
+import type { Stays } from 'stays-smart-contracts';
 import type { LodgingFacilityRaw } from 'stays-data-models';
 import type { Web3StorageApi } from '@windingtree/ipfs-apis';
 import type { MethodOverrides, TxHashCallbackFn } from '../utils/sendHelper';
@@ -9,7 +9,7 @@ import { sendHelper } from '../utils/sendHelper';
 
 // Register facility
 export const registerLodgingFacility = async (
-  contract: EthRioStays,
+  contract: Stays,
   web3Storage: Web3StorageApi,
   profileData: LodgingFacilityRaw,
   active = true,

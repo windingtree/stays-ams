@@ -1,9 +1,9 @@
 import type { BigNumber } from 'ethers';
-import type { EthRioStays } from 'stays-smart-contracts';
+import type { Stays } from 'stays-smart-contracts';
 
 // Get space availability
 export const getAvailability = async (
-  contract: EthRioStays,
+  contract: Stays,
   spaceId: string,
   startDay: number,
   numberOfDays: number

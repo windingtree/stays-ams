@@ -6,11 +6,11 @@ import type {
   SpaceRaw,
   Space
 } from 'stays-data-models';
-import type { EthRioStays } from 'stays-smart-contracts';
+import type { Stays } from 'stays-smart-contracts';
 import type { MethodOverrides, TxHashCallbackFn } from './utils/sendHelper';
 import type { StayToken } from './types';
 import { ethers } from 'ethers';
-import { EthRioStaysContract } from 'stays-smart-contracts';
+import { StaysContract } from 'stays-smart-contracts';
 import { regexp }  from '@windingtree/org.id-utils';
 
 // API
@@ -35,10 +35,10 @@ export type KnownProvider =
   | providers.Provider
   | string;
 
-export class EthRioContract {
+export class Contract {
   readonly address: string;
   readonly provider: providers.Provider;
-  readonly contract: EthRioStays;
+  readonly contract: Stays;
   readonly web3Storage: Web3StorageApi;
 
   constructor(
@@ -80,9 +80,9 @@ export class EthRioContract {
 
     this.contract = new ethers.Contract(
       this.address,
-      EthRioStaysContract.abi,
+      StaysContract.abi,
       this.provider
-    ) as EthRioStays;
+    ) as Stays;
 
     // Apply the default Signer
     this.contract = this.contract.connect(

@@ -1,6 +1,6 @@
-import type { EthRioStays } from 'stays-smart-contracts';
+import type { Stays } from 'stays-smart-contracts';
 
 // Get facilities Ids
 export const getDayZero = (
-  contract: EthRioStays
+  contract: Stays
 ): Promise<number> => contract.dayZero();
