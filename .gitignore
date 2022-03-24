@@ -5,3 +5,4 @@ coverage.json
 .env
 *.log
 temp
+package-lock.json
