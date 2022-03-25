@@ -16,6 +16,7 @@ export type UseMyTokensHook = [
 
 export type UseGetTokenHook = [
   token: StayToken | undefined,
+  facilityOwner: string | undefined,
   loading: boolean,
   error: string | undefined
 ];
@@ -83,6 +84,7 @@ export const useGetToken = (
 ): UseGetTokenHook => {
   const [contract,, contractError] = useContract(provider, ipfsNode);
   const [token, setToken] = useState<StayToken | undefined>();
+  const [facilityOwner, setFacilityOwner] = useState<string | undefined>();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | undefined>();
 
@@ -132,6 +134,28 @@ export const useGetToken = (
         const token = await contract.getToken(id);
         setToken(token);
 
+        const facilityIdAttribute = token.data.attributes?.find(
+          attribute => attribute.trait_type === 'facilityId'
+        );
+
+        if (!facilityIdAttribute) {
+          throw new Error(
+            'Unable to find facilityId in the Stay token metadata'
+          );
+        }
+
+        const facility = await contract.getLodgingFacility(
+          facilityIdAttribute.value
+        );
+
+        if (!facility) {
+          throw new Error(
+            `Unable to the lodging facility by Id: ${facilityIdAttribute.value}`
+          );
+        }
+
+        setFacilityOwner(facility.contractData.owner);
+
         setLoading(false);
       } catch (err) {
         logger.error(err);
@@ -158,5 +182,5 @@ export const useGetToken = (
     [getToken, tokenId]
   );
 
-  return [token, loading, error];
+  return [token, facilityOwner, loading, error];
 };
