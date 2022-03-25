@@ -13,7 +13,6 @@ import { Rooms } from "../pages/Rooms";
 import { RoomProfile } from "../pages/RoomProfile";
 import { Space } from '../pages/Space';
 import { MyTokens } from '../pages/MyTokens';
-import { QrTest } from '../pages/QrTest';
 
 export interface RouteConfig {
   path: string;
@@ -62,13 +61,6 @@ export const pagesRoutesConfig: Routes = [
     element: <MyTokens />,
     title: 'My Stay Tokens',
     label: "My Tokens",
-    protected: true,
-  },
-  {
-    path: '/qr',
-    element: <QrTest />,
-    title: 'Generate QR',
-    label: "QR Code",
     protected: true,
   },
 ];
