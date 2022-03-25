@@ -1,7 +1,7 @@
 import { Grid, Box, TextInput, Button, Text } from 'grommet';
 import { DateRangePickup, Label } from './date-range-pickup';
 import { useNavigate } from 'react-router-dom';
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useAppState } from '../../store';
 import { ThemeMode } from '../SwitchThemeMode';
 
@@ -24,8 +24,20 @@ export const SearchForm: React.FC<{
 }> = ({ getDate, startDay, numberOfDays, initGuestsAmount }) => {
   const { themeMode } = useAppState();
 
-  const [departureDate, setDepartureDate] = useState<Date>(getDate(startDay ?? 1).toJSDate());
-  const [returnDate, setReturnDate] = useState<Date>(getDate((startDay ?? 1) + (numberOfDays ?? 7)).toJSDate());
+  const [departureDate, setDepartureDate] = useState<Date>();
+  const [returnDate, setReturnDate] = useState<Date>();
+
+  useEffect(() => {
+    const now = new Date()
+    const tomorrow = new Date(now)
+    tomorrow.setDate(tomorrow.getDate() + 1)
+    const departureDay: Date = getDate(startDay ?? 1).toJSDate()
+    const returnDay: Date = getDate((startDay ?? 1) + (numberOfDays ?? 7)).toJSDate()
+
+    setReturnDate(returnDay.getTime() > now.getTime() ? returnDay : tomorrow)
+    setDepartureDate(departureDay.getTime() > now.getTime() ? departureDay : now)
+  }, [getDate, setDepartureDate, setReturnDate, startDay, numberOfDays])
+
   const [guestsAmount, setGuestsAmount] = useState(initGuestsAmount ?? 1);
 
   const query = useMemo(() => {
@@ -38,6 +50,10 @@ export const SearchForm: React.FC<{
   }, [departureDate, returnDate, guestsAmount, getDate])
 
   const navigate = useNavigate()
+
+  if (departureDate === undefined || returnDate === undefined) {
+    return null
+  }
 
   return (
     <Box pad={{ bottom: 'medium' }}>
