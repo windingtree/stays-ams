@@ -74,11 +74,20 @@ export const Space: React.FC = () => {
   const isLoading = useMemo(() => !!bootstrapped && !!contract, [bootstrapped, contract])
   const borderColor = themeMode === ThemeMode.light ? 'brand' : 'accent-1'
 
+  const searchQuery = useMemo(() => {
+    return new URLSearchParams([
+      ['startDay', String(searchParams?.startDay)],
+      ['numberOfDays', String(searchParams?.numberOfDays)],
+      ['guestsAmount', String(searchParams?.guestsAmount)],
+    ])
+  }, [searchParams])
+
   return (
     <PageWrapper
       breadcrumbs={[
         {
-          label: 'Search'
+          label: 'Search',
+          path: `/search?${searchQuery}`
         }
       ]}
     >
