@@ -3,13 +3,18 @@ import { useAppState } from '../store';
 import { PageWrapper } from '../pages/PageWrapper';
 import { MessageBox } from '../components/MessageBox';
 import { SearchForm } from '../components/search/SearchForm';
+import { useDayZero } from '../hooks/useDayZero';
 
 export const Home = () => {
   const {
     isIpfsNodeConnecting,
     isBootstrapLoading,
-    bootstrapped
+    bootstrapped,
+    provider,
+    ipfsNode
   } = useAppState();
+
+  const [getDate, isGetDateReady] = useDayZero(provider, ipfsNode);
 
   return (
     <PageWrapper>
@@ -22,8 +27,8 @@ export const Home = () => {
         </Box>
       </MessageBox>
 
-      {!!bootstrapped &&
-        <SearchForm />
+      {!!bootstrapped && isGetDateReady &&
+        <SearchForm getDate={getDate} />
       }
     </PageWrapper>
   );
