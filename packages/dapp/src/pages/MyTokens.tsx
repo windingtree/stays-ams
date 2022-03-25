@@ -181,7 +181,7 @@ export const TokenView = ({
             )
           )}
         </CardBody>
-        <CardFooter>
+        <CardFooter pad='medium'>
           <StayVoucherQr
             provider={provider}
             from={owner}
