@@ -4,30 +4,38 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useMemo } from 'react'
 import { useAppState } from '../../store';
 import { ThemeMode } from '../SwitchThemeMode';
-import { parseDateToDays } from '../../pages/Search';
 
-const defaultDepartureDate = new Date('05/12/2022')
-const defaultReturnDate = new Date('05/20/2022')
+export const parseDateToDays = (dayZero?: Date, firstDate?: Date, secondDate?: Date) => {
+  const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+
+  const startDay = Math.round((new Date(firstDate ?? '').getTime() - new Date(dayZero ?? '').getTime()) / oneDay)
+  const numberOfDays = Math.round((new Date(secondDate ?? '').getTime() - new Date(firstDate ?? '').getTime()) / oneDay)
+  return {
+    startDay,
+    numberOfDays
+  }
+};
 
 export const SearchForm: React.FC<{
-  initDepartureDate?: Date | null,
-  initReturnDate?: Date | null,
-  initGuestsAmount?: number,
-}> = ({ initDepartureDate, initReturnDate, initGuestsAmount }) => {
+  getDate: Function,
+  startDay?: number | undefined,
+  numberOfDays?: number | undefined,
+  initGuestsAmount?: number | undefined,
+}> = ({ getDate, startDay, numberOfDays, initGuestsAmount }) => {
   const { themeMode } = useAppState();
 
-  const [departureDate, setDepartureDate] = useState(initDepartureDate ?? defaultDepartureDate);
-  const [returnDate, setReturnDate] = useState(initReturnDate ?? defaultReturnDate);
+  const [departureDate, setDepartureDate] = useState<Date>(getDate(startDay ?? 1).toJSDate());
+  const [returnDate, setReturnDate] = useState<Date>(getDate((startDay ?? 1) + (numberOfDays ?? 7)).toJSDate());
   const [guestsAmount, setGuestsAmount] = useState(initGuestsAmount ?? 1);
 
   const query = useMemo(() => {
-    const { startDay, numberOfDays } = parseDateToDays(departureDate, returnDate)
+    const { startDay, numberOfDays } = parseDateToDays(getDate(0).toJSDate(), departureDate, returnDate)
     return new URLSearchParams([
       ['startDay', String(startDay)],
       ['numberOfDays', String(numberOfDays)],
       ['guestsAmount', String(guestsAmount)],
     ])
-  }, [departureDate, returnDate, guestsAmount])
+  }, [departureDate, returnDate, guestsAmount, getDate])
 
   const navigate = useNavigate()
 
