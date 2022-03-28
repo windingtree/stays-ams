@@ -1,4 +1,4 @@
-import type { EthRioStays } from 'stays-smart-contracts';
+import type { Stays } from 'stays-smart-contracts';
 import type { SpaceRaw } from 'stays-data-models';
 import type { Web3StorageApi } from '@windingtree/ipfs-apis';
 import type { MethodOverrides, TxHashCallbackFn } from '../utils/sendHelper';
@@ -8,7 +8,7 @@ import { sendHelper } from '../utils/sendHelper';
 
 // Register space
 export const addSpace = async (
-  contract: EthRioStays,
+  contract: Stays,
   web3Storage: Web3StorageApi,
   profileData: SpaceRaw,
   lodgingFacilityId: string,

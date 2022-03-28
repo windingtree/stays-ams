@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.StayEscrow__factory = exports.IEthRioStays__factory = exports.EthRioStays__factory = exports.IERC165__factory = exports.ERC165__factory = exports.IERC721Receiver__factory = exports.IERC721__factory = exports.IERC721Metadata__factory = exports.IERC721Enumerable__factory = exports.ERC721URIStorage__factory = exports.ERC721Enumerable__factory = exports.ERC721__factory = void 0;
+exports.Stays__factory = exports.StayEscrow__factory = exports.IStays__factory = exports.IERC165__factory = exports.ERC165__factory = exports.IERC721Receiver__factory = exports.IERC721__factory = exports.IERC721Metadata__factory = exports.IERC721Enumerable__factory = exports.ERC721URIStorage__factory = exports.ERC721Enumerable__factory = exports.ERC721__factory = void 0;
 var ERC721__factory_1 = require("./factories/ERC721__factory");
 Object.defineProperty(exports, "ERC721__factory", { enumerable: true, get: function () { return ERC721__factory_1.ERC721__factory; } });
 var ERC721Enumerable__factory_1 = require("./factories/ERC721Enumerable__factory");
@@ -19,10 +19,10 @@ var ERC165__factory_1 = require("./factories/ERC165__factory");
 Object.defineProperty(exports, "ERC165__factory", { enumerable: true, get: function () { return ERC165__factory_1.ERC165__factory; } });
 var IERC165__factory_1 = require("./factories/IERC165__factory");
 Object.defineProperty(exports, "IERC165__factory", { enumerable: true, get: function () { return IERC165__factory_1.IERC165__factory; } });
-var EthRioStays__factory_1 = require("./factories/EthRioStays__factory");
-Object.defineProperty(exports, "EthRioStays__factory", { enumerable: true, get: function () { return EthRioStays__factory_1.EthRioStays__factory; } });
-var IEthRioStays__factory_1 = require("./factories/IEthRioStays__factory");
-Object.defineProperty(exports, "IEthRioStays__factory", { enumerable: true, get: function () { return IEthRioStays__factory_1.IEthRioStays__factory; } });
+var IStays__factory_1 = require("./factories/IStays__factory");
+Object.defineProperty(exports, "IStays__factory", { enumerable: true, get: function () { return IStays__factory_1.IStays__factory; } });
 var StayEscrow__factory_1 = require("./factories/StayEscrow__factory");
 Object.defineProperty(exports, "StayEscrow__factory", { enumerable: true, get: function () { return StayEscrow__factory_1.StayEscrow__factory; } });
+var Stays__factory_1 = require("./factories/Stays__factory");
+Object.defineProperty(exports, "Stays__factory", { enumerable: true, get: function () { return Stays__factory_1.Stays__factory; } });
 //# sourceMappingURL=index.js.map

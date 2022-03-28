@@ -1,7 +1,7 @@
-import type { EthRioStays } from 'stays-smart-contracts';
+import type { Stays } from 'stays-smart-contracts';
 
 export const getNewAndUpdatedFacilityIds = async (
-  contract: EthRioStays,
+  contract: Stays,
   fromBlock: number
 ) => {
   const facilitiesIds = new Set<string>();

@@ -44,6 +44,12 @@ export const useSpaceSearch = (
       return
     }
 
+    if (startDay < 0) {
+      setLoading(false);
+      setError('Not valid date')
+      return
+    }
+
     dispatch({
       type: 'RESET_RECORD',
       payload: {

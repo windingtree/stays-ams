@@ -19,8 +19,7 @@ const createFakeAddress = () => ({
 exports.createFakeAddress = createFakeAddress;
 const createFakeImage = () => ({
     description: faker_1.faker.lorem.sentence(),
-    uri: faker_1.faker.image.city(),
-    thumbnail: faker_1.faker.image.city(150, 150)
+    uri: faker_1.faker.image.city()
 });
 exports.createFakeImage = createFakeImage;
 const createFakeLodgingFacility = () => ({
@@ -46,7 +45,7 @@ const createFakeSpace = () => ({
     capacity: faker_1.faker.datatype.number({ min: 1, max: 5 }),
     guestsNumber: faker_1.faker.datatype.number({ min: 1, max: 5 }),
     beds: faker_1.faker.datatype.number({ min: 1, max: 3 }),
-    price: faker_1.faker.datatype.number({ min: 35, max: 250 }),
+    price: faker_1.faker.datatype.number({ min: 35, max: 250 }).toString(),
     media: {
         logo: faker_1.faker.image.abstract(),
         images: (0, exports.iterator)(5, exports.createFakeImage)

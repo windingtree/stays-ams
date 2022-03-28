@@ -1,1 +1,1 @@
-{"version":3,"file":"getDayZero.js","sourceRoot":"","sources":["../../../src/api/getDayZero.ts"],"names":[],"mappings":";;;AAEA,qBAAqB;AACd,MAAM,UAAU,GAAG,CACxB,QAAqB,EACJ,EAAE,CAAC,QAAQ,CAAC,OAAO,EAAE,CAAC;AAF5B,QAAA,UAAU,cAEkB"}
+{"version":3,"file":"getDayZero.js","sourceRoot":"","sources":["../../../src/api/getDayZero.ts"],"names":[],"mappings":";;;AAEA,qBAAqB;AACd,MAAM,UAAU,GAAG,CACxB,QAAe,EACE,EAAE,CAAC,QAAQ,CAAC,OAAO,EAAE,CAAC;AAF5B,QAAA,UAAU,cAEkB"}

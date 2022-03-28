@@ -1,4 +1,4 @@
-import type { EthRioStays } from 'stays-smart-contracts';
+import type { Stays } from 'stays-smart-contracts';
 import type { LodgingFacilityRaw, LodgingFacility } from 'stays-data-models';
 import type { Web3StorageApi } from '@windingtree/ipfs-apis';
 import { DateTime } from 'luxon';
@@ -6,7 +6,7 @@ import { fetchDataUri } from '../utils/dataUri';
 
 // Get facility by Id
 export const getLodgingFacility = async (
-  contract: EthRioStays,
+  contract: Stays,
   web3Storage: Web3StorageApi,
   lodgingFacilityId: string
 ): Promise<LodgingFacility | null> => {

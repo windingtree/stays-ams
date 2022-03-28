@@ -16,6 +16,7 @@ export type UseMyTokensHook = [
 
 export type UseGetTokenHook = [
   token: StayToken | undefined,
+  facilityOwner: string | undefined,
   loading: boolean,
   error: string | undefined
 ];
@@ -83,6 +84,7 @@ export const useGetToken = (
 ): UseGetTokenHook => {
   const [contract,, contractError] = useContract(provider, ipfsNode);
   const [token, setToken] = useState<StayToken | undefined>();
+  const [facilityOwner, setFacilityOwner] = useState<string | undefined>();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | undefined>();
 
@@ -95,7 +97,7 @@ export const useGetToken = (
         //   owner: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
         //   tokenUri: '',
         //   data: {
-        //     name: 'EthRioStays #1',
+        //     name: 'Stays #1',
         //     description: 'Stay at lodging facility',
         //     image: 'https://bafybeigg7mwwpnnm6mmk3twxc4arizoyc6ijnaye3pdciwcohheo7xi7hm.ipfs.dweb.link/token-image.png',
         //     external_url: 'https://localhost:3000/space/0xC742BE735817045D0344EFB3770EACD7FE22863EE6BF1B062351235ADEE2277F',
@@ -132,6 +134,28 @@ export const useGetToken = (
         const token = await contract.getToken(id);
         setToken(token);
 
+        const facilityIdAttribute = token.data.attributes?.find(
+          attribute => attribute.trait_type === 'facilityId'
+        );
+
+        if (!facilityIdAttribute) {
+          throw new Error(
+            'Unable to find facilityId in the Stay token metadata'
+          );
+        }
+
+        const facility = await contract.getLodgingFacility(
+          facilityIdAttribute.value
+        );
+
+        if (!facility) {
+          throw new Error(
+            `Unable to the lodging facility by Id: ${facilityIdAttribute.value}`
+          );
+        }
+
+        setFacilityOwner(facility.contractData.owner);
+
         setLoading(false);
       } catch (err) {
         logger.error(err);
@@ -158,5 +182,5 @@ export const useGetToken = (
     [getToken, tokenId]
   );
 
-  return [token, loading, error];
+  return [token, facilityOwner, loading, error];
 };

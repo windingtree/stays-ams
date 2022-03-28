@@ -17,8 +17,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EthRioStaysContract = void 0;
-const EthRioStays_json_1 = __importDefault(require("./artifacts/contracts/EthRioStays.sol/EthRioStays.json"));
-exports.EthRioStaysContract = EthRioStays_json_1.default;
+exports.StaysContract = void 0;
+const Stays_json_1 = __importDefault(require("./artifacts/contracts/Stays.sol/Stays.json"));
+exports.StaysContract = Stays_json_1.default;
 __exportStar(require("./typechain"), exports);
 //# sourceMappingURL=index.js.map

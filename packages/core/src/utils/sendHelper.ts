@@ -1,4 +1,4 @@
-import type { EthRioStays } from 'stays-smart-contracts';
+import type { Stays } from 'stays-smart-contracts';
 import type {
   ContractReceipt,
   Signer,
@@ -13,7 +13,7 @@ export type MethodOverrides = CallOverrides | PayableOverrides;
 export type TxHashCallbackFn = (txHash: string) => void;
 
 export const sendHelper = async (
-  contract: EthRioStays,
+  contract: Stays,
   method: string,
   args: unknown[],
   sender?: Signer | providers.JsonRpcSigner,

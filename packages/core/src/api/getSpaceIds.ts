@@ -1,8 +1,8 @@
-import type { EthRioStays } from 'stays-smart-contracts';
+import type { Stays } from 'stays-smart-contracts';
 
 // Get spaces Ids
 export const getSpaceIds = (
-  contract: EthRioStays,
+  contract: Stays,
   lodgingFacilityId: string,
   active = true
 ): Promise<string[]> => active

@@ -1,10 +1,11 @@
 import type { StayToken, TokenData } from 'stays-core';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { DateTime } from 'luxon';
 import * as Icons from 'grommet-icons';
 import { Grid, Spinner, Button, Box, Card, CardBody, CardHeader, CardFooter, Image, Text } from 'grommet';
 import { PageWrapper } from './PageWrapper';
 import { MessageBox } from '../components/MessageBox';
+import { StayVoucherQr } from '../components/StayVoucherQr';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAppState } from '../store';
 import { useWindowsDimension } from "../hooks/useWindowsDimension";
@@ -36,6 +37,7 @@ export interface TokenCardProps extends TokenData {
 export interface TokenViewProps extends StayToken {
   getDate: (days: number) => DateTime;
   isGetDateReady: boolean;
+  facilityOwner: string | undefined;
 }
 
 export const TokenCard = ({
@@ -74,18 +76,19 @@ export const TokenCard = ({
 export const TokenView = ({
   tokenId,
   owner,
-  tokenUri,
   getDate,
   isGetDateReady,
+  facilityOwner,
   data: {
     name,
     description,
     image,
-    external_url,
     attributes
   }
 }: TokenViewProps ) => {
+  const { provider } = useAppState();
   const navigate = useNavigate();
+  const [error, setError] = useState<string | undefined>();
 
   const parseTrait = (trait: string, value: any): any => {
     switch (trait) {
@@ -178,7 +181,22 @@ export const TokenView = ({
             )
           )}
         </CardBody>
+        <CardFooter pad='medium'>
+          <StayVoucherQr
+            provider={provider}
+            from={owner}
+            to={facilityOwner}
+            tokenId={tokenId}
+            onError={err => setError(err)}
+          />
+        </CardFooter>
       </Card>
+
+      <MessageBox type='error' show={!!error}>
+          <Box>
+            {error}
+          </Box>
+        </MessageBox>
     </Box>
   );
 };
@@ -196,7 +214,11 @@ export const MyTokens = () => {
     ipfsNode,
     account
   );
-  const [token, tokenLoading, tokenError] = useGetToken(provider, ipfsNode, tokenId);
+  const [token, facilityOwner, tokenLoading, tokenError] = useGetToken(
+    provider,
+    ipfsNode,
+    tokenId
+  );
   const { winWidth } = useWindowsDimension();
 
   // const tokensTest: StayToken[] = [
@@ -205,7 +227,7 @@ export const MyTokens = () => {
   //     owner: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
   //     tokenUri: '',
   //     data: {
-  //       name: 'EthRioStays #1',
+  //       name: 'Stays #1',
   //       description: 'Stay at lodging facility',
   //       image: 'https://bafybeigg7mwwpnnm6mmk3twxc4arizoyc6ijnaye3pdciwcohheo7xi7hm.ipfs.dweb.link/token-image.png',
   //       external_url: 'https://localhost:3000/space/0xC742BE735817045D0344EFB3770EACD7FE22863EE6BF1B062351235ADEE2277F',
@@ -248,6 +270,7 @@ export const MyTokens = () => {
         <TokenView
           getDate={getDate}
           isGetDateReady={isGetDateReady}
+          facilityOwner={facilityOwner}
           {...token}
         />
       }

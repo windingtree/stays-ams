@@ -1,4 +1,4 @@
-import type { EthRioStays } from 'stays-smart-contracts';
+import type { Stays } from 'stays-smart-contracts';
 import type { SpaceRaw, Space } from 'stays-data-models';
 import type { Web3StorageApi } from '@windingtree/ipfs-apis';
 import { DateTime } from 'luxon';
@@ -6,7 +6,7 @@ import { fetchDataUri } from '../utils/dataUri';
 
 // Get space by Id
 export const getSpace = async (
-  contract: EthRioStays,
+  contract: Stays,
   web3Storage: Web3StorageApi,
   spaceId: string
 ): Promise<Space | null> => {

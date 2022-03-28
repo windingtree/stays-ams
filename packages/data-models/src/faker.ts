@@ -31,8 +31,7 @@ export const createFakeAddress = (): AddressReference => ({
 
 export const createFakeImage = (): MediaReference => ({
   description: faker.lorem.sentence(),
-  uri: faker.image.city(),
-  thumbnail: faker.image.city(150, 150)
+  uri: faker.image.city()
 });
 
 export const createFakeLodgingFacility = (): LodgingFacilityRaw => ({
@@ -58,7 +57,7 @@ export const createFakeSpace = (): SpaceRaw => ({
   capacity: faker.datatype.number({ min: 1, max: 5 }),
   guestsNumber: faker.datatype.number({ min: 1, max: 5 }),
   beds: faker.datatype.number({ min: 1, max: 3 }),
-  price: faker.datatype.number({ min: 35, max: 250 }),
+  price: faker.datatype.number({ min: 35, max: 250 }).toString(),
   media: {
     logo: faker.image.abstract(),
     images: iterator(5, createFakeImage)
