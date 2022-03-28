@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   Card,
   CardBody,
@@ -17,18 +17,38 @@ import {
   Heading,
   Select,
   TextInput,
+  Spinner,
+  Stack,
 } from "grommet";
+import ContentLoader from "react-content-loader";
 
-import { HelpOption } from "grommet-icons";
+//import type { IPFS } from "@windingtree/ipfs-apis";
+import { useWeb3StorageApi } from "../../hooks/useWeb3StorageApi";
+
+import { useAppState } from "../../store";
+
+import { HelpOption, Close, StatusGood, StatusCritical } from "grommet-icons";
 import { useWindowsDimension } from "../../hooks/useWindowsDimension";
 import {
-  LoadScript,
+  //LoadScript,
   defaultRoomTypes,
   defaultCountries,
   defaultRoomTier,
   defaultFormValue,
   ResponsiveColumn,
+  //LodgingFacilityRaw,
+  //LodgingFacilityRawMain,
+  //imageSchema,
 } from "../../utils/roomProfile";
+
+
+import type {
+  //SpaceRaw, // Original space data type
+  LodgingFacilityRaw, // Original lodging facility data type
+  //Space, // Space storage record typescript type
+  //LodgingFacility, // Lodging facility record typescript type
+} from "stays-data-models";
+import { isObject } from "grommet/utils";
 
 export const RoomProfileCard: React.FC<{
   imageUrl?: string;
@@ -44,24 +64,24 @@ export const RoomProfileCard: React.FC<{
   const [query, setQuery] = useState("");
   const [query2, setQuery2] = useState("");
 
-  useEffect(() => {
-    LoadScript(
-      `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&libraries=places`,
-      () => handleScriptLoad2(autoComplete2, setQuery2, autoCompleteRef2)
-    );
+  const { ipfsNode } = useAppState();
+  const web3Storage = useWeb3StorageApi(ipfsNode);
 
-    LoadScript(
-      `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&libraries=places`,
-      () => handleScriptLoad(autoComplete, setQuery, autoCompleteRef)
-    );
+  useEffect(() => {
+    handleScriptLoad2(autoComplete2, setQuery2, autoCompleteRef2);
+    handleScriptLoad(autoComplete, setQuery, autoCompleteRef);
   }, [autoComplete, autoComplete2, handleScriptLoad, handleScriptLoad2]);
 
-    const [valid, setValid] = useState(false);
-    const [, setIsConntryOpen] = useState(false);
+  const [valid, setValid] = useState(false);
+
+  const [isW3loaded, setIsW3loaded] = useState(false);
+  const [isUploadingIpfs, setIsUploadingIpfs] = useState(false);
+  const [isUploadingIpfsError, setIsUploadingIpfsError] = useState<any>("");
+
+  const [roomLogoURL, setRoomLogoURL] = useState("");
+
+  const [, setIsConntryOpen] = useState(false);
   const [, setIsConntryOpen2] = useState(false);
-    
-    
-  
 
   const [value, setValue] = useState(defaultFormValue);
 
@@ -75,6 +95,110 @@ export const RoomProfileCard: React.FC<{
 
   const [addressObject2, setaddressObject2] = useState<any[]>([]);
   const [addressGeometry2, setaddressGeometry2] = useState<any>("");
+  const [roomImages, setRoomImages] = useState<File[]>([]);
+  const [roomImagesDesc, setRoomImagesDesc] = useState<any[]>([]);
+  const [roomImagesURL, setRoomImagesURL] = useState<any[]>([]);
+  const [roomImagesErrorURL, setRoomImagesErrorURL] = useState<any[]>([]);
+
+  const [showRImage, setShowRImage] = useState(false);
+  const [currentlyUploading, setCurrentlyUploading] = useState(10);
+  const [successfullyUploading, setSuccessfullyUploading] = useState(-1);
+
+  const handleImageChange = ({
+    currentTarget: { files },
+  }: React.ChangeEvent<HTMLInputElement>) => {
+    if (files && files.length) {
+      setRoomImages((existing) => existing.concat(Array.from(files)));
+    }
+  };
+
+  
+    //console.log("LodgingFacilityRawMain", LodgingFacilityRawMain);
+
+
+  useEffect(() => {
+    console.log("roomImagesURL", roomImagesURL);
+    //console.log("LodgingFacilityRawMain", LodgingFacilityRawMain);
+    // console.log("roomLogoURL", roomLogoURL);
+    console.log("roomImagesDesc", roomImagesDesc);
+  }, [roomImagesURL /* roomLogoURL */ /* roomImagesDesc */, ,]);
+
+  useEffect(() => {
+    if (web3Storage !== undefined) {
+      setIsW3loaded(true);
+    } else {
+      setIsW3loaded(false);
+    }
+  }, [web3Storage]);
+
+  const deployToIpfs = useCallback(
+    async (file: File) => {
+      if (!web3Storage) {
+        throw new Error("IPFS API not ready yet");
+      }
+      return web3Storage.add(file);
+    },
+    [web3Storage]
+  );
+
+  const handleDepoyFile = useCallback(
+    async (file: File, isImage = false, type: any) => {
+      try {
+        //_debugger
+        // Deployment of the file
+        const cid = await deployToIpfs(file);
+        //console.log("cid", cid);
+        // Creation of URI
+        const uri = isImage
+          ? `https://${cid.cid}.ipfs.dweb.link`
+          : `ipfs://${cid.cid}`;
+        // Do something with URI
+        //console.log(JSON.stringify(uri));
+
+        if (type === "logo") {
+          console.log("URI", uri);
+          setRoomLogoURL(uri);
+          setIsUploadingIpfs(false);
+          return uri
+        } else {
+          let newArr = [...roomImagesURL]; // copying the old datas array
+          newArr[type] = uri; // replace e.target.value with whatever you want to change it to
+
+          //console.log(type);
+          //console.log(uri);
+          setRoomImagesURL(newArr);
+
+          
+          
+
+          return  { description: roomImagesDesc[type], uri: uri }
+        
+
+          
+        }
+      } catch (err) {
+        if (type === "logo") {
+          setRoomLogoURL("");
+          setIsUploadingIpfs(false);
+          setIsUploadingIpfsError(err);
+        } else {
+          let NewStatus = [...roomImagesErrorURL];
+          NewStatus[type] = true;
+          setRoomImagesErrorURL(NewStatus);
+          roomImagesURL.splice(type, 1);
+
+         // const elm = document.querySelector<HTMLElement>(`.textarea_${type}`)!;
+          //elm.style.backgroundColor = "#dad6d6";
+          //elm.readOnly = true;
+        }
+
+        console.log(err);
+
+        // handle errors
+      }
+    },
+    [deployToIpfs]
+  );
 
   useEffect(() => {
     value.addressGeometry = addressGeometry;
@@ -89,21 +213,21 @@ export const RoomProfileCard: React.FC<{
       for (const component of addressObject2) {
         const componentType2 = component.types[0];
 
-        console.log(addressObject2);
+        // console.log(addressObject2);
         switch (componentType2) {
           case "postal_code": {
             value.operatorPostalCode = component.long_name;
-            console.log("operatorPostalCode", component.long_name);
+            //console.log("operatorPostalCode", component.long_name);
             break;
           }
           case "locality":
-            console.log("locality", component.long_name);
+            //console.log("locality", component.long_name);
             value.operatorLocality = component.long_name;
 
             break;
 
           case "administrative_area_level_1":
-            console.log("administrative_area_level_1", component.long_name);
+            // console.log("administrative_area_level_1", component.long_name);
             if (
               value.operatorLocality == null ||
               value.operatorLocality === ""
@@ -118,11 +242,11 @@ export const RoomProfileCard: React.FC<{
         }
       }
 
-        setIsConntryOpen2(true);
+      setIsConntryOpen2(true);
       let tm2 = setTimeout(() => {
         setIsConntryOpen2(false);
         clearTimeout(tm2);
-      }, 10); 
+      }, 10);
     }
   }, [addressObject2, value]);
 
@@ -202,9 +326,8 @@ export const RoomProfileCard: React.FC<{
       "geometry",
       //"name"
     ]);
-    return autoComplete.addListener(
-      "place_changed",
-      () => handlePlaceSelect(autoComplete, updateQuery)
+    return autoComplete.addListener("place_changed", () =>
+      handlePlaceSelect(autoComplete, updateQuery)
     );
   }
 
@@ -220,18 +343,28 @@ export const RoomProfileCard: React.FC<{
       //    { types: ["(cities)"], componentRestrictions: { country: "us" } }
     );
 
-
     autoComplete2.setFields([
       "formatted_address",
       "address_components",
       "geometry",
-      
     ]);
-    return autoComplete2.addListener(
-      "place_changed",
-      () => handlePlaceSelect2(autoComplete2, updateQuery2)
-      
+    return autoComplete2.addListener("place_changed", () =>
+      handlePlaceSelect2(autoComplete2, updateQuery2)
     );
+  }
+
+  function populateImageDescription(e: any, index: number) {
+    let newArr = [...roomImagesDesc]; // copying the old datas array
+    newArr[index] = e.target.value; // replace e.target.value with whatever you want to change it to
+
+    setRoomImagesDesc(newArr);
+
+    let NewStatus = [...roomImagesErrorURL];
+    NewStatus[index] = false;
+    setRoomImagesErrorURL(NewStatus);
+
+    // console.log(newArr);
+    // console.log(index);
   }
 
   return (
@@ -261,392 +394,729 @@ export const RoomProfileCard: React.FC<{
           <CardBody
             pad="medium"
             alignSelf="start"
-            background="#fafafa"
+            //background="#fafafa"
+            background="#fff"
             width="xxlarge"
           >
-            <Grid
-              // alignSelf="center"
-              //rows={[""]}
-              columns={ResponsiveColumn(winWidth)}
-              //gap="xxsmall"
-              responsive={true}
-            >
-              <Box>
-                <FormField
-                  style={{ padding: 10 }}
-                  label="Name"
-                  name="roomName"
-                  required
-                  validate={[
-                    { regexp: /^[a-z]/i },
-                    (roomName) => {
-                      if (roomName && roomName.length === 1)
-                        return "must be >1 character";
-                      return undefined;
-                    },
-                  ]}
-                />
-                <FormField style={{ padding: 10 }} label="Type" name="roomType">
-                  <Select
+            {isW3loaded ? (
+              <Grid
+                // alignSelf="center"
+                //rows={[""]}
+                columns={ResponsiveColumn(winWidth)}
+                //gap="xxsmall"
+                responsive={true}
+              >
+                <Box>
+                  <FormField
+                    style={{ padding: 10 }}
+                    label="Name"
+                    name="roomName"
+                    required
+                    validate={[
+                      { regexp: /^[a-z]/i },
+                      (roomName) => {
+                        if (roomName && roomName.length === 1)
+                          return "must be >1 character";
+                        return undefined;
+                      },
+                    ]}
+                  />
+                  <FormField
+                    style={{ padding: 10 }}
+                    label="Type"
                     name="roomType"
-                    id="roomType"
-                    placeholder="Select Room Type"
-                    required
-                    clear
-                    options={roomTypeOption}
-                    onClose={() => setRoomTypeOption(defaultRoomTypes)}
-                  />
-                </FormField>
-                <FormField style={{ padding: 10 }} label="Tier" name="roomTier">
-                  <Select
+                  >
+                    <Select
+                      name="roomType"
+                      id="roomType"
+                      placeholder="Select Room Type"
+                      required
+                      clear
+                      options={roomTypeOption}
+                      onClose={() => setRoomTypeOption(defaultRoomTypes)}
+                    />
+                  </FormField>
+                  <FormField
+                    style={{ padding: 10 }}
+                    label="Tier"
                     name="roomTier"
-                    id="roomTier"
-                    placeholder="Select Room Tier"
-                    required
-                    clear
-                    options={roomTierOption}
-                    onClose={() => setRoomTierOption(defaultRoomTier)}
-                  />
-                </FormField>
-
-                <FormField
-                  style={{ padding: 10 }}
-                  label="Description"
-                  name="description"
-                  id="description"
-                  htmlFor="text-area"
-                  component={TextArea}
-                  required
-                  validate={[
-                    { regexp: /^[a-z]/i },
-                    (description) => {
-                      if (description && description.length === 1)
-                        return "must be >1 character";
-                      return undefined;
-                    },
-                  ]}
-                />
-
-                <div
-                /* */  style={{
-                    display:
-                      value.description === "" || value.description === null
-                        ? "none"
-                        : "block",
-                  }}  /**/
-                >
-                  <br />
-                  <br />
-                  <br />
-                  <div style={{ padding: 10, paddingBottom: 0 }}>
-                    <Heading
-                      margin="none"
-                      level="3"
-                      style={{ paddingLeft: 10 }}
-                    >
-                      Address
-                    </Heading>
-                  </div>
-                  <FormField
-                    label="Street Address"
-                    style={{ padding: 10, marginLeft: 10, marginTop: 10 }}
-                    name="streetAddress"
                   >
-                    <TextInput
+                    <Select
+                      name="roomTier"
+                      id="roomTier"
+                      placeholder="Select Room Tier"
                       required
+                      clear
+                      options={roomTierOption}
+                      onClose={() => setRoomTierOption(defaultRoomTier)}
+                    />
+                  </FormField>
+
+                  <FormField
+                    style={{ padding: 10 }}
+                    label="Description"
+                    name="description"
+                    id="description"
+                    htmlFor="text-area"
+                    component={TextArea}
+                    required
+                    validate={[
+                      { regexp: /^[a-z]/i },
+                      (description) => {
+                        if (description && description.length === 1)
+                          return "must be >1 character";
+                        return undefined;
+                      },
+                    ]}
+                  />
+
+                  <div
+                    /* */ style={{
+                      display:
+                        value.description === "" || value.description === null
+                          ? "none"
+                          : "block",
+                    }} /**/
+                  >
+                    <br />
+                    <br />
+                    <br />
+                    <div style={{ padding: 10, paddingBottom: 0 }}>
+                      <Heading
+                        margin="none"
+                        level="3"
+                        style={{ paddingLeft: 10 }}
+                      >
+                        Address
+                      </Heading>
+                    </div>
+                    <FormField
+                      label="Street Address"
+                      style={{ padding: 10, marginLeft: 10, marginTop: 10 }}
                       name="streetAddress"
-                      id="streetAddress"
-                      className="input"
-                      ref={autoCompleteRef}
-                      onChange={(event) => setQuery(event.target.value)}
-                      placeholder="Enter Address, City, location or postal code to continnue"
-                      value={query}
-                    />
-                  </FormField>
-
-                  <FormField
-                    style={{ padding: 10, marginLeft: 10 }}
-                    label="Locality"
-                    name="addressLocality"
-                  >
-                    <TextInput
-                      required
-                      id="addressLocality"
-                      name="addressLocality"
-                      //value={addressLocality}
-                    />
-                  </FormField>
-
-                  <FormField
-                    style={{ padding: 10, marginLeft: 10 }}
-                    label="Postal Code"
-                    name="addressPostalCode"
-                    id="addressPostalCode"
-                    //value={addressPostalCode}
-                    required
-                  />
-
-                  <FormField
-                    style={{ padding: 10, marginLeft: 10, marginTop: 0 }}
-                    label="Country"
-                    name="addressCountry"
-                  >
-                    <Select
-                      name="addressCountry"
-                      id="addressCountry"
-                      placeholder="Country"
-                      required
-                      clear
-                      //open={isConntryOpen}
-                      // value={addressCountryValue}
-                      options={addressCountry}
-                      onSearch={(text) => {
-                        const escapedText = text.replace(
-                          /[-\\^$*+?.()|[\]{}]/g,
-                          "\\$&"
-                        );
-
-                        const exp = new RegExp(escapedText, "i");
-                        setAddressCountry(
-                          defaultCountries.filter((o) => exp.test(o))
-                        );
-                      }}
-                      onClose={() => setAddressCountry(defaultCountries)}
-                    />
-                  </FormField>
-
-                  <FormField
-                    style={{ padding: 10, marginLeft: 10 }}
-                    label="Subdivision"
-                    name="addressSubdivision"
-                    required
-                  />
-
-                  <FormField
-                    style={{ padding: 10, marginLeft: 10 }}
-                    label="Premise"
-                    name="addressPremise"
-                    required
-                  />
-
-                  <FormField
-                    style={{ padding: 10, marginLeft: 10 }}
-                    label="Geometry"
-                    name="addressGeometry"
-                    id="addressGeometry"
-                    //value={addressGeometry}
-                    required
-                  />
-                </div>
-
-                <div
-                /* */ style={{
-                    display:
-                      value.addressGeometry === "" ||
-                      value.addressGeometry === null
-                       ? "none"
-                        : "block",
-                  }}  /* */
-                >
-                  <br />
-                  <br />
-                  <br />
-                  <div style={{ padding: 10, paddingBottom: 0 }}>
-                    <Heading
-                      margin="none"
-                      level="3"
-                      style={{ paddingLeft: 10 }}
                     >
-                      Operator Address
-                    </Heading>
+                      <TextInput
+                        required
+                        name="streetAddress"
+                        id="streetAddress"
+                        className="input"
+                        ref={autoCompleteRef}
+                        onChange={(event) => setQuery(event.target.value)}
+                        placeholder="Enter Address, City, location or postal code to continnue"
+                        value={query}
+                      />
+                    </FormField>
+
+                    <FormField
+                      style={{ padding: 10, marginLeft: 10 }}
+                      label="Locality"
+                      name="addressLocality"
+                    >
+                      <TextInput
+                        required
+                        id="addressLocality"
+                        name="addressLocality"
+                        //value={addressLocality}
+                      />
+                    </FormField>
+
+                    <FormField
+                      style={{ padding: 10, marginLeft: 10 }}
+                      label="Postal Code"
+                      name="addressPostalCode"
+                      id="addressPostalCode"
+                      //value={addressPostalCode}
+                      required
+                    />
+
+                    <FormField
+                      style={{ padding: 10, marginLeft: 10, marginTop: 0 }}
+                      label="Country"
+                      name="addressCountry"
+                    >
+                      <Select
+                        name="addressCountry"
+                        id="addressCountry"
+                        placeholder="Country"
+                        required
+                        clear
+                        //open={isConntryOpen}
+                        // value={addressCountryValue}
+                        options={addressCountry}
+                        onSearch={(text) => {
+                          const escapedText = text.replace(
+                            /[-\\^$*+?.()|[\]{}]/g,
+                            "\\$&"
+                          );
+
+                          const exp = new RegExp(escapedText, "i");
+                          setAddressCountry(
+                            defaultCountries.filter((o) => exp.test(o))
+                          );
+                        }}
+                        onClose={() => setAddressCountry(defaultCountries)}
+                      />
+                    </FormField>
+
+                    <FormField
+                      style={{ padding: 10, marginLeft: 10 }}
+                      label="Subdivision"
+                      name="addressSubdivision"
+                      required
+                    />
+
+                    <FormField
+                      style={{ padding: 10, marginLeft: 10 }}
+                      label="Premise"
+                      name="addressPremise"
+                      required
+                    />
+
+                    <FormField
+                      style={{ padding: 10, marginLeft: 10 }}
+                      label="Geometry"
+                      name="addressGeometry"
+                      id="addressGeometry"
+                      //value={addressGeometry}
+                      required
+                    />
                   </div>
-                  <FormField
-                    label="Street Address"
-                    style={{ padding: 10, marginLeft: 10, marginTop: 10 }}
-                    name="operatorStreetAddress"
+
+                  <div
+                    /* */ style={{
+                      display:
+                        value.addressGeometry === "" ||
+                        value.addressGeometry === null
+                          ? "none"
+                          : "block",
+                    }} /* */
                   >
-                    <TextInput
-                      required
+                    <br />
+                    <br />
+                    <br />
+                    <div style={{ padding: 10, paddingBottom: 0 }}>
+                      <Heading
+                        margin="none"
+                        level="3"
+                        style={{ paddingLeft: 10 }}
+                      >
+                        Operator Address
+                      </Heading>
+                    </div>
+                    <FormField
+                      label="Street Address"
+                      style={{ padding: 10, marginLeft: 10, marginTop: 10 }}
                       name="operatorStreetAddress"
-                      id="operatorStreetAddress"
-                      className="input"
-                      ref={autoCompleteRef2}
-                      onChange={(event) => setQuery2(event.target.value)}
-                      placeholder="Enter Operator Address, City, location or postal code to continnue"
-                      value={query2}
-                    />
-                  </FormField>
-                  <FormField
-                    style={{ padding: 10, marginLeft: 10 }}
-                    label="Locality"
-                    name="operatorLocality"
-                  >
-                    <TextInput
-                      required
-                      id="operatorLocality"
+                    >
+                      <TextInput
+                        required
+                        name="operatorStreetAddress"
+                        id="operatorStreetAddress"
+                        className="input"
+                        ref={autoCompleteRef2}
+                        onChange={(event) => setQuery2(event.target.value)}
+                        placeholder="Enter Operator Address, City, location or postal code to continnue"
+                        value={query2}
+                      />
+                    </FormField>
+                    <FormField
+                      style={{ padding: 10, marginLeft: 10 }}
+                      label="Locality"
                       name="operatorLocality"
-                      //value={operatorLocality}
-                    />
-                  </FormField>
-                  <FormField
-                    style={{ padding: 10, marginLeft: 10 }}
-                    label="Postal Code"
-                    name="operatorPostalCode"
-                    id="operatorPostalCode"
-                    // value={operatorPostalCode}
-                    required
-                  />
-                  <FormField
-                    style={{ padding: 10, marginLeft: 10, marginTop: 0 }}
-                    label="Country"
-                    name="operatorCountry"
-                  >
-                    <Select
-                      name="operatorCountry"
-                      id="operatorCountry"
-                      placeholder="Country"
+                    >
+                      <TextInput
+                        required
+                        id="operatorLocality"
+                        name="operatorLocality"
+                        //value={operatorLocality}
+                      />
+                    </FormField>
+                    <FormField
+                      style={{ padding: 10, marginLeft: 10 }}
+                      label="Postal Code"
+                      name="operatorPostalCode"
+                      id="operatorPostalCode"
+                      // value={operatorPostalCode}
                       required
-                      clear
-                      //open={isConntryOpen2}
-                      // value={operatorCountryValue}
-                      options={operatorCountry}
-                      onSearch={(text) => {
-                        const escapedText = text.replace(
-                          /[-\\^$*+?.()|[\]{}]/g,
-                          "\\$&"
-                        );
-
-                        const exp = new RegExp(escapedText, "i");
-                        setOperatorCountry(
-                          defaultCountries.filter((o) => exp.test(o))
-                        );
-                      }}
-                      onClose={() => setOperatorCountry(defaultCountries)}
                     />
-                  </FormField>
-                  <FormField
-                    style={{ padding: 10, marginLeft: 10 }}
-                    label="Subdivision"
-                    name="operatorSubdivision"
-                    required
-                  />
-                  <FormField
-                    style={{ padding: 10, marginLeft: 10 }}
-                    label="Premise"
-                    name="operatorPremise"
-                    required
-                  />
+                    <FormField
+                      style={{ padding: 10, marginLeft: 10, marginTop: 0 }}
+                      label="Country"
+                      name="operatorCountry"
+                    >
+                      <Select
+                        name="operatorCountry"
+                        id="operatorCountry"
+                        placeholder="Country"
+                        required
+                        clear
+                        //open={isConntryOpen2}
+                        // value={operatorCountryValue}
+                        options={operatorCountry}
+                        onSearch={(text) => {
+                          const escapedText = text.replace(
+                            /[-\\^$*+?.()|[\]{}]/g,
+                            "\\$&"
+                          );
 
-                  <FormField
-                    style={{ padding: 10, marginLeft: 10 }}
-                    label="Geometry"
-                    name="operatorGeometry"
-                    id="operatorGeometry"
-                    //value={operatorGeometry}
-                    required
-                  />
-                </div>
-              </Box>
-              <Box alignSelf="start" align="center">
-                <Box
-                  direction="column"
-                  align="center"
-                  gap={"small"}
-                  pad={{ top: "medium" }}
-                >
-                  <Text>Room Logo</Text>
-                  <Image
-                    src="/interior-design.png"
-                    fit="cover"
-                    width="110rem"
-                    style={{
-                      background: "rgba(255,255,255, 0.5)",
-                      transition: "all .3s linear",
-                      padding: 40,
-                      border: "1px solid #ccc",
-                    }}
-                    height="110rem"
-                    //onClick={() => navigate("/")}
-                  />
-
-                  <FormField name="roomLogo" htmlFor="fileInput" required>
-                    <FileInput
-                      accept="image/*"
-                      name="roomLogo"
-                      id="roomLogo"
-                      maxSize={50000}
-                      confirmRemove={({ onConfirm, onCancel }) => (
-                        <Layer onClickOutside={onCancel} onEsc={onCancel}>
-                          <Box
-                            style={{ padding: 30 }}
-                            alignSelf="center"
-                            align="center"
-                          >
-                            <HelpOption
-                              color="brand"
-                              size="large"
-                              style={{ paddingBottom: 30 }}
-                              //alignSelf="center"
-                            />
-                            Are you sure you want to delete this file?
-                            <Box
-                              direction="row"
-                              gap="large"
-                              style={{ padding: 10, paddingTop: 30 }}
-                            >
-                              <Button
-                                label="Cancel"
-                                primary
-                                onClick={onCancel}
-                              />
-                              <Button label="Delete file" onClick={onConfirm} />
-                            </Box>
-                          </Box>
-                        </Layer>
-                      )}
-                      messages={{
-                        browse: "browse",
-                        dropPrompt: "Drop file here or",
-                        dropPromptMultiple: "Drop files here or",
-                        files: "files",
-                        remove: "remove",
-                        removeAll: "remove all",
-                        maxFile: "Attach a maximum of {max} files only.",
-                      }}
-                      onChange={
-                        (/* event */) => {
-                          // const fileList = event.target.files;
-                          // if (typeof fileList == "object" && fileList != null) {
-                          //   for (let i = 0; i < fileList.length; i += 1) {
-                          //     const file = fileList[i];
-                          //   }
-                          // }
-                        }
-                      }
+                          const exp = new RegExp(escapedText, "i");
+                          setOperatorCountry(
+                            defaultCountries.filter((o) => exp.test(o))
+                          );
+                        }}
+                        onClose={() => setOperatorCountry(defaultCountries)}
+                      />
+                    </FormField>
+                    <FormField
+                      style={{ padding: 10, marginLeft: 10 }}
+                      label="Subdivision"
+                      name="operatorSubdivision"
+                      required
                     />
-                  </FormField>
+                    <FormField
+                      style={{ padding: 10, marginLeft: 10 }}
+                      label="Premise"
+                      name="operatorPremise"
+                      required
+                    />
+
+                    <FormField
+                      style={{ padding: 10, marginLeft: 10 }}
+                      label="Geometry"
+                      name="operatorGeometry"
+                      id="operatorGeometry"
+                      //value={operatorGeometry}
+                      required
+                    />
+                  </div>
                 </Box>
-              </Box>
-            </Grid>
+                <Box alignSelf="start" align="center">
+                  <Box
+                    direction="column"
+                    align="center"
+                    gap={"small"}
+                    pad={{ top: "medium" }}
+                  >
+                    <Text>Room Logo</Text>
+
+                    <Stack anchor="top-right">
+                      <Image
+                        src={
+                          roomLogoURL === ""
+                            ? "/interior-design.png"
+                            : roomLogoURL
+                        }
+                        fit="cover"
+                        width="110rem"
+                        style={{
+                          background: "rgba(255,255,255, 0.5)",
+                          transition: "all .3s linear",
+                          padding: 40,
+                          border: "1px solid #ccc",
+                        }}
+                        height="110rem"
+                        //onClick={() => navigate("/")}
+                      />
+                      {roomLogoURL === "" ? null : (
+                        <Box
+                          background="brand"
+                          pad={{ horizontal: "small", vertical: "small" }}
+                          style={{ cursor: "pointer" }}
+                          round
+                          onClick={() => {
+                            setRoomLogoURL("");
+                          }}
+                        >
+                          <Close color="white" size="small" />
+                        </Box>
+                      )}
+                    </Stack>
+                    {isUploadingIpfs ? (
+                      <Box direction="row" style={{ marginTop: 10 }}>
+                        <Box>Uploading Room Logo..&nbsp;</Box>
+                        <Spinner />
+                      </Box>
+                    ) : roomLogoURL === "" ? (
+                      <>
+                        <FormField name="roomLogo" htmlFor="fileInput" required>
+                          <FileInput
+                            accept="image/*"
+                            name="roomLogo"
+                            id="roomLogo"
+                            maxSize={50000}
+                            confirmRemove={({ onConfirm, onCancel }) => (
+                              <Layer onClickOutside={onCancel} onEsc={onCancel}>
+                                <Box
+                                  style={{ padding: 30 }}
+                                  alignSelf="center"
+                                  align="center"
+                                >
+                                  <HelpOption
+                                    color="brand"
+                                    size="large"
+                                    style={{ paddingBottom: 30 }}
+                                    //alignSelf="center"
+                                  />
+                                  Are you sure you want to delete this file?
+                                  <Box
+                                    direction="row"
+                                    gap="large"
+                                    style={{ padding: 10, paddingTop: 30 }}
+                                  >
+                                    <Button
+                                      label="Cancel"
+                                      primary
+                                      onClick={onCancel}
+                                    />
+                                    <Button
+                                      label="Delete file"
+                                      onClick={onConfirm}
+                                    />
+                                  </Box>
+                                </Box>
+                              </Layer>
+                            )}
+                            messages={{
+                              browse: "browse",
+                              dropPrompt: "Drop file here or",
+                              dropPromptMultiple: "Drop files here or",
+                              files: "files",
+                              remove: "remove",
+                              removeAll: "remove all",
+                              maxFile: "Attach a maximum of {max} files only.",
+                            }}
+                            onChange={async (event) => {
+                              //console.log(event.target.files);
+
+                              setIsUploadingIpfsError("");
+
+                              if (event.target.files) {
+                                setIsUploadingIpfs(true);
+                                await handleDepoyFile(
+                                  event.target.files[0],
+                                  true,
+                                  "logo"
+                                );
+                              }
+                            }}
+                          />
+                        </FormField>
+
+                        {isUploadingIpfsError === "" ? null : (
+                          <Box
+                            background="status-error"
+                            pad={{ horizontal: "xsmall" }}
+                            round
+                          >
+                            <Text style={{ padding: 3 }}>
+                              Error uploading Room Logo <br />
+                            </Text>
+                          </Box>
+                        )}
+                      </>
+                    ) : null}
+                  </Box>
+
+                  <Box
+                    direction="column"
+                    align="center"
+                    gap={"small"}
+                    style={{ marginTop: 0 }}
+                    pad={{ top: "medium" }}
+                  >
+                    {roomLogoURL === "" ? null : (
+                      <Stack anchor="top-right" style={{ marginTop: 80 }}>
+                        <Button
+                          onClick={() => setShowRImage(true)}
+                          //primary
+                          //color="status-ok"
+                          label="Add Room Images"
+                          style={{
+                            //width: 150,
+                            height: 40,
+
+                            //color: "white",
+                            fontSize: 12,
+                            marginTop: 6,
+                          }}
+                        />
+
+                        <Box
+                          background="brand"
+                          pad={{ horizontal: "xsmall" }}
+                          round
+                        >
+                          <Text>{Object.keys(roomImages).length}</Text>
+                        </Box>
+                      </Stack>
+                    )}
+
+                    {showRImage ? (
+                      <Layer
+                        style={{ overflow: "auto" }}
+                        onEsc={() => setShowRImage(false)}
+                        onClickOutside={() => setShowRImage(false)}
+                      >
+                        <Box
+                          background="brand"
+                          pad={{ horizontal: "small", vertical: "small" }}
+                          style={{
+                            cursor: "pointer",
+                            width: 30,
+                            position: "absolute",
+                            right: "0",
+                          }}
+                          round
+                          onClick={() => setShowRImage(false)}
+                        >
+                          <Close color="white" size="small" />
+                        </Box>
+
+                        <Card width="large" background="light-1">
+                          <CardHeader>
+                            <Text
+                              style={{
+                                fontSize: 15,
+                                fontWeight: "600",
+                                padding: 20,
+                                paddingBottom: 10,
+                              }}
+                            >
+                              SELECT ROOM IMAGE
+                            </Text>
+                          </CardHeader>
+                          <CardBody style={{ padding: 20 }}>
+                            {}
+                            <form
+                              onSubmit={async (e: any) => {
+                                e.preventDefault();
+
+                                if (
+                                  Object.keys(roomImagesDesc).length ===
+                                  Object.keys(roomImages).length
+                                ) {
+                                  if (roomImages) {
+                                    // setIsUploadingIpfs(true);
+                                    //await handleDepoyFile(roomImages[0], true);
+
+                                    for (
+                                      let i = 0;
+                                      i < Object.keys(roomImages).length;
+                                      i += 1
+                                    ) {
+                                      const file = roomImages[i];
+
+                                      setCurrentlyUploading(i);
+                                      console.log(
+                                        "uploading image " +
+                                          i +
+                                          " :: =>" +
+                                          file.name
+                                      );
+
+                                     let data =  await handleDepoyFile(
+                                        roomImages[i],
+                                        true,
+                                        i
+                                     );
+                                      
+                                      if (isObject(data))
+                                      {
+                                        
+                                        }
+
+                                      console.log(file.name);
+                                      setSuccessfullyUploading(i);
+                                      //console.log(i);
+                                    }
+                                  }
+                                }
+                              }}
+                            >
+                              <FormField name="roomImage" htmlFor="fileInput">
+                                <FileInput
+                                  accept="image/*"
+                                  name="roomImage"
+                                  id="roomImage"
+                                  multiple={{
+                                    max: 4,
+                                  }}
+                                  //maxSize={50000}
+
+                                  messages={{
+                                    browse: "browse",
+                                    dropPrompt: "Drop file here or",
+                                    dropPromptMultiple: "Drop files here or",
+                                    files: "files",
+                                    remove: "remove",
+                                    removeAll: "remove all",
+                                    maxFile:
+                                      "Attach a maximum of {max} files only.",
+                                  }}
+                                  onChange={handleImageChange}
+                                />
+                              </FormField>
+                              {Object.keys(roomImages).length > 0 ? (
+                                <>
+                                  <div
+                                    style={{
+                                      fontSize: 14,
+                                      fontWeight: "600",
+                                      marginTop: 40,
+                                    }}
+                                  >
+                                    ROOM IMAGE DESCRIPTION
+                                  </div>
+                                  <ul
+                                    style={{
+                                      listStyleType: "none",
+                                      marginTop: "-20",
+                                    }}
+                                  >
+                                    {JSON.stringify(isW3loaded)}
+                                    <br />
+                                    {roomImages.map((file, index) => (
+                                      <li
+                                        key={index}
+                                        style={{ paddingTop: 25 }}
+                                      >
+                                        <Box direction="row">
+                                          <img
+                                            style={{ height: 40, width: 40 }}
+                                            alt=""
+                                            src={URL.createObjectURL(file)}
+                                          ></img>
+                                          {/* <div>{file.name}</div> */}
+                                          <textarea
+                                            onChange={(e) =>
+                                              populateImageDescription(e, index)
+                                            }
+                                            required
+                                            className={`textarea_${index}`}
+                                            placeholder={`add a description for ${file.name}`}
+                                            rows={2}
+                                            cols={40}
+                                            style={{
+                                              padding: 15,
+                                              border: "1px solid #ccc",
+                                              marginLeft: 10,
+                                            }}
+                                          ></textarea>{" "}
+                                          {index === currentlyUploading ? (
+                                            successfullyUploading ===
+                                            index ? null : (
+                                              <div
+                                                style={{ padding: 10 }}
+                                                className={`success_${index}`}
+                                              >
+                                                <Spinner />
+                                              </div>
+                                            )
+                                          ) : null}
+                                          {index <= successfullyUploading ? (
+                                            <div
+                                              style={{ padding: 10 }}
+                                              className={`success_${index}`}
+                                            >
+                                              {roomImagesErrorURL[index] ? (
+                                                <StatusCritical
+                                                  color="red"
+                                                  size="20"
+                                                />
+                                              ) : (
+                                                <StatusGood
+                                                  color="green"
+                                                  size="20"
+                                                />
+                                              )}
+                                            </div>
+                                          ) : null}
+                                        </Box>
+                                      </li>
+                                    ))}
+                                  </ul>
+
+                                  <Button
+                                    fill={true}
+                                    type="submit"
+                                    label="Upload"
+                                    disabled={
+                                      successfullyUploading + 1 ===
+                                      Object.keys(roomImages).length
+                                        ? true
+                                        : false
+                                    }
+                                    primary
+                                    style={{
+                                      margin: 15,
+                                      height: 50,
+                                      width: "94%",
+                                    }}
+                                    onClick={async () => {}}
+                                  />
+                                </>
+                              ) : null}
+                            </form>
+                          </CardBody>
+                        </Card>
+                      </Layer>
+                    ) : null}
+                  </Box>
+                </Box>
+              </Grid>
+            ) : (
+              <ContentLoader
+                speed={2}
+                width={"900"}
+                style={{ paddingLeft: 50 }}
+                height={550}
+                title="Connecting to Web3 Sever"
+                viewBox="0 0 400 160"
+                backgroundColor="#fff"
+                foregroundColor="#ecebeb"
+              >
+                <rect x="80%" y="0" rx="3" ry="3" width="185" height="80" />
+                <rect x="80%" y="85" rx="3" ry="3" width="80%" height="6" />
+
+                <rect x="35" y="3" rx="3" ry="3" width="88" height="6" />
+                <rect x="35" y="20" rx="3" ry="3" width="52" height="6" />
+
+                <rect x="0" y="56" rx="3" ry="3" width="70%" height="6" />
+                <rect x="0" y="72" rx="3" ry="3" width="70%" height="6" />
+                <rect x="0" y="88" rx="3" ry="3" width="178" height="6" />
+                <rect x="0" y="105" rx="3" ry="3" width="70%" height="8" />
+
+                <rect x="20%" y="125" rx="3" ry="3" width="70%" height="6" />
+                <rect x="0" y="140" rx="3" ry="3" width="50%" height="6" />
+                <rect x="0" y="155" rx="3" ry="3" width="30%" height="6" />
+
+                <rect x="0" y="185" rx="3" ry="3" width="70%" height="6" />
+
+                <circle cx="13" cy="13" r="13" />
+              </ContentLoader>
+            )}
+           
           </CardBody>
-          <CardFooter pad={{ horizontal: "small" }} background="light-2">
-            <Box
-              direction="row"
-              justify="between"
-              width="xxlarge"
-              margin={"medium"}
-            >
-              <Button size="large" type="reset" label="Reset" />
-              <Button
-                type="submit"
-                //badge={true}
-                size="large"
-                label="Update"
-                disabled={!valid}
-                primary
-              />
-            </Box>
-          </CardFooter>
+          {isW3loaded ? (
+            <CardFooter pad={{ horizontal: "small" }} background="light-2">
+              <Box
+                direction="row"
+                justify="between"
+                width="xxlarge"
+                margin={"medium"}
+              >
+                <Button size="large" type="reset" label="Reset" />
+                <Button
+                  type="submit"
+                  //badge={true}
+                  size="large"
+                  label="Save"
+                  disabled={!valid}
+                  primary
+                />
+              </Box>
+            </CardFooter>
+          ) : null}
         </Card>
       </Form>
     </>
