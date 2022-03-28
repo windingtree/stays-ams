@@ -44,8 +44,8 @@
       ]
     },
     "/home/kostysh/dev/stays-remote/packages/smart-contracts/contracts/Stays.sol": {
-      "lastModificationDate": 1648064424871,
-      "contentHash": "615689b5e4a4cbd06f36f77c3afe7940",
+      "lastModificationDate": 1648493617505,
+      "contentHash": "68fa08ad06cfe2ca07b37fe6cccd3ada",
       "sourceName": "contracts/Stays.sol",
       "solcConfig": {
         "version": "0.8.7",
@@ -84,7 +84,8 @@
         "@openzeppelin/contracts/utils/Counters.sol",
         "./IStays.sol",
         "./StayEscrow.sol",
-        "./libraries/StayTokenMeta.sol"
+        "./libraries/StayTokenMeta.sol",
+        "hardhat/console.sol"
       ],
       "versionPragmas": [
         "^0.8.0"

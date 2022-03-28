@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import { HardhatUserConfig } from 'hardhat/types';
 import '@nomiclabs/hardhat-ethers';
+import '@nomiclabs/hardhat-waffle';
 // import '@nomiclabs/hardhat-solhint';
 import '@typechain/hardhat';
 import 'hardhat-deploy';

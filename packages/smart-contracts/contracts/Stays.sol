@@ -9,7 +9,7 @@ import "./IStays.sol";
 import "./StayEscrow.sol";
 import "./libraries/StayTokenMeta.sol";
 
-// import "hardhat/console.sol";
+import "hardhat/console.sol";
 
 
 contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable {
@@ -201,6 +201,18 @@ contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable {
     pricePerNightWei = space.pricePerNightWei;
     active = space.active;
     dataURI = space.dataURI;
+  }
+
+  // Returns a space details by Stay token Id
+  function getSpaceByTokenId(uint256 _tokenId) public view returns (
+    bool exists,
+    bytes32 lodgingFacilityId,
+    uint256 capacity,
+    uint256 pricePerNightWei,
+    bool active,
+    string memory dataURI
+  ) {
+    return getSpaceById(_stays[_tokenId].spaceId);
   }
 
   /*
@@ -515,6 +527,7 @@ contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable {
   // Stay checkIn; can be called by a stay token owner
   function checkIn(uint256 _tokenId) public override onlyTokenOwner(_tokenId) {
     Stay storage _stay = _stays[_tokenId];
+    require(_stay.spaceId != bytes32(0), "Stay not found");
     require(!_stay.checkIn, "Already checked in");
     bytes32 _spaceId = _stay.spaceId;
     uint256 firstNight = spaces[_spaceId].pricePerNightWei;
@@ -535,6 +548,7 @@ contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable {
 
   function checkOut(uint256 _tokenId) public virtual override {
     Stay storage _stay = _stays[_tokenId];
+    require(_stay.spaceId != bytes32(0), "Stay not found");
     require(!_stay.checkOut, "Already checked out");
     bytes32 _spaceId = _stay.spaceId;
     address spaceOwner = lodgingFacilities[spaces[_spaceId].lodgingFacilityId].owner;
@@ -544,7 +558,7 @@ contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable {
     );
     // CheckOut condition by time
     require(
-      dayZero + (_stay.startDay + _stay.numberOfDays) * 86400 >= block.timestamp,
+      block.timestamp >= dayZero + (_stay.startDay + _stay.numberOfDays) * 86400,
       "Forbidden unless checkout date"
     );
     // Complete withdraw (rest of deposit)

@@ -44,6 +44,7 @@ export interface StaysInterface extends utils.Interface {
     "getLodgingFacilityById(bytes32)": FunctionFragment;
     "getLodgingFacilityIdsByOwner(address)": FunctionFragment;
     "getSpaceById(bytes32)": FunctionFragment;
+    "getSpaceByTokenId(uint256)": FunctionFragment;
     "getSpaceIdsByFacilityId(bytes32)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "lodgingFacilities(bytes32)": FunctionFragment;
@@ -155,6 +156,10 @@ export interface StaysInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "getSpaceById",
     values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getSpaceByTokenId",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getSpaceIdsByFacilityId",
@@ -310,6 +315,10 @@ export interface StaysInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getSpaceById",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getSpaceByTokenId",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -708,6 +717,20 @@ export interface Stays extends BaseContract {
       }
     >;
 
+    getSpaceByTokenId(
+      _tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [boolean, string, BigNumber, BigNumber, boolean, string] & {
+        exists: boolean;
+        lodgingFacilityId: string;
+        capacity: BigNumber;
+        pricePerNightWei: BigNumber;
+        active: boolean;
+        dataURI: string;
+      }
+    >;
+
     getSpaceIdsByFacilityId(
       _lodgingFacilityId: BytesLike,
       overrides?: CallOverrides
@@ -986,6 +1009,20 @@ export interface Stays extends BaseContract {
     }
   >;
 
+  getSpaceByTokenId(
+    _tokenId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<
+    [boolean, string, BigNumber, BigNumber, boolean, string] & {
+      exists: boolean;
+      lodgingFacilityId: string;
+      capacity: BigNumber;
+      pricePerNightWei: BigNumber;
+      active: boolean;
+      dataURI: string;
+    }
+  >;
+
   getSpaceIdsByFacilityId(
     _lodgingFacilityId: BytesLike,
     overrides?: CallOverrides
@@ -1237,6 +1274,20 @@ export interface Stays extends BaseContract {
 
     getSpaceById(
       _spaceId: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<
+      [boolean, string, BigNumber, BigNumber, boolean, string] & {
+        exists: boolean;
+        lodgingFacilityId: string;
+        capacity: BigNumber;
+        pricePerNightWei: BigNumber;
+        active: boolean;
+        dataURI: string;
+      }
+    >;
+
+    getSpaceByTokenId(
+      _tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
       [boolean, string, BigNumber, BigNumber, boolean, string] & {
@@ -1661,6 +1712,11 @@ export interface Stays extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getSpaceByTokenId(
+      _tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getSpaceIdsByFacilityId(
       _lodgingFacilityId: BytesLike,
       overrides?: CallOverrides
@@ -1908,6 +1964,11 @@ export interface Stays extends BaseContract {
 
     getSpaceById(
       _spaceId: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getSpaceByTokenId(
+      _tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
