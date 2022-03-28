@@ -18,7 +18,7 @@ export const Home = () => {
 
   return (
     <PageWrapper>
-      <MessageBox type='info' show={isIpfsNodeConnecting || isBootstrapLoading}>
+      <MessageBox type='info' show={isIpfsNodeConnecting || isBootstrapLoading || !isGetDateReady}>
         <Box direction='row'>
           <Box>
             The Dapp is synchronizing with the smart contract. Please wait..&nbsp;
@@ -27,7 +27,7 @@ export const Home = () => {
         </Box>
       </MessageBox>
 
-      {!!bootstrapped && isGetDateReady &&
+      {(!!bootstrapped && isGetDateReady) &&
         <SearchForm getDate={getDate} />
       }
     </PageWrapper>
