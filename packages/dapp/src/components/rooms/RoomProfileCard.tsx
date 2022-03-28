@@ -26,6 +26,14 @@ import ContentLoader from "react-content-loader";
 import { useWeb3StorageApi } from "../../hooks/useWeb3StorageApi";
 
 import { useAppState } from "../../store";
+import { useContract } from "./../../hooks/useContract";
+
+import {
+  validateLodgingFacilityData,
+  //validateSpaceData,
+} from "stays-data-models/dist/src/validators";
+import type { LodgingFacilityRaw } from "stays-data-models";
+
 
 import { HelpOption, Close, StatusGood, StatusCritical } from "grommet-icons";
 import { useWindowsDimension } from "../../hooks/useWindowsDimension";
@@ -37,18 +45,9 @@ import {
   defaultFormValue,
   ResponsiveColumn,
   //LodgingFacilityRaw,
-  //LodgingFacilityRawMain,
+  LodgingFacilityRaw2,
   //imageSchema,
 } from "../../utils/roomProfile";
-
-
-import type {
-  //SpaceRaw, // Original space data type
-  LodgingFacilityRaw, // Original lodging facility data type
-  //Space, // Space storage record typescript type
-  //LodgingFacility, // Lodging facility record typescript type
-} from "stays-data-models";
-import { isObject } from "grommet/utils";
 
 export const RoomProfileCard: React.FC<{
   imageUrl?: string;
@@ -64,8 +63,11 @@ export const RoomProfileCard: React.FC<{
   const [query, setQuery] = useState("");
   const [query2, setQuery2] = useState("");
 
-  const { ipfsNode } = useAppState();
+  //const { ipfsNode } = useAppState();
+  const { provider, ipfsNode } = useAppState();
   const web3Storage = useWeb3StorageApi(ipfsNode);
+
+  const [contract] = useContract(provider, ipfsNode);
 
   useEffect(() => {
     handleScriptLoad2(autoComplete2, setQuery2, autoCompleteRef2);
@@ -112,16 +114,15 @@ export const RoomProfileCard: React.FC<{
     }
   };
 
-  
-    //console.log("LodgingFacilityRawMain", LodgingFacilityRawMain);
-
+  //console.log("LodgingFacilityRawMain", LodgingFacilityRawMain);
 
   useEffect(() => {
-    console.log("roomImagesURL", roomImagesURL);
-    //console.log("LodgingFacilityRawMain", LodgingFacilityRawMain);
-    // console.log("roomLogoURL", roomLogoURL);
-    console.log("roomImagesDesc", roomImagesDesc);
-  }, [roomImagesURL /* roomLogoURL */ /* roomImagesDesc */, ,]);
+    //setRoomImages([]);
+    //setSuccessfullyUploading(-1);
+    //setRoomImagesDesc([])
+    //alert('sdsd')
+    //console.log(roomImagesDesc[1])
+  }, []);
 
   useEffect(() => {
     if (web3Storage !== undefined) {
@@ -141,40 +142,31 @@ export const RoomProfileCard: React.FC<{
     [web3Storage]
   );
 
-  const handleDepoyFile = useCallback(
+
+  const handleDepoyFile: any = useCallback(
     async (file: File, isImage = false, type: any) => {
       try {
-        //_debugger
-        // Deployment of the file
         const cid = await deployToIpfs(file);
-        //console.log("cid", cid);
-        // Creation of URI
+
         const uri = isImage
           ? `https://${cid.cid}.ipfs.dweb.link`
           : `ipfs://${cid.cid}`;
-        // Do something with URI
-        //console.log(JSON.stringify(uri));
 
         if (type === "logo") {
-          console.log("URI", uri);
+          //console.log("URI", uri);
           setRoomLogoURL(uri);
           setIsUploadingIpfs(false);
-          return uri
+          return uri;
         } else {
           let newArr = [...roomImagesURL]; // copying the old datas array
           newArr[type] = uri; // replace e.target.value with whatever you want to change it to
 
-          //console.log(type);
-          //console.log(uri);
           setRoomImagesURL(newArr);
 
-          
-          
-
-          return  { description: roomImagesDesc[type], uri: uri }
-        
-
-          
+          //let desc = roomImagesDesc[type];
+          //console.log(type + " - " + desc);
+          //console.log(roomImagesDesc);
+          return uri;
         }
       } catch (err) {
         if (type === "logo") {
@@ -186,10 +178,6 @@ export const RoomProfileCard: React.FC<{
           NewStatus[type] = true;
           setRoomImagesErrorURL(NewStatus);
           roomImagesURL.splice(type, 1);
-
-         // const elm = document.querySelector<HTMLElement>(`.textarea_${type}`)!;
-          //elm.style.backgroundColor = "#dad6d6";
-          //elm.readOnly = true;
         }
 
         console.log(err);
@@ -197,6 +185,7 @@ export const RoomProfileCard: React.FC<{
         // handle errors
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [deployToIpfs]
   );
 
@@ -217,11 +206,14 @@ export const RoomProfileCard: React.FC<{
         switch (componentType2) {
           case "postal_code": {
             value.operatorPostalCode = component.long_name;
+            LodgingFacilityRaw2.operator.address.postalCode =
+              component.long_name;
             //console.log("operatorPostalCode", component.long_name);
             break;
           }
           case "locality":
             //console.log("locality", component.long_name);
+            LodgingFacilityRaw2.operator.address.locality = component.long_name;
             value.operatorLocality = component.long_name;
 
             break;
@@ -233,11 +225,14 @@ export const RoomProfileCard: React.FC<{
               value.operatorLocality === ""
             ) {
               value.operatorLocality = component.long_name;
+              LodgingFacilityRaw2.operator.address.locality =
+                component.long_name;
             }
 
             break;
           case "country":
             value.operatorCountry = component.long_name;
+            LodgingFacilityRaw2.operator.address.country = component.long_name;
             break;
         }
       }
@@ -248,7 +243,8 @@ export const RoomProfileCard: React.FC<{
         clearTimeout(tm2);
       }, 10);
     }
-  }, [addressObject2, value]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [addressObject2]);
 
   useEffect(() => {
     if (Object.keys(addressObject).length > 0) {
@@ -258,21 +254,26 @@ export const RoomProfileCard: React.FC<{
         switch (componentType) {
           case "postal_code": {
             value.addressPostalCode = component.long_name;
+            LodgingFacilityRaw2.address.postalCode = component.long_name;
             break;
           }
           case "locality":
             value.addressLocality = component.long_name;
+            LodgingFacilityRaw2.address.locality = component.long_name;
 
             break;
 
           case "administrative_area_level_1":
             if (value.addressLocality == null || value.addressLocality === "") {
               value.addressLocality = component.long_name;
+              LodgingFacilityRaw2.address.locality = component.long_name;
             }
 
             break;
           case "country":
             value.addressCountry = component.long_name;
+            LodgingFacilityRaw2.address.country = component.long_name;
+
             break;
         }
       }
@@ -283,7 +284,8 @@ export const RoomProfileCard: React.FC<{
         clearTimeout(tm);
       }, 10); /* */
     }
-  }, [addressObject, value]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [addressObject]);
   //
 
   const [operatorCountry, setOperatorCountry] = useState(defaultCountries);
@@ -293,20 +295,30 @@ export const RoomProfileCard: React.FC<{
     const query2 = operatorObject.formatted_address;
     updateQuery2(query2);
 
+    LodgingFacilityRaw2.operator.address.streetAddress = query;
     setaddressGeometry2(
       `${operatorObject.geometry.location.lat()},${operatorObject.geometry.location.lng()}`
     );
+
+    LodgingFacilityRaw2.operator.address.gps = `${operatorObject.geometry.location.lat()},${operatorObject.geometry.location.lng()}`;
 
     setaddressObject2(operatorObject.address_components);
   };
   const handlePlaceSelect = async (autoComplete: any, updateQuery: any) => {
     const addressObject = autoComplete.getPlace();
     const query = addressObject.formatted_address;
+    //console.log(addressObject);
+
+    LodgingFacilityRaw2.address.streetAddress = query;
+
+    //console.log(LodgingFacilityRaw2);
+
     updateQuery(query);
     setaddressObject(addressObject.address_components);
     setaddressGeometry(
       `${addressObject.geometry.location.lat()},${addressObject.geometry.location.lng()}`
     );
+    LodgingFacilityRaw2.address.gps = `${addressObject.geometry.location.lat()},${addressObject.geometry.location.lng()}`;
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -363,10 +375,33 @@ export const RoomProfileCard: React.FC<{
     NewStatus[index] = false;
     setRoomImagesErrorURL(NewStatus);
 
-    // console.log(newArr);
+    //console.log(newArr);
     // console.log(index);
   }
 
+  const addFacilityProfile = useCallback(async () => {
+    try {
+      if (contract)
+      {
+        const facilityId = await contract.registerLodgingFacility(
+          LodgingFacilityRaw2,
+          true
+        );
+
+        console.log(facilityId);
+
+        alert('ROOM ADDED SUUCESSFULLY')
+        }
+        
+    } catch (err) {
+      // Handle errors
+    }
+  }, [contract]);
+
+
+
+  //console.log(allowedLodgingFacilityTypes);
+  
   return (
     <>
       <Form
@@ -374,12 +409,37 @@ export const RoomProfileCard: React.FC<{
         validate="change"
         onReset={(event) => {
           setValue(defaultFormValue);
-          console.log(event);
+          //console.log(event);
         }}
-        onSubmit={(event) => console.log("Submit", event.value, event.touched)}
+        onSubmit={(event) => {
+          if (Object.keys(roomImages).length <= 0) {
+            let ShowRImage: HTMLElement = document.getElementById(
+              "ShowRImage"
+            ) as HTMLElement;
+
+            alert("You need to upload Room Images to continue");
+            ShowRImage.click();
+          } else {
+            //console.log("Submit", event.value, event.touched);
+            console.log(LodgingFacilityRaw2);
+            const facilityProfile: LodgingFacilityRaw = LodgingFacilityRaw2;
+
+            try {
+              validateLodgingFacilityData(facilityProfile);
+              addFacilityProfile();
+            } catch (e) {
+              alert("ERROR");
+              console.log(JSON.stringify(e));
+            }
+
+            //console.log(validateLodgingFacilityData(facilityProfile));
+          }
+        }}
         onChange={(nextValue, { touched }) => {
-          console.log("Change", nextValue, touched);
+          // console.log("Change", nextValue, touched);
+
           setValue(nextValue);
+          console.log(LodgingFacilityRaw2);
         }}
         onValidate={(validationResults) => {
           setValid(validationResults.valid);
@@ -411,6 +471,10 @@ export const RoomProfileCard: React.FC<{
                     style={{ padding: 10 }}
                     label="Name"
                     name="roomName"
+                    onChange={(e) => {
+                      LodgingFacilityRaw2.name = e.target.value;
+                      //console.log(LodgingFacilityRaw2)
+                    }}
                     required
                     validate={[
                       { regexp: /^[a-z]/i },
@@ -428,10 +492,14 @@ export const RoomProfileCard: React.FC<{
                   >
                     <Select
                       name="roomType"
+                      style={{ textTransform: "capitalize" }}
                       id="roomType"
                       placeholder="Select Room Type"
                       required
                       clear
+                      onChange={(e) =>
+                        (LodgingFacilityRaw2.type = e.target.value)
+                      }
                       options={roomTypeOption}
                       onClose={() => setRoomTypeOption(defaultRoomTypes)}
                     />
@@ -444,9 +512,13 @@ export const RoomProfileCard: React.FC<{
                     <Select
                       name="roomTier"
                       id="roomTier"
+                      style={{ textTransform: "capitalize" }}
                       placeholder="Select Room Tier"
                       required
                       clear
+                      onChange={(e) =>
+                        (LodgingFacilityRaw2.tier = e.target.value)
+                      }
                       options={roomTierOption}
                       onClose={() => setRoomTierOption(defaultRoomTier)}
                     />
@@ -460,6 +532,9 @@ export const RoomProfileCard: React.FC<{
                     htmlFor="text-area"
                     component={TextArea}
                     required
+                    onChange={(e) =>
+                      (LodgingFacilityRaw2.description = e.target.value)
+                    }
                     validate={[
                       { regexp: /^[a-z]/i },
                       (description) => {
@@ -501,7 +576,11 @@ export const RoomProfileCard: React.FC<{
                         id="streetAddress"
                         className="input"
                         ref={autoCompleteRef}
-                        onChange={(event) => setQuery(event.target.value)}
+                        onChange={(event) => {
+                          setQuery(event.target.value);
+
+                          //console.log(LodgingFacilityRaw2);
+                        }}
                         placeholder="Enter Address, City, location or postal code to continnue"
                         value={query}
                       />
@@ -525,6 +604,10 @@ export const RoomProfileCard: React.FC<{
                       label="Postal Code"
                       name="addressPostalCode"
                       id="addressPostalCode"
+                      onChange={(e) =>
+                        (LodgingFacilityRaw2.address.postalCode =
+                          e.target.value)
+                      }
                       //value={addressPostalCode}
                       required
                     />
@@ -539,6 +622,9 @@ export const RoomProfileCard: React.FC<{
                         id="addressCountry"
                         placeholder="Country"
                         required
+                        onChange={(e) =>
+                          (LodgingFacilityRaw2.address.country = e.target.value)
+                        }
                         clear
                         //open={isConntryOpen}
                         // value={addressCountryValue}
@@ -563,12 +649,19 @@ export const RoomProfileCard: React.FC<{
                       label="Subdivision"
                       name="addressSubdivision"
                       required
+                      onChange={(e) =>
+                        (LodgingFacilityRaw2.address.subdivision =
+                          e.target.value)
+                      }
                     />
 
                     <FormField
                       style={{ padding: 10, marginLeft: 10 }}
                       label="Premise"
                       name="addressPremise"
+                      onChange={(e) =>
+                        (LodgingFacilityRaw2.address.premise = e.target.value)
+                      }
                       required
                     />
 
@@ -577,6 +670,9 @@ export const RoomProfileCard: React.FC<{
                       label="Geometry"
                       name="addressGeometry"
                       id="addressGeometry"
+                      onChange={(e) =>
+                        (LodgingFacilityRaw2.address.gps = e.target.value)
+                      }
                       //value={addressGeometry}
                       required
                     />
@@ -600,9 +696,22 @@ export const RoomProfileCard: React.FC<{
                         level="3"
                         style={{ paddingLeft: 10 }}
                       >
-                        Operator Address
+                        Operator Details
                       </Heading>
                     </div>
+
+                    <FormField
+                      // style={{ padding: 10 }}
+                      style={{ padding: 10, marginLeft: 10, marginTop: 10 }}
+                      label="Operator Name"
+                      name="operatorName"
+                      onChange={(e) => {
+                        LodgingFacilityRaw2.operator.name = e.target.value;
+                        //console.log(LodgingFacilityRaw2)
+                      }}
+                      required
+                    />
+
                     <FormField
                       label="Street Address"
                       style={{ padding: 10, marginLeft: 10, marginTop: 10 }}
@@ -629,6 +738,10 @@ export const RoomProfileCard: React.FC<{
                         id="operatorLocality"
                         name="operatorLocality"
                         //value={operatorLocality}
+                        onChange={(e) =>
+                          (LodgingFacilityRaw2.operator.address.locality =
+                            e.target.value)
+                        }
                       />
                     </FormField>
                     <FormField
@@ -636,6 +749,10 @@ export const RoomProfileCard: React.FC<{
                       label="Postal Code"
                       name="operatorPostalCode"
                       id="operatorPostalCode"
+                      onChange={(e) =>
+                        (LodgingFacilityRaw2.operator.address.postalCode =
+                          e.target.value)
+                      }
                       // value={operatorPostalCode}
                       required
                     />
@@ -664,6 +781,10 @@ export const RoomProfileCard: React.FC<{
                             defaultCountries.filter((o) => exp.test(o))
                           );
                         }}
+                        onChange={(e) =>
+                          (LodgingFacilityRaw2.operator.address.country =
+                            e.target.value)
+                        }
                         onClose={() => setOperatorCountry(defaultCountries)}
                       />
                     </FormField>
@@ -671,12 +792,20 @@ export const RoomProfileCard: React.FC<{
                       style={{ padding: 10, marginLeft: 10 }}
                       label="Subdivision"
                       name="operatorSubdivision"
+                      onChange={(e) =>
+                        (LodgingFacilityRaw2.operator.address.subdivision =
+                          e.target.value)
+                      }
                       required
                     />
                     <FormField
                       style={{ padding: 10, marginLeft: 10 }}
                       label="Premise"
                       name="operatorPremise"
+                      onChange={(e) =>
+                        (LodgingFacilityRaw2.operator.address.premise =
+                          e.target.value)
+                      }
                       required
                     />
 
@@ -685,6 +814,10 @@ export const RoomProfileCard: React.FC<{
                       label="Geometry"
                       name="operatorGeometry"
                       id="operatorGeometry"
+                      onChange={(e) =>
+                        (LodgingFacilityRaw2.operator.address.gps =
+                          e.target.value)
+                      }
                       //value={operatorGeometry}
                       required
                     />
@@ -792,12 +925,17 @@ export const RoomProfileCard: React.FC<{
 
                               if (event.target.files) {
                                 setIsUploadingIpfs(true);
-                                await handleDepoyFile(
+                                let data = await handleDepoyFile(
                                   event.target.files[0],
                                   true,
                                   "logo"
                                 );
+
+                                //lodgingFacilityData.media.logo = data;
+                                LodgingFacilityRaw2.media.logo = data;
                               }
+
+                              //console.log(LodgingFacilityRaw2);
                             }}
                           />
                         </FormField>
@@ -827,6 +965,7 @@ export const RoomProfileCard: React.FC<{
                     {roomLogoURL === "" ? null : (
                       <Stack anchor="top-right" style={{ marginTop: 80 }}>
                         <Button
+                          id="ShowRImage"
                           onClick={() => setShowRImage(true)}
                           //primary
                           //color="status-ok"
@@ -896,39 +1035,44 @@ export const RoomProfileCard: React.FC<{
                                   Object.keys(roomImages).length
                                 ) {
                                   if (roomImages) {
-                                    // setIsUploadingIpfs(true);
-                                    //await handleDepoyFile(roomImages[0], true);
-
                                     for (
                                       let i = 0;
                                       i < Object.keys(roomImages).length;
                                       i += 1
                                     ) {
-                                      const file = roomImages[i];
+                                      // const file = roomImages[i];
 
                                       setCurrentlyUploading(i);
-                                      console.log(
+                                      /* console.log(
                                         "uploading image " +
                                           i +
                                           " :: =>" +
                                           file.name
-                                      );
+                                      ); */
 
-                                     let data =  await handleDepoyFile(
+                                      let data = await handleDepoyFile(
                                         roomImages[i],
                                         true,
                                         i
-                                     );
-                                      
-                                      if (isObject(data))
-                                      {
-                                        
-                                        }
+                                      );
 
-                                      console.log(file.name);
+                                      //console.log(data);
+
+                                      //console.log(roomImagesDesc)
+                                      let mediaImage = {
+                                        description: roomImagesDesc[i],
+                                        uri: data,
+                                      };
+                                      LodgingFacilityRaw2.media.images.push(
+                                        mediaImage
+                                      );
+
+                                      //console.log(file.name);
                                       setSuccessfullyUploading(i);
                                       //console.log(i);
                                     }
+
+                                    //console.log(LodgingFacilityRaw2);
                                   }
                                 }
                               }}
@@ -973,7 +1117,6 @@ export const RoomProfileCard: React.FC<{
                                       marginTop: "-20",
                                     }}
                                   >
-                                    {JSON.stringify(isW3loaded)}
                                     <br />
                                     {roomImages.map((file, index) => (
                                       <li
@@ -1095,7 +1238,6 @@ export const RoomProfileCard: React.FC<{
                 <circle cx="13" cy="13" r="13" />
               </ContentLoader>
             )}
-           
           </CardBody>
           {isW3loaded ? (
             <CardFooter pad={{ horizontal: "small" }} background="light-2">

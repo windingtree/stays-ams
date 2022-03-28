@@ -1,47 +1,13 @@
 //Source https://betterprogramming.pub/the-best-practice-with-google-place-autocomplete-api-on-react-939211e8b4ce
-/* export const LoadScript = (url: string, callback: Function): void => {
-  try {
-    let script: any = document.createElement("script"); // create script tag
-    script.type = "text/javascript";
+import { enumerators } from "stays-data-models";
 
-    // when script state is ready and loaded or complete we will call callback
-    if (script.readyState) {
-      script.onreadystatechange = function () {
-        if (
-          script.readyState === "loaded" ||
-          script.readyState === "complete"
-        ) {
-          console.log('1')
-          script.onreadystatechange = null;
-          callback();
-           console.log("2");
-        }
-      };
-    } else {
-       //console.log("3");
-      script.onload = () => callback();
-    }
+  const {
+    allowedLodgingFacilityTypes, // Lodging facility types
+    allowedLodgingFacilityTiers, // Lodging facility tiers
+   // allowedSpaceTypes, // Space types
+  } = enumerators;
 
-   // if (window.google === undefined) {
-      script.src = url; // load by url
-      document.getElementsByTagName("head")[0].appendChild(script); // append to head
-    //}
-    
-
-    //console.log(script.src);
-  } catch (error) {
-    alert(JSON.stringify(error));
-    throw Error("Unable to encrypt");
-  }
-};
- */
-
-export const defaultRoomTier: any[] = [
-  "Basic",
-  "Swiss",
-  "Presidential",
-  "Premium",
-];
+export const defaultRoomTier = allowedLodgingFacilityTiers;
 
 export const ResponsiveColumn = (winWidth: number) => {
   if (winWidth >= 1300) {
@@ -97,14 +63,20 @@ export interface LodgingFacilityRaw {
   media: Array<mediaSchema>;
 }
 
-export const LodgingFacilityRawMain={} as LodgingFacilityRaw
-
-export const LodgingFacilityRaw2 = {
+export const LodgingFacilityRaw2:any = {
   name: "",
   description: "",
   type: "",
   tier: "",
-  address: {} as addressSchema,
+  address: {
+      country: "",
+      subdivision: "",
+      locality: "",
+      postalCode: "",
+      streetAddress: "",
+      premise: "",
+      gps: "",
+    },
   operator: {
     name: "",
     address: {
@@ -119,7 +91,7 @@ export const LodgingFacilityRaw2 = {
   },
   media: {
     logo: "",
-    images: {} as imageSchema,
+    images: [],
    // images: Array <imageSchema>
   },
 };
@@ -142,16 +114,7 @@ export const defaultFormValue = {
   operatorCountry: "",
   operatorPremise: "", //addressPremise
 };
-export const defaultRoomTypes: any[] = [
-  "Superior Single",
-  "Superior Twin",
-  "Deluxe King",
-  "Swiss Suite",
-  "Diplomatic Suite",
-  "Presidential Suite",
-  "Event Hall",
-];
-
+export const defaultRoomTypes = allowedLodgingFacilityTypes;
 export const defaultCountries: any[] = [
   "Afghanistan",
   "Aland Islands",
