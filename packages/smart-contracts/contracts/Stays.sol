@@ -5,6 +5,8 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
+import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "./IStays.sol";
 import "./StayEscrow.sol";
 import "./libraries/StayTokenMeta.sol";
@@ -12,7 +14,7 @@ import "./libraries/StayTokenMeta.sol";
 import "hardhat/console.sol";
 
 
-contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable {
+contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable, EIP712 {
   using Counters for Counters.Counter;
   Counters.Counter private _stayTokenIds;
 
@@ -79,7 +81,7 @@ contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable {
   // spaceId => tokenId[]
   mapping(bytes32 => uint256[]) private _stayTokens;
 
-  constructor() ERC721("StayToken", "ST22") {}
+  constructor() ERC721("StayToken", "ST22") EIP712("Stays", "1") {}
 
   /**
    * Modifiers
@@ -340,20 +342,22 @@ contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable {
 
   function deposit(
     address payee,
-    bytes32 spaceId
+    bytes32 spaceId,
+    uint256 tokenId
   ) public payable override(StayEscrow) {
-    super.deposit(payee, spaceId);
+    super.deposit(payee, spaceId, tokenId);
   }
 
   // Complete withdraw. Allowed in Checkout deposit state only
   function withdraw(
     address payer,
     address payable payee,
-    bytes32 _spaceId
+    bytes32 _spaceId,
+    uint256 tokenId
   )
     internal override(StayEscrow)
   {
-    super.withdraw(payer, payee, _spaceId);
+    super.withdraw(payer, payee, _spaceId, tokenId);
   }
 
   // Partial withdraw
@@ -361,14 +365,15 @@ contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable {
     address payer,
     address payable payee,
     uint256 payment,
-    bytes32 _spaceId
+    bytes32 _spaceId,
+    uint256 tokenId
   ) internal override(StayEscrow) {
     // partial withdraw condition
     require(
       payment <= spaces[_spaceId].pricePerNightWei,
       "Withdraw amount not allows in this state"
     );
-    super.withdraw(payer, payee, payment, _spaceId);
+    super.withdraw(payer, payee, payment, _spaceId, tokenId);
   }
 
   /**
@@ -481,8 +486,6 @@ contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable {
       _booked[_spaceId][_startDay+_x] += _quantity;
     }
 
-    deposit(_msgSender(), _spaceId);
-
     _stayTokenIds.increment();
     uint256 _newStayTokenId = _stayTokenIds.current();
     _safeMint(_msgSender(), _newStayTokenId);
@@ -510,6 +513,8 @@ contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable {
     );
     _stayTokens[_spaceId].push(_newStayTokenId);
 
+    deposit(_msgSender(), _spaceId, _newStayTokenId);
+
     // @todo LIF/WIN
     // @todo LodgingFacility loyalty token
     // @todo divert all the excess WEI to Ukraine DAO
@@ -525,20 +530,42 @@ contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable {
    */
 
   // Stay checkIn; can be called by a stay token owner
-  function checkIn(uint256 _tokenId) public override onlyTokenOwner(_tokenId) {
+  function checkIn(
+    uint256 _tokenId,
+    CheckInVoucher memory voucher
+  ) public override {
+    address recovered = _verifyCheckInVoucher(voucher);
+
     Stay storage _stay = _stays[_tokenId];
-    require(_stay.spaceId != bytes32(0), "Stay not found");
-    require(!_stay.checkIn, "Already checked in");
     bytes32 _spaceId = _stay.spaceId;
-    uint256 firstNight = spaces[_spaceId].pricePerNightWei;
+
+    require(_spaceId != bytes32(0), "Stay not found");
+    require(!_stay.checkIn, "Already checked in");
+
+    Space storage _space = spaces[_spaceId];
+    LodgingFacility storage _lodgingFacility = lodgingFacilities[_space.lodgingFacilityId];
+
+    require(
+      recovered == ownerOf(_tokenId) || recovered == _lodgingFacility.owner,
+      "Voucher signer is not allowed"
+    );
+    require(
+      _msgSender() == voucher.to,
+      "Wrong caller"
+    );
+
+    uint256 firstNight = _space.pricePerNightWei;
+
     // Partial withdraw, just for a first night
     _stay.checkIn = true;
     withdraw(
       ownerOf(_tokenId),
-      payable(lodgingFacilities[spaces[_spaceId].lodgingFacilityId].owner),
+      payable(_lodgingFacility.owner),
       firstNight,
-      _spaceId
+      _spaceId,
+      _tokenId
     );
+
     emit CheckIn(_tokenId);
   }
 
@@ -548,10 +575,13 @@ contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable {
 
   function checkOut(uint256 _tokenId) public virtual override {
     Stay storage _stay = _stays[_tokenId];
+
     require(_stay.spaceId != bytes32(0), "Stay not found");
     require(!_stay.checkOut, "Already checked out");
+
     bytes32 _spaceId = _stay.spaceId;
     address spaceOwner = lodgingFacilities[spaces[_spaceId].lodgingFacilityId].owner;
+
     require(
       _msgSender() == spaceOwner,
       "Only space owner is allowed"
@@ -561,13 +591,16 @@ contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable {
       block.timestamp >= dayZero + (_stay.startDay + _stay.numberOfDays) * 86400,
       "Forbidden unless checkout date"
     );
+
     // Complete withdraw (rest of deposit)
     _stay.checkOut = true;
     withdraw(
       ownerOf(_tokenId),
       payable(spaceOwner),
-      _spaceId
+      _spaceId,
+      _tokenId
     );
+
     emit CheckOut(_tokenId);
   }
 
@@ -614,6 +647,29 @@ contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable {
         count++;
       }
     }
+  }
+
+  // Throws an error if verification of a voucher is fails
+  function _verifyCheckInVoucher(CheckInVoucher memory voucher) internal view returns (address) {
+    bytes32 voucherHash = _hashTypedDataV4(
+      keccak256(
+        abi.encode(
+          keccak256("Voucher(address from,address to,uint256 tokenId)"),
+          voucher.from,
+          voucher.to,
+          voucher.tokenId
+        )
+      )
+    );
+
+    (address recovered, ECDSA.RecoverError error) = ECDSA.tryRecover(voucherHash, voucher.signature);
+
+    require(
+      error == ECDSA.RecoverError.NoError && recovered == voucher.from,
+      "Broken voucher"
+    );
+
+    return recovered;
   }
 
   /** Overrides */

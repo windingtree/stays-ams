@@ -1,3 +1,4 @@
+export type { IERC1271 } from "./IERC1271";
 export type { ERC721 } from "./ERC721";
 export type { ERC721Enumerable } from "./ERC721Enumerable";
 export type { ERC721URIStorage } from "./ERC721URIStorage";
@@ -10,6 +11,7 @@ export type { IERC165 } from "./IERC165";
 export type { IStays } from "./IStays";
 export type { StayEscrow } from "./StayEscrow";
 export type { Stays } from "./Stays";
+export { IERC1271__factory } from "./factories/IERC1271__factory";
 export { ERC721__factory } from "./factories/ERC721__factory";
 export { ERC721Enumerable__factory } from "./factories/ERC721Enumerable__factory";
 export { ERC721URIStorage__factory } from "./factories/ERC721URIStorage__factory";

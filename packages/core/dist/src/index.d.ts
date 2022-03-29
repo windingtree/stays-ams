@@ -1,7 +1,7 @@
 import type { providers } from 'ethers';
 import type { Web3StorageApi } from '@windingtree/ipfs-apis';
 import type { LodgingFacilityRaw, LodgingFacility, SpaceRaw, Space } from 'stays-data-models';
-import type { Stays } from 'stays-smart-contracts';
+import type { Stays, StaysVoucher } from 'stays-smart-contracts';
 import type { MethodOverrides, TxHashCallbackFn } from './utils/sendHelper';
 import type { StayToken } from './types';
 export * from './types';
@@ -25,4 +25,6 @@ export declare class Contract {
     overrides?: MethodOverrides, transactionHashCb?: TxHashCallbackFn, confirmations?: number): Promise<string>;
     addSpace(profileData: SpaceRaw, lodgingFacilityId: string, capacity: number, pricePerNightWei: string, active?: boolean, overrides?: MethodOverrides, transactionHashCb?: TxHashCallbackFn, confirmations?: number): Promise<string>;
     book(spaceId: string, startDay: number, numberOfDays: number, quantity: number, overrides?: MethodOverrides, transactionHashCb?: TxHashCallbackFn, confirmations?: number): Promise<string>;
+    checkIn(tokenId: string, voucher: StaysVoucher, overrides?: MethodOverrides, transactionHashCb?: TxHashCallbackFn, confirmations?: number): Promise<void>;
+    getTokenStatus(tokenId: string): Promise<string>;
 }

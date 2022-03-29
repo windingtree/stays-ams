@@ -18,8 +18,9 @@
     "hardhat.config.ts",
     "test",
     "typechain",
-    "artifacts"
-  ],
+    "artifacts",
+    "src"
+, "src/voucher.ts"  ],
   "exclude": [
     "node_modules"
   ],

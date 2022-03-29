@@ -23,6 +23,12 @@
           "internalType": "bytes32",
           "name": "spaceId",
           "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
         }
       ],
       "name": "Deposited",
@@ -54,6 +60,12 @@
           "internalType": "bytes32",
           "name": "spaceId",
           "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
         }
       ],
       "name": "Withdraw",
@@ -70,6 +82,11 @@
           "internalType": "bytes32",
           "name": "spaceId",
           "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
         }
       ],
       "name": "deposit",
@@ -88,6 +105,11 @@
           "internalType": "bytes32",
           "name": "spaceId",
           "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
         }
       ],
       "name": "depositOf",
@@ -112,6 +134,11 @@
           "internalType": "bytes32",
           "name": "spaceId",
           "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
         }
       ],
       "name": "depositState",

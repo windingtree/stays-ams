@@ -6,7 +6,7 @@ import type {
   SpaceRaw,
   Space
 } from 'stays-data-models';
-import type { Stays } from 'stays-smart-contracts';
+import type { Stays, StaysVoucher } from 'stays-smart-contracts';
 import type { MethodOverrides, TxHashCallbackFn } from './utils/sendHelper';
 import type { StayToken } from './types';
 import { ethers } from 'ethers';
@@ -25,6 +25,8 @@ import { addSpace } from './api/addSpace';
 import { book } from './api/book';
 import { getTokensOfOwner, getToken } from './api/nft';
 import { getDayZero } from './api/getDayZero';
+import { checkIn } from './api/checkIn';
+import { getTokenStatus } from './api/getTokenStatus'
 
 export * from './types';
 
@@ -205,6 +207,30 @@ export class Contract {
       overrides,
       transactionHashCb,
       confirmations
+    );
+  }
+
+  checkIn(
+    tokenId: string,
+    voucher: StaysVoucher,
+    overrides?: MethodOverrides,
+    transactionHashCb?: TxHashCallbackFn,
+    confirmations?: number
+  ): Promise<void> {
+    return checkIn(
+      this.contract,
+      tokenId,
+      voucher,
+      overrides,
+      transactionHashCb,
+      confirmations
+    );
+  }
+
+  getTokenStatus(tokenId: string): Promise<string> {
+    return getTokenStatus(
+      this.contract,
+      tokenId
     );
   }
 }

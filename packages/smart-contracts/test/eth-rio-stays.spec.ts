@@ -7,14 +7,14 @@ import {
   getUnnamedAccounts,
   getNamedAccounts,
 } from "hardhat";
-import chai from 'chai';
-import { BytesLike, BigNumber, utils } from "ethers";
+import { BytesLike, BigNumber, providers } from "ethers";
 import { expect } from "./utils/chai-setup";
 
 import { Stays } from "../typechain";
 import { setupUser, setupUsers } from "./utils";
 import { decodeDataUri } from './utils/dataUri';
 import { extractEventFromTx } from './utils';
+import { createVoucher } from '../src/voucher';
 
 const setup = deployments.createFixture(async () => {
   await deployments.fixture("Stays");
@@ -383,10 +383,6 @@ describe("Stays.sol", () => {
           // @todo add all props
         });
 
-        // it("should send the money to the facility escrow", async () => {
-        //   expect(false).to.be.true
-        // })
-
         it("should emit NewStay", async () => {
           const promise = alice.staysContract.newStay(
             sid,
@@ -443,6 +439,9 @@ describe("Stays.sol", () => {
         let eventNewStay;
         let eventCheckIn;
         let txCheckIn;
+        let brokenVoucher;
+        let forbiddenVoucher;
+        let voucher;
 
         before(async () => {
           initialBalanceBob = await bob.staysContract.provider.getBalance(bob.address);
@@ -456,55 +455,90 @@ describe("Stays.sol", () => {
 
           eventNewStay = await extractEventFromTx(tx, 'NewStay');
           tokenId = eventNewStay.tokenId;
-          const deposit = await alice.staysContract.depositOf(alice.address, sid);
+          const deposit = await alice.staysContract.depositOf(alice.address, sid, tokenId);
 
           expect(deposit.toNumber()).to.equal(valuePerNight * numDays);
 
-          txCheckIn = await alice.staysContract.checkIn(tokenId);
+          const { chainId } = await alice.staysContract.provider.getNetwork();
+          brokenVoucher = await createVoucher(
+            deployer.staysContract.signer,
+            alice.address,
+            bob.address,
+            tokenId.toString(),
+            alice.staysContract.address,
+            chainId
+          );
+          forbiddenVoucher = await createVoucher(
+            deployer.staysContract.signer,
+            deployer.address,
+            bob.address,
+            tokenId.toString(),
+            alice.staysContract.address,
+            chainId
+          );
+          voucher = await createVoucher(
+            alice.staysContract.signer,
+            alice.address,
+            bob.address,
+            tokenId.toString(),
+            alice.staysContract.address,
+            chainId
+          );
+        });
+
+        it("should throw if voucher signed with unknown signer", async () => {
+          await expect(
+            alice.staysContract.checkIn(tokenId, brokenVoucher)
+          ).to.revertedWith('Broken voucher');
+        });
+
+        it("should throw if voucher signed by not allowed party", async () => {
+          await expect(
+            deployer.staysContract.checkIn(tokenId, forbiddenVoucher)
+          ).to.revertedWith('Voucher signer is not allowed');
+        });
+
+        it("should throw if transaction sent by unknown sender", async () => {
+          await expect(
+            deployer.staysContract.checkIn(tokenId, voucher)
+          ).to.revertedWith('Wrong caller');
+        });
+
+        it("should check in", async () => {
+          txCheckIn = await bob.staysContract.checkIn(tokenId, voucher);
+          const receipt = await txCheckIn.wait();
+          const txCost = receipt.cumulativeGasUsed.mul(receipt.effectiveGasPrice);
           eventCheckIn = await extractEventFromTx(txCheckIn, 'CheckIn');
           expect(eventCheckIn.tokenId).to.equal(tokenId);
 
           // check balance. should be + valuePerNight
-          const signInBalance = await bob.staysContract.provider.getBalance(bob.address);
-          expect(signInBalance).to.equal(
-            initialBalanceBob.add(BigNumber.from(valuePerNight))
+          const checkInBalance = await bob.staysContract.provider.getBalance(bob.address);
+          expect(checkInBalance).to.equal(
+            initialBalanceBob
+              .add(BigNumber.from(valuePerNight))
+              .sub(txCost)
           );
+        });
 
+        it("should throw id already checked in", async () => {
           await expect(
-            alice.staysContract.checkIn(tokenId)
+            alice.staysContract.checkIn(tokenId, voucher)
           ).to.revertedWith('Already checked in');
         });
 
         it("should change Stay status to 'checked_in'", async () => {
           expect(
-            await alice.staysContract.depositState(alice.address, sid)
+            await alice.staysContract.depositState(alice.address, sid, tokenId)
           ).to.equal(1);
         })
-
-        it("should send the first day escrow amount to the facility address", async () => {
-          const {
-            payer,
-            payee,
-            weiAmount,
-            spaceId
-          } = await extractEventFromTx(txCheckIn, 'Withdraw');
-          expect(payer).to.equal(alice.address);
-          expect(payee).to.equal(bob.address);
-          expect(weiAmount).to.equal(BigNumber.from(valuePerNight));
-          expect(spaceId).to.equal(sid);
-          const newBalanceBob = await bob.staysContract.provider.getBalance(bob.address);
-          expect(newBalanceBob).to.equal(initialBalanceBob.add(BigNumber.from(valuePerNight)));
-        });
       });
 
       describe("checkOut()", async () => {
         const startDay = 100;
         const numDays = 3;
         let tokenId;
-        let initialBalanceBob;
 
         before(async () => {
-          initialBalanceBob = await bob.staysContract.provider.getBalance(bob.address);
           let tx = await alice.staysContract.newStay(
             sid,
             startDay,
@@ -514,7 +548,16 @@ describe("Stays.sol", () => {
           );
           const eventNewStay = await extractEventFromTx(tx, 'NewStay');
           tokenId = eventNewStay.tokenId;
-          const txCheckIn = await alice.staysContract.checkIn(tokenId);
+          const { chainId } = await alice.staysContract.provider.getNetwork();
+          const voucher = await createVoucher(
+            alice.staysContract.signer,
+            alice.address,
+            bob.address,
+            tokenId.toString(),
+            alice.staysContract.address,
+            chainId
+          );
+          const txCheckIn = await bob.staysContract.checkIn(tokenId, voucher);
           await txCheckIn.wait();
         });
 
@@ -524,28 +567,29 @@ describe("Stays.sol", () => {
           ).to.revertedWith('Only space owner is allowed');
         });
 
-        // it('should throw unless checkout date', async () => {
-        //   console.log('@@@ bob address', bob.address);
-        //   await expect(
-        //     bob.staysContract.checkOut(tokenId)
-        //   ).to.revertedWith('Forbidden unless checkout date');
-        // });
+        it('should throw unless checkout date', async () => {
+          await expect(
+            bob.staysContract.checkOut(tokenId)
+          ).to.revertedWith('Forbidden unless checkout date');
+        });
 
-        // it('should checkout', async () => {
-        //   await ethers.provider.send('evm_increaseTime', [(startDay + 1) * 86400]);
-        //   const txCheckOut = await bob.staysContract.checkOut(tokenId);
-        //   const eventCheckOut = await extractEventFromTx(txCheckOut, 'CheckOut');
-        //   expect(eventCheckOut.tokenId).to.equal(tokenId);
+        it('should checkout', async () => {
+          const initialBalanceBob = await bob.staysContract.provider.getBalance(bob.address);
+          await ethers.provider.send('evm_increaseTime', [(startDay + 1) * 86400]);
+          const txCheckOut = await bob.staysContract.checkOut(tokenId);
+          const receipt = await txCheckOut.wait();
+          // console.log('RECEIPT', receipt);
+          const checkoutTxCost = receipt.cumulativeGasUsed.mul(receipt.effectiveGasPrice);
+          const eventCheckOut = await extractEventFromTx(txCheckOut, 'CheckOut');
+          expect(eventCheckOut.tokenId).to.equal(tokenId);
 
-        //   const finalBalanceBob = await bob.staysContract.provider.getBalance(bob.address);
-        //   expect(finalBalanceBob).to.equal(
-        //     initialBalanceBob
-        //       .add(
-        //         BigNumber.from(valuePerNight)
-        //           .mul(BigNumber.from(numDays))
-        //       )
-        //   );
-        // });
+          const finalBalanceBob = await bob.staysContract.provider.getBalance(bob.address);
+          expect(finalBalanceBob).to.equal(
+            initialBalanceBob
+              .add(BigNumber.from(valuePerNight).mul(BigNumber.from(numDays-1)))
+              .sub(checkoutTxCost)
+          );
+        });
       });
 
     });

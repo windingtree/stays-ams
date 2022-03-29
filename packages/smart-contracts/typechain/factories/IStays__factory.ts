@@ -305,6 +305,33 @@ const _abi = [
         name: "_tokenId",
         type: "uint256",
       },
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "from",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "to",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "tokenId",
+            type: "uint256",
+          },
+          {
+            internalType: "bytes",
+            name: "signature",
+            type: "bytes",
+          },
+        ],
+        internalType: "struct IStays.CheckInVoucher",
+        name: "voucher",
+        type: "tuple",
+      },
     ],
     name: "checkIn",
     outputs: [],
