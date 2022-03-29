@@ -1,5 +1,12 @@
 import type { Signer, providers } from 'ethers';
 
+export interface StaysVoucher {
+  from: string;
+  to: string;
+  tokenId: string;
+  signature: string;
+}
+
 export const createVoucher = async (
   signer: Signer,
   from: string,

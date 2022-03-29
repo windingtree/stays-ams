@@ -1,4 +1,4 @@
 import StaysContract from './artifacts/contracts/Stays.sol/Stays.json';
-import { createVoucher } from './src/voucher';
+import { StaysVoucher, createVoucher } from './src/voucher';
 export * from './typechain';
-export { StaysContract, createVoucher };
+export { StaysContract, StaysVoucher, createVoucher };
