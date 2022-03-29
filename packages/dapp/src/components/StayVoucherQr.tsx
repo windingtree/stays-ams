@@ -47,13 +47,13 @@ export const StayVoucherQr = ({
           throw new Error('Stay voucher recipient not defined');
         }
 
-        const signature = await signCallback(
+        const voucher = await signCallback(
           from,
           to,
           tokenId
         );
 
-        setQrData(signature);
+        setQrData(JSON.stringify(voucher));
       } catch (err) {
         logger.error(err);
         const message = (err as Error).message ||
