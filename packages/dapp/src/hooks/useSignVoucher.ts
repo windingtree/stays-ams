@@ -40,7 +40,7 @@ export const useSignVoucher = (
         throw new Error('Stay voucher recipient not defined');
       }
 
-      return createVoucher(
+      const voucher = createVoucher(
         signer,
         from,
         to,
@@ -48,6 +48,9 @@ export const useSignVoucher = (
         network.address,
         network.chainId
       );
+      logger.debug('Voucher', voucher);
+
+      return voucher;
     },
     [provider]
   );
