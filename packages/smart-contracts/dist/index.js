@@ -17,8 +17,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.StaysContract = void 0;
+exports.createVoucher = exports.StaysContract = void 0;
 const Stays_json_1 = __importDefault(require("./artifacts/contracts/Stays.sol/Stays.json"));
 exports.StaysContract = Stays_json_1.default;
+const voucher_1 = require("./src/voucher");
+Object.defineProperty(exports, "createVoucher", { enumerable: true, get: function () { return voucher_1.createVoucher; } });
 __exportStar(require("./typechain"), exports);
 //# sourceMappingURL=index.js.map

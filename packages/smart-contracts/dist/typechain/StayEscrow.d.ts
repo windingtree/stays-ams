@@ -1,23 +1,23 @@
-import { BaseContract, BigNumber, BytesLike, CallOverrides, ContractTransaction, PayableOverrides, PopulatedTransaction, Signer, utils } from "ethers";
+import { BaseContract, BigNumber, BigNumberish, BytesLike, CallOverrides, ContractTransaction, PayableOverrides, PopulatedTransaction, Signer, utils } from "ethers";
 import { FunctionFragment, Result, EventFragment } from "@ethersproject/abi";
 import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 export interface StayEscrowInterface extends utils.Interface {
     contractName: "StayEscrow";
     functions: {
-        "deposit(address,bytes32)": FunctionFragment;
-        "depositOf(address,bytes32)": FunctionFragment;
-        "depositState(address,bytes32)": FunctionFragment;
+        "deposit(address,bytes32,uint256)": FunctionFragment;
+        "depositOf(address,bytes32,uint256)": FunctionFragment;
+        "depositState(address,bytes32,uint256)": FunctionFragment;
     };
-    encodeFunctionData(functionFragment: "deposit", values: [string, BytesLike]): string;
-    encodeFunctionData(functionFragment: "depositOf", values: [string, BytesLike]): string;
-    encodeFunctionData(functionFragment: "depositState", values: [string, BytesLike]): string;
+    encodeFunctionData(functionFragment: "deposit", values: [string, BytesLike, BigNumberish]): string;
+    encodeFunctionData(functionFragment: "depositOf", values: [string, BytesLike, BigNumberish]): string;
+    encodeFunctionData(functionFragment: "depositState", values: [string, BytesLike, BigNumberish]): string;
     decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "depositOf", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "depositState", data: BytesLike): Result;
     events: {
-        "Deposited(address,uint256,bytes32)": EventFragment;
-        "Withdraw(address,address,uint256,bytes32)": EventFragment;
+        "Deposited(address,uint256,bytes32,uint256)": EventFragment;
+        "Withdraw(address,address,uint256,bytes32,uint256)": EventFragment;
     };
     getEvent(nameOrSignatureOrTopic: "Deposited"): EventFragment;
     getEvent(nameOrSignatureOrTopic: "Withdraw"): EventFragment;
@@ -25,23 +25,27 @@ export interface StayEscrowInterface extends utils.Interface {
 export declare type DepositedEvent = TypedEvent<[
     string,
     BigNumber,
-    string
+    string,
+    BigNumber
 ], {
     payee: string;
     weiAmount: BigNumber;
     spaceId: string;
+    tokenId: BigNumber;
 }>;
 export declare type DepositedEventFilter = TypedEventFilter<DepositedEvent>;
 export declare type WithdrawEvent = TypedEvent<[
     string,
     string,
     BigNumber,
-    string
+    string,
+    BigNumber
 ], {
     payer: string;
     payee: string;
     weiAmount: BigNumber;
     spaceId: string;
+    tokenId: BigNumber;
 }>;
 export declare type WithdrawEventFilter = TypedEventFilter<WithdrawEvent>;
 export interface StayEscrow extends BaseContract {
@@ -60,40 +64,40 @@ export interface StayEscrow extends BaseContract {
     once: OnEvent<this>;
     removeListener: OnEvent<this>;
     functions: {
-        deposit(payer: string, spaceId: BytesLike, overrides?: PayableOverrides & {
+        deposit(payer: string, spaceId: BytesLike, tokenId: BigNumberish, overrides?: PayableOverrides & {
             from?: string | Promise<string>;
         }): Promise<ContractTransaction>;
-        depositOf(payer: string, spaceId: BytesLike, overrides?: CallOverrides): Promise<[BigNumber]>;
-        depositState(payer: string, spaceId: BytesLike, overrides?: CallOverrides): Promise<[number]>;
+        depositOf(payer: string, spaceId: BytesLike, tokenId: BigNumberish, overrides?: CallOverrides): Promise<[BigNumber]>;
+        depositState(payer: string, spaceId: BytesLike, tokenId: BigNumberish, overrides?: CallOverrides): Promise<[number]>;
     };
-    deposit(payer: string, spaceId: BytesLike, overrides?: PayableOverrides & {
+    deposit(payer: string, spaceId: BytesLike, tokenId: BigNumberish, overrides?: PayableOverrides & {
         from?: string | Promise<string>;
     }): Promise<ContractTransaction>;
-    depositOf(payer: string, spaceId: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
-    depositState(payer: string, spaceId: BytesLike, overrides?: CallOverrides): Promise<number>;
+    depositOf(payer: string, spaceId: BytesLike, tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+    depositState(payer: string, spaceId: BytesLike, tokenId: BigNumberish, overrides?: CallOverrides): Promise<number>;
     callStatic: {
-        deposit(payer: string, spaceId: BytesLike, overrides?: CallOverrides): Promise<void>;
-        depositOf(payer: string, spaceId: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
-        depositState(payer: string, spaceId: BytesLike, overrides?: CallOverrides): Promise<number>;
+        deposit(payer: string, spaceId: BytesLike, tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
+        depositOf(payer: string, spaceId: BytesLike, tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+        depositState(payer: string, spaceId: BytesLike, tokenId: BigNumberish, overrides?: CallOverrides): Promise<number>;
     };
     filters: {
-        "Deposited(address,uint256,bytes32)"(payee?: string | null, weiAmount?: null, spaceId?: null): DepositedEventFilter;
-        Deposited(payee?: string | null, weiAmount?: null, spaceId?: null): DepositedEventFilter;
-        "Withdraw(address,address,uint256,bytes32)"(payer?: string | null, payee?: string | null, weiAmount?: null, spaceId?: null): WithdrawEventFilter;
-        Withdraw(payer?: string | null, payee?: string | null, weiAmount?: null, spaceId?: null): WithdrawEventFilter;
+        "Deposited(address,uint256,bytes32,uint256)"(payee?: string | null, weiAmount?: null, spaceId?: null, tokenId?: null): DepositedEventFilter;
+        Deposited(payee?: string | null, weiAmount?: null, spaceId?: null, tokenId?: null): DepositedEventFilter;
+        "Withdraw(address,address,uint256,bytes32,uint256)"(payer?: string | null, payee?: string | null, weiAmount?: null, spaceId?: null, tokenId?: null): WithdrawEventFilter;
+        Withdraw(payer?: string | null, payee?: string | null, weiAmount?: null, spaceId?: null, tokenId?: null): WithdrawEventFilter;
     };
     estimateGas: {
-        deposit(payer: string, spaceId: BytesLike, overrides?: PayableOverrides & {
+        deposit(payer: string, spaceId: BytesLike, tokenId: BigNumberish, overrides?: PayableOverrides & {
             from?: string | Promise<string>;
         }): Promise<BigNumber>;
-        depositOf(payer: string, spaceId: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
-        depositState(payer: string, spaceId: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
+        depositOf(payer: string, spaceId: BytesLike, tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+        depositState(payer: string, spaceId: BytesLike, tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
     };
     populateTransaction: {
-        deposit(payer: string, spaceId: BytesLike, overrides?: PayableOverrides & {
+        deposit(payer: string, spaceId: BytesLike, tokenId: BigNumberish, overrides?: PayableOverrides & {
             from?: string | Promise<string>;
         }): Promise<PopulatedTransaction>;
-        depositOf(payer: string, spaceId: BytesLike, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        depositState(payer: string, spaceId: BytesLike, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+        depositOf(payer: string, spaceId: BytesLike, tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+        depositState(payer: string, spaceId: BytesLike, tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
     };
 }

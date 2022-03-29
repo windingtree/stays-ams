@@ -4,6 +4,14 @@ pragma solidity ^0.8.0;
 
 abstract contract IStays {
 
+  // Check-In voucher
+  struct CheckInVoucher {
+    address from;
+    address to;
+    uint256 tokenId;
+    bytes signature;
+  }
+
   // Events
   event LodgingFacilityCreated(bytes32 facilityId, address indexed owner, string dataURI);
   event LodgingFacilityUpdated(bytes32 facilityId, string dataURI);
@@ -69,7 +77,7 @@ abstract contract IStays {
   // function getAllStayIdsByFacilityId(bytes32 _lodgingFacilityId) public virtual returns (uint256[] memory);
   function getCurrentStayIdsByFacilityId(bytes32 _lodgingFacilityId) public virtual returns (bytes32[] memory);
   function getFutureStayIdsByFacilityId(bytes32 _lodgingFacilityId) public virtual returns (bytes32[] memory);
-  function checkIn(uint256 _tokenId) public virtual;
+  function checkIn(uint256 _tokenId, CheckInVoucher memory voucher) public virtual;
   function checkOut(uint256 _tokenId) public virtual;
 
   // function requestChange(uint256 _tokenId, bytes32 _spaceId, uint256 _startDay, uint256 _numberOfDays, uint256 _quantity) public payable virtual;

@@ -2,12 +2,31 @@ import { BaseContract, BigNumber, BigNumberish, BytesLike, CallOverrides, Contra
 import { FunctionFragment, Result, EventFragment } from "@ethersproject/abi";
 import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
+export declare namespace IStays {
+    type CheckInVoucherStruct = {
+        from: string;
+        to: string;
+        tokenId: BigNumberish;
+        signature: BytesLike;
+    };
+    type CheckInVoucherStructOutput = [
+        string,
+        string,
+        BigNumber,
+        string
+    ] & {
+        from: string;
+        to: string;
+        tokenId: BigNumber;
+        signature: string;
+    };
+}
 export interface IStaysInterface extends utils.Interface {
     contractName: "IStays";
     functions: {
         "activateLodgingFacility(bytes32)": FunctionFragment;
         "addSpace(bytes32,uint256,uint256,bool,string)": FunctionFragment;
-        "checkIn(uint256)": FunctionFragment;
+        "checkIn(uint256,(address,address,uint256,bytes))": FunctionFragment;
         "checkOut(uint256)": FunctionFragment;
         "deactivateLodgingFacility(bytes32)": FunctionFragment;
         "deleteLodgingFacility(bytes32)": FunctionFragment;
@@ -30,7 +49,7 @@ export interface IStaysInterface extends utils.Interface {
     };
     encodeFunctionData(functionFragment: "activateLodgingFacility", values: [BytesLike]): string;
     encodeFunctionData(functionFragment: "addSpace", values: [BytesLike, BigNumberish, BigNumberish, boolean, string]): string;
-    encodeFunctionData(functionFragment: "checkIn", values: [BigNumberish]): string;
+    encodeFunctionData(functionFragment: "checkIn", values: [BigNumberish, IStays.CheckInVoucherStruct]): string;
     encodeFunctionData(functionFragment: "checkOut", values: [BigNumberish]): string;
     encodeFunctionData(functionFragment: "deactivateLodgingFacility", values: [BytesLike]): string;
     encodeFunctionData(functionFragment: "deleteLodgingFacility", values: [BytesLike]): string;
@@ -213,7 +232,7 @@ export interface IStays extends BaseContract {
         addSpace(_lodgingFacilityId: BytesLike, _capacity: BigNumberish, _pricePerNightWei: BigNumberish, _active: boolean, _dataURI: string, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<ContractTransaction>;
-        checkIn(_tokenId: BigNumberish, overrides?: Overrides & {
+        checkIn(_tokenId: BigNumberish, voucher: IStays.CheckInVoucherStruct, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<ContractTransaction>;
         checkOut(_tokenId: BigNumberish, overrides?: Overrides & {
@@ -297,7 +316,7 @@ export interface IStays extends BaseContract {
     addSpace(_lodgingFacilityId: BytesLike, _capacity: BigNumberish, _pricePerNightWei: BigNumberish, _active: boolean, _dataURI: string, overrides?: Overrides & {
         from?: string | Promise<string>;
     }): Promise<ContractTransaction>;
-    checkIn(_tokenId: BigNumberish, overrides?: Overrides & {
+    checkIn(_tokenId: BigNumberish, voucher: IStays.CheckInVoucherStruct, overrides?: Overrides & {
         from?: string | Promise<string>;
     }): Promise<ContractTransaction>;
     checkOut(_tokenId: BigNumberish, overrides?: Overrides & {
@@ -377,7 +396,7 @@ export interface IStays extends BaseContract {
     callStatic: {
         activateLodgingFacility(_lodgingFacilityId: BytesLike, overrides?: CallOverrides): Promise<void>;
         addSpace(_lodgingFacilityId: BytesLike, _capacity: BigNumberish, _pricePerNightWei: BigNumberish, _active: boolean, _dataURI: string, overrides?: CallOverrides): Promise<void>;
-        checkIn(_tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
+        checkIn(_tokenId: BigNumberish, voucher: IStays.CheckInVoucherStruct, overrides?: CallOverrides): Promise<void>;
         checkOut(_tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
         deactivateLodgingFacility(_lodgingFacilityId: BytesLike, overrides?: CallOverrides): Promise<void>;
         deleteLodgingFacility(_lodgingFacilityId: BytesLike, overrides?: CallOverrides): Promise<void>;
@@ -454,7 +473,7 @@ export interface IStays extends BaseContract {
         addSpace(_lodgingFacilityId: BytesLike, _capacity: BigNumberish, _pricePerNightWei: BigNumberish, _active: boolean, _dataURI: string, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<BigNumber>;
-        checkIn(_tokenId: BigNumberish, overrides?: Overrides & {
+        checkIn(_tokenId: BigNumberish, voucher: IStays.CheckInVoucherStruct, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<BigNumber>;
         checkOut(_tokenId: BigNumberish, overrides?: Overrides & {
@@ -515,7 +534,7 @@ export interface IStays extends BaseContract {
         addSpace(_lodgingFacilityId: BytesLike, _capacity: BigNumberish, _pricePerNightWei: BigNumberish, _active: boolean, _dataURI: string, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<PopulatedTransaction>;
-        checkIn(_tokenId: BigNumberish, overrides?: Overrides & {
+        checkIn(_tokenId: BigNumberish, voucher: IStays.CheckInVoucherStruct, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<PopulatedTransaction>;
         checkOut(_tokenId: BigNumberish, overrides?: Overrides & {

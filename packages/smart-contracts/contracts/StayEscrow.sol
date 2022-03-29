@@ -11,48 +11,54 @@ abstract contract StayEscrow {
 
   enum State {
     Checkin,
-    Checkout
+    Checkout,
+    Closed
   }
 
-  event Deposited(address indexed payee, uint256 weiAmount, bytes32 spaceId);
-  event Withdraw(address indexed payer, address indexed payee, uint256 weiAmount, bytes32 spaceId);
+  event Deposited(address indexed payee, uint256 weiAmount, bytes32 spaceId, uint256 tokenId);
+  event Withdraw(address indexed payer, address indexed payee, uint256 weiAmount, bytes32 spaceId, uint256 tokenId);
 
-  // spaceId => payer address => deposit uint256
-  mapping(bytes32 => mapping (address => uint256)) private _deposits;
-  mapping(bytes32 => mapping (address => State)) private _states;
+  // spaceId => payer address => tokenId => deposit
+  mapping(bytes32 => mapping (address => mapping(uint256 => uint256))) private _deposits;
 
-  function depositOf(address payer, bytes32 spaceId) public view returns (uint256) {
-    return _deposits[spaceId][payer];
+  // spaceId => payer address => tokenId => State
+  mapping(bytes32 => mapping (address => mapping(uint256 => State))) private _states;
+
+  function depositOf(address payer, bytes32 spaceId, uint256 tokenId) public view returns (uint256) {
+    return _deposits[spaceId][payer][tokenId];
   }
 
-  function depositState(address payer, bytes32 spaceId) public view returns (State) {
-    return _states[spaceId][payer];
+  function depositState(address payer, bytes32 spaceId, uint256 tokenId) public view returns (State) {
+    return _states[spaceId][payer][tokenId];
   }
 
-  function deposit(address payer, bytes32 spaceId) public payable virtual {
+  function deposit(address payer, bytes32 spaceId, uint256 tokenId) public payable virtual {
     uint256 amount = msg.value;
-    _deposits[spaceId][payer] += amount;
-    _states[spaceId][payer] = State.Checkin;
-    emit Deposited(payer, amount, spaceId);
+    _deposits[spaceId][payer][tokenId] += amount;
+    _states[spaceId][payer][tokenId] = State.Checkin;
+    emit Deposited(payer, amount, spaceId, tokenId);
   }
 
   // Complete withdraw  - state "Checkout" only
   function withdraw(
     address payer,
     address payable payee,
-    bytes32 spaceId
+    bytes32 spaceId,
+    uint256 tokenId
   ) internal virtual {
-    uint256 payment = _deposits[spaceId][payer];
+    uint256 payment = _deposits[spaceId][payer][tokenId];
+
     require(payment >= 0, "Insufficient funds");
     require(
-      _states[spaceId][payer] == State.Checkout,
+      _states[spaceId][payer][tokenId] == State.Checkout,
       "Complete withdraw not allowed in this state"
     );
-    _deposits[spaceId][payer] = 0;
+    _deposits[spaceId][payer][tokenId] = 0;
+    _states[spaceId][payer][tokenId] = State.Closed;
 
-    if (payment == 0) {
+    if (payment > 0) {
       payee.sendValue(payment);
-      emit Withdraw(payer, payee, payment, spaceId);
+      emit Withdraw(payer, payee, payment, spaceId, tokenId);
     }
   }
 
@@ -61,12 +67,15 @@ abstract contract StayEscrow {
     address payer,
     address payable payee,
     uint256 payment,
-    bytes32 spaceId
+    bytes32 spaceId,
+    uint256 tokenId
   ) internal virtual {
-    require(payment <= _deposits[spaceId][payer], "Insufficient funds");
-    _deposits[spaceId][payer] = _deposits[spaceId][payer] - payment;
-    _states[spaceId][payer] = State.Checkout;
+    require(payment <= _deposits[spaceId][payer][tokenId], "Insufficient funds");
+
+    _deposits[spaceId][payer][tokenId] = _deposits[spaceId][payer][tokenId] - payment;
+    _states[spaceId][payer][tokenId] = State.Checkout;
     payee.sendValue(payment);
-    emit Withdraw(payer, payee, payment, spaceId);
+
+    emit Withdraw(payer, payee, payment, spaceId, tokenId);
   }
 }

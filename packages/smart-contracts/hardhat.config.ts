@@ -51,6 +51,7 @@ const config: HardhatUserConfig = {
         : undefined,
       saveDeployments: true,
       tags: ['local', 'forked'],
+      allowUnlimitedContractSize: true,
     },
     sokol: {
       url: 'https://sokol.poa.network',

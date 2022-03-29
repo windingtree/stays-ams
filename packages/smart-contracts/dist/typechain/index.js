@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Stays__factory = exports.StayEscrow__factory = exports.IStays__factory = exports.IERC165__factory = exports.ERC165__factory = exports.IERC721Receiver__factory = exports.IERC721__factory = exports.IERC721Metadata__factory = exports.IERC721Enumerable__factory = exports.ERC721URIStorage__factory = exports.ERC721Enumerable__factory = exports.ERC721__factory = void 0;
+exports.Stays__factory = exports.StayEscrow__factory = exports.IStays__factory = exports.IERC165__factory = exports.ERC165__factory = exports.IERC721Receiver__factory = exports.IERC721__factory = exports.IERC721Metadata__factory = exports.IERC721Enumerable__factory = exports.ERC721URIStorage__factory = exports.ERC721Enumerable__factory = exports.ERC721__factory = exports.IERC1271__factory = void 0;
+var IERC1271__factory_1 = require("./factories/IERC1271__factory");
+Object.defineProperty(exports, "IERC1271__factory", { enumerable: true, get: function () { return IERC1271__factory_1.IERC1271__factory; } });
 var ERC721__factory_1 = require("./factories/ERC721__factory");
 Object.defineProperty(exports, "ERC721__factory", { enumerable: true, get: function () { return ERC721__factory_1.ERC721__factory; } });
 var ERC721Enumerable__factory_1 = require("./factories/ERC721Enumerable__factory");
