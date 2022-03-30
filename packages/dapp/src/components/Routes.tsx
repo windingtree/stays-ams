@@ -13,6 +13,7 @@ import { Rooms } from "../pages/Rooms";
 import { RoomProfile } from "../pages/RoomProfile";
 import { Space } from '../pages/Space';
 import { MyTokens } from '../pages/MyTokens';
+import { CheckIn } from '../pages/CheckIn';
 
 export interface RouteConfig {
   path: string;
@@ -61,6 +62,13 @@ export const pagesRoutesConfig: Routes = [
     element: <MyTokens />,
     title: 'My Stay Tokens',
     label: "My Tokens",
+    protected: true,
+  },
+  {
+    path: '/check-in',
+    element: <CheckIn />,
+    title: 'Check In',
+    label: 'Check In',
     protected: true,
   },
 ];
