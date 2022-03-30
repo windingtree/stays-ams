@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon';
 import { Grid, Box, TextInput, Button, Text, DateInput } from 'grommet';
 import { useNavigate } from 'react-router-dom';
-import { useState, useMemo, useEffect, useCallback } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useAppState } from '../../store';
 import { ThemeMode } from '../SwitchThemeMode';
 import styled from 'styled-components';
@@ -30,6 +30,9 @@ const dateFormat = new Intl.DateTimeFormat(undefined, {
   day: 'numeric',
 });
 
+const today = DateTime.now().set({ hour: 12 });
+const tomorrow = today.plus({ days: 1 });
+
 
 export const SearchForm: React.FC<{
   getDate: (days: number) => DateTime,
@@ -39,26 +42,26 @@ export const SearchForm: React.FC<{
 }> = ({ getDate, startDay, numberOfDays, initGuestsAmount }) => {
   const { themeMode } = useAppState();
 
-  const [departureDate, setDepartureDate] = useState<string>();
-  const [returnDate, setReturnDate] = useState<string>();
+  const [departureDate, setDepartureDate] = useState<string>(today.toISO());
+  const [returnDate, setReturnDate] = useState<string>(tomorrow.toISO());
 
-  useEffect(() => {
-    const now = DateTime.now().set({ hour: 0 })
-    // console.log('kkk-now', now)
-    const tomorrow = now.plus({ days: 1 })
-    const departureDay = getDate(startDay ?? 1)
-    const returnDay = getDate((startDay ?? 1) + (numberOfDays ?? 7))
-    console.log('kkk-now-', now)
-    console.log('kkk-startDay', startDay)
-    console.log('kkk-departure', departureDay)
-    // console.log('kkk-return', departureDay.toMillis() > now.toMillis() )
-    setDepartureDate(departureDay.toMillis() > now.toMillis() ? departureDay.toISO() : now.toISO())
-    setReturnDate(returnDay.toMillis() > tomorrow.toMillis() ? returnDay.toISO() : tomorrow.toISO())
-    console.log('kkk-departure-iso', departureDay.toISO())
-    // console.log('kkk2', returnDay.toISODate(), departureDay.toISODate())
-    // console.log('kkk3', returnDay, departureDay)
+  // useEffect(() => {
+  //   const now = DateTime.now().set({ hour: 0 })
+  //   // console.log('kkk-now', now)
+  //   const tomorrow = now.plus({ days: 1 })
+  //   const departureDay = getDate(startDay ?? 1)
+  //   const returnDay = getDate((startDay ?? 1) + (numberOfDays ?? 7))
+  //   console.log('kkk-now-', now)
+  //   console.log('kkk-startDay', startDay)
+  //   console.log('kkk-departure', departureDay)
+  //   // console.log('kkk-return', departureDay.toMillis() > now.toMillis() )
+  //   setDepartureDate(departureDay.toMillis() > now.toMillis() ? departureDay.toISO() : now.toISO())
+  //   setReturnDate(returnDay.toMillis() > tomorrow.toMillis() ? returnDay.toISO() : tomorrow.toISO())
+  //   console.log('kkk-departure-iso', departureDay.toISO())
+  //   // console.log('kkk2', returnDay.toISODate(), departureDay.toISODate())
+  //   // console.log('kkk3', returnDay, departureDay)
 
-  }, [getDate, startDay, numberOfDays])
+  // }, [getDate, startDay, numberOfDays])
 
   const [guestsAmount, setGuestsAmount] = useState(initGuestsAmount ?? 1);
 
