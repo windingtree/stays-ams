@@ -1,47 +1,70 @@
-import { Grid, Box, TextInput, Button, Text } from 'grommet';
-import { DateRangePickup, Label } from './date-range-pickup';
+import { DateTime } from 'luxon';
+import { Grid, Box, TextInput, Button, Text, DateInput } from 'grommet';
 import { useNavigate } from 'react-router-dom';
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useCallback } from 'react'
 import { useAppState } from '../../store';
 import { ThemeMode } from '../SwitchThemeMode';
+import styled from 'styled-components';
 
-export const parseDateToDays = (dayZero?: Date, firstDate?: Date, secondDate?: Date) => {
+export const Label = styled.div`
+	@include g-font($g-fontsize-xs,$glider-color-text-labels,$g-fontweight-normal);
+	margin-left: 4px;
+`;
+
+export const parseDateToDays = (dayZero: DateTime, firstDate: DateTime, secondDate: DateTime) => {
   const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
-
-  const startDay = Math.round((new Date(firstDate ?? '').getTime() - new Date(dayZero ?? '').getTime()) / oneDay)
-  const numberOfDays = Math.round((new Date(secondDate ?? '').getTime() - new Date(firstDate ?? '').getTime()) / oneDay)
+  // const cleanZero = dayZero.minus({hour: dayZero.hour, minute:dayZero.minute, second:dayZero.second,millisecond:dayZero.millisecond})
+  // const cleanZero = firstDate.diff(cleanZero).milliseconds
+  // console.log('kkk',dayZero,firstDate,secondDate)
+  const startDay = Math.round(firstDate.diff(dayZero).toMillis() / oneDay)
+  const numberOfDays = Math.round(secondDate.diff(firstDate).toMillis() / oneDay)
+  // console.log('kkk2',startDay,numberOfDays)
   return {
     startDay,
     numberOfDays
   }
 };
 
+const dateFormat = new Intl.DateTimeFormat(undefined, {
+  month: 'short',
+  day: 'numeric',
+});
+
+
 export const SearchForm: React.FC<{
-  getDate: Function,
+  getDate: (days: number) => DateTime,
   startDay?: number | undefined,
   numberOfDays?: number | undefined,
   initGuestsAmount?: number | undefined,
 }> = ({ getDate, startDay, numberOfDays, initGuestsAmount }) => {
   const { themeMode } = useAppState();
 
-  const [departureDate, setDepartureDate] = useState<Date>();
-  const [returnDate, setReturnDate] = useState<Date>();
+  const [departureDate, setDepartureDate] = useState<string>();
+  const [returnDate, setReturnDate] = useState<string>();
 
   useEffect(() => {
-    const now = new Date()
-    const tomorrow = new Date(now)
-    tomorrow.setDate(tomorrow.getDate() + 1)
-    const departureDay: Date = getDate(startDay ?? 1).toJSDate()
-    const returnDay: Date = getDate((startDay ?? 1) + (numberOfDays ?? 7)).toJSDate()
+    const now = DateTime.now().set({ hour: 0 })
+    // console.log('kkk-now', now)
+    const tomorrow = now.plus({ days: 1 })
+    const departureDay = getDate(startDay ?? 1)
+    const returnDay = getDate((startDay ?? 1) + (numberOfDays ?? 7))
+    console.log('kkk-now-', now)
+    console.log('kkk-startDay', startDay)
+    console.log('kkk-departure', departureDay)
+    // console.log('kkk-return', departureDay.toMillis() > now.toMillis() )
+    setDepartureDate(departureDay.toMillis() > now.toMillis() ? departureDay.toISO() : now.toISO())
+    setReturnDate(returnDay.toMillis() > tomorrow.toMillis() ? returnDay.toISO() : tomorrow.toISO())
+    console.log('kkk-departure-iso', departureDay.toISO())
+    // console.log('kkk2', returnDay.toISODate(), departureDay.toISODate())
+    // console.log('kkk3', returnDay, departureDay)
 
-    setReturnDate(returnDay.getTime() > now.getTime() ? returnDay : tomorrow)
-    setDepartureDate(departureDay.getTime() > now.getTime() ? departureDay : now)
-  }, [getDate, setDepartureDate, setReturnDate, startDay, numberOfDays])
+  }, [getDate, startDay, numberOfDays])
 
   const [guestsAmount, setGuestsAmount] = useState(initGuestsAmount ?? 1);
 
   const query = useMemo(() => {
-    const { startDay, numberOfDays } = parseDateToDays(getDate(0).toJSDate(), departureDate, returnDate)
+    console.log('departure date', departureDate)
+    const { startDay, numberOfDays } = parseDateToDays(getDate(0), DateTime.fromISO(departureDate ?? ''), DateTime.fromISO(returnDate ?? ''))
     return new URLSearchParams([
       ['startDay', String(startDay)],
       ['numberOfDays', String(numberOfDays)],
@@ -50,6 +73,30 @@ export const SearchForm: React.FC<{
   }, [departureDate, returnDate, guestsAmount, getDate])
 
   const navigate = useNavigate()
+
+
+  const handleDateChange = ({ value }: { value: string[] }) => {
+    console.log('kkk-onSubmit', value)
+    const now = DateTime.now()
+    const tomorrow = now.plus({ days: 1 })
+
+    if (now.toMillis() > DateTime.fromISO(value[0]).toMillis()) {
+      setDepartureDate(now.toISO())
+    } else {
+      setDepartureDate(value[0])
+    }
+
+    if (tomorrow.toMillis() > DateTime.fromISO(value[1]).toMillis()) {
+      setReturnDate(tomorrow.toISO())
+    } else {
+      setReturnDate(value[1])
+    }
+  }
+
+  useEffect(() => {
+
+    console.log('kkk', departureDate, returnDate)
+  }, [departureDate, returnDate])
 
   if (departureDate === undefined || returnDate === undefined) {
     return null
@@ -81,14 +128,24 @@ export const SearchForm: React.FC<{
             </Text>
           </Box>
         </Box>
-        <Box pad='small'>
-          <DateRangePickup
-            onStartDateChanged={setDepartureDate}
-            onEndDateChanged={setReturnDate}
-            initialStart={departureDate}
-            initialEnd={returnDate}
-            label='When'
-            displayVenueBadge={true}
+        <Box pad='small'
+          height='100%'
+          direction='column'
+        >
+          <Label>When</Label>
+          <DateInput
+            buttonProps={{
+              label: `${dateFormat.format(new Date(departureDate))} - ${dateFormat.format(new Date(returnDate))}`,
+              size: 'large',
+            }}
+            calendarProps={{
+              fill: false,
+              alignSelf: 'center',
+              margin: 'small',
+              size: 'medium'
+            }}
+            value={[departureDate, returnDate]}
+            onChange={({ value }) => handleDateChange({ value } as { value: string[] })}
           />
         </Box>
         <Box

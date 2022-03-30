@@ -14,6 +14,7 @@ import { utils } from 'ethers'
 
 export const Space: React.FC = () => {
   const {
+    account,
     searchSpaces,
     themeMode,
     searchParams,
@@ -52,6 +53,17 @@ export const Space: React.FC = () => {
       }
       if (space === undefined) {
         throw new Error('space is undefined')
+      }
+      if (!account) {
+        throw new Error('account is undefined')
+      }
+      if (!provider) {
+        throw new Error('provider is undefined')
+      }
+      const balance = await provider.getBalance(account)
+      const total = Number(utils.formatUnits(space.contractData.pricePerNightWei, 'ether')) * Number(searchParams.numberOfDays)
+      if (Number(utils.formatUnits(balance, 'ether')) < total) {
+        throw new Error('not enough DAI')
       }
       setError(undefined);
 
