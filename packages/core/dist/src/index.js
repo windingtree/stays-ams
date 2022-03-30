@@ -17,6 +17,7 @@ const org_id_utils_1 = require("@windingtree/org.id-utils");
 // API
 const getLodgingFacilityIds_1 = require("./api/getLodgingFacilityIds");
 const getNewAndUpdatedFacilityIds_1 = require("./api/getNewAndUpdatedFacilityIds");
+const getLodgingFacilityIdsByOwner_1 = require("./api/getLodgingFacilityIdsByOwner");
 const getSpaceIds_1 = require("./api/getSpaceIds");
 const getAvailability_1 = require("./api/getAvailability");
 const getLodgingFacility_1 = require("./api/getLodgingFacility");
@@ -64,6 +65,9 @@ class Contract {
     }
     getLodgingFacilityIds(active) {
         return (0, getLodgingFacilityIds_1.getLodgingFacilityIds)(this.contract, active);
+    }
+    getLodgingFacilityIdsByOwner(owner) {
+        return (0, getLodgingFacilityIdsByOwner_1.getLodgingFacilityIdsByOwner)(this.contract, owner);
     }
     getNewAndUpdatedFacilityIds(fromBlock) {
         return (0, getNewAndUpdatedFacilityIds_1.getNewAndUpdatedFacilityIds)(this.contract, fromBlock);

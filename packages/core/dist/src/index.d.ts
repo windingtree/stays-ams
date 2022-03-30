@@ -14,6 +14,7 @@ export declare class Contract {
     constructor(contractAddress: string, providerOrUri: KnownProvider, web3Storage: Web3StorageApi);
     getDayZero(): Promise<number>;
     getLodgingFacilityIds(active: boolean): Promise<string[]>;
+    getLodgingFacilityIdsByOwner(owner: string): Promise<string[]>;
     getNewAndUpdatedFacilityIds(fromBlock: number): Promise<string[]>;
     getSpaceIds(lodgingFacilityId: string, active: boolean): Promise<string[]>;
     getAvailability(spaceId: string, startDay: number, numberOfDays: number): Promise<number[]>;

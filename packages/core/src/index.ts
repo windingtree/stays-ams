@@ -16,6 +16,7 @@ import { regexp }  from '@windingtree/org.id-utils';
 // API
 import { getLodgingFacilityIds } from './api/getLodgingFacilityIds';
 import { getNewAndUpdatedFacilityIds } from './api/getNewAndUpdatedFacilityIds';
+import { getLodgingFacilityIdsByOwner } from './api/getLodgingFacilityIdsByOwner';
 import { getSpaceIds } from './api/getSpaceIds';
 import { getAvailability } from './api/getAvailability';
 import { getLodgingFacility } from './api/getLodgingFacility';
@@ -98,6 +99,10 @@ export class Contract {
 
   getLodgingFacilityIds(active: boolean): Promise<string[]> {
     return getLodgingFacilityIds(this.contract, active);
+  }
+
+  getLodgingFacilityIdsByOwner(owner: string): Promise<string[]> {
+    return getLodgingFacilityIdsByOwner(this.contract, owner);
   }
 
   getNewAndUpdatedFacilityIds(fromBlock: number): Promise<string[]> {
