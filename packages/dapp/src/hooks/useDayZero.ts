@@ -18,7 +18,7 @@ export const useDayZero = (
   provider: providers.JsonRpcProvider | undefined,
   ipfsNode: IPFS | undefined
 ): UseDayZeroHook => {
-  const [contract,,] = useContract(provider, ipfsNode);
+  const [contract, ,] = useContract(provider, ipfsNode);
   const [isReady, setIsReady] = useState<boolean>(false);
   const [dayZero, setDayZero] = useState<number | undefined>();
   const [error, setError] = useState<string | undefined>();
@@ -50,10 +50,12 @@ export const useDayZero = (
       if (!dayZero) {
         throw new Error('getDate utility is not ready');
       }
-      logger.debug('getDate params', dayZero, days);
+      // logger.debug('getDate params', dayZero, days);
+      console.log('zzz-zero', DateTime.fromMillis(dayZero * 1000))
+      const cleanZero = DateTime.fromMillis(dayZero * 1000).set({hour: 0})
       return DateTime.fromMillis(
-        (dayZero * 1000) + days * 86400 * 1000
-      );
+        cleanZero.toMillis() + days * 86400 * 1000
+      )
     },
     [dayZero]
   );
