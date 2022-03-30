@@ -79,6 +79,11 @@ export const useSmartContractData = (
     async (contract: Contract, fromBlock?: number) => {
       const lodgingFacilities = await loadLodgingFacilities(contract, fromBlock);
       logger.debug(`Facilities from block ${fromBlock ? fromBlock : 0}`, lodgingFacilities);
+
+      if (fromBlock !== undefined && lodgingFacilities.length === 0) {
+        return;
+      }
+
       const blockNumber = await contract.provider.getBlockNumber();
 
       // Add all obtained records to state

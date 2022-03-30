@@ -32,7 +32,9 @@ export const useDayZero = (
       try {
         setError(undefined);
         setIsReady(false);
+        logger.debug('getDayZero start');
         const dz = await contract.getDayZero();
+        logger.debug('getDayZero', dz);
         setDayZero(dz);
         setIsReady(true);
       } catch (err) {

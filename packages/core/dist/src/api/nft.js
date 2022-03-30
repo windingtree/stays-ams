@@ -23,13 +23,25 @@ const getTokensOfOwner = (contract, owner) => __awaiter(void 0, void 0, void 0, 
 });
 exports.getTokensOfOwner = getTokensOfOwner;
 const getToken = (contract, tokenId) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     const owner = yield contract.ownerOf(tokenId);
     const tokenUri = yield contract.tokenURI(tokenId);
     const data = (0, dataUri_1.decodeDataUri)(tokenUri, true);
+    const spaceId = (_a = data.attributes) === null || _a === void 0 ? void 0 : _a.find(a => a.trait_type === 'spaceId');
+    if (!spaceId) {
+        throw new Error('Unable to get space Id from the token metadata');
+    }
+    const statuses = [
+        'booked',
+        'checked-in',
+        'checked-out'
+    ];
+    const status = yield contract.depositState(owner, spaceId.value, tokenId);
     return {
         tokenId,
         owner,
         tokenUri,
+        status: statuses[status],
         data
     };
 });

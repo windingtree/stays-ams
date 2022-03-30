@@ -28,10 +28,33 @@ export const getToken = async (
   const tokenUri = await contract.tokenURI(tokenId);
   const data = decodeDataUri(tokenUri, true) as TokenData;
 
+  const spaceId = data.attributes?.find(
+    a => a.trait_type === 'spaceId'
+  );
+
+  if (!spaceId) {
+    throw new Error(
+      'Unable to get space Id from the token metadata'
+    );
+  }
+
+  const statuses = [
+    'booked',
+    'checked-in',
+    'checked-out'
+  ];
+
+  const status = await contract.depositState(
+    owner,
+    spaceId.value,
+    tokenId
+  );
+
   return {
     tokenId,
     owner,
     tokenUri,
+    status: statuses[status],
     data
   };
 };

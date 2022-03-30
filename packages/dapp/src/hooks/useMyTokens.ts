@@ -39,14 +39,18 @@ export const useMyTokens = (
       try {
         setError(undefined);
         setLoading(true);
+        logger.debug('Start loading tokens');
 
         const tokensIds = await contract.getTokensOfOwner(owner);
+        logger.debug('tokensIds', tokensIds);
+
         const tokensOfOwner = await Promise.all(
           tokensIds.map(
             tokenId => contract.getToken(tokenId)
           )
         );
         setTokens(tokensOfOwner);
+        logger.debug('tokensOfOwner', tokensOfOwner);
 
         setLoading(false);
       } catch (err) {

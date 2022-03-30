@@ -27,7 +27,6 @@ const book_1 = require("./api/book");
 const nft_1 = require("./api/nft");
 const getDayZero_1 = require("./api/getDayZero");
 const checkIn_1 = require("./api/checkIn");
-const getTokenStatus_1 = require("./api/getTokenStatus");
 __exportStar(require("./types"), exports);
 class Contract {
     constructor(contractAddress, providerOrUri, web3Storage) {
@@ -98,9 +97,6 @@ class Contract {
     }
     checkIn(tokenId, voucher, overrides, transactionHashCb, confirmations) {
         return (0, checkIn_1.checkIn)(this.contract, tokenId, voucher, overrides, transactionHashCb, confirmations);
-    }
-    getTokenStatus(tokenId) {
-        return (0, getTokenStatus_1.getTokenStatus)(this.contract, tokenId);
     }
 }
 exports.Contract = Contract;

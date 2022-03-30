@@ -79,6 +79,7 @@ export const TokenView = ({
   getDate,
   isGetDateReady,
   facilityOwner,
+  status,
   data: {
     name,
     description,
@@ -132,6 +133,20 @@ export const TokenView = ({
             fit='cover'
             src={image}
           />
+          <Grid
+            fill='horizontal'
+            pad='small'
+            border='bottom'
+            columns={['small', 'auto']}
+            responsive
+          >
+            <Box>
+              <Text weight='bold'>Status</Text>
+            </Box>
+            <Box>
+              <Text>{status ?? 'unknown'}</Text>
+            </Box>
+          </Grid>
           <Grid
             fill='horizontal'
             pad='small'
@@ -204,7 +219,7 @@ export const TokenView = ({
 export const MyTokens = () => {
   const { provider, ipfsNode, account } = useAppState();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [getDate, isGetDateReady,] = useDayZero(provider, ipfsNode);
+  const [getDate, isGetDateReady, getDateError] = useDayZero(provider, ipfsNode);
   const tokenId = useMemo(
     () => searchParams.get('tokenId') || undefined,
     [searchParams]
@@ -220,6 +235,10 @@ export const MyTokens = () => {
     tokenId
   );
   const { winWidth } = useWindowsDimension();
+  const isLoading = useMemo(
+    () => tokensLoading || tokenLoading || !isGetDateReady,
+    [tokensLoading, tokenLoading, isGetDateReady]
+  );
 
   // const tokensTest: StayToken[] = [
   //   {
@@ -275,25 +294,18 @@ export const MyTokens = () => {
         />
       }
 
-      <MessageBox type='info' show={tokensLoading}>
+    [{String(tokensLoading)}, {String(tokenLoading)}, {String(isGetDateReady)}]
+
+      <MessageBox type='info' show={isLoading}>
         <Box direction='row'>
           <Box>
-            Tokens are loading. Please wait..&nbsp;
+            Tokens data is loading. Please wait..&nbsp;
           </Box>
           <Spinner />
         </Box>
       </MessageBox>
 
-      <MessageBox type='info' show={tokenLoading || !isGetDateReady}>
-        <Box direction='row'>
-          <Box>
-            Details of the token #{tokenId} is loading. Please wait..&nbsp;
-          </Box>
-          <Spinner />
-        </Box>
-      </MessageBox>
-
-      <MessageBox type='info' show={!tokens || tokens.length === 0}>
+      <MessageBox type='info' show={!isLoading && (!tokens || tokens.length === 0)}>
         <Box>
           Tokens list is empty. It is a time to book a stay!
         </Box>
@@ -308,6 +320,12 @@ export const MyTokens = () => {
       <MessageBox type='error' show={!!tokenError}>
         <Box>
           {tokenError}
+        </Box>
+      </MessageBox>
+
+      <MessageBox type='error' show={!!getDateError}>
+        <Box>
+          {getDateError}
         </Box>
       </MessageBox>
 

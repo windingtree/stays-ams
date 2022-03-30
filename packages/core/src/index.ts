@@ -26,7 +26,6 @@ import { book } from './api/book';
 import { getTokensOfOwner, getToken } from './api/nft';
 import { getDayZero } from './api/getDayZero';
 import { checkIn } from './api/checkIn';
-import { getTokenStatus } from './api/getTokenStatus'
 
 export * from './types';
 
@@ -224,13 +223,6 @@ export class Contract {
       overrides,
       transactionHashCb,
       confirmations
-    );
-  }
-
-  getTokenStatus(tokenId: string): Promise<string> {
-    return getTokenStatus(
-      this.contract,
-      tokenId
     );
   }
 }

@@ -23,5 +23,6 @@ export interface StayToken {
   tokenId: string;
   owner: string;
   tokenUri: string;
+  status?: string;
   data: TokenData;
 }

@@ -10,11 +10,11 @@ export const Home = () => {
     isIpfsNodeConnecting,
     isBootstrapLoading,
     bootstrapped,
-    provider,
+    rpcProvider,
     ipfsNode
   } = useAppState();
 
-  const [getDate, isGetDateReady] = useDayZero(provider, ipfsNode);
+  const [getDate, isGetDateReady] = useDayZero(rpcProvider, ipfsNode);
 
   return (
     <PageWrapper>
