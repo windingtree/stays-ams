@@ -26,6 +26,7 @@ import { book } from './api/book';
 import { getTokensOfOwner, getToken } from './api/nft';
 import { getDayZero } from './api/getDayZero';
 import { checkIn } from './api/checkIn';
+import { checkOut } from './api/checkOut';
 
 export * from './types';
 
@@ -220,6 +221,21 @@ export class Contract {
       this.contract,
       tokenId,
       voucher,
+      overrides,
+      transactionHashCb,
+      confirmations
+    );
+  }
+
+  checkOut(
+    tokenId: string,
+    overrides?: MethodOverrides,
+    transactionHashCb?: TxHashCallbackFn,
+    confirmations?: number
+  ): Promise<void> {
+    return checkOut(
+      this.contract,
+      tokenId,
       overrides,
       transactionHashCb,
       confirmations

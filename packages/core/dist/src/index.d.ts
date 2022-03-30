@@ -26,4 +26,5 @@ export declare class Contract {
     addSpace(profileData: SpaceRaw, lodgingFacilityId: string, capacity: number, pricePerNightWei: string, active?: boolean, overrides?: MethodOverrides, transactionHashCb?: TxHashCallbackFn, confirmations?: number): Promise<string>;
     book(spaceId: string, startDay: number, numberOfDays: number, quantity: number, overrides?: MethodOverrides, transactionHashCb?: TxHashCallbackFn, confirmations?: number): Promise<string>;
     checkIn(tokenId: string, voucher: StaysVoucher, overrides?: MethodOverrides, transactionHashCb?: TxHashCallbackFn, confirmations?: number): Promise<void>;
+    checkOut(tokenId: string, overrides?: MethodOverrides, transactionHashCb?: TxHashCallbackFn, confirmations?: number): Promise<void>;
 }
