@@ -56,7 +56,7 @@ export const Search = () => {
       </MessageBox>
 
       {loading ? <Spinner color='accent-1' alignSelf='center' size='medium' /> : null}
-      {filteredSpaces !== undefined ? filteredSpaces.map((space) =>
+      {filteredSpaces !== undefined && isGetDateReady ? filteredSpaces.map((space) =>
         <SearchResultCard key={space.contractData.spaceId} space={space} />
       ) : null}
     </PageWrapper>

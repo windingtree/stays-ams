@@ -13,12 +13,8 @@ export const Label = styled.div`
 
 export const parseDateToDays = (dayZero: DateTime, firstDate: DateTime, secondDate: DateTime) => {
   const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
-  // const cleanZero = dayZero.minus({hour: dayZero.hour, minute:dayZero.minute, second:dayZero.second,millisecond:dayZero.millisecond})
-  // const cleanZero = firstDate.diff(cleanZero).milliseconds
-  // console.log('kkk',dayZero,firstDate,secondDate)
   const startDay = Math.round(firstDate.diff(dayZero).toMillis() / oneDay)
   const numberOfDays = Math.round(secondDate.diff(firstDate).toMillis() / oneDay)
-  // console.log('kkk2',startDay,numberOfDays)
   return {
     startDay,
     numberOfDays
@@ -45,29 +41,21 @@ export const SearchForm: React.FC<{
   const [departureDate, setDepartureDate] = useState<string>(today.toISO());
   const [returnDate, setReturnDate] = useState<string>(tomorrow.toISO());
 
-  // useEffect(() => {
-  //   const now = DateTime.now().set({ hour: 0 })
-  //   // console.log('kkk-now', now)
-  //   const tomorrow = now.plus({ days: 1 })
-  //   const departureDay = getDate(startDay ?? 1)
-  //   const returnDay = getDate((startDay ?? 1) + (numberOfDays ?? 7))
-  //   console.log('kkk-now-', now)
-  //   console.log('kkk-startDay', startDay)
-  //   console.log('kkk-departure', departureDay)
-  //   // console.log('kkk-return', departureDay.toMillis() > now.toMillis() )
-  //   setDepartureDate(departureDay.toMillis() > now.toMillis() ? departureDay.toISO() : now.toISO())
-  //   setReturnDate(returnDay.toMillis() > tomorrow.toMillis() ? returnDay.toISO() : tomorrow.toISO())
-  //   console.log('kkk-departure-iso', departureDay.toISO())
-  //   // console.log('kkk2', returnDay.toISODate(), departureDay.toISODate())
-  //   // console.log('kkk3', returnDay, departureDay)
+  useEffect(() => {
+    if (!!startDay && !!numberOfDays) {
+      const departureDay = getDate(startDay)
+      const returnDay = getDate(startDay + numberOfDays)
 
-  // }, [getDate, startDay, numberOfDays])
+      setDepartureDate(departureDay.toISO())
+      setReturnDate(returnDay.toISO())
+    }
+
+  }, [getDate, startDay, numberOfDays])
 
   const [guestsAmount, setGuestsAmount] = useState(initGuestsAmount ?? 1);
 
   const query = useMemo(() => {
-    console.log('departure date', departureDate)
-    const { startDay, numberOfDays } = parseDateToDays(getDate(0), DateTime.fromISO(departureDate ?? ''), DateTime.fromISO(returnDate ?? ''))
+    const { startDay, numberOfDays } = parseDateToDays(getDate(0), DateTime.fromISO(departureDate), DateTime.fromISO(returnDate))
     return new URLSearchParams([
       ['startDay', String(startDay)],
       ['numberOfDays', String(numberOfDays)],
@@ -79,8 +67,7 @@ export const SearchForm: React.FC<{
 
 
   const handleDateChange = ({ value }: { value: string[] }) => {
-    console.log('kkk-onSubmit', value)
-    const now = DateTime.now()
+    const now = DateTime.now().set({ hour: 12 })
     const tomorrow = now.plus({ days: 1 })
 
     if (now.toMillis() > DateTime.fromISO(value[0]).toMillis()) {
@@ -100,10 +87,6 @@ export const SearchForm: React.FC<{
 
     console.log('kkk', departureDate, returnDate)
   }, [departureDate, returnDate])
-
-  if (departureDate === undefined || returnDate === undefined) {
-    return null
-  }
 
   return (
     <Box pad={{ bottom: 'medium' }}>

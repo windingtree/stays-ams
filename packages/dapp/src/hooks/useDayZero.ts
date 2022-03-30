@@ -50,9 +50,8 @@ export const useDayZero = (
       if (!dayZero) {
         throw new Error('getDate utility is not ready');
       }
-      // logger.debug('getDate params', dayZero, days);
-      console.log('zzz-zero', DateTime.fromMillis(dayZero * 1000))
-      const cleanZero = DateTime.fromMillis(dayZero * 1000).set({hour: 0})
+      const cleanZero = DateTime.fromMillis(dayZero * 1000).set({ hour: 1 })
+      logger.debug('getDate params', cleanZero, days);
       return DateTime.fromMillis(
         cleanZero.toMillis() + days * 86400 * 1000
       )
