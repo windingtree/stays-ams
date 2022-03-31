@@ -14,6 +14,7 @@ import { RoomProfile } from "../pages/RoomProfile";
 import { Space } from '../pages/Space';
 import { MyTokens } from '../pages/MyTokens';
 import { CheckIn } from '../pages/CheckIn';
+import { CheckOut } from '../pages/CheckOut';
 
 export interface RouteConfig {
   path: string;
@@ -69,6 +70,13 @@ export const pagesRoutesConfig: Routes = [
     element: <CheckIn />,
     title: 'Check In',
     label: 'Check In',
+    protected: true,
+  },
+  {
+    path: '/check-out',
+    element: <CheckOut />,
+    title: 'Check Out',
+    label: 'Check Out',
     protected: true,
   },
 ];

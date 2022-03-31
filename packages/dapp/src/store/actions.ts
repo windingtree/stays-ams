@@ -36,7 +36,9 @@ export interface State {
   startIpfsNode: Function;
   stopIpfsNode: Function;
   isBootstrapLoading: boolean;
+  isOwnerBootstrapLoading: boolean;
   bootstrapped?: number;
+  ownerBootstrapped?: number;
   searchTimestamp?: number;
   lodgingFacilities: LodgingFacilityRecord[];
   searchSpaces: SpaceRecord[];
@@ -149,8 +151,18 @@ export interface SetBootstrapLoadingAction {
   payload: boolean;
 }
 
+export interface SetOwnerBootstrapLoadingAction {
+  type: 'SET_OWNER_BOOTSTRAP_LOADING';
+  payload: boolean;
+}
+
 export interface SetBootstrappedAction {
   type: 'SET_BOOTSTRAPPED';
+  payload: number;
+}
+
+export interface SetOwnerBootstrappedAction {
+  type: 'SET_OWNER_BOOTSTRAPPED';
   payload: number;
 }
 
@@ -179,8 +191,10 @@ export type Action =
   | SetRecordAction
   | RemoveRecordAction
   | ResetRecordAction
-  | SetBootstrapLoadingAction
   | SetBootstrappedAction
+  | SetBootstrapLoadingAction
+  | SetOwnerBootstrappedAction
+  | SetOwnerBootstrapLoadingAction
   | SetAvailabilityTimestampAction
   | SetSearchParamsAction
   | AddErrorAction
