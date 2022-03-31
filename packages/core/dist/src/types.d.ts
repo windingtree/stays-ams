@@ -20,3 +20,4 @@ export interface StayToken {
     status?: string;
     data: TokenData;
 }
+export declare type StayTokenState = 0 | 1 | 2;

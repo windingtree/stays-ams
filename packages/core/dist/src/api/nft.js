@@ -36,7 +36,7 @@ const getToken = (contract, tokenId) => __awaiter(void 0, void 0, void 0, functi
         'checked-in',
         'checked-out'
     ];
-    const status = yield contract.depositState(owner, spaceId.value, tokenId);
+    const status = yield contract.depositState(tokenId);
     return {
         tokenId,
         owner,
