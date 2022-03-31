@@ -1,16 +1,24 @@
-import type { LodgingFacility, Space } from 'stays-data-models';
+import type { LodgingFacility, LodgingFacilityRaw, Space, SpaceRaw } from 'stays-data-models';
 import type { Web3ModalProvider } from '../hooks/useWeb3Modal';
 import type { IPFS } from '@windingtree/ipfs-apis';
 import type { IProviderInfo } from 'web3modal';
 import type { providers } from 'ethers';
 import { ThemeMode } from '../components/SwitchThemeMode';
+import type { StayToken } from 'stays-core';
 export interface GenericStateRecord {
   id: string;
   [key: string]: unknown;
 }
 
-export interface LodgingFacilityRecord extends LodgingFacility, GenericStateRecord { }
+export interface LodgingFacilityRecord extends GenericStateRecord, LodgingFacility { }
 export interface SpaceRecord extends Space, GenericStateRecord { }
+
+export interface OwnerSpace extends SpaceRaw {
+  tokens: StayToken[]
+}
+export interface OwnerLodgingFacility extends Omit<LodgingFacilityRecord, 'spaces'> {
+  spaces: OwnerSpace[]
+}
 
 export interface SearchParams {
   // timestamp: number;
@@ -41,9 +49,11 @@ export interface State {
   ownerBootstrapped?: number;
   searchTimestamp?: number;
   lodgingFacilities: LodgingFacilityRecord[];
+  ownerLodgingFacilities?: OwnerLodgingFacility[];
   searchSpaces: SpaceRecord[];
   searchParams?: SearchParams;
   [key: string]: unknown | GenericStateRecord[];
+
 }
 
 export interface SetConnectingAction {
