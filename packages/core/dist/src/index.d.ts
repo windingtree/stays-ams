@@ -3,7 +3,7 @@ import type { Web3StorageApi } from '@windingtree/ipfs-apis';
 import type { LodgingFacilityRaw, LodgingFacility, SpaceRaw, Space } from 'stays-data-models';
 import type { Stays, StaysVoucher } from 'stays-smart-contracts';
 import type { MethodOverrides, TxHashCallbackFn } from './utils/sendHelper';
-import type { StayToken } from './types';
+import type { StayToken, StayTokenState } from './types';
 export * from './types';
 export declare type KnownProvider = providers.ExternalProvider | providers.JsonRpcProvider | providers.Web3Provider | providers.Provider | string;
 export declare class Contract {
@@ -22,6 +22,7 @@ export declare class Contract {
     getSpace(spaceId: string): Promise<Space | null>;
     getTokensOfOwner(owner: string): Promise<string[]>;
     getToken(tokenId: string): Promise<StayToken>;
+    getTokensBySpaceId(spaceId: string, state: StayTokenState): Promise<string[]>;
     registerLodgingFacility(profileData: LodgingFacilityRaw, active?: boolean, fren?: string, // address
     overrides?: MethodOverrides, transactionHashCb?: TxHashCallbackFn, confirmations?: number): Promise<string>;
     addSpace(profileData: SpaceRaw, lodgingFacilityId: string, capacity: number, pricePerNightWei: string, active?: boolean, overrides?: MethodOverrides, transactionHashCb?: TxHashCallbackFn, confirmations?: number): Promise<string>;

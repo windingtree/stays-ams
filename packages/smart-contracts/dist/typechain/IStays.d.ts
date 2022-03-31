@@ -31,16 +31,18 @@ export interface IStaysInterface extends utils.Interface {
         "deactivateLodgingFacility(bytes32)": FunctionFragment;
         "deleteLodgingFacility(bytes32)": FunctionFragment;
         "deleteSpace(bytes32)": FunctionFragment;
+        "deposit(address,bytes32,uint256)": FunctionFragment;
+        "depositOf(address,bytes32,uint256)": FunctionFragment;
+        "depositState(uint256)": FunctionFragment;
         "getActiveLodgingFacilityIds()": FunctionFragment;
         "getActiveSpaceIdsByFacilityId(bytes32)": FunctionFragment;
         "getAllLodgingFacilityIds()": FunctionFragment;
         "getAvailability(bytes32,uint256,uint256)": FunctionFragment;
-        "getCurrentStayIdsByFacilityId(bytes32)": FunctionFragment;
-        "getFutureStayIdsByFacilityId(bytes32)": FunctionFragment;
         "getLodgingFacilityById(bytes32)": FunctionFragment;
         "getLodgingFacilityIdsByOwner(address)": FunctionFragment;
         "getSpaceById(bytes32)": FunctionFragment;
         "getSpaceIdsByFacilityId(bytes32)": FunctionFragment;
+        "getTokensBySpaceId(bytes32,uint8)": FunctionFragment;
         "newStay(bytes32,uint256,uint256,uint256)": FunctionFragment;
         "registerLodgingFacility(string,bool)": FunctionFragment;
         "updateLodgingFacility(bytes32,string)": FunctionFragment;
@@ -54,16 +56,18 @@ export interface IStaysInterface extends utils.Interface {
     encodeFunctionData(functionFragment: "deactivateLodgingFacility", values: [BytesLike]): string;
     encodeFunctionData(functionFragment: "deleteLodgingFacility", values: [BytesLike]): string;
     encodeFunctionData(functionFragment: "deleteSpace", values: [BytesLike]): string;
+    encodeFunctionData(functionFragment: "deposit", values: [string, BytesLike, BigNumberish]): string;
+    encodeFunctionData(functionFragment: "depositOf", values: [string, BytesLike, BigNumberish]): string;
+    encodeFunctionData(functionFragment: "depositState", values: [BigNumberish]): string;
     encodeFunctionData(functionFragment: "getActiveLodgingFacilityIds", values?: undefined): string;
     encodeFunctionData(functionFragment: "getActiveSpaceIdsByFacilityId", values: [BytesLike]): string;
     encodeFunctionData(functionFragment: "getAllLodgingFacilityIds", values?: undefined): string;
     encodeFunctionData(functionFragment: "getAvailability", values: [BytesLike, BigNumberish, BigNumberish]): string;
-    encodeFunctionData(functionFragment: "getCurrentStayIdsByFacilityId", values: [BytesLike]): string;
-    encodeFunctionData(functionFragment: "getFutureStayIdsByFacilityId", values: [BytesLike]): string;
     encodeFunctionData(functionFragment: "getLodgingFacilityById", values: [BytesLike]): string;
     encodeFunctionData(functionFragment: "getLodgingFacilityIdsByOwner", values: [string]): string;
     encodeFunctionData(functionFragment: "getSpaceById", values: [BytesLike]): string;
     encodeFunctionData(functionFragment: "getSpaceIdsByFacilityId", values: [BytesLike]): string;
+    encodeFunctionData(functionFragment: "getTokensBySpaceId", values: [BytesLike, BigNumberish]): string;
     encodeFunctionData(functionFragment: "newStay", values: [BytesLike, BigNumberish, BigNumberish, BigNumberish]): string;
     encodeFunctionData(functionFragment: "registerLodgingFacility", values: [string, boolean]): string;
     encodeFunctionData(functionFragment: "updateLodgingFacility", values: [BytesLike, string]): string;
@@ -76,16 +80,18 @@ export interface IStaysInterface extends utils.Interface {
     decodeFunctionResult(functionFragment: "deactivateLodgingFacility", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "deleteLodgingFacility", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "deleteSpace", data: BytesLike): Result;
+    decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
+    decodeFunctionResult(functionFragment: "depositOf", data: BytesLike): Result;
+    decodeFunctionResult(functionFragment: "depositState", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "getActiveLodgingFacilityIds", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "getActiveSpaceIdsByFacilityId", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "getAllLodgingFacilityIds", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "getAvailability", data: BytesLike): Result;
-    decodeFunctionResult(functionFragment: "getCurrentStayIdsByFacilityId", data: BytesLike): Result;
-    decodeFunctionResult(functionFragment: "getFutureStayIdsByFacilityId", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "getLodgingFacilityById", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "getLodgingFacilityIdsByOwner", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "getSpaceById", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "getSpaceIdsByFacilityId", data: BytesLike): Result;
+    decodeFunctionResult(functionFragment: "getTokensBySpaceId", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "newStay", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "registerLodgingFacility", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "updateLodgingFacility", data: BytesLike): Result;
@@ -94,6 +100,7 @@ export interface IStaysInterface extends utils.Interface {
     events: {
         "CheckIn(uint256)": EventFragment;
         "CheckOut(uint256)": EventFragment;
+        "Deposited(address,uint256,bytes32,uint256)": EventFragment;
         "LodgingFacilityActiveState(bytes32,bool)": EventFragment;
         "LodgingFacilityCreated(bytes32,address,string)": EventFragment;
         "LodgingFacilityOwnershipTransfer(bytes32,address,address)": EventFragment;
@@ -103,9 +110,11 @@ export interface IStaysInterface extends utils.Interface {
         "SpaceAdded(bytes32,bytes32,uint256,uint256,bool,string)": EventFragment;
         "SpaceRemoved(bytes32)": EventFragment;
         "SpaceUpdated(bytes32,bytes32,uint256,uint256,bool,string)": EventFragment;
+        "Withdraw(address,address,uint256,bytes32,uint256)": EventFragment;
     };
     getEvent(nameOrSignatureOrTopic: "CheckIn"): EventFragment;
     getEvent(nameOrSignatureOrTopic: "CheckOut"): EventFragment;
+    getEvent(nameOrSignatureOrTopic: "Deposited"): EventFragment;
     getEvent(nameOrSignatureOrTopic: "LodgingFacilityActiveState"): EventFragment;
     getEvent(nameOrSignatureOrTopic: "LodgingFacilityCreated"): EventFragment;
     getEvent(nameOrSignatureOrTopic: "LodgingFacilityOwnershipTransfer"): EventFragment;
@@ -115,6 +124,7 @@ export interface IStaysInterface extends utils.Interface {
     getEvent(nameOrSignatureOrTopic: "SpaceAdded"): EventFragment;
     getEvent(nameOrSignatureOrTopic: "SpaceRemoved"): EventFragment;
     getEvent(nameOrSignatureOrTopic: "SpaceUpdated"): EventFragment;
+    getEvent(nameOrSignatureOrTopic: "Withdraw"): EventFragment;
 }
 export declare type CheckInEvent = TypedEvent<[BigNumber], {
     tokenId: BigNumber;
@@ -124,6 +134,18 @@ export declare type CheckOutEvent = TypedEvent<[BigNumber], {
     tokenId: BigNumber;
 }>;
 export declare type CheckOutEventFilter = TypedEventFilter<CheckOutEvent>;
+export declare type DepositedEvent = TypedEvent<[
+    string,
+    BigNumber,
+    string,
+    BigNumber
+], {
+    payee: string;
+    weiAmount: BigNumber;
+    spaceId: string;
+    tokenId: BigNumber;
+}>;
+export declare type DepositedEventFilter = TypedEventFilter<DepositedEvent>;
 export declare type LodgingFacilityActiveStateEvent = TypedEvent<[
     string,
     boolean
@@ -210,6 +232,20 @@ export declare type SpaceUpdatedEvent = TypedEvent<[
     dataURI: string;
 }>;
 export declare type SpaceUpdatedEventFilter = TypedEventFilter<SpaceUpdatedEvent>;
+export declare type WithdrawEvent = TypedEvent<[
+    string,
+    string,
+    BigNumber,
+    string,
+    BigNumber
+], {
+    payer: string;
+    payee: string;
+    weiAmount: BigNumber;
+    spaceId: string;
+    tokenId: BigNumber;
+}>;
+export declare type WithdrawEventFilter = TypedEventFilter<WithdrawEvent>;
 export interface IStays extends BaseContract {
     contractName: "IStays";
     connect(signerOrProvider: Signer | Provider | string): this;
@@ -247,18 +283,17 @@ export interface IStays extends BaseContract {
         deleteSpace(_spaceId: BytesLike, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<ContractTransaction>;
+        deposit(payer: string, spaceId: BytesLike, tokenId: BigNumberish, overrides?: PayableOverrides & {
+            from?: string | Promise<string>;
+        }): Promise<ContractTransaction>;
+        depositOf(payer: string, spaceId: BytesLike, tokenId: BigNumberish, overrides?: CallOverrides): Promise<[BigNumber]>;
+        depositState(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[number]>;
         getActiveLodgingFacilityIds(overrides?: CallOverrides): Promise<[string[]]>;
         getActiveSpaceIdsByFacilityId(_lodgingFacilityId: BytesLike, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<ContractTransaction>;
         getAllLodgingFacilityIds(overrides?: CallOverrides): Promise<[string[]]>;
         getAvailability(_spaceId: BytesLike, _startDay: BigNumberish, _numberOfDays: BigNumberish, overrides?: CallOverrides): Promise<[BigNumber[]]>;
-        getCurrentStayIdsByFacilityId(_lodgingFacilityId: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        getFutureStayIdsByFacilityId(_lodgingFacilityId: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
         getLodgingFacilityById(_lodgingFacilityId: BytesLike, overrides?: CallOverrides): Promise<[
             boolean,
             string,
@@ -291,6 +326,7 @@ export interface IStays extends BaseContract {
         getSpaceIdsByFacilityId(_lodgingFacilityId: BytesLike, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<ContractTransaction>;
+        getTokensBySpaceId(_spaceId: BytesLike, _state: BigNumberish, overrides?: CallOverrides): Promise<[BigNumber[]]>;
         newStay(_spaceId: BytesLike, _startDay: BigNumberish, _numberOfDays: BigNumberish, _quantity: BigNumberish, overrides?: PayableOverrides & {
             from?: string | Promise<string>;
         }): Promise<ContractTransaction>;
@@ -331,18 +367,17 @@ export interface IStays extends BaseContract {
     deleteSpace(_spaceId: BytesLike, overrides?: Overrides & {
         from?: string | Promise<string>;
     }): Promise<ContractTransaction>;
+    deposit(payer: string, spaceId: BytesLike, tokenId: BigNumberish, overrides?: PayableOverrides & {
+        from?: string | Promise<string>;
+    }): Promise<ContractTransaction>;
+    depositOf(payer: string, spaceId: BytesLike, tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+    depositState(tokenId: BigNumberish, overrides?: CallOverrides): Promise<number>;
     getActiveLodgingFacilityIds(overrides?: CallOverrides): Promise<string[]>;
     getActiveSpaceIdsByFacilityId(_lodgingFacilityId: BytesLike, overrides?: Overrides & {
         from?: string | Promise<string>;
     }): Promise<ContractTransaction>;
     getAllLodgingFacilityIds(overrides?: CallOverrides): Promise<string[]>;
     getAvailability(_spaceId: BytesLike, _startDay: BigNumberish, _numberOfDays: BigNumberish, overrides?: CallOverrides): Promise<BigNumber[]>;
-    getCurrentStayIdsByFacilityId(_lodgingFacilityId: BytesLike, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    getFutureStayIdsByFacilityId(_lodgingFacilityId: BytesLike, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
     getLodgingFacilityById(_lodgingFacilityId: BytesLike, overrides?: CallOverrides): Promise<[
         boolean,
         string,
@@ -375,6 +410,7 @@ export interface IStays extends BaseContract {
     getSpaceIdsByFacilityId(_lodgingFacilityId: BytesLike, overrides?: Overrides & {
         from?: string | Promise<string>;
     }): Promise<ContractTransaction>;
+    getTokensBySpaceId(_spaceId: BytesLike, _state: BigNumberish, overrides?: CallOverrides): Promise<BigNumber[]>;
     newStay(_spaceId: BytesLike, _startDay: BigNumberish, _numberOfDays: BigNumberish, _quantity: BigNumberish, overrides?: PayableOverrides & {
         from?: string | Promise<string>;
     }): Promise<ContractTransaction>;
@@ -401,12 +437,13 @@ export interface IStays extends BaseContract {
         deactivateLodgingFacility(_lodgingFacilityId: BytesLike, overrides?: CallOverrides): Promise<void>;
         deleteLodgingFacility(_lodgingFacilityId: BytesLike, overrides?: CallOverrides): Promise<void>;
         deleteSpace(_spaceId: BytesLike, overrides?: CallOverrides): Promise<void>;
+        deposit(payer: string, spaceId: BytesLike, tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
+        depositOf(payer: string, spaceId: BytesLike, tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+        depositState(tokenId: BigNumberish, overrides?: CallOverrides): Promise<number>;
         getActiveLodgingFacilityIds(overrides?: CallOverrides): Promise<string[]>;
         getActiveSpaceIdsByFacilityId(_lodgingFacilityId: BytesLike, overrides?: CallOverrides): Promise<string[]>;
         getAllLodgingFacilityIds(overrides?: CallOverrides): Promise<string[]>;
         getAvailability(_spaceId: BytesLike, _startDay: BigNumberish, _numberOfDays: BigNumberish, overrides?: CallOverrides): Promise<BigNumber[]>;
-        getCurrentStayIdsByFacilityId(_lodgingFacilityId: BytesLike, overrides?: CallOverrides): Promise<string[]>;
-        getFutureStayIdsByFacilityId(_lodgingFacilityId: BytesLike, overrides?: CallOverrides): Promise<string[]>;
         getLodgingFacilityById(_lodgingFacilityId: BytesLike, overrides?: CallOverrides): Promise<[
             boolean,
             string,
@@ -435,6 +472,7 @@ export interface IStays extends BaseContract {
             dataURI: string;
         }>;
         getSpaceIdsByFacilityId(_lodgingFacilityId: BytesLike, overrides?: CallOverrides): Promise<string[]>;
+        getTokensBySpaceId(_spaceId: BytesLike, _state: BigNumberish, overrides?: CallOverrides): Promise<BigNumber[]>;
         newStay(_spaceId: BytesLike, _startDay: BigNumberish, _numberOfDays: BigNumberish, _quantity: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
         "registerLodgingFacility(string,bool)"(_dataURI: string, _active: boolean, overrides?: CallOverrides): Promise<void>;
         "registerLodgingFacility(string,bool,address)"(_dataURI: string, _active: boolean, _fren: string, overrides?: CallOverrides): Promise<void>;
@@ -447,6 +485,8 @@ export interface IStays extends BaseContract {
         CheckIn(tokenId?: null): CheckInEventFilter;
         "CheckOut(uint256)"(tokenId?: null): CheckOutEventFilter;
         CheckOut(tokenId?: null): CheckOutEventFilter;
+        "Deposited(address,uint256,bytes32,uint256)"(payee?: string | null, weiAmount?: null, spaceId?: null, tokenId?: null): DepositedEventFilter;
+        Deposited(payee?: string | null, weiAmount?: null, spaceId?: null, tokenId?: null): DepositedEventFilter;
         "LodgingFacilityActiveState(bytes32,bool)"(facilityId?: null, active?: null): LodgingFacilityActiveStateEventFilter;
         LodgingFacilityActiveState(facilityId?: null, active?: null): LodgingFacilityActiveStateEventFilter;
         "LodgingFacilityCreated(bytes32,address,string)"(facilityId?: null, owner?: string | null, dataURI?: null): LodgingFacilityCreatedEventFilter;
@@ -465,6 +505,8 @@ export interface IStays extends BaseContract {
         SpaceRemoved(spaceId?: null): SpaceRemovedEventFilter;
         "SpaceUpdated(bytes32,bytes32,uint256,uint256,bool,string)"(spaceId?: null, facilityId?: null, capacity?: null, pricePerNightWei?: null, active?: null, dataURI?: null): SpaceUpdatedEventFilter;
         SpaceUpdated(spaceId?: null, facilityId?: null, capacity?: null, pricePerNightWei?: null, active?: null, dataURI?: null): SpaceUpdatedEventFilter;
+        "Withdraw(address,address,uint256,bytes32,uint256)"(payer?: string | null, payee?: string | null, weiAmount?: null, spaceId?: null, tokenId?: null): WithdrawEventFilter;
+        Withdraw(payer?: string | null, payee?: string | null, weiAmount?: null, spaceId?: null, tokenId?: null): WithdrawEventFilter;
     };
     estimateGas: {
         activateLodgingFacility(_lodgingFacilityId: BytesLike, overrides?: Overrides & {
@@ -488,18 +530,17 @@ export interface IStays extends BaseContract {
         deleteSpace(_spaceId: BytesLike, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<BigNumber>;
+        deposit(payer: string, spaceId: BytesLike, tokenId: BigNumberish, overrides?: PayableOverrides & {
+            from?: string | Promise<string>;
+        }): Promise<BigNumber>;
+        depositOf(payer: string, spaceId: BytesLike, tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+        depositState(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
         getActiveLodgingFacilityIds(overrides?: CallOverrides): Promise<BigNumber>;
         getActiveSpaceIdsByFacilityId(_lodgingFacilityId: BytesLike, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<BigNumber>;
         getAllLodgingFacilityIds(overrides?: CallOverrides): Promise<BigNumber>;
         getAvailability(_spaceId: BytesLike, _startDay: BigNumberish, _numberOfDays: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        getCurrentStayIdsByFacilityId(_lodgingFacilityId: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        getFutureStayIdsByFacilityId(_lodgingFacilityId: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
         getLodgingFacilityById(_lodgingFacilityId: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
         getLodgingFacilityIdsByOwner(_owner: string, overrides?: Overrides & {
             from?: string | Promise<string>;
@@ -508,6 +549,7 @@ export interface IStays extends BaseContract {
         getSpaceIdsByFacilityId(_lodgingFacilityId: BytesLike, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<BigNumber>;
+        getTokensBySpaceId(_spaceId: BytesLike, _state: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
         newStay(_spaceId: BytesLike, _startDay: BigNumberish, _numberOfDays: BigNumberish, _quantity: BigNumberish, overrides?: PayableOverrides & {
             from?: string | Promise<string>;
         }): Promise<BigNumber>;
@@ -549,18 +591,17 @@ export interface IStays extends BaseContract {
         deleteSpace(_spaceId: BytesLike, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<PopulatedTransaction>;
+        deposit(payer: string, spaceId: BytesLike, tokenId: BigNumberish, overrides?: PayableOverrides & {
+            from?: string | Promise<string>;
+        }): Promise<PopulatedTransaction>;
+        depositOf(payer: string, spaceId: BytesLike, tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+        depositState(tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
         getActiveLodgingFacilityIds(overrides?: CallOverrides): Promise<PopulatedTransaction>;
         getActiveSpaceIdsByFacilityId(_lodgingFacilityId: BytesLike, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<PopulatedTransaction>;
         getAllLodgingFacilityIds(overrides?: CallOverrides): Promise<PopulatedTransaction>;
         getAvailability(_spaceId: BytesLike, _startDay: BigNumberish, _numberOfDays: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        getCurrentStayIdsByFacilityId(_lodgingFacilityId: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        getFutureStayIdsByFacilityId(_lodgingFacilityId: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
         getLodgingFacilityById(_lodgingFacilityId: BytesLike, overrides?: CallOverrides): Promise<PopulatedTransaction>;
         getLodgingFacilityIdsByOwner(_owner: string, overrides?: Overrides & {
             from?: string | Promise<string>;
@@ -569,6 +610,7 @@ export interface IStays extends BaseContract {
         getSpaceIdsByFacilityId(_lodgingFacilityId: BytesLike, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<PopulatedTransaction>;
+        getTokensBySpaceId(_spaceId: BytesLike, _state: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
         newStay(_spaceId: BytesLike, _startDay: BigNumberish, _numberOfDays: BigNumberish, _quantity: BigNumberish, overrides?: PayableOverrides & {
             from?: string | Promise<string>;
         }): Promise<PopulatedTransaction>;

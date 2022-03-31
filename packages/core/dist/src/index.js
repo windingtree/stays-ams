@@ -22,6 +22,7 @@ const getSpaceIds_1 = require("./api/getSpaceIds");
 const getAvailability_1 = require("./api/getAvailability");
 const getLodgingFacility_1 = require("./api/getLodgingFacility");
 const getSpace_1 = require("./api/getSpace");
+const getTokensBySpaceId_1 = require("./api/getTokensBySpaceId");
 const registerLodgingFacility_1 = require("./api/registerLodgingFacility");
 const addSpace_1 = require("./api/addSpace");
 const book_1 = require("./api/book");
@@ -89,6 +90,9 @@ class Contract {
     }
     getToken(tokenId) {
         return (0, nft_1.getToken)(this.contract, tokenId);
+    }
+    getTokensBySpaceId(spaceId, state) {
+        return (0, getTokensBySpaceId_1.getTokensBySpaceId)(this.contract, spaceId, state);
     }
     registerLodgingFacility(profileData, active, fren, // address
     overrides, transactionHashCb, confirmations) {

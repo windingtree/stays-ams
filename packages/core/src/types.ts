@@ -26,3 +26,9 @@ export interface StayToken {
   status?: string;
   data: TokenData;
 }
+
+export type StayTokenState =
+  | 0 // booked
+  | 1 // checked-in
+  | 2 // checked-ot
+;

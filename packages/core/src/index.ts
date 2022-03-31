@@ -8,7 +8,7 @@ import type {
 } from 'stays-data-models';
 import type { Stays, StaysVoucher } from 'stays-smart-contracts';
 import type { MethodOverrides, TxHashCallbackFn } from './utils/sendHelper';
-import type { StayToken } from './types';
+import type { StayToken, StayTokenState } from './types';
 import { ethers } from 'ethers';
 import { StaysContract } from 'stays-smart-contracts';
 import { regexp }  from '@windingtree/org.id-utils';
@@ -21,6 +21,7 @@ import { getSpaceIds } from './api/getSpaceIds';
 import { getAvailability } from './api/getAvailability';
 import { getLodgingFacility } from './api/getLodgingFacility';
 import { getSpace } from './api/getSpace';
+import { getTokensBySpaceId } from './api/getTokensBySpaceId';
 import { registerLodgingFacility } from './api/registerLodgingFacility';
 import { addSpace } from './api/addSpace';
 import { book } from './api/book';
@@ -148,6 +149,10 @@ export class Contract {
 
   getToken(tokenId: string): Promise<StayToken> {
     return getToken(this.contract, tokenId);
+  }
+
+  getTokensBySpaceId(spaceId: string, state: StayTokenState): Promise<string[]> {
+    return getTokensBySpaceId(this.contract, spaceId, state);
   }
 
   registerLodgingFacility(

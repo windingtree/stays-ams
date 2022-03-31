@@ -217,6 +217,33 @@ contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable, EIP712
     return getSpaceById(_stays[_tokenId].spaceId);
   }
 
+  // Get tokens Ids for a space filtered by a status
+  function getTokensBySpaceId(
+    bytes32 _spaceId,
+    State _state
+  ) public view override returns (uint256[] memory) {
+    uint256[] storage _tokens = _stayTokens[_spaceId];
+    uint256 count;
+
+    for (uint256 i = 0; i < _tokens.length; i++) {
+      if (depositState(_tokens[i]) == _state) {
+        count++;
+      }
+    }
+
+    uint256[] memory _stateTokens = new uint256[](count);
+    uint256 index;
+
+    for (uint256 i = 0; i < _tokens.length; i++) {
+      if (depositState(_tokens[i]) == _state) {
+        _stateTokens[index] = _tokens[i];
+        index++;
+      }
+    }
+
+    return _stateTokens;
+  }
+
   /*
    * Lodging Facilities Management
    */
@@ -344,7 +371,7 @@ contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable, EIP712
     address payee,
     bytes32 spaceId,
     uint256 tokenId
-  ) public payable override(StayEscrow) {
+  ) public payable override(IStayEscrow, StayEscrow) {
     super.deposit(payee, spaceId, tokenId);
   }
 
@@ -355,7 +382,7 @@ contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable, EIP712
     bytes32 _spaceId,
     uint256 tokenId
   )
-    internal override(StayEscrow)
+    internal override(IStayEscrow, StayEscrow)
   {
     super.withdraw(payer, payee, _spaceId, tokenId);
   }
@@ -367,7 +394,7 @@ contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable, EIP712
     uint256 payment,
     bytes32 _spaceId,
     uint256 tokenId
-  ) internal override(StayEscrow) {
+  ) internal override(IStayEscrow, StayEscrow) {
     // partial withdraw condition
     require(
       payment <= spaces[_spaceId].pricePerNightWei,
@@ -380,89 +407,89 @@ contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable, EIP712
    * Stays
    */
 
-  // Returns a list of currently occupied spaces
-  function getCurrentStayIdsByFacilityId(bytes32 _lodgingFacilityId)
-    public view override returns (bytes32[] memory)
-  {
-    if (block.timestamp < dayZero) {
-      return new bytes32[](0);
-    }
+  // // Returns a list of currently occupied spaces
+  // function getCurrentStayIdsByFacilityId(bytes32 _lodgingFacilityId)
+  //   public view override returns (bytes32[] memory)
+  // {
+  //   if (block.timestamp < dayZero) {
+  //     return new bytes32[](0);
+  //   }
 
-    bytes32[] memory _activeSpacesIds =
-      getActiveSpaceIdsByFacilityId(_lodgingFacilityId);
+  //   bytes32[] memory _activeSpacesIds =
+  //     getActiveSpaceIdsByFacilityId(_lodgingFacilityId);
 
-    uint256 currentDay = (block.timestamp - dayZero) / 86400;
-    uint256 currentCount;
-    Stay memory stay;
+  //   uint256 currentDay = (block.timestamp - dayZero) / 86400;
+  //   uint256 currentCount;
+  //   Stay memory stay;
 
-    for (uint256 i = 0; i < _activeSpacesIds.length; i++) {
-      for (uint256 t=0; t < _stayTokens[_activeSpacesIds[i]].length; t++) {
-        stay = _stays[_stayTokens[_activeSpacesIds[i]][t]];
-        if (
-          currentDay >= stay.startDay &&
-          currentDay <= (stay.startDay + stay.numberOfDays)
-        ) {
-          currentCount++;
-        }
-      }
-    }
+  //   for (uint256 i = 0; i < _activeSpacesIds.length; i++) {
+  //     for (uint256 t=0; t < _stayTokens[_activeSpacesIds[i]].length; t++) {
+  //       stay = _stays[_stayTokens[_activeSpacesIds[i]][t]];
+  //       if (
+  //         currentDay >= stay.startDay &&
+  //         currentDay <= (stay.startDay + stay.numberOfDays)
+  //       ) {
+  //         currentCount++;
+  //       }
+  //     }
+  //   }
 
-    bytes32[] memory stayIds = new bytes32[](currentCount);
-    uint256 index;
+  //   bytes32[] memory stayIds = new bytes32[](currentCount);
+  //   uint256 index;
 
-    for (uint256 i = 0; i < currentCount; i++) {
-      for (uint256 t=0; t < _stayTokens[_activeSpacesIds[i]].length; t++) {
-        stay = _stays[_stayTokens[_activeSpacesIds[i]][t]];
-        if (
-          currentDay >= stay.startDay &&
-          currentDay <= (stay.startDay + stay.numberOfDays)
-        ) {
-          stayIds[index] = _activeSpacesIds[i];
-        }
-      }
-    }
+  //   for (uint256 i = 0; i < currentCount; i++) {
+  //     for (uint256 t=0; t < _stayTokens[_activeSpacesIds[i]].length; t++) {
+  //       stay = _stays[_stayTokens[_activeSpacesIds[i]][t]];
+  //       if (
+  //         currentDay >= stay.startDay &&
+  //         currentDay <= (stay.startDay + stay.numberOfDays)
+  //       ) {
+  //         stayIds[index] = _activeSpacesIds[i];
+  //       }
+  //     }
+  //   }
 
-    return stayIds;
-  }
+  //   return stayIds;
+  // }
 
-  // Returns a list of booked spaces (except for checked in spaces)
-  function getFutureStayIdsByFacilityId(bytes32 _lodgingFacilityId)
-    public view override returns (bytes32[] memory)
-  {
-    if (block.timestamp < dayZero) {
-      return new bytes32[](0);
-    }
+  // // Returns a list of booked spaces (except for checked in spaces)
+  // function getFutureStayIdsByFacilityId(bytes32 _lodgingFacilityId)
+  //   public view override returns (bytes32[] memory)
+  // {
+  //   if (block.timestamp < dayZero) {
+  //     return new bytes32[](0);
+  //   }
 
-    bytes32[] memory _activeSpacesIds =
-      getActiveSpaceIdsByFacilityId(_lodgingFacilityId);
+  //   bytes32[] memory _activeSpacesIds =
+  //     getActiveSpaceIdsByFacilityId(_lodgingFacilityId);
 
-    uint256 currentDay = (block.timestamp - dayZero) / 86400;
-    uint256 futureCount;
-    Stay memory stay;
+  //   uint256 currentDay = (block.timestamp - dayZero) / 86400;
+  //   uint256 futureCount;
+  //   Stay memory stay;
 
-    for (uint256 i = 0; i < _activeSpacesIds.length; i++) {
-      for (uint256 t=0; t < _stayTokens[_activeSpacesIds[i]].length; t++) {
-        stay = _stays[_stayTokens[_activeSpacesIds[i]][t]];
-        if ((stay.startDay + stay.numberOfDays) > currentDay) {
-          futureCount++;
-        }
-      }
-    }
+  //   for (uint256 i = 0; i < _activeSpacesIds.length; i++) {
+  //     for (uint256 t=0; t < _stayTokens[_activeSpacesIds[i]].length; t++) {
+  //       stay = _stays[_stayTokens[_activeSpacesIds[i]][t]];
+  //       if ((stay.startDay + stay.numberOfDays) > currentDay) {
+  //         futureCount++;
+  //       }
+  //     }
+  //   }
 
-    bytes32[] memory stayIds = new bytes32[](futureCount);
-    uint256 index;
+  //   bytes32[] memory stayIds = new bytes32[](futureCount);
+  //   uint256 index;
 
-    for (uint256 i = 0; i < futureCount; i++) {
-      for (uint256 t=0; t < _stayTokens[_activeSpacesIds[i]].length; t++) {
-        stay = _stays[_stayTokens[_activeSpacesIds[i]][t]];
-        if ((stay.startDay + stay.numberOfDays) > currentDay) {
-          stayIds[index] = _activeSpacesIds[i];
-        }
-      }
-    }
+  //   for (uint256 i = 0; i < futureCount; i++) {
+  //     for (uint256 t=0; t < _stayTokens[_activeSpacesIds[i]].length; t++) {
+  //       stay = _stays[_stayTokens[_activeSpacesIds[i]][t]];
+  //       if ((stay.startDay + stay.numberOfDays) > currentDay) {
+  //         stayIds[index] = _activeSpacesIds[i];
+  //       }
+  //     }
+  //   }
 
-    return stayIds;
-  }
+  //   return stayIds;
+  // }
 
   // Book a new stay in a space
   function newStay(

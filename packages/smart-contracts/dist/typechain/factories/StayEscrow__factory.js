@@ -129,16 +129,6 @@ const _abi = [
     {
         inputs: [
             {
-                internalType: "address",
-                name: "payer",
-                type: "address",
-            },
-            {
-                internalType: "bytes32",
-                name: "spaceId",
-                type: "bytes32",
-            },
-            {
                 internalType: "uint256",
                 name: "tokenId",
                 type: "uint256",
@@ -147,7 +137,7 @@ const _abi = [
         name: "depositState",
         outputs: [
             {
-                internalType: "enum StayEscrow.State",
+                internalType: "enum IStayEscrow.State",
                 name: "",
                 type: "uint8",
             },

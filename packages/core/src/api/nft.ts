@@ -44,11 +44,7 @@ export const getToken = async (
     'checked-out'
   ];
 
-  const status = await contract.depositState(
-    owner,
-    spaceId.value,
-    tokenId
-  );
+  const status = await contract.depositState(tokenId);
 
   return {
     tokenId,
