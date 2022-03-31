@@ -30,6 +30,7 @@ const nft_1 = require("./api/nft");
 const getDayZero_1 = require("./api/getDayZero");
 const checkIn_1 = require("./api/checkIn");
 const checkOut_1 = require("./api/checkOut");
+const cancel_1 = require("./api/cancel");
 __exportStar(require("./types"), exports);
 class Contract {
     constructor(contractAddress, providerOrUri, web3Storage) {
@@ -109,6 +110,9 @@ class Contract {
     }
     checkOut(tokenId, overrides, transactionHashCb, confirmations) {
         return (0, checkOut_1.checkOut)(this.contract, tokenId, overrides, transactionHashCb, confirmations);
+    }
+    cancel(tokenId, overrides, transactionHashCb, confirmations) {
+        return (0, cancel_1.cancel)(this.contract, tokenId, overrides, transactionHashCb, confirmations);
     }
 }
 exports.Contract = Contract;

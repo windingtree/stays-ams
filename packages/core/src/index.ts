@@ -29,6 +29,7 @@ import { getTokensOfOwner, getToken } from './api/nft';
 import { getDayZero } from './api/getDayZero';
 import { checkIn } from './api/checkIn';
 import { checkOut } from './api/checkOut';
+import { cancel } from './api/cancel';
 
 export * from './types';
 
@@ -244,6 +245,21 @@ export class Contract {
     confirmations?: number
   ): Promise<void> {
     return checkOut(
+      this.contract,
+      tokenId,
+      overrides,
+      transactionHashCb,
+      confirmations
+    );
+  }
+
+  cancel(
+    tokenId: string,
+    overrides?: MethodOverrides,
+    transactionHashCb?: TxHashCallbackFn,
+    confirmations?: number
+  ): Promise<void> {
+    return cancel(
       this.contract,
       tokenId,
       overrides,
