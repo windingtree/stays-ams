@@ -67,6 +67,11 @@ export const mainReducer = (state: State, action: Action): State => {
           ...state,
           isBootstrapLoading: action.payload
         };
+      case 'SET_OWNER_BOOTSTRAP_LOADING':
+        return {
+          ...state,
+          isOwnerBootstrapLoading: action.payload
+        };
       case 'SET_AVAILABILITY_TIMESTAMP':
         return {
           ...state,
@@ -81,6 +86,11 @@ export const mainReducer = (state: State, action: Action): State => {
         return {
           ...state,
           bootstrapped: action.payload
+        };
+      case 'SET_OWNER_BOOTSTRAPPED':
+        return {
+          ...state,
+          ownerBootstrapped: action.payload
         };
       case 'SET_IPFS_NODE_CONNECTING':
         return {
@@ -132,6 +142,7 @@ const initialState: State = {
   startIpfsNode: () => { },
   stopIpfsNode: () => { },
   isBootstrapLoading: false,
+  isOwnerBootstrapLoading: false,
   lodgingFacilities: [],
   searchSpaces: []
 };
