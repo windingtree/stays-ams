@@ -14,7 +14,6 @@ export const CheckOut = () => {
     ownerBootstrapped,
     provider,
     ipfsNode,
-    ownerLodgingFacilities
   } = useAppState();
 
   const [error] = useCheckOut(account, dispatch, provider, ipfsNode, ownerBootstrapped)

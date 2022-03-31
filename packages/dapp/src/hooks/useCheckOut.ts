@@ -5,6 +5,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Dispatch } from '../store';
 import { useContract } from './useContract';
 import Logger from '../utils/logger';
+// import { usePoller } from './usePoller';
 
 // Initialize logger
 const logger = Logger('useCheckOut');
@@ -75,7 +76,6 @@ export const useCheckOut = (
 
   useEffect(() => {
     if (contractError) {
-      console.log('kkk-error', account, contract)
       setError(contractError);
     }
   }, [contractError]);
@@ -106,7 +106,7 @@ export const useCheckOut = (
         payload: blockNumber
       });
     },
-    [dispatch, account]
+    [dispatch]
   );
 
   useEffect(() => {
@@ -153,14 +153,14 @@ export const useCheckOut = (
 
   // const getFacilitiesUpdates = useCallback(
   //   async () => {
-  //     if (!bootstrapped || !contract) {
+  //     if (!ownerBootstrapped || !contract || !account) {
   //       return;
   //     }
 
   //     setError(undefined);
 
   //     try {
-  //       await loadAndDispatchFacilities(contract);
+  //       await loadAndDispatchFacilities(contract, account);
   //     } catch (error) {
   //       logger.error(error);
   //       const message = (error as Error).message ||
@@ -168,10 +168,10 @@ export const useCheckOut = (
   //       setError(message);
   //     }
   //   },
-  //   [loadAndDispatchFacilities, bootstrapped, contract]
+  //   [loadAndDispatchFacilities, ownerBootstrapped, contract, account]
   // );
 
-  // Check every <interval_time> for facilities and spaces updates
+  // // Check every <interval_time> for facilities and spaces updates
   // usePoller(
   //   getFacilitiesUpdates,
   //   !!contract,
