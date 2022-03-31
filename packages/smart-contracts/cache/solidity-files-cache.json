@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/home/kostysh/dev/stays-remote/packages/smart-contracts/contracts/IStays.sol": {
-      "lastModificationDate": 1648497572946,
-      "contentHash": "946fa09861ff8810c7110c744025bf3d",
+      "lastModificationDate": 1648709541256,
+      "contentHash": "59c148bb0e5c7f1550a0f2bbf5ec1261",
       "sourceName": "contracts/IStays.sol",
       "solcConfig": {
         "version": "0.8.7",
@@ -35,7 +35,9 @@
           }
         }
       },
-      "imports": [],
+      "imports": [
+        "./IStayEscrow.sol"
+      ],
       "versionPragmas": [
         "^0.8.0"
       ],
@@ -44,8 +46,8 @@
       ]
     },
     "/home/kostysh/dev/stays-remote/packages/smart-contracts/contracts/Stays.sol": {
-      "lastModificationDate": 1648556098225,
-      "contentHash": "3f66f88374d4c8119140cbc7fc9a1e00",
+      "lastModificationDate": 1648711264792,
+      "contentHash": "575fa811fcc6f0c244eb2a8cd5aec73f",
       "sourceName": "contracts/Stays.sol",
       "solcConfig": {
         "version": "0.8.7",
@@ -278,8 +280,8 @@
       ]
     },
     "/home/kostysh/dev/stays-remote/packages/smart-contracts/contracts/StayEscrow.sol": {
-      "lastModificationDate": 1648562324567,
-      "contentHash": "b762da148fadfa2470a4b59aa3a2757c",
+      "lastModificationDate": 1648711014874,
+      "contentHash": "e430a9c008ea938b72691ca1ca4d5a3d",
       "sourceName": "contracts/StayEscrow.sol",
       "solcConfig": {
         "version": "0.8.7",
@@ -313,6 +315,7 @@
       },
       "imports": [
         "@openzeppelin/contracts/utils/Address.sol",
+        "./IStayEscrow.sol",
         "hardhat/console.sol"
       ],
       "versionPragmas": [
@@ -1010,6 +1013,48 @@
       ],
       "artifacts": [
         "EIP712"
+      ]
+    },
+    "/home/kostysh/dev/stays-remote/packages/smart-contracts/contracts/IStayEscrow.sol": {
+      "lastModificationDate": 1648711033002,
+      "contentHash": "22d72d04f8c555abb2c335ea2c0bb40a",
+      "sourceName": "contracts/IStayEscrow.sol",
+      "solcConfig": {
+        "version": "0.8.7",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "devdoc",
+                "userdoc",
+                "storageLayout",
+                "evm.gasEstimates"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": true
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "IStayEscrow"
       ]
     }
   }

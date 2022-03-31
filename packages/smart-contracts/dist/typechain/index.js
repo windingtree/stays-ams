@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Stays__factory = exports.StayEscrow__factory = exports.IStays__factory = exports.IERC165__factory = exports.ERC165__factory = exports.IERC721Receiver__factory = exports.IERC721__factory = exports.IERC721Metadata__factory = exports.IERC721Enumerable__factory = exports.ERC721URIStorage__factory = exports.ERC721Enumerable__factory = exports.ERC721__factory = exports.IERC1271__factory = void 0;
+exports.Stays__factory = exports.StayEscrow__factory = exports.IStays__factory = exports.IStayEscrow__factory = exports.IERC165__factory = exports.ERC165__factory = exports.IERC721Receiver__factory = exports.IERC721__factory = exports.IERC721Metadata__factory = exports.IERC721Enumerable__factory = exports.ERC721URIStorage__factory = exports.ERC721Enumerable__factory = exports.ERC721__factory = exports.IERC1271__factory = void 0;
 var IERC1271__factory_1 = require("./factories/IERC1271__factory");
 Object.defineProperty(exports, "IERC1271__factory", { enumerable: true, get: function () { return IERC1271__factory_1.IERC1271__factory; } });
 var ERC721__factory_1 = require("./factories/ERC721__factory");
@@ -21,6 +21,8 @@ var ERC165__factory_1 = require("./factories/ERC165__factory");
 Object.defineProperty(exports, "ERC165__factory", { enumerable: true, get: function () { return ERC165__factory_1.ERC165__factory; } });
 var IERC165__factory_1 = require("./factories/IERC165__factory");
 Object.defineProperty(exports, "IERC165__factory", { enumerable: true, get: function () { return IERC165__factory_1.IERC165__factory; } });
+var IStayEscrow__factory_1 = require("./factories/IStayEscrow__factory");
+Object.defineProperty(exports, "IStayEscrow__factory", { enumerable: true, get: function () { return IStayEscrow__factory_1.IStayEscrow__factory; } });
 var IStays__factory_1 = require("./factories/IStays__factory");
 Object.defineProperty(exports, "IStays__factory", { enumerable: true, get: function () { return IStays__factory_1.IStays__factory; } });
 var StayEscrow__factory_1 = require("./factories/StayEscrow__factory");

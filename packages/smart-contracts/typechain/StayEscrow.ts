@@ -22,7 +22,7 @@ export interface StayEscrowInterface extends utils.Interface {
   functions: {
     "deposit(address,bytes32,uint256)": FunctionFragment;
     "depositOf(address,bytes32,uint256)": FunctionFragment;
-    "depositState(address,bytes32,uint256)": FunctionFragment;
+    "depositState(uint256)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -35,7 +35,7 @@ export interface StayEscrowInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "depositState",
-    values: [string, BytesLike, BigNumberish]
+    values: [BigNumberish]
   ): string;
 
   decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
@@ -117,8 +117,6 @@ export interface StayEscrow extends BaseContract {
     ): Promise<[BigNumber]>;
 
     depositState(
-      payer: string,
-      spaceId: BytesLike,
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[number]>;
@@ -139,8 +137,6 @@ export interface StayEscrow extends BaseContract {
   ): Promise<BigNumber>;
 
   depositState(
-    payer: string,
-    spaceId: BytesLike,
     tokenId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<number>;
@@ -161,8 +157,6 @@ export interface StayEscrow extends BaseContract {
     ): Promise<BigNumber>;
 
     depositState(
-      payer: string,
-      spaceId: BytesLike,
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<number>;
@@ -214,8 +208,6 @@ export interface StayEscrow extends BaseContract {
     ): Promise<BigNumber>;
 
     depositState(
-      payer: string,
-      spaceId: BytesLike,
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -237,8 +229,6 @@ export interface StayEscrow extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     depositState(
-      payer: string,
-      spaceId: BytesLike,
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

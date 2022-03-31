@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: GPL
 pragma solidity ^0.8.0;
 
+import "./IStayEscrow.sol";
 
-abstract contract IStays {
+
+abstract contract IStays is IStayEscrow {
 
   // Check-In voucher
   struct CheckInVoucher {
@@ -51,6 +53,9 @@ abstract contract IStays {
     string memory dataURI
   );
 
+  // Tokens by spaces and status
+  function getTokensBySpaceId(bytes32 _spaceId, State _state) public view virtual returns (uint256[] memory);
+
   // Facility management
   function registerLodgingFacility(string calldata _dataURI, bool _active, address _fren) public virtual;
   function registerLodgingFacility(string calldata _dataURI, bool _active) public virtual;
@@ -75,8 +80,8 @@ abstract contract IStays {
   // getting all my Stays is via built-in NFT contract getter
   // getting Stay details is via NFT's tokenURI getter
   // function getAllStayIdsByFacilityId(bytes32 _lodgingFacilityId) public virtual returns (uint256[] memory);
-  function getCurrentStayIdsByFacilityId(bytes32 _lodgingFacilityId) public virtual returns (bytes32[] memory);
-  function getFutureStayIdsByFacilityId(bytes32 _lodgingFacilityId) public virtual returns (bytes32[] memory);
+  // function getCurrentStayIdsByFacilityId(bytes32 _lodgingFacilityId) public virtual returns (bytes32[] memory);
+  // function getFutureStayIdsByFacilityId(bytes32 _lodgingFacilityId) public virtual returns (bytes32[] memory);
   function checkIn(uint256 _tokenId, CheckInVoucher memory voucher) public virtual;
   function checkOut(uint256 _tokenId) public virtual;
 
