@@ -631,6 +631,14 @@ contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable, EIP712
     emit CheckOut(_tokenId);
   }
 
+  // Makes stay cancellation
+  function cancel(uint256 _tokenId) public override onlyTokenOwner(_tokenId) {
+    refund(payable(ownerOf(_tokenId)), _stays[_tokenId].spaceId, _tokenId);
+    _burn(_tokenId);
+
+    emit Cancel(_tokenId);
+  }
+
   /*
    * Helpers
    */

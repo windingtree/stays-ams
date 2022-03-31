@@ -7,7 +7,7 @@ import {
   getUnnamedAccounts,
   getNamedAccounts,
 } from "hardhat";
-import { BytesLike, BigNumber, providers } from "ethers";
+import { BytesLike, BigNumber } from "ethers";
 import { expect } from "./utils/chai-setup";
 
 import { Stays } from "../typechain";
@@ -217,7 +217,7 @@ describe("Stays.sol", () => {
     });
   });
 
-  describe("availability, bookings, checkin, checkout, modifications, cancellations", () => {
+  describe("availability, bookings, checkin, checkout, cancel", () => {
       let fid;
       let f;
       let sid: BytesLike;
@@ -316,7 +316,7 @@ describe("Stays.sol", () => {
         });
       });
 
-      describe("newStay()", async () => {
+      describe("newStay()", () => {
         it("should revert if payment is less than what's required", async () => {
           await expect(
             alice.staysContract.newStay(sid, 42, 1, 1, {
@@ -401,7 +401,7 @@ describe("Stays.sol", () => {
     }
   );
 
-  describe("modifications, cancellations", async () => {
+  describe("modifications, cancellations", () => {
     const valuePerNight = 100;
     let fid;
     let f;
@@ -429,9 +429,9 @@ describe("Stays.sol", () => {
       s = await bob.staysContract.spaces(sid);
     });
 
-    describe("check in, check out", async () => {
+    describe("check in, check out", () => {
 
-      describe("checkIn()", async () => {
+      describe("checkIn()", () => {
         const startDay = 100;
         const numDays = 3;
         let tokenId;
@@ -533,7 +533,7 @@ describe("Stays.sol", () => {
         })
       });
 
-      describe("checkOut()", async () => {
+      describe("checkOut()", () => {
         const startDay = 100;
         const numDays = 3;
         let tokenId;
@@ -592,8 +592,119 @@ describe("Stays.sol", () => {
         });
       });
 
+      describe('refundStay()', () => {
+        const params = [
+          {
+            startDay: 200,
+            numDays: 1
+          },
+          {
+            startDay: 210,
+            numDays: 2
+          },
+          {
+            startDay: 220,
+            numDays: 3
+          }
+        ];
+        let chainId: number;
+        let tokens: string[];
+
+        const createStay = async (sid, startDay, numDays) => {
+          let tx = await alice.staysContract.newStay(
+            sid,
+            startDay,
+            numDays,
+            1,
+            { value: valuePerNight * numDays }
+          );
+          const eventNewStay = await extractEventFromTx(tx, 'NewStay');
+          return eventNewStay.tokenId.toString();
+        };
+
+        before(async () => {
+          const res = await alice.staysContract.provider.getNetwork();
+          chainId = res.chainId;
+          tokens = await Promise.all(
+            params.map(
+              p => createStay(sid, p.startDay, p.numDays)
+            )
+          );
+        });
+
+        it('should throw if called not by a token owner', async () => {
+          await expect(
+            bob.staysContract.cancel(tokens[0])
+          ).to.revertedWith('Only stay token owner is allowed');
+        });
+
+        it('should throw if token already checked in', async () => {
+          const voucher = await createVoucher(
+            alice.staysContract.signer,
+            alice.address,
+            bob.address,
+            tokens[0],
+            alice.staysContract.address,
+            chainId
+          );
+          const tx = await bob.staysContract.checkIn(tokens[0], voucher);
+          await tx.wait();
+          await expect(
+            alice.staysContract.cancel(tokens[0])
+          ).to.revertedWith('Refund not allowed in current state');
+        });
+
+        it('should cancel a stay', async () => {
+          const weiAmount = BigNumber.from(valuePerNight)
+            .mul(BigNumber.from(params[1].numDays));
+          const initialBalanceAlice = await alice.staysContract.provider.getBalance(alice.address);
+          const tx = await alice.staysContract.cancel(tokens[1]);
+          const receipt = await tx.wait();
+          const txCost = receipt.cumulativeGasUsed.mul(receipt.effectiveGasPrice);
+          const cancelBalance = await alice.staysContract.provider.getBalance(alice.address);
+          expect(cancelBalance).to.equal(
+            initialBalanceAlice
+              .add(weiAmount)
+              .sub(txCost)
+          );
+          const refundEvent = await extractEventFromTx(tx, 'Refund');
+          const cancelEvent = await extractEventFromTx(tx, 'Cancel');
+          expect(refundEvent.payee).to.equal(alice.address);
+          expect(refundEvent.weiAmount).to.equal(weiAmount);
+          expect(refundEvent.spaceId).to.equal(sid);
+          expect(refundEvent.tokenId.toString()).to.equal(tokens[1]);
+          expect(cancelEvent.tokenId.toString()).to.equal(tokens[1]);
+          await expect(
+            alice.staysContract.ownerOf(tokens[1])
+          ).to.revertedWith('ERC721: owner query for nonexistent token');
+        });
+
+        it('should throw if token already cancelled', async () => {
+          await expect(
+            alice.staysContract.cancel(tokens[1])
+          ).to.revertedWith('ERC721: owner query for nonexistent token');
+        });
+
+        it('should throw if token already checked out', async () => {
+          const voucher = await createVoucher(
+            alice.staysContract.signer,
+            alice.address,
+            bob.address,
+            tokens[2],
+            alice.staysContract.address,
+            chainId
+          );
+          const tx = await bob.staysContract.checkIn(tokens[2], voucher);
+          await tx.wait();
+          await ethers.provider.send('evm_increaseTime', [(params[2].startDay + 1) * 86400]);
+          const txCheckOut = await bob.staysContract.checkOut(tokens[2]);
+          await txCheckOut.wait();
+          await expect(
+            alice.staysContract.cancel(tokens[2])
+          ).to.revertedWith('Refund not allowed in current state');
+        });
+      });
+
     });
-
   });
-
 });

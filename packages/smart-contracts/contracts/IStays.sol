@@ -26,6 +26,7 @@ abstract contract IStays is IStayEscrow {
   event NewStay(bytes32 spaceId, uint256 tokenId);
   event CheckIn(uint256 tokenId);
   event CheckOut(uint256 tokenId);
+  event Cancel(uint256 tokenId);
 
   // To display all availability in Glider: getActiveLodgingFacilityIds, getSpaceIdsByFacilityId, getAvailability
   function getAllLodgingFacilityIds() public view virtual returns (bytes32[] memory);
@@ -84,6 +85,7 @@ abstract contract IStays is IStayEscrow {
   // function getFutureStayIdsByFacilityId(bytes32 _lodgingFacilityId) public virtual returns (bytes32[] memory);
   function checkIn(uint256 _tokenId, CheckInVoucher memory voucher) public virtual;
   function checkOut(uint256 _tokenId) public virtual;
+  function cancel(uint256 _tokenId) public virtual;
 
   // function requestChange(uint256 _tokenId, bytes32 _spaceId, uint256 _startDay, uint256 _numberOfDays, uint256 _quantity) public payable virtual;
   // function requestCancel(int256 _tokenId) public virtual;

@@ -10,6 +10,7 @@ abstract contract IStayEscrow {
 
   event Deposited(address indexed payee, uint256 weiAmount, bytes32 spaceId, uint256 tokenId);
   event Withdraw(address indexed payer, address indexed payee, uint256 weiAmount, bytes32 spaceId, uint256 tokenId);
+  event Refund(address indexed payee, uint256 weiAmount, bytes32 spaceId, uint256 tokenId);
 
   function depositOf(address payer, bytes32 spaceId, uint256 tokenId) public view virtual returns (uint256);
   function depositState(uint256 tokenId) public view virtual returns (State);
@@ -28,6 +29,13 @@ abstract contract IStayEscrow {
     address payer,
     address payable payee,
     uint256 payment,
+    bytes32 spaceId,
+    uint256 tokenId
+  ) internal virtual;
+
+  // Refund deposit
+  function refund(
+    address payable payee,
     bytes32 spaceId,
     uint256 tokenId
   ) internal virtual;

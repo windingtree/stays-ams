@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/home/kostysh/dev/stays-remote/packages/smart-contracts/contracts/IStays.sol": {
-      "lastModificationDate": 1648709541256,
-      "contentHash": "59c148bb0e5c7f1550a0f2bbf5ec1261",
+      "lastModificationDate": 1648749399726,
+      "contentHash": "2777a32ff62841d456ae5c8172951351",
       "sourceName": "contracts/IStays.sol",
       "solcConfig": {
         "version": "0.8.7",
@@ -46,8 +46,8 @@
       ]
     },
     "/home/kostysh/dev/stays-remote/packages/smart-contracts/contracts/Stays.sol": {
-      "lastModificationDate": 1648711264792,
-      "contentHash": "575fa811fcc6f0c244eb2a8cd5aec73f",
+      "lastModificationDate": 1648749792718,
+      "contentHash": "ad30ca57cb5824678e350865c34c11ab",
       "sourceName": "contracts/Stays.sol",
       "solcConfig": {
         "version": "0.8.7",
@@ -280,8 +280,8 @@
       ]
     },
     "/home/kostysh/dev/stays-remote/packages/smart-contracts/contracts/StayEscrow.sol": {
-      "lastModificationDate": 1648711014874,
-      "contentHash": "e430a9c008ea938b72691ca1ca4d5a3d",
+      "lastModificationDate": 1648747494768,
+      "contentHash": "f6ad7d4b79e8bb8937be642c4381fd8b",
       "sourceName": "contracts/StayEscrow.sol",
       "solcConfig": {
         "version": "0.8.7",
@@ -1016,8 +1016,8 @@
       ]
     },
     "/home/kostysh/dev/stays-remote/packages/smart-contracts/contracts/IStayEscrow.sol": {
-      "lastModificationDate": 1648711033002,
-      "contentHash": "22d72d04f8c555abb2c335ea2c0bb40a",
+      "lastModificationDate": 1648747205265,
+      "contentHash": "b03131f56297cc31509efd3307144487",
       "sourceName": "contracts/IStayEscrow.sol",
       "solcConfig": {
         "version": "0.8.7",

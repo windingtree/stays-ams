@@ -16,6 +16,19 @@ const _abi = [
                 type: "uint256",
             },
         ],
+        name: "Cancel",
+        type: "event",
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: false,
+                internalType: "uint256",
+                name: "tokenId",
+                type: "uint256",
+            },
+        ],
         name: "CheckIn",
         type: "event",
     },
@@ -181,6 +194,37 @@ const _abi = [
             },
         ],
         name: "NewStay",
+        type: "event",
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: true,
+                internalType: "address",
+                name: "payee",
+                type: "address",
+            },
+            {
+                indexed: false,
+                internalType: "uint256",
+                name: "weiAmount",
+                type: "uint256",
+            },
+            {
+                indexed: false,
+                internalType: "bytes32",
+                name: "spaceId",
+                type: "bytes32",
+            },
+            {
+                indexed: false,
+                internalType: "uint256",
+                name: "tokenId",
+                type: "uint256",
+            },
+        ],
+        name: "Refund",
         type: "event",
     },
     {
@@ -361,6 +405,19 @@ const _abi = [
             },
         ],
         name: "addSpace",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function",
+    },
+    {
+        inputs: [
+            {
+                internalType: "uint256",
+                name: "_tokenId",
+                type: "uint256",
+            },
+        ],
+        name: "cancel",
         outputs: [],
         stateMutability: "nonpayable",
         type: "function",

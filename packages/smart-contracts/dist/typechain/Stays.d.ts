@@ -28,6 +28,7 @@ export interface StaysInterface extends utils.Interface {
         "addSpace(bytes32,uint256,uint256,bool,string)": FunctionFragment;
         "approve(address,uint256)": FunctionFragment;
         "balanceOf(address)": FunctionFragment;
+        "cancel(uint256)": FunctionFragment;
         "checkIn(uint256,(address,address,uint256,bytes))": FunctionFragment;
         "checkOut(uint256)": FunctionFragment;
         "dayZero()": FunctionFragment;
@@ -76,6 +77,7 @@ export interface StaysInterface extends utils.Interface {
     encodeFunctionData(functionFragment: "addSpace", values: [BytesLike, BigNumberish, BigNumberish, boolean, string]): string;
     encodeFunctionData(functionFragment: "approve", values: [string, BigNumberish]): string;
     encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
+    encodeFunctionData(functionFragment: "cancel", values: [BigNumberish]): string;
     encodeFunctionData(functionFragment: "checkIn", values: [BigNumberish, IStays.CheckInVoucherStruct]): string;
     encodeFunctionData(functionFragment: "checkOut", values: [BigNumberish]): string;
     encodeFunctionData(functionFragment: "dayZero", values?: undefined): string;
@@ -123,6 +125,7 @@ export interface StaysInterface extends utils.Interface {
     decodeFunctionResult(functionFragment: "addSpace", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
+    decodeFunctionResult(functionFragment: "cancel", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "checkIn", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "checkOut", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "dayZero", data: BytesLike): Result;
@@ -169,6 +172,7 @@ export interface StaysInterface extends utils.Interface {
     events: {
         "Approval(address,address,uint256)": EventFragment;
         "ApprovalForAll(address,address,bool)": EventFragment;
+        "Cancel(uint256)": EventFragment;
         "CheckIn(uint256)": EventFragment;
         "CheckOut(uint256)": EventFragment;
         "Deposited(address,uint256,bytes32,uint256)": EventFragment;
@@ -178,6 +182,7 @@ export interface StaysInterface extends utils.Interface {
         "LodgingFacilityRemoved(bytes32)": EventFragment;
         "LodgingFacilityUpdated(bytes32,string)": EventFragment;
         "NewStay(bytes32,uint256)": EventFragment;
+        "Refund(address,uint256,bytes32,uint256)": EventFragment;
         "SpaceAdded(bytes32,bytes32,uint256,uint256,bool,string)": EventFragment;
         "SpaceRemoved(bytes32)": EventFragment;
         "SpaceUpdated(bytes32,bytes32,uint256,uint256,bool,string)": EventFragment;
@@ -186,6 +191,7 @@ export interface StaysInterface extends utils.Interface {
     };
     getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
     getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
+    getEvent(nameOrSignatureOrTopic: "Cancel"): EventFragment;
     getEvent(nameOrSignatureOrTopic: "CheckIn"): EventFragment;
     getEvent(nameOrSignatureOrTopic: "CheckOut"): EventFragment;
     getEvent(nameOrSignatureOrTopic: "Deposited"): EventFragment;
@@ -195,6 +201,7 @@ export interface StaysInterface extends utils.Interface {
     getEvent(nameOrSignatureOrTopic: "LodgingFacilityRemoved"): EventFragment;
     getEvent(nameOrSignatureOrTopic: "LodgingFacilityUpdated"): EventFragment;
     getEvent(nameOrSignatureOrTopic: "NewStay"): EventFragment;
+    getEvent(nameOrSignatureOrTopic: "Refund"): EventFragment;
     getEvent(nameOrSignatureOrTopic: "SpaceAdded"): EventFragment;
     getEvent(nameOrSignatureOrTopic: "SpaceRemoved"): EventFragment;
     getEvent(nameOrSignatureOrTopic: "SpaceUpdated"): EventFragment;
@@ -221,6 +228,10 @@ export declare type ApprovalForAllEvent = TypedEvent<[
     approved: boolean;
 }>;
 export declare type ApprovalForAllEventFilter = TypedEventFilter<ApprovalForAllEvent>;
+export declare type CancelEvent = TypedEvent<[BigNumber], {
+    tokenId: BigNumber;
+}>;
+export declare type CancelEventFilter = TypedEventFilter<CancelEvent>;
 export declare type CheckInEvent = TypedEvent<[BigNumber], {
     tokenId: BigNumber;
 }>;
@@ -291,6 +302,18 @@ export declare type NewStayEvent = TypedEvent<[
     tokenId: BigNumber;
 }>;
 export declare type NewStayEventFilter = TypedEventFilter<NewStayEvent>;
+export declare type RefundEvent = TypedEvent<[
+    string,
+    BigNumber,
+    string,
+    BigNumber
+], {
+    payee: string;
+    weiAmount: BigNumber;
+    spaceId: string;
+    tokenId: BigNumber;
+}>;
+export declare type RefundEventFilter = TypedEventFilter<RefundEvent>;
 export declare type SpaceAddedEvent = TypedEvent<[
     string,
     string,
@@ -377,6 +400,9 @@ export interface Stays extends BaseContract {
             from?: string | Promise<string>;
         }): Promise<ContractTransaction>;
         balanceOf(owner: string, overrides?: CallOverrides): Promise<[BigNumber]>;
+        cancel(_tokenId: BigNumberish, overrides?: Overrides & {
+            from?: string | Promise<string>;
+        }): Promise<ContractTransaction>;
         checkIn(_tokenId: BigNumberish, voucher: IStays.CheckInVoucherStruct, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<ContractTransaction>;
@@ -533,6 +559,9 @@ export interface Stays extends BaseContract {
         from?: string | Promise<string>;
     }): Promise<ContractTransaction>;
     balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
+    cancel(_tokenId: BigNumberish, overrides?: Overrides & {
+        from?: string | Promise<string>;
+    }): Promise<ContractTransaction>;
     checkIn(_tokenId: BigNumberish, voucher: IStays.CheckInVoucherStruct, overrides?: Overrides & {
         from?: string | Promise<string>;
     }): Promise<ContractTransaction>;
@@ -679,6 +708,7 @@ export interface Stays extends BaseContract {
         addSpace(_lodgingFacilityId: BytesLike, _capacity: BigNumberish, _pricePerNightWei: BigNumberish, _active: boolean, _dataURI: string, overrides?: CallOverrides): Promise<void>;
         approve(to: string, tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
         balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
+        cancel(_tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
         checkIn(_tokenId: BigNumberish, voucher: IStays.CheckInVoucherStruct, overrides?: CallOverrides): Promise<void>;
         checkOut(_tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
         dayZero(overrides?: CallOverrides): Promise<number>;
@@ -794,6 +824,8 @@ export interface Stays extends BaseContract {
         Approval(owner?: string | null, approved?: string | null, tokenId?: BigNumberish | null): ApprovalEventFilter;
         "ApprovalForAll(address,address,bool)"(owner?: string | null, operator?: string | null, approved?: null): ApprovalForAllEventFilter;
         ApprovalForAll(owner?: string | null, operator?: string | null, approved?: null): ApprovalForAllEventFilter;
+        "Cancel(uint256)"(tokenId?: null): CancelEventFilter;
+        Cancel(tokenId?: null): CancelEventFilter;
         "CheckIn(uint256)"(tokenId?: null): CheckInEventFilter;
         CheckIn(tokenId?: null): CheckInEventFilter;
         "CheckOut(uint256)"(tokenId?: null): CheckOutEventFilter;
@@ -812,6 +844,8 @@ export interface Stays extends BaseContract {
         LodgingFacilityUpdated(facilityId?: null, dataURI?: null): LodgingFacilityUpdatedEventFilter;
         "NewStay(bytes32,uint256)"(spaceId?: null, tokenId?: null): NewStayEventFilter;
         NewStay(spaceId?: null, tokenId?: null): NewStayEventFilter;
+        "Refund(address,uint256,bytes32,uint256)"(payee?: string | null, weiAmount?: null, spaceId?: null, tokenId?: null): RefundEventFilter;
+        Refund(payee?: string | null, weiAmount?: null, spaceId?: null, tokenId?: null): RefundEventFilter;
         "SpaceAdded(bytes32,bytes32,uint256,uint256,bool,string)"(spaceId?: null, facilityId?: null, capacity?: null, pricePerNightWei?: null, active?: null, dataURI?: null): SpaceAddedEventFilter;
         SpaceAdded(spaceId?: null, facilityId?: null, capacity?: null, pricePerNightWei?: null, active?: null, dataURI?: null): SpaceAddedEventFilter;
         "SpaceRemoved(bytes32)"(spaceId?: null): SpaceRemovedEventFilter;
@@ -834,6 +868,9 @@ export interface Stays extends BaseContract {
             from?: string | Promise<string>;
         }): Promise<BigNumber>;
         balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
+        cancel(_tokenId: BigNumberish, overrides?: Overrides & {
+            from?: string | Promise<string>;
+        }): Promise<BigNumber>;
         checkIn(_tokenId: BigNumberish, voucher: IStays.CheckInVoucherStruct, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<BigNumber>;
@@ -923,6 +960,9 @@ export interface Stays extends BaseContract {
             from?: string | Promise<string>;
         }): Promise<PopulatedTransaction>;
         balanceOf(owner: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+        cancel(_tokenId: BigNumberish, overrides?: Overrides & {
+            from?: string | Promise<string>;
+        }): Promise<PopulatedTransaction>;
         checkIn(_tokenId: BigNumberish, voucher: IStays.CheckInVoucherStruct, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<PopulatedTransaction>;
