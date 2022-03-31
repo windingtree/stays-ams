@@ -1,6 +1,6 @@
 import { Button, Box } from 'grommet';
 import React, { useState } from 'react';
-import QrCodeReader from 'react-qr-reader';
+import { QrReader as QrCodeReader } from 'react-qr-reader';
 import { Modal } from './Modal';
 
 export const QrReader: React.FC<{
@@ -22,18 +22,16 @@ export const QrReader: React.FC<{
           width='medium'
         >
           <QrCodeReader
-            onError={(error) => {
-              if (!!error) {
-                onError(error);
+            constraints={{ facingMode: 'user' }}
+            onResult={(result, error) => {
+              if (error) {
+                onError(error.message);
               }
-            }}
-            onScan={(result) => {
               if (!!result) {
-                onScan(result)
+                onScan(result.getText())
                 setShow(false)
               }
             }}
-            style={{ width: '100%' }}
           />
         </Box>
       </Modal>
