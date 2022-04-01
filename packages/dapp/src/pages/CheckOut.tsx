@@ -14,11 +14,11 @@ import { useDayZero } from '../hooks/useDayZero';
 
 const ResponsiveColumn = (winWidth: number): string[] => {
   if (winWidth >= 1300) {
-    return ["21rem", "21rem", "21rem", "21rem"];
+    return ["21rem", "21rem"];
   } else if (winWidth >= 1000) {
-    return ["21rem", "21rem", "21rem"];
+    return ["21rem", "21rem"];
   } else if (winWidth >= 768) {
-    return ["23rem", "23rem"];
+    return ["21rem"];
   } else if (winWidth >= 600) {
     return ["31rem"];
   } else if (winWidth <= 500) {
@@ -39,10 +39,11 @@ const FacilityList: React.FC<{
   return <Box
     border='right'
   >
-    {facilities.map((facility: OwnerLodgingFacility, i) => (<Box key={i}>
-      <Text onClick={() => onSelect(facility)} >
-        [{facility.name}]
-      </Text>
+    {facilities.map((facility, i) => (<Box key={i}>
+      <Button
+        onClick={() => onSelect(facility)}
+        label={facility.name}
+      />
     </Box>))}
   </Box>
 }
@@ -54,11 +55,12 @@ const SpacesList: React.FC<{
   if (!facility || !facility.spaces) {
     return null
   }
-  return <Box>
+  return <Box direction='row'>
     {facility.spaces.map((space: OwnerSpace, i) => (<Box key={i}>
-      <Text onClick={() => onSelect(space.tokens)} >
-        [{space.name}]
-      </Text>
+      <Button
+        onClick={() => onSelect(space.tokens)}
+        label={space.name}
+      />
     </Box>))}
   </Box>
 }
@@ -120,8 +122,9 @@ export const CheckOut = () => {
       <Grid
         fill='horizontal'
         pad='small'
-        columns={['small', 'auto']}
+        columns={['medium', 'auto']}
         responsive
+        gap='medium'
       >
 
         <FacilityList facilities={ownerLodgingFacilities} onSelect={setSelectedFacility} />
@@ -138,6 +141,7 @@ export const CheckOut = () => {
               />
             }
             <Grid
+              fill
               alignSelf="center"
               columns={ResponsiveColumn(winWidth)}
               responsive={true}

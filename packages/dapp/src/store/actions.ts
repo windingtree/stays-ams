@@ -16,7 +16,7 @@ export interface SpaceRecord extends Space, GenericStateRecord { }
 export interface OwnerSpace extends SpaceRaw {
   tokens: StayToken[]
 }
-export interface OwnerLodgingFacility extends Omit<LodgingFacilityRecord, 'spaces'> {
+export interface OwnerLodgingFacility extends Omit<LodgingFacility, 'spaces'> {
   spaces: OwnerSpace[]
 }
 
