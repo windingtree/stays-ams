@@ -8,6 +8,7 @@ import { Protected } from './Protected';
 
 // Pages
 import { Home } from '../pages/Home';
+import { Message } from '../pages/Message';
 import { Search } from '../pages/Search';
 import { Rooms } from "../pages/Rooms";
 import { RoomProfile } from "../pages/RoomProfile";
@@ -32,6 +33,11 @@ export const pagesRoutesConfig: Routes = [
     element: <Home />,
     title: "Stays",
     label: "Home",
+  },
+  {
+    path: '/message',
+    element: <Message />,
+    title: 'Useful information'
   },
   {
     path: "/search",

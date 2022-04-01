@@ -3,10 +3,13 @@ import { useContext } from 'react';
 import { Box, Button, ResponsiveContext } from 'grommet';
 import { StatusInfo, Alert } from 'grommet-icons';
 
-export type MessageBoxTypes =
- | 'info'
- | 'warn'
- | 'error';
+export const allowedMessageBoxTypes = [
+  'info',
+  'warn',
+  'error'
+];
+
+export type MessageBoxTypes = typeof allowedMessageBoxTypes[number];
 
 export interface MessageBoxProps {
   type: MessageBoxTypes;

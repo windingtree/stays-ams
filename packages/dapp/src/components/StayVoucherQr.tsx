@@ -72,7 +72,7 @@ export const StayVoucherQr = ({
     <Box>
 
       <Button
-        label='Get QR'
+        label='Get check-in QR'
         onClick={handleGetQr}
       />
 

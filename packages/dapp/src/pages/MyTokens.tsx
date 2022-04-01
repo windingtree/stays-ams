@@ -1,5 +1,5 @@
 import type { StayToken, TokenData } from 'stays-core';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { DateTime } from 'luxon';
 import * as Icons from 'grommet-icons';
 import { Grid, Spinner, Button, Box, Card, CardBody, CardHeader, CardFooter, Image, Text } from 'grommet';
@@ -11,7 +11,11 @@ import { useAppState } from '../store';
 import { useWindowsDimension } from "../hooks/useWindowsDimension";
 import { useMyTokens, useGetToken } from '../hooks/useMyTokens';
 import { useDayZero } from '../hooks/useDayZero';
+import { useContract } from '../hooks/useContract';
 import { centerEllipsis } from '../utils/strings';
+import { getNetwork } from '../config';
+import { ExternalLink } from '../components/ExternalLink';
+import { useGoToMessage } from '../hooks/useGoToMessage';
 
 const ResponsiveColumn = (winWidth: number): string[] => {
   if (winWidth >= 1300) {
@@ -87,9 +91,17 @@ export const TokenView = ({
     attributes
   }
 }: TokenViewProps ) => {
-  const { provider } = useAppState();
+  const { provider, ipfsNode } = useAppState();
+  const [contract,, contractError] = useContract(provider, ipfsNode);
   const navigate = useNavigate();
+  const showMessage = useGoToMessage();
+  const [cancelLoading, setCancelLoading] = useState<boolean>(false);
+  const [cancellationTxHash, setCancellationTxHash] = useState<string | undefined>();
   const [error, setError] = useState<string | undefined>();
+  const cancellationTxHashLink = useMemo(() => {
+    const network = getNetwork()
+    return cancellationTxHash ? `${network.blockExplorer}/tx/${cancellationTxHash}` : '#'
+  }, [cancellationTxHash]);
 
   const parseTrait = (trait: string, value: any): any => {
     switch (trait) {
@@ -103,6 +115,30 @@ export const TokenView = ({
         return value;
     }
   };
+
+  const cancelTx = useCallback(
+    async () => {
+      setError(undefined);
+      setCancellationTxHash(undefined);
+      if (!contract) {
+        return;
+      }
+      try {
+        setCancelLoading(true);
+        await contract.cancel(tokenId, undefined, setCancellationTxHash);
+        setCancelLoading(false);
+        // Show success message;
+        showMessage(
+          `Stay token #${tokenId} is successfully cancelled. All funds are fully refunded`,
+          'info'
+        );
+      } catch (err) {
+        setError((err as Error).message || 'Unknown cancellation error');
+        setCancelLoading(false);
+      }
+    },
+    [showMessage, contract, tokenId]
+  );
 
   if (!isGetDateReady) {
     return null;
@@ -204,14 +240,48 @@ export const TokenView = ({
             tokenId={tokenId}
             onError={err => setError(err)}
           />
+
+          {status === 'booked' &&
+            <Box>
+              <Button
+                label={
+                  <Box direction='row'>
+                    <Box>
+                      <Text>Cancel and get refund</Text>
+                    </Box>
+                    {cancelLoading &&
+                      <Box pad={{ left: 'small' }}>
+                        <Spinner />
+                      </Box>
+                    }
+                  </Box>
+                }
+                disabled={cancelLoading}
+                onClick={cancelTx}
+              />
+              {!!cancellationTxHash
+                ? <ExternalLink
+                    href={cancellationTxHashLink}
+                    label={centerEllipsis(cancellationTxHash)}
+                  />
+                : null
+              }
+            </Box>
+          }
         </CardFooter>
       </Card>
 
       <MessageBox type='error' show={!!error}>
-          <Box>
-            {error}
-          </Box>
-        </MessageBox>
+        <Box>
+          {error}
+        </Box>
+      </MessageBox>
+
+      <MessageBox type='error' show={!!contractError}>
+        <Box>
+          {contractError}
+        </Box>
+      </MessageBox>
     </Box>
   );
 };
@@ -293,8 +363,6 @@ export const MyTokens = () => {
           {...token}
         />
       }
-
-    [{String(tokensLoading)}, {String(tokenLoading)}, {String(isGetDateReady)}]
 
       <MessageBox type='info' show={isLoading}>
         <Box direction='row'>
