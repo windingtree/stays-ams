@@ -4,13 +4,16 @@ import { PageWrapper } from '../pages/PageWrapper';
 import { MessageBox } from '../components/MessageBox';
 import { useCheckOut } from '../hooks/useCheckOut';
 import { useAppReducer } from '../store/reducer';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { OwnerLodgingFacility, OwnerSpace } from '../store/actions';
 
 import { TokenCard, TokenView } from './MyTokens';
 import { StayToken } from 'stays-core';
 import { useWindowsDimension } from '../hooks/useWindowsDimension';
 import { useDayZero } from '../hooks/useDayZero';
+import { ExternalLink } from '../components/ExternalLink';
+import { getNetwork } from '../config';
+import { centerEllipsis } from '../utils/strings';
 
 const ResponsiveColumn = (winWidth: number): string[] => {
   if (winWidth >= 1300) {
@@ -37,7 +40,7 @@ const FacilityList: React.FC<{
     return null
   }
   return <Box
-    border='right'
+  // border='right'
   >
     {facilities.map((facility, i) => (<Box key={i}>
       <Button
@@ -81,16 +84,23 @@ export const CheckOut = () => {
   const [getDate, isGetDateReady, getDateError] = useDayZero(provider, ipfsNode);
 
   // console.log('kkkk',ownerLodgingFacilities)
-  const [ownerLodgingFacilities, error] = useCheckOut(account, dispatch, provider, ipfsNode, ownerBootstrapped)
+  const [ownerLodgingFacilities, checkOut, error] = useCheckOut(account, dispatch, provider, ipfsNode, ownerBootstrapped)
 
   const [selectedFacility, setSelectedFacility] = useState<OwnerLodgingFacility | undefined>()
 
   const [tokens, setTokens] = useState<StayToken[]>([])
   const [selectedToken, setSelectedToken] = useState<StayToken | undefined>()
 
+  const [hash, setHash] = useState('');
+
   useEffect(() => {
     console.log('hello', ownerLodgingFacilities)
   }, [ownerLodgingFacilities])
+
+  const hashLink = useMemo(() => {
+    const network = getNetwork()
+    return hash ? `${network.blockExplorer}/tx/${hash}` : null
+  }, [hash])
 
   return (
     <PageWrapper
@@ -115,7 +125,6 @@ export const CheckOut = () => {
           <Box>
             {error}
           </Box>
-          <Spinner />
         </Box>
       </MessageBox>
 
@@ -131,13 +140,22 @@ export const CheckOut = () => {
 
         <Box direction='column'>
           <SpacesList onSelect={setTokens} facility={selectedFacility} />
-          <Box>
+          <Box margin={{ top: 'small' }}>
             {selectedToken &&
               <TokenView
                 getDate={getDate}
                 isGetDateReady={isGetDateReady}
                 facilityOwner={account}
                 {...selectedToken}
+                onClose={() => setSelectedToken(undefined)}
+                action={
+                  <>
+                    <Button label='Check out' onClick={() => checkOut(selectedToken.tokenId,undefined,setHash)} />
+                    {hashLink !== null ?
+                      <ExternalLink href={hashLink} label={centerEllipsis(hash)} />
+                      : null}
+                  </>
+                }
               />
             }
             <Grid

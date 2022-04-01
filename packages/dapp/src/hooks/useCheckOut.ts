@@ -6,6 +6,7 @@ import { Dispatch } from '../store';
 import { useContract } from './useContract';
 import Logger from '../utils/logger';
 import { OwnerLodgingFacility, OwnerSpace } from '../store/actions';
+import { MethodOverrides, TxHashCallbackFn } from 'stays-core/dist/src/utils/sendHelper';
 // import { usePoller } from './usePoller';
 
 // Initialize logger
@@ -13,6 +14,12 @@ const logger = Logger('useCheckOut');
 
 export type UseCheckOut = [
   ownerLodgingFacilities: OwnerLodgingFacility[],
+  checkOut: (
+    tokenId: string,
+    overrides?: MethodOverrides,
+    transactionHashCb?: TxHashCallbackFn,
+    confirmations?: number
+  ) => void,
   error: string | undefined,
   // loading: boolean
 ];
@@ -162,6 +169,34 @@ export const useCheckOut = (
       });
   }, [dispatch, loadAndDispatchFacilities, ownerBootstrapped, contract, account]);
 
+  const checkOut = useCallback(
+    async (tokenId: string, overrides?: MethodOverrides, transactionHashCb?: TxHashCallbackFn, confirmations?: number) => {
+      console.log(ownerBootstrapped,contract,account)
+      if (!contract || !account || !tokenId) {
+        return;
+      }
+
+      setError(undefined);
+      console.log(tokenId, overrides, transactionHashCb, confirmations)
+      try {
+        await contract.checkOut(tokenId, overrides, transactionHashCb);
+      } catch (error) {
+        logger.error(error);
+        const message = (error as Error).message ||
+          'Unknown check out error'
+        setError(message);
+      }
+    },
+    [loadAndDispatchFacilities, contract, account]
+  );
+
+  // // Check every <interval_time> for facilities and spaces updates
+  // usePoller(
+  //   getFacilitiesUpdates,
+  //   !!contract,
+  //   300000, // 5min @todo Move interval configuration to the Dapp config
+  //   'getFacilitiesUpdates'
+  // );
   // const getFacilitiesUpdates = useCallback(
   //   async () => {
   //     if (!ownerBootstrapped || !contract || !account) {
@@ -190,5 +225,6 @@ export const useCheckOut = (
   //   'getFacilitiesUpdates'
   // );
 
-  return [ownerLodgingFacilities, error];
+
+  return [ownerLodgingFacilities, checkOut, error];
 };
