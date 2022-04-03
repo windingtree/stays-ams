@@ -42,8 +42,6 @@ export interface TokenViewProps extends StayToken {
   getDate: (days: number) => DateTime;
   isGetDateReady: boolean;
   facilityOwner: string | undefined;
-  onClose: () => void;
-  action?: JSX.Element;
 }
 
 export const TokenCard = ({
@@ -164,7 +162,7 @@ export const TokenView = ({
             <Button
               icon={<Icons.Close color="plain" />}
               hoverIndicator
-              onClick={() => onClose()}
+              onClick={() => navigate('/tokens', { replace: true })}
             />
           </CardHeader>
           <Image
@@ -312,7 +310,6 @@ export const MyTokens = () => {
     [tokensLoading, tokenLoading, isGetDateReady]
   );
 
-  const navigate = useNavigate();
 
   // const tokensTest: StayToken[] = [
   //   {
@@ -365,8 +362,6 @@ export const MyTokens = () => {
           isGetDateReady={isGetDateReady}
           facilityOwner={facilityOwner}
           {...token}
-          onClose={() => navigate('/tokens', { replace: true })}
-          // action={false}
         />
       }
 

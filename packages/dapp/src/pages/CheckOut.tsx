@@ -1,3 +1,4 @@
+import type { OwnerLodgingFacility, OwnerSpace } from '../store/actions';
 import { Avatar, Box, Button, Grid, Nav, Text, Spinner } from 'grommet';
 import { useAppState } from '../store';
 import { PageWrapper } from '../pages/PageWrapper';
@@ -5,15 +6,15 @@ import { MessageBox } from '../components/MessageBox';
 import { useCheckOut } from '../hooks/useCheckOut';
 import { useAppReducer } from '../store/reducer';
 import { useEffect, useMemo, useState } from 'react';
-import type { OwnerLodgingFacility, OwnerSpace } from '../store/actions';
 
-import { TokenCard, TokenView } from './MyTokens';
 import { StayToken } from 'stays-core';
 import { useWindowsDimension } from '../hooks/useWindowsDimension';
 import { useDayZero } from '../hooks/useDayZero';
 import { ExternalLink } from '../components/ExternalLink';
 import { getNetwork } from '../config';
 import { centerEllipsis } from '../utils/strings';
+import { CheckOutView } from '../components/checkOut/CheckOutView';
+import { CheckOutCard } from '../components/checkOut/CheckOutCard';
 
 const ResponsiveColumn = (winWidth: number): string[] => {
   if (winWidth >= 1300) {
@@ -39,9 +40,7 @@ const FacilityList: React.FC<{
   if (!facilities) {
     return null
   }
-  return <Box
-  // border='right'
-  >
+  return <Box>
     {facilities.map((facility, i) => (<Box key={i}>
       <Button
         onClick={() => onSelect(facility)}
@@ -83,24 +82,17 @@ export const CheckOut = () => {
   const { winWidth } = useWindowsDimension();
   const [getDate, isGetDateReady, getDateError] = useDayZero(provider, ipfsNode);
 
-  // console.log('kkkk',ownerLodgingFacilities)
-  const [ownerLodgingFacilities, checkOut, error] = useCheckOut(account, dispatch, provider, ipfsNode, ownerBootstrapped)
-
+  const [ownerLodgingFacilities, checkOut, error] = useCheckOut(
+    account,
+    dispatch,
+    provider,
+    ipfsNode,
+    ownerBootstrapped
+  )
   const [selectedFacility, setSelectedFacility] = useState<OwnerLodgingFacility | undefined>()
 
   const [tokens, setTokens] = useState<StayToken[]>([])
   const [selectedToken, setSelectedToken] = useState<StayToken | undefined>()
-
-  const [hash, setHash] = useState('');
-
-  useEffect(() => {
-    console.log('hello', ownerLodgingFacilities)
-  }, [ownerLodgingFacilities])
-
-  const hashLink = useMemo(() => {
-    const network = getNetwork()
-    return hash ? `${network.blockExplorer}/tx/${hash}` : null
-  }, [hash])
 
   return (
     <PageWrapper
@@ -142,20 +134,13 @@ export const CheckOut = () => {
           <SpacesList onSelect={setTokens} facility={selectedFacility} />
           <Box margin={{ top: 'small' }}>
             {selectedToken &&
-              <TokenView
+              <CheckOutView
                 getDate={getDate}
                 isGetDateReady={isGetDateReady}
                 facilityOwner={account}
                 {...selectedToken}
                 onClose={() => setSelectedToken(undefined)}
-                action={
-                  <>
-                    <Button label='Check out' onClick={() => checkOut(selectedToken.tokenId,undefined,setHash)} />
-                    {hashLink !== null ?
-                      <ExternalLink href={hashLink} label={centerEllipsis(hash)} />
-                      : null}
-                  </>
-                }
+                checkOut={checkOut}
               />
             }
             <Grid
@@ -165,7 +150,7 @@ export const CheckOut = () => {
               responsive={true}
             >
               {tokens?.map((token, index) => (
-                <TokenCard
+                <CheckOutCard
                   key={index}
                   onClick={() => setSelectedToken(token)}
                   {...token.data}
