@@ -109,7 +109,7 @@ export const CheckOut = () => {
         </Box>
       </MessageBox>
 
-      <MessageBox type='info' show={!!error}>
+      <MessageBox type='error' show={!!error}>
         <Box direction='row'>
           <Box>
             {error}
@@ -146,14 +146,21 @@ export const CheckOut = () => {
               columns={ResponsiveColumn(winWidth)}
               responsive={true}
             >
-              {tokens?.map((token, index) => (
+              {tokens.length !== 0 ? tokens.map((token, index) => (
                 <CheckOutCard
                   key={index}
                   onClick={() => setSelectedToken(token)}
                   {...token.data}
                 />
-              ))}
+              )) : null}
             </Grid>
+            <MessageBox type='info' show={!tokens.length}>
+              <Box direction='row'>
+                <Box>
+                  No tokens
+                </Box>
+              </Box>
+            </MessageBox>
           </Box>
         </Box>
       </Grid>
