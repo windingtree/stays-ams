@@ -30,8 +30,8 @@ export const Space: React.FC = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>();
-  const [hash, setHash] = useState('');
   const [tokenId, setTokenId] = useState<string | undefined>();
+  const [hash, setHash] = useState('');
 
   useEffect(() => {
     setError(errorContract);

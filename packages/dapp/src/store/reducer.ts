@@ -13,7 +13,7 @@ const logger = Logger('Reducer');
 export const mainReducer = (state: State, action: Action): State => {
   logger.debug('Dispatch', action);
   const type = action.type;
-
+  (window as any).sssstate = state;
   try {
     switch (type) {
       case 'SET_CONNECTING':
