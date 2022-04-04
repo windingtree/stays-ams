@@ -33,6 +33,16 @@ export const useSpaceSearch = (
       return
     }
 
+    if (!!searchParams && searchParams.guestsAmount !== guestsAmount) {
+      dispatch({
+        type: 'SET_SEARCH_PARAMS',
+        payload: {
+          ...searchParams,
+          guestsAmount
+        }
+      });
+    }
+
     if (
       searchParams !== undefined &&
       searchTimestamp !== undefined &&
