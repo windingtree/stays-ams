@@ -11,6 +11,7 @@ import { useDayZero } from '../hooks/useDayZero';
 import { useOwnFacilities } from '../hooks/useOwnFacilities';
 import { CheckOutView } from '../components/checkOut/CheckOutView';
 import { CheckOutCard } from '../components/checkOut/CheckOutCard';
+import { useProceedCheckOut } from '../hooks/useProceedCheckOut';
 
 const ResponsiveColumn = (winWidth: number): string[] => {
   if (winWidth >= 1300) {
@@ -89,6 +90,13 @@ export const CheckOut = () => {
     ipfsNode,
     ownerBootstrapped
   )
+
+  const [proceedCheckOut, isReady, checkOutLoading, checkOutError] = useProceedCheckOut(
+    account,
+    provider,
+    ipfsNode,
+  )
+
   const [selectedFacility, setSelectedFacility] = useState<OwnerLodgingFacility | undefined>()
 
   const [tokens, setTokens] = useState<StayToken[]>([])
@@ -133,14 +141,16 @@ export const CheckOut = () => {
         <Box direction='column'>
           <SpacesList onSelect={setTokens} facility={selectedFacility} />
           <Box margin={{ top: 'small' }}>
-            {selectedToken &&
+            {selectedToken && isGetDateReady && isReady &&
               <CheckOutView
                 getDate={getDate}
-                isGetDateReady={isGetDateReady}
+                // isGetDateReady={isGetDateReady}
                 facilityOwner={account}
                 {...selectedToken}
                 onClose={() => setSelectedToken(undefined)}
-                checkOut={checkOut}
+                proceedCheckOut={proceedCheckOut}
+                error={checkOutError}
+                loading={checkOutLoading}
               />
             }
             <Grid
