@@ -1,13 +1,11 @@
-import type { StayToken, TokenData } from 'stays-core';
-import React, { useMemo, useState } from 'react';
+import type { StayToken } from 'stays-core';
+import { useMemo, useState } from 'react';
 import { DateTime } from 'luxon';
 import * as Icons from 'grommet-icons';
-import { Grid, Spinner, Button, Box, Card, CardBody, CardHeader, CardFooter, Image, Text } from 'grommet';
-import { MessageBox } from '../MessageBox';
-import { StayVoucherQr } from '../StayVoucherQr';
-import { useAppState } from '../../store';
+import { Grid, Button, Box, Card, CardBody, CardHeader, CardFooter, Image, Text } from 'grommet';
+// import { MessageBox } from '../MessageBox';
 import { centerEllipsis } from '../../utils/strings';
-import { MethodOverrides, TxHashCallbackFn } from 'stays-core/dist/src/utils/sendHelper';
+import { TxHashCallbackFn } from 'stays-core/dist/src/utils/sendHelper';
 import { getNetwork } from '../../config';
 import { ExternalLink } from '../ExternalLink';
 
@@ -17,9 +15,7 @@ export interface CheckOutProps extends StayToken {
   facilityOwner: string | undefined;
   checkOut: (
     tokenId: string,
-    overrides?: MethodOverrides,
-    transactionHashCb?: TxHashCallbackFn,
-    confirmations?: number
+    transactionHashCb?: TxHashCallbackFn
   ) => void;
   onClose: () => void;
 }
@@ -38,7 +34,7 @@ export const CheckOutView = ({
   checkOut,
   onClose
 }: CheckOutProps) => {
-  const [error, setError] = useState<string | undefined>();
+  // const [error, setError] = useState<string | undefined>();
 
   const [hash, setHash] = useState('');
 
@@ -48,9 +44,7 @@ export const CheckOutView = ({
   }, [hash])
 
   const handleCheckOut = () => {
-    // getDate()
-    console.log(attributes)
-    // checkOut(tokenId, undefined, setHash)
+    checkOut(tokenId, setHash);
   }
 
   const parseTrait = (trait: string, value: any): any => {
@@ -173,11 +167,11 @@ export const CheckOutView = ({
         </CardFooter>
       </Card>
 
-      <MessageBox type='error' show={!!error}>
+      {/* <MessageBox type='error' show={!!error}>
         <Box>
           {error}
         </Box>
-      </MessageBox>
+      </MessageBox> */}
     </Box>
   );
 };

@@ -1,5 +1,4 @@
 import type { TokenData } from 'stays-core';
-import React, { useMemo, useState } from 'react';
 import { Box, Card, CardBody, CardFooter, Image, Text } from 'grommet';
 
 export interface CheckOutCardProps extends TokenData {

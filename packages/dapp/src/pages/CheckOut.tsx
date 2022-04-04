@@ -1,18 +1,15 @@
 import type { OwnerLodgingFacility, OwnerSpace } from '../store/actions';
-import { Avatar, Box, Button, Grid, Nav, Text, Spinner } from 'grommet';
+import { Box, Button, Grid, Spinner } from 'grommet';
 import { useAppState } from '../store';
 import { PageWrapper } from '../pages/PageWrapper';
 import { MessageBox } from '../components/MessageBox';
 import { useCheckOut } from '../hooks/useCheckOut';
 import { useAppReducer } from '../store/reducer';
-import { useEffect, useMemo, useState } from 'react';
+import { useState } from 'react';
 
 import { StayToken } from 'stays-core';
 import { useWindowsDimension } from '../hooks/useWindowsDimension';
 import { useDayZero } from '../hooks/useDayZero';
-import { ExternalLink } from '../components/ExternalLink';
-import { getNetwork } from '../config';
-import { centerEllipsis } from '../utils/strings';
 import { CheckOutView } from '../components/checkOut/CheckOutView';
 import { CheckOutCard } from '../components/checkOut/CheckOutCard';
 
@@ -80,7 +77,7 @@ export const CheckOut = () => {
   } = useAppState();
 
   const { winWidth } = useWindowsDimension();
-  const [getDate, isGetDateReady, getDateError] = useDayZero(provider, ipfsNode);
+  const [getDate, isGetDateReady,] = useDayZero(provider, ipfsNode);
 
   const [ownerLodgingFacilities, checkOut, error] = useCheckOut(
     account,
