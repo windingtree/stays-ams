@@ -17,9 +17,8 @@ const InnerSpinner = styled(Spinner)`
 
 export interface CheckOutProps extends StayToken {
   getDate: (days: number) => DateTime;
-  // isGetDateReady: boolean;
   facilityOwner: string | undefined;
-  proceedCheckOut: (
+  checkOut: (
     tokenId: string,
     checkOutDate: DateTime,
     transactionHashCb?: TxHashCallbackFn
@@ -32,7 +31,6 @@ export interface CheckOutProps extends StayToken {
 export const CheckOutView = ({
   tokenId,
   getDate,
-  // isGetDateReady,
   status,
   data: {
     name,
@@ -40,14 +38,14 @@ export const CheckOutView = ({
     image,
     attributes
   },
-  proceedCheckOut,
+  checkOut,
   onClose,
   loading,
   error
 }: CheckOutProps) => {
   const startDay = attributes?.find(attr => attr.trait_type === 'startDay')
   const numberOfDays = attributes?.find(attr => attr.trait_type === 'numberOfDays')
-  const checkOutDate = getDate(Number(numberOfDays) + Number(startDay))
+  const checkOutDate = getDate(Number(numberOfDays?.value) + Number(startDay?.value))
 
   const [hash, setHash] = useState('');
   const hashLink = useMemo(() => {
@@ -67,10 +65,6 @@ export const CheckOutView = ({
         return value;
     }
   };
-
-  // if (!isGetDateReady) {
-  //   return null;
-  // }
 
   return (
     <Box
@@ -161,7 +155,7 @@ export const CheckOutView = ({
           )}
         </CardBody>
         <CardFooter pad='medium'>
-          <Button onClick={() => proceedCheckOut(tokenId, checkOutDate, setHash)} >
+          <Button onClick={() => checkOut(tokenId, checkOutDate, setHash)} >
             {() => (
               <Box direction='row' align='center' pad='small'>
                 <Text>

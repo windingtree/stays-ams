@@ -3,15 +3,14 @@ import { useState } from 'react';
 import { Box, Button, Grid, Spinner } from 'grommet';
 import { PageWrapper } from '../pages/PageWrapper';
 import { MessageBox } from '../components/MessageBox';
-import { useCheckOut } from '../hooks/useCheckOut';
-import { useAppState, useAppDispatch } from '../store';
+import { useAppState } from '../store';
 import { StayToken } from 'stays-core';
 import { useWindowsDimension } from '../hooks/useWindowsDimension';
 import { useDayZero } from '../hooks/useDayZero';
 import { useOwnFacilities } from '../hooks/useOwnFacilities';
 import { CheckOutView } from '../components/checkOut/CheckOutView';
 import { CheckOutCard } from '../components/checkOut/CheckOutCard';
-import { useProceedCheckOut } from '../hooks/useProceedCheckOut';
+import { useCheckOut } from '../hooks/useCheckOut';
 
 const ResponsiveColumn = (winWidth: number): string[] => {
   if (winWidth >= 1300) {
@@ -66,11 +65,10 @@ const SpacesList: React.FC<{
 
 export const CheckOut = () => {
 
-  const dispatch = useAppDispatch();
   const {
     account,
     isIpfsNodeConnecting,
-    ownerBootstrapped,
+    ownFacilities,
     provider,
     ipfsNode,
   } = useAppState();
@@ -79,19 +77,11 @@ export const CheckOut = () => {
   const [getDate, isGetDateReady,] = useDayZero(provider, ipfsNode);
   const [
     ownFacilitiesLoading,
-    refreshOwnFacilities,
+    ,
     ownFacilitiesError
-] = useOwnFacilities(account, provider, ipfsNode);
+  ] = useOwnFacilities(account, provider, ipfsNode);
 
-  const [ownerLodgingFacilities, checkOut, error] = useCheckOut(
-    account,
-    dispatch,
-    provider,
-    ipfsNode,
-    ownerBootstrapped
-  )
-
-  const [proceedCheckOut, isReady, checkOutLoading, checkOutError] = useProceedCheckOut(
+  const [checkOut, isReady, checkOutLoading, checkOutError] = useCheckOut(
     account,
     provider,
     ipfsNode,
@@ -111,7 +101,7 @@ export const CheckOut = () => {
         }
       ]}
     >
-      <MessageBox type='info' show={isIpfsNodeConnecting}>
+      <MessageBox type='info' show={isIpfsNodeConnecting || ownFacilitiesLoading}>
         <Box direction='row'>
           <Box>
             The Dapp is synchronizing with the smart contract. Please wait..&nbsp;
@@ -120,10 +110,10 @@ export const CheckOut = () => {
         </Box>
       </MessageBox>
 
-      <MessageBox type='info' show={!!error}>
+      <MessageBox type='info' show={!!ownFacilitiesError}>
         <Box direction='row'>
           <Box>
-            {error}
+            {ownFacilitiesError}
           </Box>
         </Box>
       </MessageBox>
@@ -136,7 +126,7 @@ export const CheckOut = () => {
         gap='medium'
       >
 
-        <FacilityList facilities={ownerLodgingFacilities} onSelect={setSelectedFacility} />
+        <FacilityList facilities={ownFacilities ?? []} onSelect={setSelectedFacility} />
 
         <Box direction='column'>
           <SpacesList onSelect={setTokens} facility={selectedFacility} />
@@ -144,11 +134,10 @@ export const CheckOut = () => {
             {selectedToken && isGetDateReady && isReady &&
               <CheckOutView
                 getDate={getDate}
-                // isGetDateReady={isGetDateReady}
                 facilityOwner={account}
                 {...selectedToken}
                 onClose={() => setSelectedToken(undefined)}
-                proceedCheckOut={proceedCheckOut}
+                checkOut={checkOut}
                 error={checkOutError}
                 loading={checkOutLoading}
               />
