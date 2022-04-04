@@ -77,7 +77,7 @@ export const CheckOut = () => {
   } = useAppState();
 
   const { winWidth } = useWindowsDimension();
-  const [getDate, isGetDateReady,] = useDayZero(provider, ipfsNode);
+  const [getDate, isGetDateReady, getDateError] = useDayZero(provider, ipfsNode);
 
   const [ownerLodgingFacilities, checkOut, error] = useCheckOut(
     account,
@@ -117,6 +117,14 @@ export const CheckOut = () => {
         </Box>
       </MessageBox>
 
+      <MessageBox type='error' show={!!getDateError}>
+        <Box direction='row'>
+          <Box>
+            {getDateError}
+          </Box>
+        </Box>
+      </MessageBox>
+
       <Grid
         fill='horizontal'
         pad='small'
@@ -130,7 +138,7 @@ export const CheckOut = () => {
         <Box direction='column'>
           <SpacesList onSelect={setTokens} facility={selectedFacility} />
           <Box margin={{ top: 'small' }}>
-            {selectedToken &&
+            {selectedToken && isGetDateReady &&
               <CheckOutView
                 getDate={getDate}
                 isGetDateReady={isGetDateReady}

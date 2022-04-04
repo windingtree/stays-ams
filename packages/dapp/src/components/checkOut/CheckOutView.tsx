@@ -1,13 +1,18 @@
 import type { StayToken } from 'stays-core';
-import { useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { DateTime } from 'luxon';
 import * as Icons from 'grommet-icons';
-import { Grid, Button, Box, Card, CardBody, CardHeader, CardFooter, Image, Text } from 'grommet';
-// import { MessageBox } from '../MessageBox';
+import { Grid, Button, Box, Card, CardBody, CardHeader, CardFooter, Image, Text, Spinner } from 'grommet';
 import { centerEllipsis } from '../../utils/strings';
 import { TxHashCallbackFn } from 'stays-core/dist/src/utils/sendHelper';
 import { getNetwork } from '../../config';
 import { ExternalLink } from '../ExternalLink';
+import styled from 'styled-components';
+
+const InnerSpinner = styled(Spinner)`
+  margin-left: 8px;
+`;
+
 
 export interface CheckOutProps extends StayToken {
   getDate: (days: number) => DateTime;
@@ -34,7 +39,8 @@ export const CheckOutView = ({
   checkOut,
   onClose
 }: CheckOutProps) => {
-  // const [error, setError] = useState<string | undefined>();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | undefined>();
 
   const [hash, setHash] = useState('');
 
@@ -44,7 +50,26 @@ export const CheckOutView = ({
   }, [hash])
 
   const handleCheckOut = () => {
-    checkOut(tokenId, setHash);
+    setLoading(true);
+    try {
+      const startDay = attributes?.find(attr => attr.trait_type === 'startDay')
+      const numberOfDays = attributes?.find(attr => attr.trait_type === 'numberOfDays')
+      const now = DateTime.now()
+      const checkOutDate = getDate(Number(numberOfDays) + Number(startDay))
+      if (now.toMillis() < checkOutDate.toMillis()) {
+        throw new Error(`Checkout not available yet (check out date: ${checkOutDate.toLocaleString()} )`)
+      }
+
+      checkOut(tokenId, setHash)
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      if (error) {
+        setError((error as Error).message);
+      } else {
+        setError('Unknown handleCheckOut error');
+      }
+    }
   }
 
   const parseTrait = (trait: string, value: any): any => {
@@ -153,7 +178,16 @@ export const CheckOutView = ({
           )}
         </CardBody>
         <CardFooter pad='medium'>
-          <Button label='Check out' onClick={() => handleCheckOut()} />
+          <Button onClick={() => handleCheckOut()} >
+            {() => (
+              <Box direction='row' align='center' pad='small'>
+                <Text>
+                  Check out
+                </Text>
+                {loading && <InnerSpinner />}
+              </Box>
+            )}
+          </Button>
           {hashLink !== null ?
             <ExternalLink href={hashLink} label={centerEllipsis(hash)} />
             : null}
