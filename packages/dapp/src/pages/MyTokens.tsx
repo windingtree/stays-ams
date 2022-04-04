@@ -47,7 +47,7 @@ export interface TokenViewProps extends StayToken {
 export const TokenCard = ({
   image,
   name,
-  onClick = () => {}
+  onClick = () => { }
 }: TokenCardProps) => {
   return (
     <Box margin='medium'>
@@ -309,6 +309,7 @@ export const MyTokens = () => {
     () => tokensLoading || tokenLoading || !isGetDateReady,
     [tokensLoading, tokenLoading, isGetDateReady]
   );
+
 
   // const tokensTest: StayToken[] = [
   //   {
