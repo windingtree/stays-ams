@@ -10,8 +10,8 @@ export interface GenericStateRecord {
   [key: string]: unknown;
 }
 
-export interface LodgingFacilityRecord extends GenericStateRecord, LodgingFacility { }
-export interface SpaceRecord extends Space, GenericStateRecord { }
+export interface LodgingFacilityRecord extends GenericStateRecord, LodgingFacility {}
+export interface SpaceRecord extends Space, GenericStateRecord {}
 
 export interface OwnerSpace extends SpaceRaw {
   tokens: StayToken[]
@@ -44,12 +44,11 @@ export interface State {
   startIpfsNode: Function;
   stopIpfsNode: Function;
   isBootstrapLoading: boolean;
-  isOwnerBootstrapLoading: boolean;
   bootstrapped?: number;
   ownerBootstrapped?: number;
   searchTimestamp?: number;
   lodgingFacilities: LodgingFacilityRecord[];
-  ownerLodgingFacilities?: OwnerLodgingFacility[];
+  ownFacilities?: OwnerLodgingFacility[];
   searchSpaces: SpaceRecord[];
   searchParams?: SearchParams;
   [key: string]: unknown | GenericStateRecord[];
@@ -161,18 +160,8 @@ export interface SetBootstrapLoadingAction {
   payload: boolean;
 }
 
-export interface SetOwnerBootstrapLoadingAction {
-  type: 'SET_OWNER_BOOTSTRAP_LOADING';
-  payload: boolean;
-}
-
 export interface SetBootstrappedAction {
   type: 'SET_BOOTSTRAPPED';
-  payload: number;
-}
-
-export interface SetOwnerBootstrappedAction {
-  type: 'SET_OWNER_BOOTSTRAPPED';
   payload: number;
 }
 
@@ -184,6 +173,11 @@ export interface SetAvailabilityTimestampAction {
 export interface SetSearchParamsAction {
   type: 'SET_SEARCH_PARAMS';
   payload: SearchParams;
+}
+
+export interface SetOwnFacilitiesAction {
+  type: 'SET_OWN_FACILITIES';
+  payload: OwnerLodgingFacility[];
 }
 
 export type Action =
@@ -203,8 +197,7 @@ export type Action =
   | ResetRecordAction
   | SetBootstrappedAction
   | SetBootstrapLoadingAction
-  | SetOwnerBootstrappedAction
-  | SetOwnerBootstrapLoadingAction
+  | SetOwnFacilitiesAction
   | SetAvailabilityTimestampAction
   | SetSearchParamsAction
   | AddErrorAction

@@ -154,16 +154,16 @@ export const useCheckOut = (
         setError(message);
 
         // Set bootstrap procedure failed
-        dispatch({
-          type: 'SET_OWNER_BOOTSTRAPPED',
-          payload: 0
-        });
+        // dispatch({
+        //   type: 'SET_OWNER_BOOTSTRAPPED',
+        //   payload: 0
+        // });
       })
       .finally(() => {
-        dispatch({
-          type: 'SET_OWNER_BOOTSTRAP_LOADING',
-          payload: false
-        });
+        // dispatch({
+        //   type: 'SET_OWNER_BOOTSTRAP_LOADING',
+        //   payload: false
+        // });
       });
   }, [dispatch, loadAndDispatchFacilities, ownerBootstrapped, contract, account]);
 

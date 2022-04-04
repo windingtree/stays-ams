@@ -3,18 +3,18 @@ import type { Action, State } from './actions';
 import Logger from '../utils/logger';
 
 // Initialize logger
-const logger = Logger('facilityManagerReducer');
+const logger = Logger('ownFacilitiesReducer');
 
-export const facilityManagerReducer = (state: State, action: Action): State => {
+export const ownFacilitiesReducer = (state: State, action: Action): State => {
   const type = action.type;
 
   try {
     switch (type) {
-      // case '<ACTION>':
-      //   return {
-      //     ...state,
-      //     <STATE_PROP>: action.payload
-      //   };
+      case 'SET_OWN_FACILITIES':
+        return {
+          ...state,
+          ownFacilities: action.payload
+        };
       default:
         return state;
     }

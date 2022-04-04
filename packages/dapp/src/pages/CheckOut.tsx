@@ -1,15 +1,14 @@
 import type { OwnerLodgingFacility, OwnerSpace } from '../store/actions';
+import { useState } from 'react';
 import { Box, Button, Grid, Spinner } from 'grommet';
-import { useAppState } from '../store';
 import { PageWrapper } from '../pages/PageWrapper';
 import { MessageBox } from '../components/MessageBox';
 import { useCheckOut } from '../hooks/useCheckOut';
-import { useAppReducer } from '../store/reducer';
-import { useState } from 'react';
-
+import { useAppState, useAppDispatch } from '../store';
 import { StayToken } from 'stays-core';
 import { useWindowsDimension } from '../hooks/useWindowsDimension';
 import { useDayZero } from '../hooks/useDayZero';
+import { useOwnFacilities } from '../hooks/useOwnFacilities';
 import { CheckOutView } from '../components/checkOut/CheckOutView';
 import { CheckOutCard } from '../components/checkOut/CheckOutCard';
 
@@ -66,11 +65,10 @@ const SpacesList: React.FC<{
 
 export const CheckOut = () => {
 
-  const [, dispatch] = useAppReducer();
+  const dispatch = useAppDispatch();
   const {
     account,
     isIpfsNodeConnecting,
-    isOwnerBootstrapLoading,
     ownerBootstrapped,
     provider,
     ipfsNode,
@@ -78,6 +76,11 @@ export const CheckOut = () => {
 
   const { winWidth } = useWindowsDimension();
   const [getDate, isGetDateReady,] = useDayZero(provider, ipfsNode);
+  const [
+    ownFacilitiesLoading,
+    refreshOwnFacilities,
+    ownFacilitiesError
+] = useOwnFacilities(account, provider, ipfsNode);
 
   const [ownerLodgingFacilities, checkOut, error] = useCheckOut(
     account,
@@ -100,7 +103,7 @@ export const CheckOut = () => {
         }
       ]}
     >
-      <MessageBox type='info' show={isIpfsNodeConnecting || isOwnerBootstrapLoading}>
+      <MessageBox type='info' show={isIpfsNodeConnecting}>
         <Box direction='row'>
           <Box>
             The Dapp is synchronizing with the smart contract. Please wait..&nbsp;
