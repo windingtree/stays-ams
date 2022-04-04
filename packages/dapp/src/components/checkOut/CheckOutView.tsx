@@ -2,28 +2,35 @@ import type { StayToken } from 'stays-core';
 import { useMemo, useState } from 'react';
 import { DateTime } from 'luxon';
 import * as Icons from 'grommet-icons';
-import { Grid, Button, Box, Card, CardBody, CardHeader, CardFooter, Image, Text } from 'grommet';
-// import { MessageBox } from '../MessageBox';
+import { Grid, Button, Box, Card, CardBody, CardHeader, CardFooter, Image, Text, Spinner } from 'grommet';
 import { centerEllipsis } from '../../utils/strings';
 import { TxHashCallbackFn } from 'stays-core/dist/src/utils/sendHelper';
 import { getNetwork } from '../../config';
 import { ExternalLink } from '../ExternalLink';
+import styled from 'styled-components';
+import { MessageBox } from '../MessageBox';
+
+const InnerSpinner = styled(Spinner)`
+  margin-left: 8px;
+`;
+
 
 export interface CheckOutProps extends StayToken {
   getDate: (days: number) => DateTime;
-  isGetDateReady: boolean;
   facilityOwner: string | undefined;
   checkOut: (
     tokenId: string,
+    checkOutDate: DateTime,
     transactionHashCb?: TxHashCallbackFn
   ) => void;
   onClose: () => void;
+  loading: boolean;
+  error: string | undefined;
 }
 
 export const CheckOutView = ({
   tokenId,
   getDate,
-  isGetDateReady,
   status,
   data: {
     name,
@@ -32,20 +39,19 @@ export const CheckOutView = ({
     attributes
   },
   checkOut,
-  onClose
+  onClose,
+  loading,
+  error
 }: CheckOutProps) => {
-  // const [error, setError] = useState<string | undefined>();
+  const startDay = attributes?.find(attr => attr.trait_type === 'startDay')
+  const numberOfDays = attributes?.find(attr => attr.trait_type === 'numberOfDays')
+  const checkOutDate = getDate(Number(numberOfDays?.value) + Number(startDay?.value))
 
   const [hash, setHash] = useState('');
-
   const hashLink = useMemo(() => {
     const network = getNetwork()
     return hash ? `${network.blockExplorer}/tx/${hash}` : null
   }, [hash])
-
-  const handleCheckOut = () => {
-    checkOut(tokenId, setHash);
-  }
 
   const parseTrait = (trait: string, value: any): any => {
     switch (trait) {
@@ -59,10 +65,6 @@ export const CheckOutView = ({
         return value;
     }
   };
-
-  if (!isGetDateReady) {
-    return null;
-  }
 
   return (
     <Box
@@ -153,25 +155,28 @@ export const CheckOutView = ({
           )}
         </CardBody>
         <CardFooter pad='medium'>
-          <Button label='Check out' onClick={() => handleCheckOut()} />
+          <Button onClick={() => checkOut(tokenId, checkOutDate, setHash)} >
+            {() => (
+              <Box direction='row' align='center' pad='small'>
+                <Text>
+                  Check out
+                </Text>
+                {loading && <InnerSpinner />}
+              </Box>
+            )}
+          </Button>
           {hashLink !== null ?
             <ExternalLink href={hashLink} label={centerEllipsis(hash)} />
             : null}
-          {/* <MessageBox type='info' show={!!error}>
+          <MessageBox type='error' show={!!error}>
             <Box direction='row'>
               <Box>
                 {error}
               </Box>
             </Box>
-          </MessageBox> */}
+          </MessageBox>
         </CardFooter>
       </Card>
-
-      {/* <MessageBox type='error' show={!!error}>
-        <Box>
-          {error}
-        </Box>
-      </MessageBox> */}
     </Box>
   );
 };
