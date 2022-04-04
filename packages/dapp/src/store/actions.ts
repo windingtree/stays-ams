@@ -44,9 +44,7 @@ export interface State {
   startIpfsNode: Function;
   stopIpfsNode: Function;
   isBootstrapLoading: boolean;
-  isOwnerBootstrapLoading: boolean;
   bootstrapped?: number;
-  ownerBootstrapped?: number;
   searchTimestamp?: number;
   lodgingFacilities: LodgingFacilityRecord[];
   ownerLodgingFacilities?: OwnerLodgingFacility[];

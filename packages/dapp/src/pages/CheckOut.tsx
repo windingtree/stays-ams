@@ -70,8 +70,6 @@ export const CheckOut = () => {
   const {
     account,
     isIpfsNodeConnecting,
-    isOwnerBootstrapLoading,
-    ownerBootstrapped,
     provider,
     ipfsNode,
   } = useAppState();
@@ -84,7 +82,6 @@ export const CheckOut = () => {
     dispatch,
     provider,
     ipfsNode,
-    ownerBootstrapped
   )
   const [selectedFacility, setSelectedFacility] = useState<OwnerLodgingFacility | undefined>()
 
@@ -100,7 +97,7 @@ export const CheckOut = () => {
         }
       ]}
     >
-      <MessageBox type='info' show={isIpfsNodeConnecting || isOwnerBootstrapLoading}>
+      <MessageBox type='info' show={isIpfsNodeConnecting}>
         <Box direction='row'>
           <Box>
             The Dapp is synchronizing with the smart contract. Please wait..&nbsp;

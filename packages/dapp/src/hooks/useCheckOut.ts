@@ -79,7 +79,6 @@ export const useCheckOut = (
   dispatch: Dispatch,
   provider: providers.JsonRpcProvider | undefined,
   ipfsNode: IPFS | undefined,
-  ownerBootstrapped: number | undefined
 ): UseCheckOut => {
   const [contract, , contractError] = useContract(provider, ipfsNode);
   const [ownerLodgingFacilities, setOwnerLodgingFacilities] = useState<OwnerLodgingFacility[]>([]);
@@ -127,7 +126,6 @@ export const useCheckOut = (
 
   useEffect(() => {
     if (!contract || !account) {
-      console.log('kkk-empty', account)
       return;
     }
 
@@ -154,18 +152,18 @@ export const useCheckOut = (
         setError(message);
 
         // Set bootstrap procedure failed
-        dispatch({
-          type: 'SET_OWNER_BOOTSTRAPPED',
-          payload: 0
-        });
+        // dispatch({
+        //   type: 'SET_OWNER_BOOTSTRAPPED',
+        //   payload: 0
+        // });
       })
-      .finally(() => {
-        dispatch({
-          type: 'SET_OWNER_BOOTSTRAP_LOADING',
-          payload: false
-        });
-      });
-  }, [dispatch, loadAndDispatchFacilities, ownerBootstrapped, contract, account]);
+    // .finally(() => {
+    //   dispatch({
+    //     type: 'SET_OWNER_BOOTSTRAP_LOADING',
+    //     payload: false
+    //   });
+    // });
+  }, [loadAndDispatchFacilities, contract, account]);
 
   const checkOut = useCallback(
     async (tokenId: string, transactionHashCb?: TxHashCallbackFn) => {
