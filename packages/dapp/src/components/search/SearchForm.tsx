@@ -7,8 +7,20 @@ import { ThemeMode } from '../SwitchThemeMode';
 import styled from 'styled-components';
 
 export const Label = styled.div`
-	@include g-font($g-fontsize-xs,$glider-color-text-labels,$g-fontweight-normal);
-	margin-left: 4px;
+  @include g-font($g-fontsize-xs,$glider-color-text-labels,$g-fontweight-normal);
+  margin-left: 4px;
+`;
+
+export const BlurredSearch = styled(Box)`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  width: 100%;
+  background: rgba(13, 14, 15, 0.2);
+  backdrop-filter: blur(36px);
 `;
 
 export const parseDateToDays = (dayZero: DateTime, firstDate: DateTime, secondDate: DateTime) => {
@@ -89,89 +101,101 @@ export const SearchForm: React.FC<{
   }, [departureDate, returnDate])
 
   return (
-    <Box pad={{ bottom: 'medium' }}>
-      <Grid
-        fill='horizontal'
-        responsive
-        columns={['flex', '1/2', 'flex']}
-        align='center'
+    <BlurredSearch>
+      <Box pad='small'
+        height='100%'
+        direction='column'
       >
-        <Box
-          pad='small'
-          height='100%'
-          direction='column'
-        >
-          <Label>Destination</Label>
-          <Box
-            border={{ color: themeMode === ThemeMode.light ? 'brand' : 'accent-1', size: 'small' }}
-            round='small'
-            pad='small'
-            justify='center'
-            height='100%'
-          >
-            <Text size='xlarge'>
-              Rio de Janeiro
-            </Text>
-          </Box>
-        </Box>
-        <Box pad='small'
-          height='100%'
-          direction='column'
-        >
-          <Label>When</Label>
-          <DateInput
-            buttonProps={{
-              label: `${dateFormat.format(new Date(departureDate))} - ${dateFormat.format(new Date(returnDate))}`,
-              size: 'large',
+        <Label>When</Label>
+        <DateInput
+          buttonProps={{
+            label: `${dateFormat.format(new Date(departureDate))} - ${dateFormat.format(new Date(returnDate))}`,
+            size: 'large',
+            icon: undefined,
+            style: {
+              border: '1px solid rgba(227, 231, 236, 0.3)',
+              color: 'white',
+              fontFamily: 'Inter',
+              fontStyle: 'normal',
+              fontWeight: 400,
+              fontSize: '1.25rem',
+              lineHeight: '1.5rem',
+              borderRadius: '.5rem'
+            }
+          }}
+          calendarProps={{
+            fill: false,
+            alignSelf: 'center',
+            margin: 'small',
+            size: 'medium'
+          }}
+          value={[departureDate, returnDate]}
+          onChange={({ value }) => handleDateChange({ value } as { value: string[] })}
+        />
+      </Box>
+      <Box
+        pad='small'
+        height='100%'
+        direction='column'
+      >
+        <Label>Guests</Label>
+        <Box>
+          <TextInput
+            size='xlarge'
+            focusIndicator={false}
+            style={{
+              border: '1px solid rgba(227, 231, 236, 0.3)',
+              fontFamily: 'Inter',
+              fontStyle: 'normal',
+              fontWeight: 400,
+              fontSize: '1.25rem',
+              lineHeight: '1.5rem',
+              borderRadius: '.5rem',
+              width: '4rem',
+              padding: '6px'
             }}
-            calendarProps={{
-              fill: false,
-              alignSelf: 'center',
-              margin: 'small',
-              size: 'medium'
+            // suggestions={['1', '2', '3','4', '5', '6','7', '2', '3']}
+            placeholder='Guests'
+            value={guestsAmount}
+            type='number'
+            // onSelect={({ suggestion }) => setGuestsAmount(Number(suggestion))}
+            onChange={(event) => {
+              const value = Number(event.target.value)
+              setGuestsAmount(value !== 0 ? value : 1)
             }}
-            value={[departureDate, returnDate]}
-            onChange={({ value }) => handleDateChange({ value } as { value: string[] })}
           />
         </Box>
-        <Box
-          pad='small'
-          height='100%'
-          direction='column'
-        >
-          <Label>Guests</Label>
-          <Box
-            border={{ color: themeMode === ThemeMode.light ? 'brand' : 'accent-1', size: 'small' }}
-            round='small'
-            justify='center'
-            height='100%'
-          >
-            <TextInput
-              size='xlarge'
-              focusIndicator={false}
-              plain
-              placeholder='Guests'
-              value={guestsAmount}
-              type='number'
-              onChange={(event) => {
-                const value = Number(event.target.value)
-                setGuestsAmount(value !== 0 ? value : 1)
-              }}
-            />
-          </Box>
-        </Box>
-      </Grid>
-      <Box pad='small'>
-        <Button onClick={() => navigate(`/search?${query}`, { replace: true })}>
-          {() => (
-            <Box direction='row' justify='center' align='center' pad='small'>
-              <Text>
-                Search
-              </Text>
-            </Box>
-          )}
-        </Button>
       </Box>
-    </Box>
+      <Button
+        style={{
+          border: '1px solid rgba(227, 231, 236, 0.3)',
+          fontFamily: 'Inter',
+          fontStyle: 'normal',
+          fontWeight: 400,
+          color: '#fff',
+          fontSize: '1.25rem',
+          lineHeight: '1.5rem',
+          borderRadius: '.5rem',
+          alignSelf: 'end',
+        }}
+        margin='small'
+        onClick={() => navigate(`/search?${query}`, { replace: true })}
+      >
+        {() => (
+          <Box direction='row' justify='center' align='center' pad='small'>
+            <Text style={{
+              // border: '1px solid rgba(227, 231, 236, 0.3)',
+              fontFamily: 'Inter',
+              fontStyle: 'normal',
+              fontWeight: 400,
+              fontSize: '1rem',
+            }}
+            >
+              Search
+            </Text>
+          </Box>
+        )}
+      </Button>
+    </BlurredSearch>
   );
 };

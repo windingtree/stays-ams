@@ -19,13 +19,13 @@ export const PageWrapper = ({ children, breadcrumbs }: PageWrapperProps) => {
   const { isRightNetwork } = useAppState();
 
   return (
-    <Box fill pad={size}>
+    <Box fill>
       <Breadcrumbs
         breadcrumbs={breadcrumbs}
         size={size}
       />
       <Box align='center'>
-        <Box width='xxlarge'>
+        <Box width='100%'>
           <MessageBox type='warn' show={!isRightNetwork}>
             You are connected to a wrong network. Please switch to: {allowedNetworkName}
           </MessageBox>
