@@ -21,7 +21,7 @@ export const AppHeader = () => {
 
   return (
     <Header
-      background='light-1'
+      // background='light-1'
       pad={size}
       responsive={true}
     >

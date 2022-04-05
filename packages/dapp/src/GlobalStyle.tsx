@@ -6,15 +6,16 @@ import { useAppState } from './store';
 
 const baseTheme = deepMerge(grommet, generate(16));
 
-export const GlobalStyle:React.FC = ({children}) => {
+export const GlobalStyle: React.FC = ({ children }) => {
   const { themeMode } = useAppState();
 
   return (
     <Grommet
       full
-      style={{ height: 'auto' }}
+      style={{ height: 'auto', minHeight: '100vh' }}
       theme={baseTheme}
       themeMode={themeMode}
+      background="url('https://localhost:3000/background.png')"
     >
       {children}
     </Grommet>
