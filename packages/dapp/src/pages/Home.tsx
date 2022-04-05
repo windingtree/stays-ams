@@ -6,7 +6,7 @@ import { SearchForm } from '../components/search/SearchForm';
 import { useDayZero } from '../hooks/useDayZero';
 import styled from 'styled-components';
 
-const WhiteText = styled(Text)`
+export const WhiteText = styled(Text)`
   text-align: center;
   color: #fff;
   font-family: Inter;
@@ -17,7 +17,7 @@ const WhiteText = styled(Text)`
   text-align: center;
 `;
 
-const GradientText = styled(Text)`
+export const GradientText = styled(Text)`
   font-family: Inter;
   font-size: 136px;
   font-weight: 900;

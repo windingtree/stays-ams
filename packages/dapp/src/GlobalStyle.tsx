@@ -1,4 +1,4 @@
-import { Grommet } from 'grommet';
+import { Grommet, Image } from 'grommet';
 import { grommet } from 'grommet/themes';
 import { generate } from 'grommet/themes/base';
 import { deepMerge } from 'grommet/utils';
@@ -15,8 +15,18 @@ export const GlobalStyle: React.FC = ({ children }) => {
       style={{ height: 'auto', minHeight: '100vh' }}
       theme={baseTheme}
       themeMode={themeMode}
-      background="url('https://localhost:3000/background.png')"
+      background={{position: 'relative'}}
     >
+      <Image
+        fit="cover"
+        src='https://localhost:3000/background.png'
+        style={{
+          width: '100vw',
+          height: '100vh',
+          position: 'absolute',
+          zIndex: '-100'
+        }}
+      />
       {children}
     </Grommet>
   );

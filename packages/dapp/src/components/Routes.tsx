@@ -149,7 +149,7 @@ export const GlobalMenu = () => {
 
   return (
     <CustomMenu
-      dropBackground={{ color: 'black', opacity: 0.8 }}
+      dropBackground={{ color: 'black', opacity: 0.9 }}
       dropAlign={{
         top: "bottom",
         right: "right",
