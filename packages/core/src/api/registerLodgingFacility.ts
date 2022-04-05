@@ -25,10 +25,9 @@ export const registerLodgingFacility = async (
   );
 
   const ipfsCid = await web3Storage.add(profileDataFile);
-  const dataURI = `ipfs://${ipfsCid}`;
+  const dataURI = `ipfs://${ipfsCid.cid}`;
 
   overrides = overrides ? overrides : {};
-  const owner = (contract.provider as providers.Web3Provider).getSigner();
 
   const receipt = await sendHelper(
     contract,
@@ -40,7 +39,7 @@ export const registerLodgingFacility = async (
       active,
       ...(fren ? [fren] : [])
     ],
-    owner,
+    undefined, // use already connected signer,
     overrides,
     transactionHashCb,
     confirmations
