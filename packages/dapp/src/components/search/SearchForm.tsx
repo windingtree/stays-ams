@@ -1,9 +1,7 @@
 import { DateTime } from 'luxon';
-import { Grid, Box, TextInput, Button, Text, DateInput } from 'grommet';
+import { Box, TextInput, Button, Text, DateInput } from 'grommet';
 import { useNavigate } from 'react-router-dom';
 import { useState, useMemo, useEffect } from 'react'
-import { useAppState } from '../../store';
-import { ThemeMode } from '../SwitchThemeMode';
 import styled from 'styled-components';
 
 export const Label = styled.div`
@@ -48,7 +46,6 @@ export const SearchForm: React.FC<{
   numberOfDays?: number | undefined,
   initGuestsAmount?: number | undefined,
 }> = ({ getDate, startDay, numberOfDays, initGuestsAmount }) => {
-  const { themeMode } = useAppState();
 
   const [departureDate, setDepartureDate] = useState<string>(today.toISO());
   const [returnDate, setReturnDate] = useState<string>(tomorrow.toISO());
@@ -94,11 +91,6 @@ export const SearchForm: React.FC<{
       setReturnDate(value[1])
     }
   }
-
-  useEffect(() => {
-
-    console.log('kkk', departureDate, returnDate)
-  }, [departureDate, returnDate])
 
   return (
     <BlurredSearch>

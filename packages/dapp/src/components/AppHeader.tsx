@@ -5,7 +5,6 @@ import { useAppState } from '../store';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { Account } from '../components/Account';
 import { SignInButton, SignOutButton } from '../components/buttons/web3Modal';
-import { SwitchThemeMode } from './SwitchThemeMode';
 import { GlobalMenu } from './Routes';
 
 export const AppHeader = () => {
@@ -47,7 +46,7 @@ export const AppHeader = () => {
           }
         </Box>
         <GlobalMenu />
-        <SwitchThemeMode />
+        {/* <SwitchThemeMode /> */}
       </Box>
     </Header>
   );

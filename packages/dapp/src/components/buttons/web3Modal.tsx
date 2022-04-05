@@ -8,12 +8,19 @@ const InnerSpinner = styled(Spinner)`
   margin-left: 8px;
 `;
 
+const WhiteButton = styled(Button)`
+  height: 2.5rem;
+  background: white;
+  border:none;
+  border-radius: 2rem;
+`;
+
 export const SignInButton = () => {
   const size = useContext(ResponsiveContext);
   const { isConnecting, signIn } = useAppState();
 
   return (
-    <Button
+    <WhiteButton
       onClick={() => signIn()}
       disabled={isConnecting}
     >
@@ -30,7 +37,7 @@ export const SignInButton = () => {
           {isConnecting && <InnerSpinner />}
         </Box>
       )}
-    </Button>
+    </WhiteButton>
   )
 };
 
@@ -39,7 +46,7 @@ export const SignOutButton = () => {
   const { isConnecting, signOut } = useAppState();
 
   return (
-    <Button
+    <WhiteButton
       onClick={() => signOut()}
       disabled={isConnecting}
     >
@@ -56,6 +63,6 @@ export const SignOutButton = () => {
           {isConnecting && <InnerSpinner />}
         </Box>
       )}
-    </Button>
+    </WhiteButton>
   )
 };
