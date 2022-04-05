@@ -146,8 +146,6 @@ export const combineReducers = (
       updatedState = reducer(updatedState, action);
     }
 
-    console.log('STATE', updatedState);
-
     return updatedState;
   };
 

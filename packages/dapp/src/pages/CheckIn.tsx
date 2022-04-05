@@ -25,7 +25,7 @@ export const CheckIn = (): JSX.Element => {
   const hashLink = useMemo(() => {
     const network = getNetwork()
     return hash ? `${network.blockExplorer}/tx/${hash}` : null
-  }, [hash])
+  }, [hash]);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>();

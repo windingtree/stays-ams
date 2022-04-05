@@ -3,19 +3,21 @@ import type { MessageState } from '../hooks/useGoToMessage';
 import { useEffect, useState } from 'react';
 import { Box, Text } from 'grommet';
 import { PageWrapper } from './PageWrapper';
-import { useLocation } from 'react-router-dom';
+import { useLocation, NavLink } from 'react-router-dom';
 import { MessageBox, allowedMessageBoxTypes } from '../components/MessageBox';
 
 export const Message = () => {
   const { state } = useLocation();
   const [messageType, setMessageType] = useState<MessageBoxTypes>('warn');
   const [messageText, setMessageText] = useState<string | undefined>();
+  const [messagePath, setMessagePath] = useState<string | undefined>();
 
   useEffect(
     () => {
-      const { type, text } = state as MessageState;
+      const { type, text, path } = state as MessageState;
       setMessageType(allowedMessageBoxTypes.includes(type) ? type : 'warn');
       setMessageText(text || 'Hello, the message on this path is expired');
+      setMessagePath(path);
     },
     [state]
   );
@@ -30,8 +32,17 @@ export const Message = () => {
       ]}
     >
       <MessageBox type={messageType} show={!!messageText}>
-        <Box>
-          <Text>{messageText}</Text>
+        <Box direction='column'>
+          <Box margin={{ bottom: 'small' }}>
+            <Text>{messageText}</Text>
+          </Box>
+          {messagePath &&
+            <Box>
+              <NavLink to={messagePath}>
+                Follow the link
+              </NavLink>
+            </Box>
+          }
         </Box>
       </MessageBox>
 

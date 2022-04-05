@@ -1,5 +1,5 @@
 import type { LodgingFacilityRaw } from 'stays-data-models';
-import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import {
   Card,
   CardBody,
@@ -18,30 +18,27 @@ import {
   Layer,
   Heading,
   Select,
-  TextInput,
   Spinner,
   Stack,
   Carousel,
 } from 'grommet';
-import { HelpOption, Close, StatusGood, StatusCritical, CaretRightFill, CaretDownFill } from 'grommet-icons';
+import { Close, CaretRightFill, CaretDownFill } from 'grommet-icons';
 import { MessageBox } from '../MessageBox';
+import { ExternalLink } from '../ExternalLink';
 import { validateLodgingFacilityData } from 'stays-data-models/dist/src/validators';
 import { useAppState } from '../../store';
 import { useWeb3StorageApi } from '../../hooks/useWeb3StorageApi';
 import { useContract } from './../../hooks/useContract';
 import { useWindowsDimension } from '../../hooks/useWindowsDimension';
-import {
-  ResponsiveColumn,
-  //LodgingFacilityRaw,
-  LodgingFacilityRaw2,
-  //imageSchema,
-} from '../../utils/roomProfile';
+import { useGoToMessage } from '../../hooks/useGoToMessage';
+import { ResponsiveColumn } from '../../utils/roomProfile';
 import { enumerators } from 'stays-data-models';
+import { getNetwork } from '../../config';
+import { centerEllipsis } from '../../utils/strings';
 import Logger from '../../utils/logger';
 
 // Initialize logger
 const logger = Logger('FacilityProfileCard');
-
 
 export const defaultCountries: string[] = [
   'Afghanistan',
@@ -368,8 +365,10 @@ const unFlattenObject = (obj: Record<string, any>) => {
 };
 
 export const FacilityProfileCard = () => {
+  const showMessage = useGoToMessage();
   const { winWidth } = useWindowsDimension();
-  const { ipfsNode } = useAppState();
+  const { provider, ipfsNode } = useAppState();
+  const [contract, loadingContract] = useContract(provider, ipfsNode);
   const web3Storage = useWeb3StorageApi(ipfsNode);
   const [profileValue, setProfileValue] = useState<Record<string, any>>(flattenObject(defaultFormValue));
   const [countries, setCountries] = useState<string[]>(defaultCountries);
@@ -381,6 +380,14 @@ export const FacilityProfileCard = () => {
   const [imagesUploading, setImagesUploading] = useState<boolean>(false);
   const [images, setImages] = useState<File[]>([]);
   const [imagesDescriptions, setImagesDescriptions] = useState<Record<string, string>>({});
+  const [validationError, setValidationError] = useState<string | undefined>();
+  const [hash, setHash] = useState<string | undefined>();
+  const [profileCreating, setProfileCreating] = useState<boolean>(false);
+
+  const hashLink = useMemo(() => {
+    const network = getNetwork();
+    return hash ? `${network.blockExplorer}/tx/${hash}` : null;
+  }, [hash]);
 
   const closeImageLoader = () => {
     setImages([]);
@@ -389,8 +396,8 @@ export const FacilityProfileCard = () => {
   };
 
   const isLoading = useMemo<boolean>(
-    () => !!!web3Storage,
-    [web3Storage]
+    () => !!!web3Storage || loadingContract,
+    [web3Storage, loadingContract]
   );
 
   const unFlattenProfile = useMemo<LodgingFacilityRaw>(
@@ -401,7 +408,7 @@ export const FacilityProfileCard = () => {
   const deployToIpfs = useCallback(
     async (
       file: File,
-      loadingSetter: Function,
+      loadingSetter = () => {},
       isImage = false
     ) => {
       try {
@@ -447,10 +454,53 @@ export const FacilityProfileCard = () => {
       <Form
         value={profileValue}
         validate='change'
-        onReset={() => setProfileValue(flattenObject(defaultFormValue))}
-        onSubmit={(event) => {}}
-        onChange={(nextValue, { touched }) => setProfileValue(nextValue)}
-        onValidate={(validationResults) => {}}
+        onReset={() => {
+          setProfileValue(flattenObject(defaultFormValue));
+          setAddressOpen(false);
+          setOperatorOpen(false);
+          closeImageLoader();
+        }}
+        onSubmit={async () => {
+          setValidationError(undefined);
+
+          try {
+            if (!contract) {
+              throw new Error('Contract is not connected');
+            }
+
+            setProfileCreating(true);
+
+            const profileData = unFlattenObject(profileValue);
+
+            logger.debug('profileData', profileData);
+            validateLodgingFacilityData(profileData);
+
+            await contract.registerLodgingFacility(
+              profileData,
+              true,
+              undefined,
+              undefined,
+              setHash,
+              undefined
+            );
+
+            setProfileCreating(false);
+
+            showMessage(
+              'The Lodging Facility has been successfully created',
+              'info',
+              '/facilities'
+            );
+          } catch (err) {
+            logger.error(err);
+            setValidationError(
+              (err as Error).message ||
+              'Unknown profile validation error'
+            );
+            setProfileCreating(false);
+          }
+        }}
+        onChange={nextValue => setProfileValue(nextValue)}
       >
         <Card width='xxlarge' elevation='xsmall' background='light-3'>
           <CardHeader pad='medium'>
@@ -476,10 +526,9 @@ export const FacilityProfileCard = () => {
                   required
                   validate={
                     [
-                      { regexp: /^[a-z]/i },
                       name => {
-                        if (name && name.length === 1) {
-                          return 'must be >1 character';
+                        if (!name || name === '') {
+                          return 'cannot be empty';
                         }
                       },
                     ]
@@ -490,6 +539,7 @@ export const FacilityProfileCard = () => {
                   style={{ padding: 10 }}
                   label='Type'
                   name='type'
+                  required
                 >
                   <Select
                     name='type'
@@ -505,6 +555,7 @@ export const FacilityProfileCard = () => {
                   style={{ padding: 10 }}
                   label='Tier'
                   name='tier'
+                  required
                 >
                   <Select
                     name='tier'
@@ -525,10 +576,9 @@ export const FacilityProfileCard = () => {
                   required
                   validate={
                     [
-                      { regexp: /^[a-z]/i },
-                      description => {
-                        if (description && description.length === 1) {
-                          return 'must be >1 character';
+                      name => {
+                        if (!name || name === '') {
+                          return 'cannot be empty';
                         }
                       },
                     ]
@@ -557,41 +607,59 @@ export const FacilityProfileCard = () => {
                         label='Street Address'
                         style={{ padding: 10, marginLeft: 10, marginTop: 10 }}
                         name='address.streetAddress'
-                      >
-                        <TextInput
-                          required
-                          name='address.streetAddress'
-                          className='input'
-                        />
-                      </FormField>
+                        required
+                        validate={
+                          [
+                            name => {
+                              if (!name || name === '') {
+                                return 'cannot be empty';
+                              }
+                            },
+                          ]
+                        }
+                      />
 
                       <FormField
                         style={{ padding: 10, marginLeft: 10 }}
                         label='Locality'
                         name='address.locality'
-                      >
-                        <TextInput
-                          required
-                          name='address.locality'
-                        />
-                      </FormField>
+                        required
+                        validate={
+                          [
+                            name => {
+                              if (!name || name === '') {
+                                return 'cannot be empty';
+                              }
+                            },
+                          ]
+                        }
+                      />
 
                       <FormField
                         style={{ padding: 10, marginLeft: 10 }}
                         label='Postal Code'
                         name='address.postalCode'
                         required
+                        validate={
+                          [
+                            name => {
+                              if (!name || name === '') {
+                                return 'cannot be empty';
+                              }
+                            },
+                          ]
+                        }
                       />
 
                       <FormField
                         style={{ padding: 10, marginLeft: 10, marginTop: 0 }}
                         label='Country'
                         name='address.country'
+                        required
                       >
                         <Select
                           name='address.country'
                           placeholder='Country'
-                          required
                           clear
                           options={countries}
                           onSearch={(text) => {
@@ -613,21 +681,18 @@ export const FacilityProfileCard = () => {
                         style={{ padding: 10, marginLeft: 10 }}
                         label='Subdivision'
                         name='address.subdivision'
-                        required
                       />
 
                       <FormField
                         style={{ padding: 10, marginLeft: 10 }}
                         label='Premise'
                         name='address.premise'
-                        required
                       />
 
                       <FormField
                         style={{ padding: 10, marginLeft: 10 }}
                         label='GPS'
                         name='address.gps'
-                        required
                       />
                     </Collapsible>
                   </Box>
@@ -656,47 +721,65 @@ export const FacilityProfileCard = () => {
                         label='Operator Name'
                         name='operator.name'
                         required
+                        validate={
+                          [
+                            name => {
+                              if (!name || name === '') {
+                                return 'cannot be empty';
+                              }
+                            },
+                          ]
+                        }
                       />
 
                       <FormField
                         label='Street Address'
                         style={{ padding: 10, marginLeft: 10, marginTop: 10 }}
-                        name='operator.streetAddress'
-                      >
-                        <TextInput
-                          required
-                          name='operator.streetAddress'
-                          className='input'
-                        />
-                      </FormField>
+                        name='operator.address.streetAddress'
+                        required
+                      />
 
                       <FormField
                         style={{ padding: 10, marginLeft: 10 }}
                         label='Locality'
-                        name='operator.locality'
-                      >
-                        <TextInput
-                          required
-                          name='operator.locality'
-                        />
-                      </FormField>
+                        name='operator.address.locality'
+                        required
+                        validate={
+                          [
+                            name => {
+                              if (!name || name === '') {
+                                return 'cannot be empty';
+                              }
+                            },
+                          ]
+                        }
+                      />
 
                       <FormField
                         style={{ padding: 10, marginLeft: 10 }}
                         label='Postal Code'
-                        name='operator.postalCode'
+                        name='operator.address.postalCode'
                         required
+                        validate={
+                          [
+                            name => {
+                              if (!name || name === '') {
+                                return 'cannot be empty';
+                              }
+                            },
+                          ]
+                        }
                       />
 
                       <FormField
                         style={{ padding: 10, marginLeft: 10, marginTop: 0 }}
                         label='Country'
-                        name='operator.country'
+                        name='operator.address.country'
+                        required
                       >
                         <Select
-                          name='operator.country'
+                          name='operator.address.country'
                           placeholder='Country'
-                          required
                           clear
                           options={countries}
                           onSearch={(text) => {
@@ -710,10 +793,6 @@ export const FacilityProfileCard = () => {
                               defaultCountries.filter((o) => exp.test(o))
                             );
                           }}
-                          onChange={(e) =>
-                            (LodgingFacilityRaw2.operator.address.country =
-                              e.target.value)
-                          }
                           onClose={() => setCountries(defaultCountries)}
                         />
                       </FormField>
@@ -721,22 +800,19 @@ export const FacilityProfileCard = () => {
                       <FormField
                         style={{ padding: 10, marginLeft: 10 }}
                         label='Subdivision'
-                        name='operator.subdivision'
-                        required
+                        name='operator.address.subdivision'
                       />
 
                       <FormField
                         style={{ padding: 10, marginLeft: 10 }}
                         label='Premise'
-                        name='operator.premise'
-                        required
+                        name='operator.address.premise'
                       />
 
                       <FormField
                         style={{ padding: 10, marginLeft: 10 }}
                         label='Geometry'
-                        name='operator.gps'
-                        required
+                        name='operator.address.gps'
                       />
                     </Collapsible>
                   </Box>
@@ -751,7 +827,7 @@ export const FacilityProfileCard = () => {
                       </Heading>
 
                       <Box height='medium' overflow='hidden'>
-                        <Carousel fill>
+                        <Carousel fill initialChild={0}>
                           {unFlattenProfile.media.images.map(
                             (image, index: number) => (
                               <Stack key={index} fill anchor='center'>
@@ -1080,16 +1156,48 @@ export const FacilityProfileCard = () => {
               margin={'medium'}
             >
               <Button size='large' type='reset' label='Reset' />
-              <Button
-                type='submit'
-                size='large'
-                label='Save'
-                disabled={isLoading}
-                primary
-              />
+              <Box direction='column' align='center'>
+                <Box>
+                  <Button
+                    type='submit'
+                    size='large'
+                    label={
+                      <Box direction='row'>
+                        <Box margin={{ right: 'small' }}>
+                          Save
+                        </Box>
+                        {profileCreating &&
+                          <Spinner color='white' />
+                        }
+                      </Box>
+                    }
+                    disabled={isLoading || profileCreating}
+                    primary
+                    onClick={() => {
+                      setAddressOpen(true);
+                      setOperatorOpen(true);
+                    }}
+                  />
+                </Box>
+                {hashLink !== null && hash &&
+                  <Box margin={{ top: 'small' }}>
+                    <ExternalLink
+                      href={hashLink}
+                      label={centerEllipsis(hash)}
+                    />
+                  </Box>
+                }
+              </Box>
+
             </Box>
-            </CardFooter>
+          </CardFooter>
         </Card>
+
+        <MessageBox type='error' show={!!validationError}>
+          <Box>
+            {validationError}
+          </Box>
+        </MessageBox>
       </Form>
     </>
   );
