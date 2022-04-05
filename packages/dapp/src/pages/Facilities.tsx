@@ -1,13 +1,13 @@
 import type { OwnerLodgingFacility, OwnerSpace } from '../store/actions';
 import { useState } from 'react';
 import { Box, Button, Grid, Spinner } from 'grommet';
-import { PageWrapper } from '../pages/PageWrapper';
+import { NavLink } from 'react-router-dom';
+import { PageWrapper } from './PageWrapper';
 import { MessageBox } from '../components/MessageBox';
 import { useAppState } from '../store';
 import { StayToken } from 'stays-core';
 import { useWindowsDimension } from '../hooks/useWindowsDimension';
 import { useDayZero } from '../hooks/useDayZero';
-import { useOwnFacilities } from '../hooks/useOwnFacilities';
 import { CheckOutView } from '../components/checkOut/CheckOutView';
 import { CheckOutCard } from '../components/checkOut/CheckOutCard';
 import { useCheckOut } from '../hooks/useCheckOut';
@@ -41,8 +41,13 @@ const FacilityList: React.FC<{
       <Button
         onClick={() => onSelect(facility)}
         label={facility.name}
+        margin={{ bottom: 'small' }}
       />
     </Box>))}
+
+    <NavLink to='/facilities/add'>
+      Add new facility
+    </NavLink>
   </Box>
 }
 
@@ -63,23 +68,19 @@ const SpacesList: React.FC<{
   </Box>
 }
 
-export const CheckOut = () => {
+export const Facilities = () => {
 
   const {
     account,
     isIpfsNodeConnecting,
     ownFacilities,
+    ownFacilitiesLoading,
     provider,
     ipfsNode,
   } = useAppState();
 
   const { winWidth } = useWindowsDimension();
   const [getDate, isGetDateReady,] = useDayZero(provider, ipfsNode);
-  const [
-    ownFacilitiesLoading,
-    ,
-    ownFacilitiesError
-  ] = useOwnFacilities(account, provider, ipfsNode);
 
   const [checkOut, isReady, checkOutLoading, checkOutError] = useCheckOut(
     account,
@@ -101,20 +102,12 @@ export const CheckOut = () => {
         }
       ]}
     >
-      <MessageBox type='info' show={isIpfsNodeConnecting || ownFacilitiesLoading}>
+      <MessageBox type='info' show={isIpfsNodeConnecting || !!ownFacilitiesLoading}>
         <Box direction='row'>
           <Box>
             The Dapp is synchronizing with the smart contract. Please wait..&nbsp;
           </Box>
           <Spinner />
-        </Box>
-      </MessageBox>
-
-      <MessageBox type='info' show={!!ownFacilitiesError}>
-        <Box direction='row'>
-          <Box>
-            {ownFacilitiesError}
-          </Box>
         </Box>
       </MessageBox>
 

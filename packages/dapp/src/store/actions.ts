@@ -45,10 +45,11 @@ export interface State {
   stopIpfsNode: Function;
   isBootstrapLoading: boolean;
   bootstrapped?: number;
-  ownerBootstrapped?: number;
   searchTimestamp?: number;
   lodgingFacilities: LodgingFacilityRecord[];
   ownFacilities?: OwnerLodgingFacility[];
+  ownFacilitiesLoading?: boolean;
+  ownFacilitiesBootstrapped?: boolean;
   searchSpaces: SpaceRecord[];
   searchParams?: SearchParams;
   [key: string]: unknown | GenericStateRecord[];
@@ -180,6 +181,15 @@ export interface SetOwnFacilitiesAction {
   payload: OwnerLodgingFacility[];
 }
 
+export interface SetOwnFacilitiesLoadingAction {
+  type: 'SET_OWN_FACILITIES_LOADING';
+  payload: boolean;
+}
+
+export interface SetOwnFacilitiesBootstrappedAction {
+  type: 'RESET_OWN_FACILITIES';
+}
+
 export type Action =
   | SetConnectingAction
   | SetAccountAction
@@ -198,6 +208,8 @@ export type Action =
   | SetBootstrappedAction
   | SetBootstrapLoadingAction
   | SetOwnFacilitiesAction
+  | SetOwnFacilitiesLoadingAction
+  | SetOwnFacilitiesBootstrappedAction
   | SetAvailabilityTimestampAction
   | SetSearchParamsAction
   | AddErrorAction

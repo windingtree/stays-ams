@@ -10,12 +10,13 @@ import { Protected } from './Protected';
 import { Home } from '../pages/Home';
 import { Message } from '../pages/Message';
 import { Search } from '../pages/Search';
-import { Rooms } from "../pages/Rooms";
-import { RoomProfile } from "../pages/RoomProfile";
+// import { Rooms } from "../pages/Rooms";
+// import { RoomProfile } from "../pages/RoomProfile";
+import { FacilityProfile } from "../pages/FacilityProfile";
 import { Space } from '../pages/Space';
 import { MyTokens } from '../pages/MyTokens';
 import { CheckIn } from '../pages/CheckIn';
-import { CheckOut } from '../pages/CheckOut';
+import { Facilities } from '../pages/Facilities';
 
 export interface RouteConfig {
   path: string;
@@ -44,20 +45,19 @@ export const pagesRoutesConfig: Routes = [
     element: <Search />,
     title: "Search for lodging facility",
   },
-  {
-    path: "/rooms",
-    element: <Rooms />,
-    title: "Rooms",
-    label: "Rooms",
-    protected: true,
-  },
-
-  {
-    path: "/rooms/add",
-    element: <RoomProfile />,
-    title: "Add New Room",
-    protected: true,
-  },
+  // {
+  //   path: "/rooms",
+  //   element: <Rooms />,
+  //   title: "Rooms",
+  //   label: "Rooms",
+  //   protected: true,
+  // },
+  // {
+  //   path: "/rooms/add",
+  //   element: <RoomProfile />,
+  //   title: "Add New Room",
+  //   protected: true,
+  // },
   {
     path: "/space/:id",
     element: <Space />,
@@ -79,10 +79,16 @@ export const pagesRoutesConfig: Routes = [
     protected: true,
   },
   {
-    path: '/check-out',
-    element: <CheckOut />,
-    title: 'Check Out',
-    label: 'Check Out',
+    path: '/facilities',
+    element: <Facilities />,
+    title: 'My Lodging Facilities',
+    label: 'Lodging Facilities',
+    protected: true,
+  },
+  {
+    path: "/facilities/add",
+    element: <FacilityProfile />,
+    title: "Add New Lodging Facility",
     protected: true,
   },
 ];

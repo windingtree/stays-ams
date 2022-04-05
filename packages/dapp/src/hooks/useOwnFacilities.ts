@@ -2,21 +2,19 @@ import type { providers } from 'ethers';
 import type { IPFS } from '@windingtree/ipfs-apis';
 import type { Contract, StayTokenState } from 'stays-core';
 import type { OwnerSpace } from '../store/actions';
+import type { Dispatch } from '../store';
 import { useState, useEffect, useCallback } from 'react';
-import { useError } from './useError';
 import { useContract } from './useContract';
-import { useAppDispatch } from '../store';
 import Logger from '../utils/logger';
 
 // Initialize logger
 const logger = Logger('useOwnFacilities');
 
 export type UseOwnFacilitiesHook = [
-  loading: boolean,
-  refresh: () => void,
   error: string | undefined
 ];
 
+// Helper for tokens data loading
 const loadTokens = async (
   contract: Contract,
   spaceId: string,
@@ -39,17 +37,28 @@ const loadTokens = async (
   };
 }
 
-export  const useOwnFacilities = (
+export const useOwnFacilities = (
+  dispatch: Dispatch,
   account: string | undefined,
   provider: providers.JsonRpcProvider | undefined,
   ipfsNode: IPFS | undefined,
+  ownFacilitiesBootstrapped: boolean | undefined
 ): UseOwnFacilitiesHook => {
-  const dispatchError = useError();
-  const dispatch = useAppDispatch();
   const [contract,, contractError] = useContract(provider, ipfsNode);
-  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | undefined>(undefined);
 
+  // Loading state helper
+  const setLoading = useCallback(
+    (isLoading: boolean) => {
+      dispatch({
+        type: 'SET_OWN_FACILITIES_LOADING',
+        payload: isLoading
+      });
+    },
+    [dispatch]
+  );
+
+  // Load facilities with spaces and tokens
   const loadFacilities = useCallback(
     async (account: string | undefined) => {
       if (!contract || !account) {
@@ -104,22 +113,20 @@ export  const useOwnFacilities = (
         setLoading(false);
       }
     },
-    [dispatch, contract]
-  );
-
-  const refresh = useCallback(
-    () => loadFacilities(account),
-    [loadFacilities, account]
+    [dispatch, setLoading, contract]
   );
 
   useEffect(
     () => {
       if (contractError !== undefined) {
         logger.debug('contractError', contractError);
-        dispatchError(contractError);
+        dispatch({
+          type: 'ERROR_ADD',
+          payload: contractError
+        });
       }
     },
-    [dispatchError, contractError]
+    [dispatch, contractError]
   );
 
   useEffect(
@@ -127,17 +134,21 @@ export  const useOwnFacilities = (
       if (!account) {
         // reset own facilities state
         dispatch({
-          type: 'SET_OWN_FACILITIES',
-          payload: []
+          type: 'RESET_OWN_FACILITIES'
         });
+        return;
+      }
+
+      if (ownFacilitiesBootstrapped) {
+        // Already bootstrapped, just ignore the action
         return;
       }
 
       // Fetching of own facilities
       loadFacilities(account);
     },
-    [dispatch, loadFacilities, account]
+    [dispatch, loadFacilities, account, ownFacilitiesBootstrapped]
   );
 
-  return [loading, refresh, error];
+  return [error];
 };

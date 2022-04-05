@@ -12,6 +12,7 @@ import { useNetworkId } from '../hooks/useNetworkId';
 import { useAccount } from '../hooks/useAccount';
 import { useIpfsNode } from '../hooks/useIpfsNode';
 import { useSmartContractData } from '../hooks/useSmartContractData';
+import { useOwnFacilities } from '../hooks/useOwnFacilities';
 
 // Config
 import { getNetwork } from '../config';
@@ -84,12 +85,23 @@ export const AppStateProvider = ({ children }: PropsType) => {
   ] = useNetworkId(provider, chainId);
   const [account, isAccountLoading, accountError] = useAccount(provider);
   const [ipfsNode, startIpfsNode, stopIpfsNode, ipfsNodeLoading, ipfsNodeError] = useIpfsNode();
-  const { bootstrapped } = state;
+  const { bootstrapped, ownFacilitiesBootstrapped } = state;
+
+  // Global data bootstrap
   const [bootstrapError] = useSmartContractData(
     dispatch,
     rpcProvider,
     ipfsNode,
     bootstrapped
+  );
+
+  // Own facilities bootstrap
+  const [ownFacilitiesError] = useOwnFacilities(
+    dispatch,
+    account,
+    provider,
+    ipfsNode,
+    ownFacilitiesBootstrapped
   );
 
   useEffect(() => {
@@ -129,10 +141,16 @@ export const AppStateProvider = ({ children }: PropsType) => {
         payload: rpcProviderError
       })
     }
+    if (ownFacilitiesError) {
+      dispatch({
+        type: 'ERROR_ADD',
+        payload: ownFacilitiesError
+      })
+    }
   }, [
     dispatch, web3ModalError, networkError,
     accountError, ipfsNodeError, bootstrapError,
-    rpcProviderError
+    rpcProviderError, ownFacilitiesError
   ]);
 
   useEffect(() => {

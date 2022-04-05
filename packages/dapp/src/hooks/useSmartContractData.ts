@@ -11,7 +11,7 @@ import Logger from '../utils/logger';
 // Initialize logger
 const logger = Logger('useSmartContractData');
 
-export type UseSmartContractData = [
+export type UseSmartContractDataHook = [
   error: string | undefined
 ];
 
@@ -65,7 +65,7 @@ export const useSmartContractData = (
   provider: providers.JsonRpcProvider | undefined,
   ipfsNode: IPFS | undefined,
   bootstrapped: number | undefined
-): UseSmartContractData => {
+): UseSmartContractDataHook => {
   const [contract,, contractError] = useContract(provider, ipfsNode);
   const [error, setError] = useState<string | undefined>(undefined);
 

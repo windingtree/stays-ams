@@ -13,7 +13,7 @@ const logger = Logger('Reducer');
 export const mainReducer = (state: State, action: Action): State => {
   logger.debug('Dispatch', action);
   const type = action.type;
-  (window as any).sssstate = state;
+
   try {
     switch (type) {
       case 'SET_CONNECTING':
@@ -134,7 +134,6 @@ const initialState: State = {
   isBootstrapLoading: false,
   lodgingFacilities: [],
   searchSpaces: [],
-  ownFacilities: []
 };
 
 export const combineReducers = (
@@ -146,6 +145,8 @@ export const combineReducers = (
     for (const reducer of reducers) {
       updatedState = reducer(updatedState, action);
     }
+
+    console.log('STATE', updatedState);
 
     return updatedState;
   };
