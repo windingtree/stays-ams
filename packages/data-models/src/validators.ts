@@ -22,7 +22,7 @@ export const validateSpaceData = (spaceData: SpaceRaw) => {
 export const validateLodgingFacilityData = (lodgingFacility: LodgingFacilityRaw) => {
   const validationResult = object.validateWithSchemaOrRef(
     lodgingFacilitySchema,
-    '',
+    '#/definitions/LodgingFacilityReference',
     lodgingFacility
   );
 

@@ -11,7 +11,7 @@ const validateSpaceData = (spaceData) => {
 };
 exports.validateSpaceData = validateSpaceData;
 const validateLodgingFacilityData = (lodgingFacility) => {
-    const validationResult = org_id_utils_1.object.validateWithSchemaOrRef(schemas_1.lodgingFacilitySchema, '', lodgingFacility);
+    const validationResult = org_id_utils_1.object.validateWithSchemaOrRef(schemas_1.lodgingFacilitySchema, '#/definitions/LodgingFacilityReference', lodgingFacility);
     if (validationResult !== null) {
         throw new Error(`Validation error: ${validationResult}`);
     }

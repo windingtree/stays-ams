@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.lodgingFacilitySchema = exports.SpacesReference = exports.spaceSchema = void 0;
 const org_json_schema_1 = require("@windingtree/org.json-schema");
+const enum_1 = require("./enum");
 exports.spaceSchema = {
     '$id': 'spaceSchema.json',
     title: 'Space Schema',
@@ -37,12 +38,7 @@ exports.spaceSchema = {
                     description: 'A space type',
                     example: 'room',
                     type: 'string',
-                    enum: [
-                        'room',
-                        'suite',
-                        'bungalow_or_villa',
-                        'executive_floor'
-                    ]
+                    enum: enum_1.allowedSpaceTypes
                 },
                 capacity: {
                     description: 'A number of rooms of this type in the Lodging Facility',
@@ -97,7 +93,7 @@ exports.lodgingFacilitySchema = {
             '$ref': '#/definitions/SpacesReference'
         }
     ],
-    definitions: Object.assign(Object.assign({}, org_json_schema_1.org.definitions), { SpacesReference: exports.SpacesReference, OperatorReference: {
+    definitions: Object.assign(Object.assign(Object.assign({}, org_json_schema_1.org.definitions), exports.spaceSchema.definitions), { SpacesReference: exports.SpacesReference, OperatorReference: {
             description: 'Lodging Facility operator',
             type: 'object',
             required: [
@@ -124,7 +120,6 @@ exports.lodgingFacilitySchema = {
                 'tier',
                 'address',
                 'operator',
-                'operatorAddress',
                 'media'
             ],
             properties: {
@@ -141,33 +136,13 @@ exports.lodgingFacilitySchema = {
                     description: 'A lodging facility type',
                     example: 'hostel',
                     type: 'string',
-                    enum: [
-                        'hotel',
-                        'hostel',
-                        'motel',
-                        'inn',
-                        'guest_house',
-                        'bed_and_breakfast',
-                        'resort',
-                        'hostal',
-                        'boatel',
-                        'chalet',
-                        'apartment',
-                        'homestay',
-                        'motorhome',
-                    ]
+                    enum: enum_1.allowedLodgingFacilityTypes
                 },
                 tier: {
                     description: 'A lodging facility tier',
                     example: 'decent',
                     type: 'string',
-                    enum: [
-                        'basic',
-                        'simple',
-                        'decent',
-                        'deluxe',
-                        'grand',
-                    ]
+                    enum: enum_1.allowedLodgingFacilityTiers
                 },
                 address: {
                     $ref: '#/definitions/AddressReference'

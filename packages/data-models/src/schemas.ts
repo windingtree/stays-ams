@@ -1,5 +1,10 @@
 import type { AnySchema } from '@windingtree/org.id-utils/dist/object';
 import { org } from '@windingtree/org.json-schema';
+import {
+  allowedLodgingFacilityTypes,
+  allowedLodgingFacilityTiers,
+  allowedSpaceTypes
+} from './enum';
 
 export const spaceSchema: AnySchema = {
   '$id': 'spaceSchema.json',
@@ -38,12 +43,7 @@ export const spaceSchema: AnySchema = {
           description: 'A space type',
           example: 'room',
           type: 'string',
-          enum: [
-            'room',
-            'suite',
-            'bungalow_or_villa',
-            'executive_floor'
-          ]
+          enum: allowedSpaceTypes
         },
         capacity: {
           description: 'A number of rooms of this type in the Lodging Facility',
@@ -103,6 +103,7 @@ export const lodgingFacilitySchema: AnySchema = {
   ],
   definitions: {
     ...org.definitions,
+    ...spaceSchema.definitions,
     SpacesReference,
     OperatorReference: {
       description: 'Lodging Facility operator',
@@ -132,7 +133,6 @@ export const lodgingFacilitySchema: AnySchema = {
         'tier',
         'address',
         'operator',
-        'operatorAddress',
         'media'
       ],
       properties: {
@@ -149,33 +149,13 @@ export const lodgingFacilitySchema: AnySchema = {
           description: 'A lodging facility type',
           example: 'hostel',
           type: 'string',
-          enum: [
-            'hotel',
-            'hostel',
-            'motel',
-            'inn',
-            'guest_house',
-            'bed_and_breakfast',
-            'resort',
-            'hostal',
-            'boatel',
-            'chalet',
-            'apartment',
-            'homestay',
-            'motorhome',
-          ]
+          enum: allowedLodgingFacilityTypes
         },
         tier: {
           description: 'A lodging facility tier',
           example: 'decent',
           type: 'string',
-          enum: [
-            'basic',
-            'simple',
-            'decent',
-            'deluxe',
-            'grand',
-          ]
+          enum: allowedLodgingFacilityTiers
         },
         address: {
           $ref: '#/definitions/AddressReference'
