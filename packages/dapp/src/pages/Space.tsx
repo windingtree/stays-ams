@@ -127,6 +127,7 @@ export const Space: React.FC = () => {
         border={{ color: borderColor }}
         flex={true}
         align='start'
+        background='white'
         overflow='auto'
         pad='medium'
         round='small'
