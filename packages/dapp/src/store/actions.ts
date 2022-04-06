@@ -1,4 +1,4 @@
-import type { LodgingFacility, LodgingFacilityRaw, Space, SpaceRaw } from 'stays-data-models';
+import type { LodgingFacility, Space, SpaceRaw } from 'stays-data-models';
 import type { Web3ModalProvider } from '../hooks/useWeb3Modal';
 import type { IPFS } from '@windingtree/ipfs-apis';
 import type { IProviderInfo } from 'web3modal';
@@ -50,6 +50,7 @@ export interface State {
   ownFacilities?: OwnerLodgingFacility[];
   ownFacilitiesLoading?: boolean;
   ownFacilitiesBootstrapped?: boolean;
+  ownFacilitiesRefresh?: Function;
   searchSpaces: SpaceRecord[];
   searchParams?: SearchParams;
   [key: string]: unknown | GenericStateRecord[];
@@ -181,6 +182,11 @@ export interface SetOwnFacilitiesAction {
   payload: OwnerLodgingFacility[];
 }
 
+export interface SetOwnFacilitiesRefreshAction {
+  type: 'SET_OWN_FACILITIES_REFRESH';
+  payload: Function;
+}
+
 export interface SetOwnFacilitiesLoadingAction {
   type: 'SET_OWN_FACILITIES_LOADING';
   payload: boolean;
@@ -208,6 +214,7 @@ export type Action =
   | SetBootstrappedAction
   | SetBootstrapLoadingAction
   | SetOwnFacilitiesAction
+  | SetOwnFacilitiesRefreshAction
   | SetOwnFacilitiesLoadingAction
   | SetOwnFacilitiesBootstrappedAction
   | SetAvailabilityTimestampAction

@@ -96,12 +96,22 @@ export const AppStateProvider = ({ children }: PropsType) => {
   );
 
   // Own facilities bootstrap
-  const [ownFacilitiesError] = useOwnFacilities(
+  const [ownFacilitiesError, ownFacilitiesRefresh] = useOwnFacilities(
     dispatch,
     account,
     provider,
     ipfsNode,
     ownFacilitiesBootstrapped
+  );
+
+  useEffect(
+    () => {
+      dispatch({
+        type: 'SET_OWN_FACILITIES_REFRESH',
+        payload: ownFacilitiesRefresh
+      });
+    },
+    [dispatch, ownFacilitiesRefresh]
   );
 
   useEffect(() => {

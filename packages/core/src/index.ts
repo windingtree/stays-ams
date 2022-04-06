@@ -23,6 +23,7 @@ import { getLodgingFacility } from './api/getLodgingFacility';
 import { getSpace } from './api/getSpace';
 import { getTokensBySpaceId } from './api/getTokensBySpaceId';
 import { registerLodgingFacility } from './api/registerLodgingFacility';
+import { updateLodgingFacility } from './api/updateLodgingFacility';
 import { addSpace } from './api/addSpace';
 import { book } from './api/book';
 import { getTokensOfOwner, getToken } from './api/nft';
@@ -170,6 +171,24 @@ export class Contract {
       profileData,
       active,
       fren,
+      overrides,
+      transactionHashCb,
+      confirmations
+    );
+  }
+
+  updateLodgingFacility(
+    lodgingFacilityId: string,
+    profileData: LodgingFacilityRaw,
+    overrides?: MethodOverrides,
+    transactionHashCb?: TxHashCallbackFn,
+    confirmations?: number
+  ): Promise<string> {
+    return updateLodgingFacility(
+      this.contract,
+      this.web3Storage,
+      lodgingFacilityId,
+      profileData,
       overrides,
       transactionHashCb,
       confirmations

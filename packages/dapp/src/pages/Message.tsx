@@ -11,13 +11,15 @@ export const Message = () => {
   const [messageType, setMessageType] = useState<MessageBoxTypes>('warn');
   const [messageText, setMessageText] = useState<string | undefined>();
   const [messagePath, setMessagePath] = useState<string | undefined>();
+  const [messagePathLabel, setMessagePathLabel] = useState<string | undefined>();
 
   useEffect(
     () => {
-      const { type, text, path } = state as MessageState;
+      const { type, text, path, pathLabel } = state as MessageState;
       setMessageType(allowedMessageBoxTypes.includes(type) ? type : 'warn');
       setMessageText(text || 'Hello, the message on this path is expired');
       setMessagePath(path);
+      setMessagePathLabel(pathLabel);
     },
     [state]
   );
@@ -39,7 +41,7 @@ export const Message = () => {
           {messagePath &&
             <Box>
               <NavLink to={messagePath}>
-                Follow the link
+                {messagePathLabel || 'Continue'}
               </NavLink>
             </Box>
           }

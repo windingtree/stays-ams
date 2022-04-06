@@ -91,6 +91,12 @@ export const pagesRoutesConfig: Routes = [
     title: "Add New Lodging Facility",
     protected: true,
   },
+  {
+    path: "/facilities/edit/:id",
+    element: <FacilityProfile />,
+    title: "Edit Lodging Facility",
+    protected: true,
+  },
 ];
 
 export const processPagesConfig = (config: Routes): Routes =>

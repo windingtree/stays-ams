@@ -22,12 +22,18 @@ export const ownFacilitiesReducer = (state: State, action: Action): State => {
           ...state,
           ownFacilitiesLoading: action.payload
         };
+      case 'SET_OWN_FACILITIES_REFRESH':
+        return {
+          ...state,
+          ownFacilitiesRefresh: action.payload
+        };
       case 'RESET_OWN_FACILITIES':
         return {
           ...state,
           ownFacilities: [],
           ownFacilitiesLoading: false,
           ownFacilitiesBootstrapped: false,
+          ownFacilitiesRefresh: () => {}
         };
       default:
         return state;

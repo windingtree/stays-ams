@@ -25,6 +25,7 @@ export declare class Contract {
     getTokensBySpaceId(spaceId: string, state: StayTokenState): Promise<string[]>;
     registerLodgingFacility(profileData: LodgingFacilityRaw, active?: boolean, fren?: string, // address
     overrides?: MethodOverrides, transactionHashCb?: TxHashCallbackFn, confirmations?: number): Promise<string>;
+    updateLodgingFacility(lodgingFacilityId: string, profileData: LodgingFacilityRaw, overrides?: MethodOverrides, transactionHashCb?: TxHashCallbackFn, confirmations?: number): Promise<string>;
     addSpace(profileData: SpaceRaw, lodgingFacilityId: string, capacity: number, pricePerNightWei: string, active?: boolean, overrides?: MethodOverrides, transactionHashCb?: TxHashCallbackFn, confirmations?: number): Promise<string>;
     book(spaceId: string, startDay: number, numberOfDays: number, quantity: number, overrides?: MethodOverrides, transactionHashCb?: TxHashCallbackFn, confirmations?: number): Promise<string>;
     checkIn(tokenId: string, voucher: StaysVoucher, overrides?: MethodOverrides, transactionHashCb?: TxHashCallbackFn, confirmations?: number): Promise<void>;

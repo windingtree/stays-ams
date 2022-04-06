@@ -11,7 +11,8 @@ import Logger from '../utils/logger';
 const logger = Logger('useOwnFacilities');
 
 export type UseOwnFacilitiesHook = [
-  error: string | undefined
+  error: string | undefined,
+  refresh: () => Promise<void>
 ];
 
 // Helper for tokens data loading
@@ -116,6 +117,11 @@ export const useOwnFacilities = (
     [dispatch, setLoading, contract]
   );
 
+  const refresh = useCallback(
+    () => loadFacilities(account),
+    [loadFacilities, account]
+  );
+
   useEffect(
     () => {
       if (contractError !== undefined) {
@@ -150,5 +156,5 @@ export const useOwnFacilities = (
     [dispatch, loadFacilities, account, ownFacilitiesBootstrapped]
   );
 
-  return [error];
+  return [error, refresh];
 };

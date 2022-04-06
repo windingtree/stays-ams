@@ -1,7 +1,7 @@
 import type { OwnerLodgingFacility, OwnerSpace } from '../store/actions';
 import { useState } from 'react';
 import { Box, Button, Grid, Spinner } from 'grommet';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { PageWrapper } from './PageWrapper';
 import { MessageBox } from '../components/MessageBox';
 import { useAppState } from '../store';
@@ -69,6 +69,7 @@ const SpacesList: React.FC<{
 }
 
 export const Facilities = () => {
+  const navigate = useNavigate();
 
   const {
     account,
@@ -123,6 +124,21 @@ export const Facilities = () => {
 
         <Box direction='column'>
           <SpacesList onSelect={setTokens} facility={selectedFacility} />
+
+          {selectedFacility &&
+            <Box direction='column' margin={{ top: 'small' }}>
+              <Box width='200px'>
+                <Button
+                  primary
+                  label='Edit the facility'
+                  onClick={() => navigate(
+                    `/facilities/edit/${selectedFacility.contractData.lodgingFacilityId}`
+                  )}
+                />
+              </Box>
+            </Box>
+          }
+
           <Box margin={{ top: 'small' }}>
             {selectedToken && isGetDateReady && isReady &&
               <CheckOutView

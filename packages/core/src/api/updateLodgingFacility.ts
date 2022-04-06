@@ -6,20 +6,18 @@ import { uid } from '@windingtree/org.id-utils';
 import { utils as ipfsUtils } from '@windingtree/ipfs-apis';
 import { sendHelper } from '../utils/sendHelper';
 
-// Register facility
-export const registerLodgingFacility = async (
+export const updateLodgingFacility = async (
   contract: Stays,
   web3Storage: Web3StorageApi,
+  lodgingFacilityId: string,
   profileData: LodgingFacilityRaw,
-  active = true,
-  fren?: string,
   overrides?: MethodOverrides,
   transactionHashCb?: TxHashCallbackFn,
   confirmations = 1
 ): Promise<string> => {
   const profileDataFile = ipfsUtils.obj2File(
     profileData,
-    `lodgingFacility_${uid.simpleUid()}.json`
+    `lodgingFacility_${lodgingFacilityId}_${uid.simpleUid(5)}.json`
   );
 
   const ipfsCid = await web3Storage.add(profileDataFile);
@@ -29,13 +27,10 @@ export const registerLodgingFacility = async (
 
   const receipt = await sendHelper(
     contract,
-    fren
-      ? 'registerLodgingFacility(string,bool,address)'
-      : 'registerLodgingFacility(string,bool)',
+    'updateLodgingFacility',
     [
-      dataURI,
-      active,
-      ...(fren ? [fren] : [])
+      lodgingFacilityId,
+      dataURI
     ],
     undefined, // use already connected signer,
     overrides,
@@ -43,7 +38,7 @@ export const registerLodgingFacility = async (
     confirmations
   );
 
-  const event = receipt.events?.find(e => e.event == 'LodgingFacilityCreated');
+  const event = receipt.events?.find(e => e.event == 'LodgingFacilityUpdated');
   const facilityId = event?.args?.facilityId;
 
   if (!facilityId) {
