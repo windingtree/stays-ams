@@ -344,18 +344,29 @@ contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable, EIP712
     bytes32 _spaceId,
     uint256 _capacity,
     uint256 _pricePerNightWei,
-    bool _active,
     string calldata _dataURI
   ) public override onlySpaceOwner(_spaceId) {
     Space storage space = spaces[_spaceId];
-    emit SpaceAdded(
+    space.capacity = _capacity;
+    space.pricePerNightWei = _pricePerNightWei;
+    space.dataURI = _dataURI;
+
+    emit SpaceUpdated(
       _spaceId,
-      space.lodgingFacilityId,
       _capacity,
       _pricePerNightWei,
-      _active,
       _dataURI
     );
+  }
+
+  function activateSpace(bytes32 _spaceId) public override onlySpaceOwner(_spaceId) {
+    spaces[_spaceId].active = true;
+    emit SpaceActiveState(_spaceId, true);
+  }
+
+  function deactivateSpace(bytes32 _spaceId) public override onlySpaceOwner(_spaceId) {
+    spaces[_spaceId].active = false;
+    emit SpaceActiveState(_spaceId, false);
   }
 
   function deleteSpace(bytes32 _spaceId) public override onlySpaceOwner(_spaceId) {

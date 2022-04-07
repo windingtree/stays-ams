@@ -10,28 +10,32 @@ export const getLodgingFacility = async (
   web3Storage: Web3StorageApi,
   lodgingFacilityId: string
 ): Promise<LodgingFacility | null> => {
-  const [
-    exists,
-    owner,
-    active,
-    dataURI
-  ] = await contract.getLodgingFacilityById(lodgingFacilityId);
-
-  if (!exists) {
-    return null;
-  }
-
-  const data = await fetchDataUri<LodgingFacilityRaw>(web3Storage, dataURI);
-
-  return {
-    ...data,
-    contractData: {
-      lodgingFacilityId,
+  try {
+    const [
+      exists,
       owner,
       active,
-      dataURI,
-    },
-    spaces: [],
-    updated: DateTime.now().toISO()
-  };
+      dataURI
+    ] = await contract.getLodgingFacilityById(lodgingFacilityId);
+
+    if (!exists) {
+      return null;
+    }
+
+    const data = await fetchDataUri<LodgingFacilityRaw>(web3Storage, dataURI);
+
+    return {
+      ...data,
+      contractData: {
+        lodgingFacilityId,
+        owner,
+        active,
+        dataURI,
+      },
+      spaces: [],
+      updated: DateTime.now().toISO()
+    };
+  } catch(_) {
+    return null;
+  }
 };

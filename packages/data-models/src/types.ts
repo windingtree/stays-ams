@@ -1,7 +1,7 @@
-import { BigNumber } from 'ethers';
 import type {
   MediaListReference,
-  AddressReference
+  AddressReference,
+  MessengerReference
 } from '@windingtree/org.json-schema/types/org.json';
 import {
   allowedSpaceTypes,
@@ -18,9 +18,20 @@ export type LodgingFacilityType =
 export type LodgingFacilityTier =
 	typeof allowedLodgingFacilityTiers[number];
 
+export type Amenity = string;
+
+export interface FacilityContactReference {
+  name: string;
+  phone: string;
+  email: string;
+  website: string;
+  messengers?: MessengerReference[];
+}
+
 export interface SpaceRaw {
   name: string;
   description: string;
+  amenities: Amenity[];
   capacity: number;
   guestsNumber: number;
   beds: number;
@@ -34,6 +45,8 @@ export interface LodgingFacilityRaw {
   description: string;
   type: LodgingFacilityType;
   tier: LodgingFacilityTier;
+  amenities: Amenity[];
+  contact: FacilityContactReference;
   address: AddressReference;
   what3words?: string;
   operator: {

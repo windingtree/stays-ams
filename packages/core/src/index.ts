@@ -25,6 +25,7 @@ import { getTokensBySpaceId } from './api/getTokensBySpaceId';
 import { registerLodgingFacility } from './api/registerLodgingFacility';
 import { updateLodgingFacility } from './api/updateLodgingFacility';
 import { addSpace } from './api/addSpace';
+import { updateSpace } from './api/updateSpace';
 import { book } from './api/book';
 import { getTokensOfOwner, getToken } from './api/nft';
 import { getDayZero } from './api/getDayZero';
@@ -213,6 +214,24 @@ export class Contract {
       capacity,
       pricePerNightWei,
       active,
+      overrides,
+      transactionHashCb,
+      confirmations
+    );
+  }
+
+  updateSpace(
+    spaceId: string,
+    profileData: SpaceRaw,
+    overrides?: MethodOverrides,
+    transactionHashCb?: TxHashCallbackFn,
+    confirmations?: number
+  ): Promise<string> {
+    return updateSpace(
+      this.contract,
+      this.web3Storage,
+      spaceId,
+      profileData,
       overrides,
       transactionHashCb,
       confirmations

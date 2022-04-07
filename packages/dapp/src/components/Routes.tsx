@@ -13,6 +13,7 @@ import { Search } from '../pages/Search';
 // import { Rooms } from "../pages/Rooms";
 // import { RoomProfile } from "../pages/RoomProfile";
 import { FacilityProfile } from "../pages/FacilityProfile";
+import { SpaceProfile } from "../pages/SpaceProfile";
 import { Space } from '../pages/Space';
 import { MyTokens } from '../pages/MyTokens';
 import { CheckIn } from '../pages/CheckIn';
@@ -95,6 +96,18 @@ export const pagesRoutesConfig: Routes = [
     path: "/facilities/edit/:id",
     element: <FacilityProfile />,
     title: "Edit Lodging Facility",
+    protected: true,
+  },
+  {
+    path: "/spaces/add/:facilityId",
+    element: <SpaceProfile />,
+    title: "Add New Space",
+    protected: true,
+  },
+  {
+    path: "/spaces/edit/:facilityId/:id",
+    element: <SpaceProfile />,
+    title: "Edit Space",
     protected: true,
   },
 ];

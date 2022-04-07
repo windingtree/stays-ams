@@ -24,6 +24,8 @@ import {
 } from 'grommet';
 import { Close, CaretRightFill, CaretDownFill } from 'grommet-icons';
 import { useParams } from 'react-router-dom';
+import { regexp } from '@windingtree/org.id-utils';
+import ReactTagInput from '@pathofdev/react-tag-input';
 import { MessageBox } from '../MessageBox';
 import { ExternalLink } from '../ExternalLink';
 import { validateLodgingFacilityData } from 'stays-data-models/dist/src/validators';
@@ -37,6 +39,7 @@ import { useGoToMessage } from '../../hooks/useGoToMessage';
 import { ResponsiveColumn } from '../../utils/roomProfile';
 import { getNetwork } from '../../config';
 import Logger from '../../utils/logger';
+import '@pathofdev/react-tag-input/build/index.css';
 
 // Initialize logger
 const logger = Logger('FacilityProfileCard');
@@ -301,6 +304,13 @@ export const defaultFormValue: LodgingFacilityRaw = {
   description: '',
   type: '',
   tier: '',
+  contact: {
+    name: '',
+    phone: '',
+    email: '',
+    website: '',
+  },
+  amenities: [],
   address: {
     country: '',
     subdivision: '',
@@ -380,6 +390,7 @@ export const FacilityProfileCard = () => {
   const web3Storage = useWeb3StorageApi(ipfsNode);
   const [profileValue, setProfileValue] = useState<Record<string, any>>(flattenObject(defaultFormValue));
   const [countries, setCountries] = useState<string[]>(defaultCountries);
+  const [contactOpen, setContactOpen] = useState<boolean>(false);
   const [addressOpen, setAddressOpen] = useState<boolean>(false);
   const [operatorOpen, setOperatorOpen] = useState<boolean>(false);
   const [showImagesLoader, setShowImagesLoader] = useState<boolean>(false);
@@ -645,6 +656,24 @@ export const FacilityProfileCard = () => {
 
                   <FormField
                     style={{ padding: 10 }}
+                    label='Description'
+                    name='description'
+                    htmlFor='text-area'
+                    component={TextArea}
+                    required
+                    validate={
+                      [
+                        name => {
+                          if (!name || name === '') {
+                            return 'cannot be empty';
+                          }
+                        },
+                      ]
+                    }
+                  />
+
+                  <FormField
+                    style={{ padding: 10 }}
                     label='Type'
                     name='type'
                     required
@@ -677,318 +706,407 @@ export const FacilityProfileCard = () => {
 
                   <FormField
                     style={{ padding: 10 }}
-                    label='Description'
-                    name='description'
-                    htmlFor='text-area'
-                    component={TextArea}
+                    label='Amenities'
                     required
-                    validate={
-                      [
-                        name => {
-                          if (!name || name === '') {
-                            return 'cannot be empty';
-                          }
-                        },
-                      ]
-                    }
-                  />
+                  >
+                    <ReactTagInput
+                      tags={unFlattenProfile.amenities || []}
+                      placeholder="Type and press enter"
+                      editable={true}
+                      readOnly={false}
+                      removeOnBackspace={true}
+                      onChange={newTags => {
+                        const profileClone =
+                          JSON.parse(JSON.stringify(unFlattenProfile));
+                        profileClone.amenities = newTags;
+                        setProfileValue(flattenObject(profileClone));
+                      }}
+                      validator={value => {
+                        return true;
+                      }}
+                    />
+                  </FormField>
 
-                    <Box>
-                      <Heading
-                        margin={{ 'left': 'small' }}
-                        level='3'
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => setAddressOpen(!addressOpen)}
-                      >
-                        <Box direction='row'>
-                          <Box pad={{ 'right': 'small' }}>
-                            Address
-                          </Box>
-                          <Box>
-                            {addressOpen ? <CaretDownFill /> : <CaretRightFill />}
-                          </Box>
+                  <Box>
+                    <Heading
+                      margin={{ 'left': 'small' }}
+                      level='3'
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => setContactOpen(!contactOpen)}
+                    >
+                      <Box direction='row'>
+                        <Box pad={{ 'right': 'small' }}>
+                          Contact
                         </Box>
-                      </Heading>
-
-                      <Collapsible open={addressOpen}>
-                        <FormField
-                          label='Street Address'
-                          style={{ padding: 10, marginLeft: 10, marginTop: 10 }}
-                          name='address.streetAddress'
-                          required
-                          validate={
-                            [
-                              name => {
-                                if (!name || name === '') {
-                                  return 'cannot be empty';
-                                }
-                              },
-                            ]
-                          }
-                        />
-
-                        <FormField
-                          style={{ padding: 10, marginLeft: 10 }}
-                          label='Locality'
-                          name='address.locality'
-                          required
-                          validate={
-                            [
-                              name => {
-                                if (!name || name === '') {
-                                  return 'cannot be empty';
-                                }
-                              },
-                            ]
-                          }
-                        />
-
-                        <FormField
-                          style={{ padding: 10, marginLeft: 10 }}
-                          label='Postal Code'
-                          name='address.postalCode'
-                          required
-                          validate={
-                            [
-                              name => {
-                                if (!name || name === '') {
-                                  return 'cannot be empty';
-                                }
-                              },
-                            ]
-                          }
-                        />
-
-                        <FormField
-                          style={{ padding: 10, marginLeft: 10, marginTop: 0 }}
-                          label='Country'
-                          name='address.country'
-                          required
-                          validate={
-                            [
-                              name => {
-                                if (!name || name === '') {
-                                  return 'cannot be empty';
-                                }
-                              },
-                            ]
-                          }
-                        >
-                          <Select
-                            name='address.country'
-                            placeholder='Country'
-                            clear
-                            required
-                            options={countries}
-                            onSearch={(text) => {
-                              const escapedText = text.replace(
-                                /[-\\^$*+?.()|[\]{}]/g,
-                                '\\$&'
-                              );
-
-                              const exp = new RegExp(escapedText, 'i');
-                              setCountries(
-                                defaultCountries.filter((o) => exp.test(o))
-                              );
-                            }}
-                            onClose={() => setCountries(defaultCountries)}
-                          />
-                        </FormField>
-
-                        <FormField
-                          style={{ padding: 10, marginLeft: 10 }}
-                          label='Subdivision'
-                          name='address.subdivision'
-                        />
-
-                        <FormField
-                          style={{ padding: 10, marginLeft: 10 }}
-                          label='Premise'
-                          name='address.premise'
-                        />
-
-                        <FormField
-                          style={{ padding: 10, marginLeft: 10 }}
-                          label='GPS'
-                          name='address.gps'
-                        />
-                      </Collapsible>
-                    </Box>
-
-                    <Box>
-                      <Heading
-                        margin={{ 'left': 'small' }}
-                        level='3'
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => setOperatorOpen(!operatorOpen)}
-                      >
-                        <Box direction='row'>
-                          <Box pad={{ 'right': 'small' }}>
-                            Operator
-                          </Box>
-                          <Box>
-                            {operatorOpen ? <CaretDownFill /> : <CaretRightFill />}
-                          </Box>
-                        </Box>
-                      </Heading>
-
-                      <Collapsible open={operatorOpen}>
-                        <FormField
-                          // style={{ padding: 10 }}
-                          style={{ padding: 10, marginLeft: 10, marginTop: 10 }}
-                          label='Operator Name'
-                          name='operator.name'
-                          required
-                          validate={
-                            [
-                              name => {
-                                if (!name || name === '') {
-                                  return 'cannot be empty';
-                                }
-                              },
-                            ]
-                          }
-                        />
-
-                        <FormField
-                          label='Street Address'
-                          style={{ padding: 10, marginLeft: 10, marginTop: 10 }}
-                          name='operator.address.streetAddress'
-                          required
-                        />
-
-                        <FormField
-                          style={{ padding: 10, marginLeft: 10 }}
-                          label='Locality'
-                          name='operator.address.locality'
-                          required
-                          validate={
-                            [
-                              name => {
-                                if (!name || name === '') {
-                                  return 'cannot be empty';
-                                }
-                              },
-                            ]
-                          }
-                        />
-
-                        <FormField
-                          style={{ padding: 10, marginLeft: 10 }}
-                          label='Postal Code'
-                          name='operator.address.postalCode'
-                          required
-                          validate={
-                            [
-                              name => {
-                                if (!name || name === '') {
-                                  return 'cannot be empty';
-                                }
-                              },
-                            ]
-                          }
-                        />
-
-                        <FormField
-                          style={{ padding: 10, marginLeft: 10, marginTop: 0 }}
-                          label='Country'
-                          name='operator.address.country'
-                          required
-                          validate={
-                            [
-                              name => {
-                                if (!name || name === '') {
-                                  return 'cannot be empty';
-                                }
-                              },
-                            ]
-                          }
-                        >
-                          <Select
-                            name='operator.address.country'
-                            placeholder='Country'
-                            clear
-                            required
-                            options={countries}
-                            onSearch={(text) => {
-                              const escapedText = text.replace(
-                                /[-\\^$*+?.()|[\]{}]/g,
-                                '\\$&'
-                              );
-
-                              const exp = new RegExp(escapedText, 'i');
-                              setCountries(
-                                defaultCountries.filter((o) => exp.test(o))
-                              );
-                            }}
-                            onClose={() => setCountries(defaultCountries)}
-                          />
-                        </FormField>
-
-                        <FormField
-                          style={{ padding: 10, marginLeft: 10 }}
-                          label='Subdivision'
-                          name='operator.address.subdivision'
-                        />
-
-                        <FormField
-                          style={{ padding: 10, marginLeft: 10 }}
-                          label='Premise'
-                          name='operator.address.premise'
-                        />
-
-                        <FormField
-                          style={{ padding: 10, marginLeft: 10 }}
-                          label='Geometry'
-                          name='operator.address.gps'
-                        />
-                      </Collapsible>
-                    </Box>
-
-                    {unFlattenProfile?.media?.images && unFlattenProfile.media.images.length > 0 &&
-                      <Box>
-                        <Heading
-                          margin={{ 'left': 'small' }}
-                          level='3'
-                        >
-                          Facility Images
-                        </Heading>
-
-                        <Box height='medium' overflow='hidden'>
-                          <Carousel fill initialChild={0}>
-                            {unFlattenProfile.media.images.map(
-                              (image, index: number) => (
-                                <Stack key={index} fill anchor='center'>
-                                  <Image
-                                    fill
-                                    height='medium'
-                                    fit='cover'
-                                    src={image.uri}
-                                    title={image.description}
-                                  />
-                                  <Button
-                                    icon={<Close color='white' />}
-                                    onClick={() => {
-                                      setProfileValue(
-                                        flattenObject({
-                                          ...unFlattenProfile,
-                                          media: {
-                                            ...unFlattenProfile.media,
-                                            images: unFlattenProfile?.media?.images?.filter(
-                                              (_, i) => i !== index
-                                            )
-                                          }
-                                        })
-                                      );
-                                    }}
-                                  />
-                                </Stack>
-                              )
-                            )}
-                          </Carousel>
+                        <Box>
+                          {contactOpen ? <CaretDownFill /> : <CaretRightFill />}
                         </Box>
                       </Box>
-                    }
+                    </Heading>
+
+                    <Collapsible open={contactOpen}>
+                      <FormField
+                        label='Name / function'
+                        style={{ padding: 10, marginLeft: 10, marginTop: 10 }}
+                        name='contact.name'
+                        required
+                        validate={
+                          [
+                            name => {
+                              if (!name || name === '') {
+                                return 'cannot be empty';
+                              }
+                            },
+                          ]
+                        }
+                      />
+
+                      <FormField
+                        style={{ padding: 10, marginLeft: 10 }}
+                        label='Phone'
+                        name='contact.phone'
+                        required
+                        validate={
+                          [
+                            value => {
+                              if (!regexp.phone.exec(value)) {
+                                return 'must be a valid phone number';
+                              }
+                            },
+                          ]
+                        }
+                      />
+
+                      <FormField
+                        style={{ padding: 10, marginLeft: 10 }}
+                        label='Email'
+                        name='contact.email'
+                        required
+                        validate={
+                          [
+                            value => {
+                              if (!regexp.email.exec(value)) {
+                                return 'must be a valid email';
+                              }
+                            },
+                          ]
+                        }
+                      />
+
+                      <FormField
+                        style={{ padding: 10, marginLeft: 10, marginTop: 0 }}
+                        label='Website'
+                        name='contact.website'
+                        required
+                        validate={
+                          [
+                            value => {
+                              if (!regexp.uri.exec(value)) {
+                                return 'must be a valid URI';
+                              }
+                            },
+                          ]
+                        }
+                      />
+                    </Collapsible>
+                  </Box>
+
+                  <Box>
+                    <Heading
+                      margin={{ 'left': 'small' }}
+                      level='3'
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => setAddressOpen(!addressOpen)}
+                    >
+                      <Box direction='row'>
+                        <Box pad={{ 'right': 'small' }}>
+                          Address
+                        </Box>
+                        <Box>
+                          {addressOpen ? <CaretDownFill /> : <CaretRightFill />}
+                        </Box>
+                      </Box>
+                    </Heading>
+
+                    <Collapsible open={addressOpen}>
+                      <FormField
+                        label='Street Address'
+                        style={{ padding: 10, marginLeft: 10, marginTop: 10 }}
+                        name='address.streetAddress'
+                        required
+                        validate={
+                          [
+                            name => {
+                              if (!name || name === '') {
+                                return 'cannot be empty';
+                              }
+                            },
+                          ]
+                        }
+                      />
+
+                      <FormField
+                        style={{ padding: 10, marginLeft: 10 }}
+                        label='Locality'
+                        name='address.locality'
+                        required
+                        validate={
+                          [
+                            name => {
+                              if (!name || name === '') {
+                                return 'cannot be empty';
+                              }
+                            },
+                          ]
+                        }
+                      />
+
+                      <FormField
+                        style={{ padding: 10, marginLeft: 10 }}
+                        label='Postal Code'
+                        name='address.postalCode'
+                        required
+                        validate={
+                          [
+                            name => {
+                              if (!name || name === '') {
+                                return 'cannot be empty';
+                              }
+                            },
+                          ]
+                        }
+                      />
+
+                      <FormField
+                        style={{ padding: 10, marginLeft: 10, marginTop: 0 }}
+                        label='Country'
+                        name='address.country'
+                        required
+                        validate={
+                          [
+                            name => {
+                              if (!name || name === '') {
+                                return 'cannot be empty';
+                              }
+                            },
+                          ]
+                        }
+                      >
+                        <Select
+                          name='address.country'
+                          placeholder='Country'
+                          clear
+                          required
+                          options={countries}
+                          onSearch={(text) => {
+                            const escapedText = text.replace(
+                              /[-\\^$*+?.()|[\]{}]/g,
+                              '\\$&'
+                            );
+
+                            const exp = new RegExp(escapedText, 'i');
+                            setCountries(
+                              defaultCountries.filter((o) => exp.test(o))
+                            );
+                          }}
+                          onClose={() => setCountries(defaultCountries)}
+                        />
+                      </FormField>
+
+                      <FormField
+                        style={{ padding: 10, marginLeft: 10 }}
+                        label='Subdivision'
+                        name='address.subdivision'
+                      />
+
+                      <FormField
+                        style={{ padding: 10, marginLeft: 10 }}
+                        label='Premise'
+                        name='address.premise'
+                      />
+
+                      <FormField
+                        style={{ padding: 10, marginLeft: 10 }}
+                        label='GPS'
+                        name='address.gps'
+                      />
+                    </Collapsible>
+                  </Box>
+
+                  <Box>
+                    <Heading
+                      margin={{ 'left': 'small' }}
+                      level='3'
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => setOperatorOpen(!operatorOpen)}
+                    >
+                      <Box direction='row'>
+                        <Box pad={{ 'right': 'small' }}>
+                          Operator
+                        </Box>
+                        <Box>
+                          {operatorOpen ? <CaretDownFill /> : <CaretRightFill />}
+                        </Box>
+                      </Box>
+                    </Heading>
+
+                    <Collapsible open={operatorOpen}>
+                      <FormField
+                        // style={{ padding: 10 }}
+                        style={{ padding: 10, marginLeft: 10, marginTop: 10 }}
+                        label='Operator Name'
+                        name='operator.name'
+                        required
+                        validate={
+                          [
+                            name => {
+                              if (!name || name === '') {
+                                return 'cannot be empty';
+                              }
+                            },
+                          ]
+                        }
+                      />
+
+                      <FormField
+                        label='Street Address'
+                        style={{ padding: 10, marginLeft: 10, marginTop: 10 }}
+                        name='operator.address.streetAddress'
+                        required
+                      />
+
+                      <FormField
+                        style={{ padding: 10, marginLeft: 10 }}
+                        label='Locality'
+                        name='operator.address.locality'
+                        required
+                        validate={
+                          [
+                            name => {
+                              if (!name || name === '') {
+                                return 'cannot be empty';
+                              }
+                            },
+                          ]
+                        }
+                      />
+
+                      <FormField
+                        style={{ padding: 10, marginLeft: 10 }}
+                        label='Postal Code'
+                        name='operator.address.postalCode'
+                        required
+                        validate={
+                          [
+                            name => {
+                              if (!name || name === '') {
+                                return 'cannot be empty';
+                              }
+                            },
+                          ]
+                        }
+                      />
+
+                      <FormField
+                        style={{ padding: 10, marginLeft: 10, marginTop: 0 }}
+                        label='Country'
+                        name='operator.address.country'
+                        required
+                        validate={
+                          [
+                            name => {
+                              if (!name || name === '') {
+                                return 'cannot be empty';
+                              }
+                            },
+                          ]
+                        }
+                      >
+                        <Select
+                          name='operator.address.country'
+                          placeholder='Country'
+                          clear
+                          required
+                          options={countries}
+                          onSearch={(text) => {
+                            const escapedText = text.replace(
+                              /[-\\^$*+?.()|[\]{}]/g,
+                              '\\$&'
+                            );
+
+                            const exp = new RegExp(escapedText, 'i');
+                            setCountries(
+                              defaultCountries.filter((o) => exp.test(o))
+                            );
+                          }}
+                          onClose={() => setCountries(defaultCountries)}
+                        />
+                      </FormField>
+
+                      <FormField
+                        style={{ padding: 10, marginLeft: 10 }}
+                        label='Subdivision'
+                        name='operator.address.subdivision'
+                      />
+
+                      <FormField
+                        style={{ padding: 10, marginLeft: 10 }}
+                        label='Premise'
+                        name='operator.address.premise'
+                      />
+
+                      <FormField
+                        style={{ padding: 10, marginLeft: 10 }}
+                        label='Geometry'
+                        name='operator.address.gps'
+                      />
+                    </Collapsible>
+                  </Box>
+
+                  {unFlattenProfile?.media?.images && unFlattenProfile.media.images.length > 0 &&
+                    <Box>
+                      <Heading
+                        margin={{ 'left': 'small' }}
+                        level='3'
+                      >
+                        Facility Images
+                      </Heading>
+
+                      <Box height='medium' overflow='hidden'>
+                        <Carousel fill initialChild={0}>
+                          {unFlattenProfile.media.images.map(
+                            (image, index: number) => (
+                              <Stack key={index} fill anchor='center'>
+                                <Image
+                                  fill
+                                  height='medium'
+                                  fit='cover'
+                                  src={image.uri}
+                                  title={image.description}
+                                />
+                                <Button
+                                  icon={<Close color='white' />}
+                                  onClick={() => {
+                                    setProfileValue(
+                                      flattenObject({
+                                        ...unFlattenProfile,
+                                        media: {
+                                          ...unFlattenProfile.media,
+                                          images: unFlattenProfile?.media?.images?.filter(
+                                            (_, i) => i !== index
+                                          )
+                                        }
+                                      })
+                                    );
+                                  }}
+                                />
+                              </Stack>
+                            )
+                          )}
+                        </Carousel>
+                      </Box>
+                    </Box>
+                  }
                 </Box>
 
                 <Box alignSelf='start' align='center'>

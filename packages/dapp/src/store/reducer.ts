@@ -82,6 +82,11 @@ export const mainReducer = (state: State, action: Action): State => {
           ...state,
           bootstrapped: action.payload
         };
+      case 'SET_BOOTSTRAPPED_CONTRACT':
+        return {
+          ...state,
+          bootstrappedContract: action.payload
+        };
       case 'SET_IPFS_NODE_CONNECTING':
         return {
           ...state,

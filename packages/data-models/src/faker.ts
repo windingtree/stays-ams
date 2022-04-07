@@ -39,6 +39,19 @@ export const createFakeLodgingFacility = (): LodgingFacilityRaw => ({
   description: faker.lorem.lines(3),
   type: randomItem(allowedLodgingFacilityTypes),
   tier: randomItem(allowedLodgingFacilityTiers),
+  amenities: iterator(6, faker.company.bsNoun),
+  contact: {
+    name: faker.commerce.department(),
+    phone: faker.phone.phoneNumber(),
+    email: faker.internet.email(),
+    website: `https://${faker.internet.domainName()}`,
+    messengers: [
+      {
+        type: 'whatsapp',
+        value: faker.phone.phoneNumber()
+      }
+    ]
+  },
   address: createFakeAddress(),
   operator: {
     name: faker.company.companyName(),
@@ -54,6 +67,7 @@ export const createFakeSpace = (): SpaceRaw => ({
   name: faker.company.companyName(),
   description: faker.lorem.lines(3),
   type: randomItem(allowedSpaceTypes),
+  amenities: iterator(6, faker.company.bsNoun),
   capacity: faker.datatype.number({ min: 1, max: 5 }),
   guestsNumber: faker.datatype.number({ min: 1, max: 5 }),
   beds: faker.datatype.number({ min: 1, max: 3 }),

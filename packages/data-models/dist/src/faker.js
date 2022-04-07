@@ -27,6 +27,19 @@ const createFakeLodgingFacility = () => ({
     description: faker_1.faker.lorem.lines(3),
     type: (0, exports.randomItem)(enum_1.allowedLodgingFacilityTypes),
     tier: (0, exports.randomItem)(enum_1.allowedLodgingFacilityTiers),
+    amenities: (0, exports.iterator)(6, faker_1.faker.company.bsNoun),
+    contact: {
+        name: faker_1.faker.commerce.department(),
+        phone: faker_1.faker.phone.phoneNumber(),
+        email: faker_1.faker.internet.email(),
+        website: `https://${faker_1.faker.internet.domainName()}`,
+        messengers: [
+            {
+                type: 'whatsapp',
+                value: faker_1.faker.phone.phoneNumber()
+            }
+        ]
+    },
     address: (0, exports.createFakeAddress)(),
     operator: {
         name: faker_1.faker.company.companyName(),
@@ -42,6 +55,7 @@ const createFakeSpace = () => ({
     name: faker_1.faker.company.companyName(),
     description: faker_1.faker.lorem.lines(3),
     type: (0, exports.randomItem)(enum_1.allowedSpaceTypes),
+    amenities: (0, exports.iterator)(6, faker_1.faker.company.bsNoun),
     capacity: faker_1.faker.datatype.number({ min: 1, max: 5 }),
     guestsNumber: faker_1.faker.datatype.number({ min: 1, max: 5 }),
     beds: faker_1.faker.datatype.number({ min: 1, max: 3 }),

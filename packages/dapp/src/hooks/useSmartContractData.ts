@@ -6,6 +6,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Dispatch } from '../store';
 import { useContract } from './useContract';
 import { usePoller } from './usePoller';
+import { getNetwork } from '../config';
 import Logger from '../utils/logger';
 
 // Initialize logger
@@ -15,11 +16,12 @@ export type UseSmartContractDataHook = [
   error: string | undefined
 ];
 
-const loadSpace = async (contract: Contract, spaceId: string): Promise<Space> => {
+const loadSpace = async (contract: Contract, spaceId: string): Promise<Space | null> => {
   const space = await contract.getSpace(spaceId);
   logger.debug('Loaded space:', spaceId, space);
   if (space === null) {
-    throw new Error(`Space with Id: ${spaceId} not found`);
+    logger.error(`Space with Id: ${spaceId} not found`);
+    return null;
   }
   return space;
 }
@@ -33,30 +35,36 @@ const loadLodgingFacilities = async (
     : await contract.getLodgingFacilityIds(true);
   logger.debug('Facilities Ids:', facilityIds);
 
-  return Promise.all(
+  const facilities = await Promise.all(
     facilityIds.map(
       async facilityId => {
         const facility = await contract.getLodgingFacility(facilityId);
         logger.debug('Loaded facility:', facilityId, facility);
+
         if (facility === null) {
-          throw new Error(`Lodging facility with Id: ${facilityId} not found`);
+          logger.error(`Lodging facility with Id: ${facilityId} not found`);
+          return null;
         }
 
         const spaceIds = await contract.getSpaceIds(facilityId, true);
         logger.debug('Spaces Ids:', facilityId, spaceIds);
-        const spaces = await Promise.all(
+
+        let spaces = await Promise.all(
           spaceIds.map(
             spaceId => loadSpace(contract, spaceId)
           )
         );
+        spaces = spaces.filter(s => s !== null)
 
         return {
           ...facility,
-          spaces
+          spaces: spaces as Space[]
         };
       }
     )
   );
+
+  return facilities.filter(f => f !== null) as LodgingFacility[];
 };
 
 // useSmartContractData react hook
@@ -104,6 +112,10 @@ export const useSmartContractData = (
       dispatch({
         type: 'SET_BOOTSTRAPPED',
         payload: blockNumber
+      });
+      dispatch({
+        type: 'SET_BOOTSTRAPPED_CONTRACT',
+        payload: getNetwork().address
       });
     },
     [dispatch]

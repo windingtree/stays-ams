@@ -52,40 +52,43 @@ const fakeSpace = createFakeSpace();
 
 /*
 {
-  "name": "Hessel, Heller and Kozey",
-  "description": "Blanditiis officia distinctio omnis.\nDeleniti sint saepe.\nNecessitatibus sit et delectus corrupti.",
-  "type": "room",
+  "name": "Reinger and Sons",
+  "description": "Repellat enim sed voluptate doloribus ut ab voluptatem voluptates quia.\nNeque sit labore rerum facere.\nOdio nam enim occaecati adipisci numquam itaque corrupti.",
+  "type": "suite",
+  "amenities": [
+    "web-readiness",
+    "e-tailers",
+    "web services",
+    "relationships",
+    "infomediaries",
+    "web-readiness"
+  ],
   "capacity": 4,
-  "guestsNumber": 5,
-  "beds": 3,
-  "price": 59,
+  "guestsNumber": 2,
+  "beds": 1,
+  "price": "246",
   "media": {
     "logo": "http://placeimg.com/640/480/abstract",
     "images": [
       {
-        "description": "Quo officiis neque veniam aut cumque non saepe et dolorum.",
-        "uri": "http://placeimg.com/640/480/city",
-        "thumbnail": "http://placeimg.com/150/150/city"
+        "description": "Similique sint molestias ea quo.",
+        "uri": "http://placeimg.com/640/480/city"
       },
       {
-        "description": "Fuga dolores velit veritatis dolores sed.",
-        "uri": "http://placeimg.com/640/480/city",
-        "thumbnail": "http://placeimg.com/150/150/city"
+        "description": "Animi non ut.",
+        "uri": "http://placeimg.com/640/480/city"
       },
       {
-        "description": "Repellendus maiores officiis.",
-        "uri": "http://placeimg.com/640/480/city",
-        "thumbnail": "http://placeimg.com/150/150/city"
+        "description": "Dolorem aut corporis quod omnis aliquid cupiditate.",
+        "uri": "http://placeimg.com/640/480/city"
       },
       {
-        "description": "Voluptatem et accusamus perferendis porro sunt deleniti nihil.",
-        "uri": "http://placeimg.com/640/480/city",
-        "thumbnail": "http://placeimg.com/150/150/city"
+        "description": "Laborum fugit tempore.",
+        "uri": "http://placeimg.com/640/480/city"
       },
       {
-        "description": "Commodi vel ab culpa laudantium corrupti.",
-        "uri": "http://placeimg.com/640/480/city",
-        "thumbnail": "http://placeimg.com/150/150/city"
+        "description": "Autem possimus aliquid officiis qui ut rerum id illo mollitia.",
+        "uri": "http://placeimg.com/640/480/city"
       }
     ]
   }
@@ -96,58 +99,73 @@ const fakeLodgingFacility = createFakeLodgingFacility();
 
 /*
 {
-  "name": "Price, Feest and Harvey",
-  "description": "Reiciendis ut cupiditate voluptatibus numquam molestias tenetur non.\nMaxime quis earum autem illum voluptatem voluptas sequi.\nImpedit voluptate accusantium iusto ut voluptatem excepturi perferendis aspernatur.",
-  "type": "boatel",
-  "tier": "basic",
+  "name": "Reynolds Group",
+  "description": "At delectus eum cumque quia qui non.\nVoluptas optio debitis ea aut porro aperiam.\nDucimus rerum molestias veritatis placeat consequuntur quisquam corporis possimus repellat.",
+  "type": "guest_house",
+  "tier": "decent",
+  "amenities": [
+    "e-services",
+    "blockchains",
+    "markets",
+    "markets",
+    "networks",
+    "web-readiness"
+  ],
+  "contact": {
+    "name": "Movies",
+    "phone": "450.363.3045 x30092",
+    "email": "Viola20@hotmail.com",
+    "website": "https://fragrant-permission.info",
+    "messengers": [
+      {
+        "type": "whatsapp",
+        "value": "267.993.8461"
+      }
+    ]
+  },
   "address": {
-    "country": "MO",
-    "subdivision": "22",
-    "locality": "Salina",
-    "postalCode": "55919-9454",
-    "streetAddress": "968 Selmer Point",
-    "premise": "Apt. 851",
-    "gps": "42.3028,158.1222"
+    "country": "UZ",
+    "subdivision": "30",
+    "locality": "Gainesville",
+    "postalCode": "41478-5650",
+    "streetAddress": "8248 Lemke Extensions",
+    "premise": "Apt. 806",
+    "gps": "-63.1155,-91.7161"
   },
   "operator": {
-    "name": "Franey, Beer and O'Keefe",
+    "name": "Brakus, Schulist and Stokes",
     "address": {
-      "country": "FO",
-      "subdivision": "66",
-      "locality": "Augusta-Richmond County",
-      "postalCode": "70278-6130",
-      "streetAddress": "816 Sipes Junctions",
-      "premise": "Suite 316",
-      "gps": "-89.5376,143.8844"
+      "country": "VN",
+      "subdivision": "43",
+      "locality": "Shawnee",
+      "postalCode": "26931-3547",
+      "streetAddress": "01481 Kessler Flat",
+      "premise": "Suite 532",
+      "gps": "-47.3658,28.5284"
     }
   },
   "media": {
     "logo": "http://placeimg.com/640/480/abstract",
     "images": [
       {
-        "description": "Aut nostrum et voluptates sed qui ullam ducimus rerum enim.",
-        "uri": "http://placeimg.com/640/480/city",
-        "thumbnail": "http://placeimg.com/150/150/city"
+        "description": "In perspiciatis non.",
+        "uri": "http://placeimg.com/640/480/city"
       },
       {
-        "description": "Dolorum et sint neque eos corrupti et aspernatur deserunt corporis.",
-        "uri": "http://placeimg.com/640/480/city",
-        "thumbnail": "http://placeimg.com/150/150/city"
+        "description": "Quidem facere necessitatibus maxime natus minus aut.",
+        "uri": "http://placeimg.com/640/480/city"
       },
       {
-        "description": "Eius doloremque assumenda.",
-        "uri": "http://placeimg.com/640/480/city",
-        "thumbnail": "http://placeimg.com/150/150/city"
+        "description": "Numquam consequuntur qui eum mollitia vel aperiam ratione.",
+        "uri": "http://placeimg.com/640/480/city"
       },
       {
-        "description": "Iste iste quo.",
-        "uri": "http://placeimg.com/640/480/city",
-        "thumbnail": "http://placeimg.com/150/150/city"
+        "description": "Neque quo dolore sed impedit aspernatur.",
+        "uri": "http://placeimg.com/640/480/city"
       },
       {
-        "description": "Veritatis et deleniti ad enim velit.",
-        "uri": "http://placeimg.com/640/480/city",
-        "thumbnail": "http://placeimg.com/150/150/city"
+        "description": "Dolor fugit mollitia quo nobis iste id nobis amet.",
+        "uri": "http://placeimg.com/640/480/city"
       }
     ]
   }

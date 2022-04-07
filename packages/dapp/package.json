@@ -76,7 +76,8 @@
     "web3modal": "1.9.5",
     "crypto-js": "4.1.1",
     "stays-core": "0.0.1",
-    "stays-data-models": "0.0.1"
+    "stays-data-models": "0.0.1",
+    "@pathofdev/react-tag-input": "1.0.7"
   },
   "resolutions": {
     "babel-loader": "8.1.0",

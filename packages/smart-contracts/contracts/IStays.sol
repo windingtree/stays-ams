@@ -21,8 +21,9 @@ abstract contract IStays is IStayEscrow {
   event LodgingFacilityOwnershipTransfer(bytes32 facilityId, address indexed prevOwner, address indexed newOwner);
   event LodgingFacilityRemoved(bytes32 facilityId);
   event SpaceAdded(bytes32 spaceId, bytes32 facilityId, uint256 capacity, uint256 pricePerNightWei, bool active, string dataURI);
-  event SpaceUpdated(bytes32 spaceId, bytes32 facilityId, uint256 capacity, uint256 pricePerNightWei, bool active, string dataURI);
+  event SpaceUpdated(bytes32 spaceId, uint256 capacity, uint256 pricePerNightWei, string dataURI);
   event SpaceRemoved(bytes32 spaceId);
+  event SpaceActiveState(bytes32 spaceId, bool active);
   event NewStay(bytes32 spaceId, uint256 tokenId);
   event CheckIn(uint256 tokenId);
   event CheckOut(uint256 tokenId);
@@ -68,7 +69,9 @@ abstract contract IStays is IStayEscrow {
 
   // Space management
   function addSpace(bytes32 _lodgingFacilityId, uint256 _capacity, uint256 _pricePerNightWei, bool _active, string calldata _dataURI) public virtual;
-  function updateSpace(bytes32 _spaceId, uint256 _capacity, uint256 _pricePerNightWei, bool _active, string calldata _dataURI) public virtual;
+  function activateSpace(bytes32 _spaceId) public virtual;
+  function deactivateSpace(bytes32 _spaceId) public virtual;
+  function updateSpace(bytes32 _spaceId, uint256 _capacity, uint256 _pricePerNightWei, string calldata _dataURI) public virtual;
   function deleteSpace(bytes32 _spaceId) public virtual;
 
   // Delegates (addresses that can perform certain actions, like check-in and check-out)

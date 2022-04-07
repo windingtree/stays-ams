@@ -1,7 +1,7 @@
 import type { providers } from 'ethers';
 import type { IPFS } from '@windingtree/ipfs-apis';
 import type { Contract, StayTokenState } from 'stays-core';
-import type { OwnerSpace } from '../store/actions';
+import type { OwnerSpace, OwnerLodgingFacility } from '../store/actions';
 import type { Dispatch } from '../store';
 import { useState, useEffect, useCallback } from 'react';
 import { useContract } from './useContract';
@@ -20,22 +20,29 @@ const loadTokens = async (
   contract: Contract,
   spaceId: string,
   state: StayTokenState
-): Promise<OwnerSpace> => {
-  const tokenIds = await contract.getTokensBySpaceId(spaceId, state);
-  const space = await contract.getSpace(spaceId);
-  const tokens = await Promise.all(
-    tokenIds.map((t) => contract.getToken(t))
-  )
+): Promise<OwnerSpace | null> => {
+  try {
+    const tokenIds = await contract.getTokensBySpaceId(spaceId, state);
+    const space = await contract.getSpace(spaceId);
+    const tokens = await Promise.all(
+      tokenIds.map((t) => contract.getToken(t))
+    )
 
-  logger.debug('Loaded space:', spaceId, tokenIds);
-  if (space === null) {
-    throw new Error(`Space with Id: ${spaceId} not found`);
+    logger.debug('Loaded space:', spaceId, tokenIds);
+
+    if (space === null) {
+      logger.error(`Space with Id: ${spaceId} not found`);
+      return null;
+    }
+
+    return {
+      ...space,
+      spaceId,
+      tokens
+    };
+  } catch(_) {
+    return null;
   }
-
-  return {
-    ...space,
-    tokens
-  };
 }
 
 export const useOwnFacilities = (
@@ -71,39 +78,42 @@ export const useOwnFacilities = (
         const facilityIds = await contract.getLodgingFacilityIdsByOwner(account);
         logger.debug('Facilities Ids:', facilityIds);
 
-        const ownFacilities = await Promise.all(
+        let ownFacilities = await Promise.all(
           facilityIds.map(
-            async facilityId => {
+            async (facilityId): Promise<OwnerLodgingFacility | null> => {
               const facility = await contract.getLodgingFacility(facilityId);
               logger.debug('Loaded facility:', facilityId, facility);
 
               if (facility === null) {
-                throw new Error(
+                logger.error(
                   `Lodging facility with Id: ${facilityId} not found`
                 );
+                return null;
               }
 
               const spaceIds = await contract.getSpaceIds(facilityId, true);
               logger.debug('Spaces Ids:', facilityId, spaceIds);
 
-              const spaces = await Promise.all(
+              let spaces = await Promise.all(
                 spaceIds.map(
-                  spaceId => loadTokens(contract, spaceId, 1)
+                  async spaceId => loadTokens(contract, spaceId, 1)
                 )
               );
+              spaces = spaces.filter(t => t !== null);
 
               return {
                 ...facility,
-                spaces
+                spaces: spaces as OwnerSpace[]
               };
             }
           )
         );
+        ownFacilities = ownFacilities.filter(f => f !== null);
 
         // Set own facilities state
         dispatch({
           type: 'SET_OWN_FACILITIES',
-          payload: ownFacilities
+          payload: ownFacilities as OwnerLodgingFacility[]
         });
         setLoading(false);
       } catch (err) {

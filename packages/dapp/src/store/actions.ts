@@ -14,7 +14,8 @@ export interface LodgingFacilityRecord extends GenericStateRecord, LodgingFacili
 export interface SpaceRecord extends Space, GenericStateRecord {}
 
 export interface OwnerSpace extends SpaceRaw {
-  tokens: StayToken[]
+  spaceId: string;
+  tokens: StayToken[];
 }
 export interface OwnerLodgingFacility extends Omit<LodgingFacility, 'spaces'> {
   spaces: OwnerSpace[]
@@ -45,6 +46,7 @@ export interface State {
   stopIpfsNode: Function;
   isBootstrapLoading: boolean;
   bootstrapped?: number;
+  bootstrappedContract?: string;
   searchTimestamp?: number;
   lodgingFacilities: LodgingFacilityRecord[];
   ownFacilities?: OwnerLodgingFacility[];
@@ -167,6 +169,11 @@ export interface SetBootstrappedAction {
   payload: number;
 }
 
+export interface SetBootstrappedContractAction {
+  type: 'SET_BOOTSTRAPPED_CONTRACT';
+  payload: string;
+}
+
 export interface SetAvailabilityTimestampAction {
   type: 'SET_AVAILABILITY_TIMESTAMP';
   payload: number;
@@ -212,6 +219,7 @@ export type Action =
   | RemoveRecordAction
   | ResetRecordAction
   | SetBootstrappedAction
+  | SetBootstrappedContractAction
   | SetBootstrapLoadingAction
   | SetOwnFacilitiesAction
   | SetOwnFacilitiesRefreshAction

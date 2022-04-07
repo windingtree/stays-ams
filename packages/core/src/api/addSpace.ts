@@ -26,7 +26,7 @@ export const addSpace = async (
   );
 
   const ipfsCid = await web3Storage.add(profileDataFile);
-  const dataURI = `ipfs://${ipfsCid}`;
+  const dataURI = `ipfs://${ipfsCid.cid}`;
 
   overrides = overrides ? overrides : {};
 

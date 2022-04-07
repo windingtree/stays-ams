@@ -58,14 +58,25 @@ const SpacesList: React.FC<{
   if (!facility || !facility.spaces) {
     return null
   }
-  return <Box direction='row'>
-    {facility.spaces.map((space: OwnerSpace, i) => (<Box key={i}>
-      <Button
-        onClick={() => onSelect(space.tokens)}
-        label={space.name}
-      />
-    </Box>))}
-  </Box>
+  return (
+    <Box direction='row'>
+      {facility.spaces.map((space: OwnerSpace, i) => (
+        <Box key={i} direction='column'>
+          <Box>
+            <Button
+              onClick={() => onSelect(space.tokens)}
+              label={space.name}
+            />
+          </Box>
+          <Box>
+            <NavLink to={`/spaces/edit/${facility.contractData.lodgingFacilityId}/${space.spaceId}`}>
+              Edit space profile
+            </NavLink>
+          </Box>
+        </Box>
+      ))}
+    </Box>
+  );
 }
 
 export const Facilities = () => {
@@ -126,17 +137,23 @@ export const Facilities = () => {
           <SpacesList onSelect={setTokens} facility={selectedFacility} />
 
           {selectedFacility &&
-            <Box direction='column' margin={{ top: 'small' }}>
-              <Box width='200px'>
-                <Button
-                  primary
-                  label='Edit the facility'
-                  onClick={() => navigate(
-                    `/facilities/edit/${selectedFacility.contractData.lodgingFacilityId}`
-                  )}
-                />
+            <>
+              <Box direction='column' margin={{ top: 'small', bottom: 'small' }}>
+                <Box width='200px'>
+                  <Button
+                    primary
+                    label='Edit the facility'
+                    onClick={() => navigate(
+                      `/facilities/edit/${selectedFacility.contractData.lodgingFacilityId}`
+                    )}
+                  />
+                </Box>
               </Box>
-            </Box>
+
+              <NavLink to={`/spaces/add/${selectedFacility.contractData.lodgingFacilityId}`}>
+                Add new space to the facility
+              </NavLink>
+            </>
           }
 
           <Box margin={{ top: 'small' }}>

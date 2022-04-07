@@ -26,6 +26,7 @@ const getTokensBySpaceId_1 = require("./api/getTokensBySpaceId");
 const registerLodgingFacility_1 = require("./api/registerLodgingFacility");
 const updateLodgingFacility_1 = require("./api/updateLodgingFacility");
 const addSpace_1 = require("./api/addSpace");
+const updateSpace_1 = require("./api/updateSpace");
 const book_1 = require("./api/book");
 const nft_1 = require("./api/nft");
 const getDayZero_1 = require("./api/getDayZero");
@@ -105,6 +106,9 @@ class Contract {
     }
     addSpace(profileData, lodgingFacilityId, capacity, pricePerNightWei, active, overrides, transactionHashCb, confirmations) {
         return (0, addSpace_1.addSpace)(this.contract, this.web3Storage, profileData, lodgingFacilityId, capacity, pricePerNightWei, active, overrides, transactionHashCb, confirmations);
+    }
+    updateSpace(spaceId, profileData, overrides, transactionHashCb, confirmations) {
+        return (0, updateSpace_1.updateSpace)(this.contract, this.web3Storage, spaceId, profileData, overrides, transactionHashCb, confirmations);
     }
     book(spaceId, startDay, numberOfDays, quantity, overrides, transactionHashCb, confirmations) {
         return (0, book_1.book)(this.contract, spaceId, startDay, numberOfDays, quantity, overrides, transactionHashCb, confirmations);

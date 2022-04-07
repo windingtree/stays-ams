@@ -2382,6 +2382,11 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
+"@pathofdev/react-tag-input@1.0.7":
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/@pathofdev/react-tag-input/-/react-tag-input-1.0.7.tgz#ace16c8903a65bb86f136623a761d6d505c7bd86"
+  integrity sha512-FxlX+rQhsun7uLDS7PzscJex4Vutq9+RjYlJR+Bf6rh/fH8Drxhl+klrUFxaMRtaTF44tM/jHVl5dxWIhUwejw==
+
 "@pmmmwh/react-refresh-webpack-plugin@0.4.3":
   version "0.4.3"
   resolved "https://registry.yarnpkg.com/@pmmmwh/react-refresh-webpack-plugin/-/react-refresh-webpack-plugin-0.4.3.tgz#1eec460596d200c0236bf195b078a5d1df89b766"
@@ -13475,11 +13480,6 @@ react-colorful@^5.1.2:
   version "5.5.1"
   resolved "https://registry.yarnpkg.com/react-colorful/-/react-colorful-5.5.1.tgz#29d9c4e496f2ca784dd2bb5053a3a4340cfaf784"
   integrity sha512-M1TJH2X3RXEt12sWkpa6hLc/bbYS0H6F4rIqjQZ+RxNBstpY67d9TrFXtqdZwhpmBXcCwEi7stKqFue3ZRkiOg==
-
-react-content-loader@^6.2.0:
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/react-content-loader/-/react-content-loader-6.2.0.tgz#cd8fee8160b8fda6610d0c69ce5aee7b8094cba6"
-  integrity sha512-r1dI6S+uHNLW68qraLE2njJYOuy6976PpCExuCZUcABWbfnF3FMcmuESRI8L4Bj45wnZ7n8g71hkPLzbma7/Cw==
 
 react-dev-utils@^11.0.3:
   version "11.0.4"

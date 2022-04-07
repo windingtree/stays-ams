@@ -1,8 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.lodgingFacilitySchema = exports.SpacesReference = exports.spaceSchema = void 0;
+exports.lodgingFacilitySchema = exports.SpacesReference = exports.spaceSchema = exports.AmenityReference = void 0;
 const org_json_schema_1 = require("@windingtree/org.json-schema");
 const enum_1 = require("./enum");
+exports.AmenityReference = {
+    description: 'Amenity',
+    type: 'string'
+};
 exports.spaceSchema = {
     '$id': 'spaceSchema.json',
     title: 'Space Schema',
@@ -11,7 +15,7 @@ exports.spaceSchema = {
             '$ref': '#/definitions/SpaceReference'
         }
     ],
-    definitions: Object.assign(Object.assign({}, org_json_schema_1.org.definitions), { SpaceReference: {
+    definitions: Object.assign(Object.assign({}, org_json_schema_1.org.definitions), { AmenityReference: exports.AmenityReference, SpaceReference: {
             description: 'Space',
             type: 'object',
             required: [
@@ -20,7 +24,7 @@ exports.spaceSchema = {
                 'type',
                 'capacity',
                 'guestsNumber',
-                'bedsNumber',
+                'beds',
                 'price',
                 'media',
             ],
@@ -39,6 +43,17 @@ exports.spaceSchema = {
                     example: 'room',
                     type: 'string',
                     enum: enum_1.allowedSpaceTypes
+                },
+                amenities: {
+                    description: 'Short list of room amenities',
+                    type: 'array',
+                    items: {
+                        'allOf': [
+                            {
+                                '$ref': '#/definitions/AmenityReference'
+                            }
+                        ]
+                    }
                 },
                 capacity: {
                     description: 'A number of rooms of this type in the Lodging Facility',
@@ -82,6 +97,46 @@ exports.SpacesReference = {
         }
     }
 };
+const FacilityContactReference = {
+    description: 'Facility Contact',
+    type: 'object',
+    required: [
+        'name',
+        'phone',
+        'email',
+        'website'
+    ],
+    properties: {
+        name: {
+            description: 'Contact person or department name',
+            type: 'string'
+        },
+        phone: {
+            description: 'Phone number',
+            type: 'string'
+        },
+        email: {
+            description: 'Email',
+            type: 'string',
+            format: 'email'
+        },
+        website: {
+            description: 'Contact website',
+            type: 'string'
+        },
+        messengers: {
+            description: 'Messenger accounts',
+            type: 'array',
+            items: {
+                'allOf': [
+                    {
+                        '$ref': '#/definitions/MessengerReference'
+                    }
+                ]
+            }
+        }
+    }
+};
 exports.lodgingFacilitySchema = {
     '$id': 'lodgingFacilitySchema.json',
     title: 'Lodging Facility Schema',
@@ -93,7 +148,9 @@ exports.lodgingFacilitySchema = {
             '$ref': '#/definitions/SpacesReference'
         }
     ],
-    definitions: Object.assign(Object.assign(Object.assign({}, org_json_schema_1.org.definitions), exports.spaceSchema.definitions), { SpacesReference: exports.SpacesReference, OperatorReference: {
+    definitions: Object.assign(Object.assign(Object.assign({}, org_json_schema_1.org.definitions), exports.spaceSchema.definitions), { AmenityReference: exports.AmenityReference,
+        SpacesReference: exports.SpacesReference,
+        FacilityContactReference, OperatorReference: {
             description: 'Lodging Facility operator',
             type: 'object',
             required: [
@@ -143,6 +200,20 @@ exports.lodgingFacilitySchema = {
                     example: 'decent',
                     type: 'string',
                     enum: enum_1.allowedLodgingFacilityTiers
+                },
+                amenities: {
+                    description: 'Short list of a facility amenities',
+                    type: 'array',
+                    items: {
+                        'allOf': [
+                            {
+                                '$ref': '#/definitions/AmenityReference'
+                            }
+                        ]
+                    }
+                },
+                contact: {
+                    $ref: '#/definitions/FacilityContactReference'
                 },
                 address: {
                     $ref: '#/definitions/AddressReference'

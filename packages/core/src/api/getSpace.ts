@@ -10,31 +10,35 @@ export const getSpace = async (
   web3Storage: Web3StorageApi,
   spaceId: string
 ): Promise<Space | null> => {
-  const [
-    exists,
-    lodgingFacilityId,
-    capacity,
-    pricePerNightWei,
-    active,
-    dataURI
-  ] = await contract.getSpaceById(spaceId);
+  try {
+    const [
+      exists,
+      lodgingFacilityId,
+      capacity,
+      pricePerNightWei,
+      active,
+      dataURI
+    ] = await contract.getSpaceById(spaceId);
 
-  if (!exists) {
+    if (!exists) {
+      return null;
+    }
+
+    const data = await fetchDataUri<SpaceRaw>(web3Storage, dataURI);
+
+    return {
+      ...data,
+      contractData: {
+        spaceId,
+        active,
+        lodgingFacilityId,
+        capacity: capacity.toNumber(),
+        pricePerNightWei: pricePerNightWei.toString(),
+        dataURI,
+      },
+      updated: DateTime.now().toISO()
+    };
+  } catch(_) {
     return null;
   }
-
-  const data = await fetchDataUri<SpaceRaw>(web3Storage, dataURI);
-
-  return {
-    ...data,
-    contractData: {
-      spaceId,
-      active,
-      lodgingFacilityId,
-      capacity: capacity.toNumber(),
-      pricePerNightWei: pricePerNightWei.toString(),
-      dataURI,
-    },
-    updated: DateTime.now().toISO()
-  };
 };

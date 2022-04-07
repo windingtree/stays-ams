@@ -30,13 +30,24 @@ export const getNewAndUpdatedFacilityIds = async (
     fromBlock,
     'latest'
   );
+  const spaceIds = spaceUpdated.map(e => e.args.spaceId);
+  const spaces = await Promise.all(
+    spaceIds.map(
+      spaceId => contract.getSpaceById(spaceId)
+    )
+  );
+  const facilitiesFromSpaces = spaces.map(
+    s => s.lodgingFacilityId
+  );
   [
     ...facilityCreated,
     ...facilityUpdated,
     ...spaceCreated,
-    ...spaceUpdated
   ].forEach(
     event => facilitiesIds.add(event.args.facilityId)
+  );
+  facilitiesFromSpaces.forEach(
+    facilityId => facilitiesIds.add(facilityId)
   );
 
   // @todo Process removal of facilities and spaces

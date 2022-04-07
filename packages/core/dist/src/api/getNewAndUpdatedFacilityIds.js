@@ -20,12 +20,15 @@ const getNewAndUpdatedFacilityIds = (contract, fromBlock) => __awaiter(void 0, v
     const facilityUpdated = yield contract.queryFilter(facilityUpdatedFilter, fromBlock, 'latest');
     const spaceCreated = yield contract.queryFilter(spaceCreatedFilter, fromBlock, 'latest');
     const spaceUpdated = yield contract.queryFilter(spaceUpdatedFilter, fromBlock, 'latest');
+    const spaceIds = spaceUpdated.map(e => e.args.spaceId);
+    const spaces = yield Promise.all(spaceIds.map(spaceId => contract.getSpaceById(spaceId)));
+    const facilitiesFromSpaces = spaces.map(s => s.lodgingFacilityId);
     [
         ...facilityCreated,
         ...facilityUpdated,
         ...spaceCreated,
-        ...spaceUpdated
     ].forEach(event => facilitiesIds.add(event.args.facilityId));
+    facilitiesFromSpaces.forEach(facilityId => facilitiesIds.add(facilityId));
     // @todo Process removal of facilities and spaces
     return Array.from(facilitiesIds);
 });

@@ -6,6 +6,11 @@ import {
   allowedSpaceTypes
 } from './enum';
 
+export const AmenityReference: AnySchema = {
+  description: 'Amenity',
+  type: 'string'
+};
+
 export const spaceSchema: AnySchema = {
   '$id': 'spaceSchema.json',
   title: 'Space Schema',
@@ -16,6 +21,7 @@ export const spaceSchema: AnySchema = {
   ],
   definitions: {
     ...org.definitions,
+    AmenityReference,
     SpaceReference: {
       description: 'Space',
       type: 'object',
@@ -25,7 +31,7 @@ export const spaceSchema: AnySchema = {
         'type',
         'capacity',
         'guestsNumber',
-        'bedsNumber',
+        'beds',
         'price',
         'media',
       ],
@@ -44,6 +50,17 @@ export const spaceSchema: AnySchema = {
           example: 'room',
           type: 'string',
           enum: allowedSpaceTypes
+        },
+        amenities: {
+          description: 'Short list of room amenities',
+          type: 'array',
+          items: {
+            'allOf': [
+              {
+                  '$ref': '#/definitions/AmenityReference'
+              }
+            ]
+          }
         },
         capacity: {
           description: 'A number of rooms of this type in the Lodging Facility',
@@ -90,6 +107,47 @@ export const SpacesReference: AnySchema = {
   }
 };
 
+const FacilityContactReference: AnySchema = {
+  description: 'Facility Contact',
+  type: 'object',
+  required: [
+    'name',
+    'phone',
+    'email',
+    'website'
+  ],
+  properties: {
+    name: {
+      description: 'Contact person or department name',
+      type: 'string'
+    },
+    phone: {
+      description: 'Phone number',
+      type: 'string'
+    },
+    email: {
+      description: 'Email',
+      type: 'string',
+      format: 'email'
+    },
+    website: {
+      description: 'Contact website',
+      type: 'string'
+    },
+    messengers: {
+      description: 'Messenger accounts',
+      type: 'array',
+      items: {
+        'allOf': [
+          {
+              '$ref': '#/definitions/MessengerReference'
+          }
+        ]
+      }
+    }
+  }
+};
+
 export const lodgingFacilitySchema: AnySchema = {
   '$id': 'lodgingFacilitySchema.json',
   title: 'Lodging Facility Schema',
@@ -104,7 +162,9 @@ export const lodgingFacilitySchema: AnySchema = {
   definitions: {
     ...org.definitions,
     ...spaceSchema.definitions,
+    AmenityReference,
     SpacesReference,
+    FacilityContactReference,
     OperatorReference: {
       description: 'Lodging Facility operator',
       type: 'object',
@@ -156,6 +216,20 @@ export const lodgingFacilitySchema: AnySchema = {
           example: 'decent',
           type: 'string',
           enum: allowedLodgingFacilityTiers
+        },
+        amenities: {
+          description: 'Short list of a facility amenities',
+          type: 'array',
+          items: {
+            'allOf': [
+              {
+                  '$ref': '#/definitions/AmenityReference'
+              }
+            ]
+          }
+        },
+        contact: {
+          $ref: '#/definitions/FacilityContactReference'
         },
         address: {
           $ref: '#/definitions/AddressReference'

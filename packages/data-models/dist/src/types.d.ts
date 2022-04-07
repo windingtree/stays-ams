@@ -1,11 +1,20 @@
-import type { MediaListReference, AddressReference } from '@windingtree/org.json-schema/types/org.json';
+import type { MediaListReference, AddressReference, MessengerReference } from '@windingtree/org.json-schema/types/org.json';
 import { allowedSpaceTypes, allowedLodgingFacilityTypes, allowedLodgingFacilityTiers } from './enum';
 export declare type SpaceType = typeof allowedSpaceTypes[number];
 export declare type LodgingFacilityType = typeof allowedLodgingFacilityTypes[number];
 export declare type LodgingFacilityTier = typeof allowedLodgingFacilityTiers[number];
+export declare type Amenity = string;
+export interface FacilityContactReference {
+    name: string;
+    phone: string;
+    email: string;
+    website: string;
+    messengers?: MessengerReference[];
+}
 export interface SpaceRaw {
     name: string;
     description: string;
+    amenities: Amenity[];
     capacity: number;
     guestsNumber: number;
     beds: number;
@@ -18,6 +27,8 @@ export interface LodgingFacilityRaw {
     description: string;
     type: LodgingFacilityType;
     tier: LodgingFacilityTier;
+    amenities: Amenity[];
+    contact: FacilityContactReference;
     address: AddressReference;
     what3words?: string;
     operator: {
