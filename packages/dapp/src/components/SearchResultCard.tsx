@@ -2,22 +2,40 @@ import { Box, Text, Image, Grid, Button } from 'grommet';
 import type { Space } from 'stays-data-models'
 import { useNavigate } from 'react-router-dom';
 import { useAppState } from '../store';
-import { ThemeMode } from './SwitchThemeMode';
+// import { ThemeMode } from './SwitchThemeMode';
 import { SignInButton } from './buttons/web3Modal';
+import styled from 'styled-components';
+
+export const CustomButton = styled(Button)`
+  color:white;
+  border: none;
+  height: 2.5rem;
+  width: 10rem;
+  border-radius: 2.5rem;
+  background: linear-gradient(90.72deg, #FFF500, #3B37FF, #0D0E0F);
+
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 24px;
+`;
 
 export const SearchResultCard: React.FC<{ space: Space }> = ({ space }) => {
-  const { themeMode, account } = useAppState();
+  const { account } = useAppState();
   const navigate = useNavigate();
 
   return (
     <Box
-      border={{ color: themeMode === ThemeMode.light ? 'brand' : 'accent-1', size: 'small' }}
+      border={{
+        color: '#000000',
+        side: 'top',
+      }}
+      pad='large'
       direction='row'
-      round='small'
       align='center'
+      alignSelf='center'
+
+      style={{ width: '64rem' }}
       overflow='hidden'
-      background={{ color: `${themeMode}-1` }}
-      margin={{ horizontal: 'small', vertical: 'medium' }}
     >
       <Grid
         responsive
@@ -56,9 +74,9 @@ export const SearchResultCard: React.FC<{ space: Space }> = ({ space }) => {
         </Box>
         <Box pad={{ right: 'medium' }} direction='row' justify='between' align='center' gridArea="action">
           <Text size='large'>From: $$$</Text>
-          {account ? <Button
+          {account ? <CustomButton
             size='large'
-            label='Check Spaces'
+            label='Check Space'
             onClick={() => navigate(`/space/${space.contractData.spaceId}`)}
           /> : <SignInButton />}
         </Box>

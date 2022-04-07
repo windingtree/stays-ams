@@ -5,6 +5,7 @@ import { Menu } from 'grommet';
 import { Menu as MenuIcon } from 'grommet-icons';
 import { useAppState } from '../store';
 import { Protected } from './Protected';
+import styled from 'styled-components';
 
 // Pages
 import { Home } from '../pages/Home';
@@ -18,6 +19,13 @@ import { Space } from '../pages/Space';
 import { MyTokens } from '../pages/MyTokens';
 import { CheckIn } from '../pages/CheckIn';
 import { Facilities } from '../pages/Facilities';
+
+
+const CustomMenu = styled(Menu)`
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  // border:
+`;
 
 export interface RouteConfig {
   path: string;
@@ -153,9 +161,14 @@ export const GlobalMenu = () => {
   );
 
   return (
-    <Menu
+    <CustomMenu
+      dropBackground={{ color: 'black', opacity: 0.9 }}
+      dropAlign={{
+        top: "bottom",
+        right: "right",
+      }}
       disabled={isConnecting}
-      icon={(<MenuIcon />)}
+      icon={(<MenuIcon color='white' />)}
       items={buildMenuConfig}
     />
   );
