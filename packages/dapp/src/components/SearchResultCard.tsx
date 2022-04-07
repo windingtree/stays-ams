@@ -20,7 +20,7 @@ export const CustomButton = styled(Button)`
 `;
 
 export const SearchResultCard: React.FC<{ space: Space }> = ({ space }) => {
-  const { themeMode, account } = useAppState();
+  const { account } = useAppState();
   const navigate = useNavigate();
 
   return (

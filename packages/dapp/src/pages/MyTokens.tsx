@@ -1,14 +1,14 @@
-import type { StayToken, TokenAttribute, TokenData } from 'stays-core';
+import type { StayToken, TokenData } from 'stays-core';
 import { ReactChild, useCallback, useMemo, useState } from 'react';
 import { DateTime } from 'luxon';
 import * as Icons from 'grommet-icons';
-import { Grid, Spinner, Button, Box, Card, CardBody, CardHeader, CardFooter, Image, Text, Accordion, AccordionPanel } from 'grommet';
+import { Grid, Spinner, Button, Box, Card, CardBody, CardHeader, CardFooter, Image, Text } from 'grommet';
 import { PageWrapper } from './PageWrapper';
 import { MessageBox } from '../components/MessageBox';
 import { CustomText, Title, StayVoucherQr } from '../components/StayVoucherQr';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAppState } from '../store';
-import { useWindowsDimension } from "../hooks/useWindowsDimension";
+// import { useWindowsDimension } from "../hooks/useWindowsDimension";
 import { useMyTokens, useGetToken } from '../hooks/useMyTokens';
 import { useDayZero } from '../hooks/useDayZero';
 import { useContract } from '../hooks/useContract';
@@ -16,7 +16,6 @@ import { centerEllipsis } from '../utils/strings';
 import { getNetwork } from '../config';
 import { ExternalLink } from '../components/ExternalLink';
 import { useGoToMessage } from '../hooks/useGoToMessage';
-import { LodgingFacility } from 'stays-data-models';
 import { LodgingFacilityRecord } from '../store/actions';
 import styled from 'styled-components';
 import { utils } from 'ethers';
@@ -42,22 +41,22 @@ const Header = styled(Text)`
 `;
 
 
-const ResponsiveColumn = (winWidth: number): string[] => {
-  if (winWidth >= 1300) {
-    return ["21rem", "21rem", "21rem", "21rem"];
-  } else if (winWidth >= 1000) {
-    return ["21rem", "21rem", "21rem"];
-  } else if (winWidth >= 768) {
-    return ["23rem", "23rem"];
-  } else if (winWidth >= 600) {
-    return ["31rem"];
-  } else if (winWidth <= 500) {
-    return ["24rem"];
-  } else if (winWidth <= 400) {
-    return ["16rem"];
-  }
-  return [];
-};
+// const ResponsiveColumn = (winWidth: number): string[] => {
+//   if (winWidth >= 1300) {
+//     return ["21rem", "21rem", "21rem", "21rem"];
+//   } else if (winWidth >= 1000) {
+//     return ["21rem", "21rem", "21rem"];
+//   } else if (winWidth >= 768) {
+//     return ["23rem", "23rem"];
+//   } else if (winWidth >= 600) {
+//     return ["31rem"];
+//   } else if (winWidth <= 500) {
+//     return ["24rem"];
+//   } else if (winWidth <= 400) {
+//     return ["16rem"];
+//   }
+//   return [];
+// };
 
 export interface TokenCardProps extends TokenData {
   onClick?: () => void,
@@ -408,7 +407,7 @@ export const MyTokens = () => {
     ipfsNode,
     tokenId
   );
-  const { winWidth } = useWindowsDimension();
+  // const { winWidth } = useWindowsDimension();
   const isLoading = useMemo(
     () => tokensLoading || tokenLoading || !isGetDateReady,
     [tokensLoading, tokenLoading, isGetDateReady]
