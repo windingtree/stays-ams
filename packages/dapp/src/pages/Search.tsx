@@ -8,6 +8,7 @@ import { useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { MessageBox } from '../components/MessageBox';
 import { useDayZero } from '../hooks/useDayZero';
+import { GradientText, WhiteText } from './Home';
 
 export const Search = () => {
   const { searchSpaces, provider, ipfsNode } = useAppState();
@@ -40,6 +41,11 @@ export const Search = () => {
         }
       ]}
     >
+      <WhiteText>April 18-25 2022</WhiteText>
+      <WhiteText>Devconnect APRIL 18-25, 2022 Amsterdam, The Netherlands</WhiteText>
+      <GradientText>Amsterdam</GradientText>
+      <WhiteText>A collaborative Ethereum week, built by and for everyone</WhiteText>
+
       {isGetDateReady && <SearchForm
         getDate={getDate}
         startDay={startDay}

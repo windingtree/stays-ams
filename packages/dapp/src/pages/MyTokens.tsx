@@ -1,14 +1,14 @@
 import type { StayToken, TokenData } from 'stays-core';
-import { useCallback, useMemo, useState } from 'react';
+import { ReactChild, useCallback, useMemo, useState } from 'react';
 import { DateTime } from 'luxon';
 import * as Icons from 'grommet-icons';
 import { Grid, Spinner, Button, Box, Card, CardBody, CardHeader, CardFooter, Image, Text } from 'grommet';
 import { PageWrapper } from './PageWrapper';
 import { MessageBox } from '../components/MessageBox';
-import { StayVoucherQr } from '../components/StayVoucherQr';
+import { CustomText, Title, StayVoucherQr } from '../components/StayVoucherQr';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAppState } from '../store';
-import { useWindowsDimension } from "../hooks/useWindowsDimension";
+// import { useWindowsDimension } from "../hooks/useWindowsDimension";
 import { useMyTokens, useGetToken } from '../hooks/useMyTokens';
 import { useDayZero } from '../hooks/useDayZero';
 import { useContract } from '../hooks/useContract';
@@ -16,26 +16,54 @@ import { centerEllipsis } from '../utils/strings';
 import { getNetwork } from '../config';
 import { ExternalLink } from '../components/ExternalLink';
 import { useGoToMessage } from '../hooks/useGoToMessage';
+import { LodgingFacilityRecord } from '../store/actions';
+import styled from 'styled-components';
+import { utils } from 'ethers';
 
-const ResponsiveColumn = (winWidth: number): string[] => {
-  if (winWidth >= 1300) {
-    return ["21rem", "21rem", "21rem", "21rem"];
-  } else if (winWidth >= 1000) {
-    return ["21rem", "21rem", "21rem"];
-  } else if (winWidth >= 768) {
-    return ["23rem", "23rem"];
-  } else if (winWidth >= 600) {
-    return ["31rem"];
-  } else if (winWidth <= 500) {
-    return ["24rem"];
-  } else if (winWidth <= 400) {
-    return ["16rem"];
-  }
-  return [];
-};
+const HotelTitle = styled(Text)`
+  color: #000;
+  font-weight: 900;
+  font-size: 22px;
+  font-family: 'Inter';
+  line-height: 28px;
+  margin-bottom: .5rem;
+`;
+
+
+const Header = styled(Text)`
+  font-weight: 900;
+  font-size: 48px;
+  line-height: 56px;
+  text-align: center;
+  color: #0D0E0F;
+  margin-bottom: 2rem;
+  margin-top: 2rem;
+`;
+
+
+// const ResponsiveColumn = (winWidth: number): string[] => {
+//   if (winWidth >= 1300) {
+//     return ["21rem", "21rem", "21rem", "21rem"];
+//   } else if (winWidth >= 1000) {
+//     return ["21rem", "21rem", "21rem"];
+//   } else if (winWidth >= 768) {
+//     return ["23rem", "23rem"];
+//   } else if (winWidth >= 600) {
+//     return ["31rem"];
+//   } else if (winWidth <= 500) {
+//     return ["24rem"];
+//   } else if (winWidth <= 400) {
+//     return ["16rem"];
+//   }
+//   return [];
+// };
 
 export interface TokenCardProps extends TokenData {
-  onClick?: () => void
+  onClick?: () => void,
+  children?: ReactChild | null,
+  facility: LodgingFacilityRecord | undefined
+  isGetDateReady: boolean;
+  getDate: (days: number) => DateTime;
 }
 
 export interface TokenViewProps extends StayToken {
@@ -66,13 +94,83 @@ export const TokenCard = ({
           pad={{ horizontal: 'small' }}
           background='light-2'
         >
+          {/* <Box pad='small'> */}
+          <Text size="xlarge" weight="bold">
+            {name}
+          </Text>
+          {/* </Box> */}
+        </CardFooter>
+      </Card>
+    </Box>
+  );
+};
+
+export const NewTokenCard = ({
+  image,
+  name,
+  description,
+  attributes,
+  onClick = () => { },
+  facility,
+  getDate,
+  isGetDateReady,
+  children
+}: TokenCardProps) => {
+  console.log('facility', facility)
+  if (!facility || !isGetDateReady || !attributes) {
+    return null
+  }
+  const parseTrait = (trait: string): any => {
+    return attributes.find(attr => attr.trait_type === trait)?.value ?? ''
+  };
+  const space = facility.spaces.find(space => space.contractData.spaceId === parseTrait('spaceId').toLowerCase())
+  const quantity = Number(parseTrait('quantity'))
+  const numberOfDays = Number(parseTrait('numberOfDays'))
+  const price = Number(utils.formatUnits(space?.contractData.pricePerNightWei ?? 0, 'ether'))
+  const total = quantity * numberOfDays * price
+  // console.log('quantity',quantity)
+  // console.log('numberOfDays',numberOfDays)
+  // console.log('price',price)
+  // console.log('total',total)
+  return (
+    <Box>
+
+      <Card
+        direction='row'
+        pad='medium'
+        round={false}
+        width='65rem'
+        style={{ borderBottom: '1px solid black' }}
+        elevation='small'
+        onClick={() => onClick()}
+      >
+        <CardHeader>
+          <Image
+            height='150'
+            width='150'
+            fit='cover'
+            src={image}
+          />
+        </CardHeader>
+        <CardBody pad='small'>
+          <HotelTitle>{facility.name}</HotelTitle>
+          <CustomText>{facility.address.streetAddress}, {facility.address.postalCode} {facility.address.locality}, {facility.address.country}. </CustomText>
+          <CustomText>{space?.name},{quantity} {quantity > 1 ? 'persons' : 'person'} </CustomText>
+        </CardBody>
+        <CardBody align='center' justify='center' pad='small'>
+          <CustomText>{getDate(parseTrait('startDay')).toISODate()} - {getDate(Number(parseTrait('startDay')) + Number(parseTrait('numberOfDays'))).toISODate()}</CustomText>
+        </CardBody>
+        <CardFooter
+          pad={{ horizontal: 'small' }}
+        >
           <Box pad='small'>
-            <Text size="xlarge" weight="bold">
-              {name}
-            </Text>
+            <Title size="xlarge" weight="bold">
+              {total.toFixed(2)}
+            </Title>
           </Box>
         </CardFooter>
       </Card>
+      {children}
     </Box>
   );
 };
@@ -90,9 +188,9 @@ export const TokenView = ({
     image,
     attributes
   }
-}: TokenViewProps ) => {
+}: TokenViewProps) => {
   const { provider, ipfsNode } = useAppState();
-  const [contract,, contractError] = useContract(provider, ipfsNode);
+  const [contract, , contractError] = useContract(provider, ipfsNode);
   const navigate = useNavigate();
   const showMessage = useGoToMessage();
   const [cancelLoading, setCancelLoading] = useState<boolean>(false);
@@ -151,7 +249,12 @@ export const TokenView = ({
       pad={{ bottom: 'medium' }}
     >
       <Card
-        width='large'
+        direction='row'
+        pad='medium'
+        round={false}
+        width='65rem'
+        style={{ borderBottom: '1px solid black' }}
+      // width='large'
       >
         <CardBody>
           <CardHeader
@@ -165,10 +268,10 @@ export const TokenView = ({
               onClick={() => navigate('/tokens', { replace: true })}
             />
           </CardHeader>
-          <Image
+          {/* <Image
             fit='cover'
             src={image}
-          />
+          /> */}
           <Grid
             fill='horizontal'
             pad='small'
@@ -261,9 +364,9 @@ export const TokenView = ({
               />
               {!!cancellationTxHash
                 ? <ExternalLink
-                    href={cancellationTxHashLink}
-                    label={centerEllipsis(cancellationTxHash)}
-                  />
+                  href={cancellationTxHashLink}
+                  label={centerEllipsis(cancellationTxHash)}
+                />
                 : null
               }
             </Box>
@@ -287,7 +390,7 @@ export const TokenView = ({
 };
 
 export const MyTokens = () => {
-  const { provider, ipfsNode, account } = useAppState();
+  const { provider, ipfsNode, account, lodgingFacilities } = useAppState();
   const [searchParams, setSearchParams] = useSearchParams();
   const [getDate, isGetDateReady, getDateError] = useDayZero(provider, ipfsNode);
   const tokenId = useMemo(
@@ -304,12 +407,30 @@ export const MyTokens = () => {
     ipfsNode,
     tokenId
   );
-  const { winWidth } = useWindowsDimension();
+  // const { winWidth } = useWindowsDimension();
   const isLoading = useMemo(
     () => tokensLoading || tokenLoading || !isGetDateReady,
     [tokensLoading, tokenLoading, isGetDateReady]
   );
 
+  // const parseTrait = (trait: string, value: any): any => {
+  //   switch (trait) {
+  //     case 'startDay':
+  //       return getDate(Number(value)).toISODate();
+  //     case 'facilityId':
+  //       return centerEllipsis(value);
+  //     case 'spaceId':
+  //       return centerEllipsis(value);
+  //     default:
+  //       return value;
+  //   }
+  // };
+
+  const findFacility = (data: TokenData) => {
+    const facilityId = data.attributes?.find((attr) => attr.trait_type === 'facilityId')?.value
+    console.log('lodgingFacilities', lodgingFacilities, lodgingFacilities.find((facility) => facility.id === facilityId?.toLowerCase()), facilityId)
+    return lodgingFacilities.find((facility) => facility.id === facilityId?.toLowerCase())
+  };
 
   // const tokensTest: StayToken[] = [
   //   {
@@ -356,61 +477,77 @@ export const MyTokens = () => {
         },
       ]}
     >
-      {token &&
-        <TokenView
-          getDate={getDate}
-          isGetDateReady={isGetDateReady}
-          facilityOwner={facilityOwner}
-          {...token}
-        />
-      }
-
-      <MessageBox type='info' show={isLoading}>
-        <Box direction='row'>
-          <Box>
-            Tokens data is loading. Please wait..&nbsp;
-          </Box>
-          <Spinner />
-        </Box>
-      </MessageBox>
-
-      <MessageBox type='info' show={!isLoading && (!tokens || tokens.length === 0)}>
-        <Box>
-          Tokens list is empty. It is a time to book a stay!
-        </Box>
-      </MessageBox>
-
-      <MessageBox type='error' show={!!tokensError}>
-        <Box>
-          {tokensError}
-        </Box>
-      </MessageBox>
-
-      <MessageBox type='error' show={!!tokenError}>
-        <Box>
-          {tokenError}
-        </Box>
-      </MessageBox>
-
-      <MessageBox type='error' show={!!getDateError}>
-        <Box>
-          {getDateError}
-        </Box>
-      </MessageBox>
-
-      <Grid
-        alignSelf="center"
-        columns={ResponsiveColumn(winWidth)}
-        responsive={true}
-      >
-        {tokens?.map(({ tokenId, data }, index) => (
-          <TokenCard
-            key={index}
-            onClick={() => setSearchParams({ tokenId })}
-            {...data}
+      <Box background='white'>
+      <Header>Stay tokens </Header>
+        {/* {token &&
+          <TokenView
+            getDate={getDate}
+            isGetDateReady={isGetDateReady}
+            facilityOwner={facilityOwner}
+            {...token}
           />
-        ))}
-      </Grid>
+        } */}
+
+        <MessageBox type='info' show={isLoading}>
+          <Box direction='row'>
+            <Box>
+              Tokens data is loading. Please wait..&nbsp;
+            </Box>
+            <Spinner />
+          </Box>
+        </MessageBox>
+
+        <MessageBox type='info' show={!isLoading && (!tokens || tokens.length === 0)}>
+          <Box>
+            Tokens list is empty. It is a time to book a stay!
+          </Box>
+        </MessageBox>
+
+        <MessageBox type='error' show={!!tokensError}>
+          <Box>
+            {tokensError}
+          </Box>
+        </MessageBox>
+
+        <MessageBox type='error' show={!!tokenError}>
+          <Box>
+            {tokenError}
+          </Box>
+        </MessageBox>
+
+        <MessageBox type='error' show={!!getDateError}>
+          <Box>
+            {getDateError}
+          </Box>
+        </MessageBox>
+
+        <Box
+          direction='column'
+          alignSelf="center"
+        // columns={ResponsiveColumn(winWidth)}
+        // responsive={true}
+        >
+          {tokens?.map(({ tokenId, data }, index) => (
+            <NewTokenCard
+              facility={findFacility(data)}
+              key={index}
+              onClick={() => setSearchParams({ tokenId })}
+              {...data}
+              getDate={getDate}
+              isGetDateReady={isGetDateReady}
+            >
+              {(token && token.tokenId === tokenId) ?
+                <TokenView
+                  getDate={getDate}
+                  isGetDateReady={isGetDateReady}
+                  facilityOwner={facilityOwner}
+                  {...token}
+                />
+                : null}
+            </NewTokenCard>
+          ))}
+        </Box>
+      </Box>
     </PageWrapper>
   );
 };

@@ -18,9 +18,20 @@ const AccountIcon = styled(Blockies)`
 `;
 
 const AccountHash = styled(Text)`
-  margin-left: 8px;
+  margin: 0 8px;
   cursor: pointer;
 `;
+
+const AccountWrap = styled(Box)`
+  background: rgba(13, 14, 15, 0.2);
+  backdrop-filter: blur(36px);
+  height: 2.5rem;
+  min-width:2.5rem;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 2rem;
+`;
+
 
 export const Account = ({ account }: AccountProps) => {
   const size = useContext(ResponsiveContext);
@@ -32,10 +43,11 @@ export const Account = ({ account }: AccountProps) => {
   }
 
   return (
-    <Box
+    <AccountWrap
       direction='row'
       align='center'
-      pad='small'
+      justify='center'
+      pad='xsmall'
       onClick={() => {
         copyToClipboard(account);
         logger.debug('Copied to clipboard', account);
@@ -60,6 +72,6 @@ export const Account = ({ account }: AccountProps) => {
           status='normal'
         />
       }
-    </Box>
+    </AccountWrap>
   );
 };

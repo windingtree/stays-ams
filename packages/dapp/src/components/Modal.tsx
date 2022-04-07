@@ -20,6 +20,9 @@ export const Modal = ({
   return (
     <Box>
       <Layer
+        style={{
+          borderRadius: '2rem',
+        }}
         onEsc={() => onClose()}
         onClickOutside={() => onClose()}
       >
