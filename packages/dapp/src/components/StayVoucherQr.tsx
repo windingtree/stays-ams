@@ -11,7 +11,7 @@ import { CustomButton } from './SearchResultCard';
 // Initialize logger
 const logger = Logger('StayVoucherQr');
 
-const Title = styled(Text)`
+export const Title = styled(Text)`
   color: #0D0E0F;
   font-weight: 900;
   font-size: 28px;
@@ -36,7 +36,7 @@ const HotelTitle = styled(Text)`
   margin-top: 1.5rem;
 `;
 
-const CustomText = styled(Text)`
+export const CustomText = styled(Text)`
   color: #0D0E0F;
   font-family: 'Inter';
   font-style: normal;
