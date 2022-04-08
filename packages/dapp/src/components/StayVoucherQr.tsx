@@ -43,9 +43,7 @@ export const CustomText = styled(Text)`
   font-weight: 400;
   font-size: 18px;
   line-height: 24px;
-  text-align: center;
-  text-justify: center;
-  // margin-bottom: 1.5rem;
+  text-align: start;
 `;
 
 export interface StayVoucherQrProps {
