@@ -7,7 +7,7 @@ import {
   CardHeader,
   Button,
   Box,
-  Collapsible,
+  // Collapsible,
   Image,
   Text,
   TextArea,
@@ -28,6 +28,7 @@ import { regexp } from '@windingtree/org.id-utils';
 import ReactTagInput from '@pathofdev/react-tag-input';
 import { MessageBox } from '../MessageBox';
 import { ExternalLink } from '../ExternalLink';
+import { Collapsible } from '../Collapsible';
 import { validateLodgingFacilityData } from 'stays-data-models/dist/src/validators';
 import { enumerators } from 'stays-data-models';
 import { centerEllipsis } from '../../utils/strings';
@@ -620,6 +621,19 @@ export const FacilityProfileCard = () => {
           }}
           onSubmit={handleSubmit}
           onChange={nextValue => setProfileValue(nextValue)}
+          onValidate={({ errors }) => {
+            if (Object.keys(errors).some(x => /^contact\./.exec(x))) {
+              setContactOpen(true);
+            }
+
+            if (Object.keys(errors).some(x => /^address\./.exec(x))) {
+              setAddressOpen(true);
+            }
+
+            if (Object.keys(errors).some(x => /^operator\./.exec(x))) {
+              setOperatorOpen(true);
+            }
+          }}
         >
           <Card width='xxlarge' elevation='xsmall' background='light-3'>
             <CardHeader pad='medium'>
@@ -1419,10 +1433,6 @@ export const FacilityProfileCard = () => {
                       }
                       disabled={isLoading || profileCreating}
                       primary
-                      onClick={() => {
-                        setAddressOpen(true);
-                        setOperatorOpen(true);
-                      }}
                     />
                   </Box>
                   {hashLink !== null && hash &&
