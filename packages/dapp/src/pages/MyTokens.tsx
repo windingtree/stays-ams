@@ -31,7 +31,7 @@ const HotelTitle = styled(Text)`
 `;
 
 
-const Header = styled(Text)`
+export const Header = styled(Text)`
   font-weight: 900;
   font-size: 48px;
   line-height: 56px;
