@@ -199,10 +199,13 @@ export const Space: React.FC = () => {
         </Box>
 
         <Box direction='row' style={{ width: '65rem' }} justify='between' align='center' >
-          <CustomText>Price per Night: <Title color={borderColor} size='large'>
-            {utils.formatUnits(space.contractData.pricePerNightWei, 'ether')}
-            DAI
-          </Title></CustomText>
+          <Box direction='row' align='center'>
+            <CustomText>Price per Night: </CustomText>
+            <Title color={borderColor} size='large'>
+              {utils.formatUnits(space.contractData.pricePerNightWei, 'ether')}
+              DAI
+            </Title>
+          </Box>
           <Box align='center'>
             <BookWithDai
               onClick={handler}
