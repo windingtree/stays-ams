@@ -19,7 +19,7 @@ export const GlobalStyle: React.FC = ({ children }) => {
     >
       <Image
         fit="cover"
-        src='https://localhost:3000/background.png'
+        src='/background.png'
         style={{
           width: '100vw',
           height: '100vh',

@@ -1,6 +1,6 @@
 import type { providers } from 'ethers';
 import { useState, useCallback } from 'react';
-import { Box, Button, Grid, Text } from 'grommet';
+import { Box, Grid, Text } from 'grommet';
 import { Modal } from '../components/Modal';
 import QRCode from 'react-qr-code';
 import { useSignVoucher } from '../hooks/useSignVoucher';
@@ -107,7 +107,7 @@ export const StayVoucherQr = ({
 
   return (
     <Box>
-      <Button
+      <CustomButton
         label='Get check-in QR'
         onClick={handleGetQr}
       />

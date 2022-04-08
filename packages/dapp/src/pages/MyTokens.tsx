@@ -2,7 +2,7 @@ import type { StayToken, TokenData } from 'stays-core';
 import { ReactChild, useCallback, useMemo, useState } from 'react';
 import { DateTime } from 'luxon';
 import * as Icons from 'grommet-icons';
-import { Grid, Spinner, Button, Box, Card, CardBody, CardHeader, CardFooter, Image, Text } from 'grommet';
+import { Grid, Spinner, Button, Box, Image, Text } from 'grommet';
 import { PageWrapper } from './PageWrapper';
 import { MessageBox } from '../components/MessageBox';
 import { CustomText, Title, StayVoucherQr } from '../components/StayVoucherQr';
@@ -19,6 +19,7 @@ import { useGoToMessage } from '../hooks/useGoToMessage';
 import { LodgingFacilityRecord } from '../store/actions';
 import styled from 'styled-components';
 import { utils } from 'ethers';
+import { CustomButton } from '../components/SearchResultCard';
 
 const HotelTitle = styled(Text)`
   color: #000;
@@ -40,6 +41,15 @@ const Header = styled(Text)`
   margin-top: 2rem;
 `;
 
+export const CustomBoldText = styled(Text)`
+  color: #0D0E0F;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 24px;
+  // margin-bottom: 1.5rem;
+`;
 
 // const ResponsiveColumn = (winWidth: number): string[] => {
 //   if (winWidth >= 1300) {
@@ -75,39 +85,6 @@ export interface TokenViewProps extends StayToken {
 export const TokenCard = ({
   image,
   name,
-  onClick = () => { }
-}: TokenCardProps) => {
-  return (
-    <Box margin='medium'>
-      <Card
-        background='light-1'
-        elevation='small'
-        onClick={() => onClick()}
-      >
-        <CardBody pad='small'>
-          <Image
-            fit='cover'
-            src={image}
-          />
-        </CardBody>
-        <CardFooter
-          pad={{ horizontal: 'small' }}
-          background='light-2'
-        >
-          {/* <Box pad='small'> */}
-          <Text size="xlarge" weight="bold">
-            {name}
-          </Text>
-          {/* </Box> */}
-        </CardFooter>
-      </Card>
-    </Box>
-  );
-};
-
-export const NewTokenCard = ({
-  image,
-  name,
   description,
   attributes,
   onClick = () => { },
@@ -128,39 +105,36 @@ export const NewTokenCard = ({
   const numberOfDays = Number(parseTrait('numberOfDays'))
   const price = Number(utils.formatUnits(space?.contractData.pricePerNightWei ?? 0, 'ether'))
   const total = quantity * numberOfDays * price
-  // console.log('quantity',quantity)
-  // console.log('numberOfDays',numberOfDays)
-  // console.log('price',price)
-  // console.log('total',total)
   return (
     <Box>
-
-      <Card
+      <Box
         direction='row'
-        pad='medium'
+        justify='between'
+        pad='large'
         round={false}
         width='65rem'
         style={{ borderBottom: '1px solid black' }}
-        elevation='small'
         onClick={() => onClick()}
       >
-        <CardHeader>
+        <Box>
           <Image
-            height='150'
-            width='150'
+            height='120'
+            width='120'
             fit='cover'
             src={image}
           />
-        </CardHeader>
-        <CardBody pad='small'>
+        </Box>
+        <Box pad='small' style={{ maxWidth: '30rem' }}>
           <HotelTitle>{facility.name}</HotelTitle>
           <CustomText>{facility.address.streetAddress}, {facility.address.postalCode} {facility.address.locality}, {facility.address.country}. </CustomText>
           <CustomText>{space?.name},{quantity} {quantity > 1 ? 'persons' : 'person'} </CustomText>
-        </CardBody>
-        <CardBody align='center' justify='center' pad='small'>
+        </Box>
+        <Box align='center' justify='center' pad='small'>
           <CustomText>{getDate(parseTrait('startDay')).toISODate()} - {getDate(Number(parseTrait('startDay')) + Number(parseTrait('numberOfDays'))).toISODate()}</CustomText>
-        </CardBody>
-        <CardFooter
+        </Box>
+        <Box
+          alignSelf='center'
+          style={{ justifySelf: 'end' }}
           pad={{ horizontal: 'small' }}
         >
           <Box pad='small'>
@@ -168,8 +142,8 @@ export const NewTokenCard = ({
               {total.toFixed(2)}
             </Title>
           </Box>
-        </CardFooter>
-      </Card>
+        </Box>
+      </Box>
       {children}
     </Box>
   );
@@ -200,19 +174,6 @@ export const TokenView = ({
     const network = getNetwork()
     return cancellationTxHash ? `${network.blockExplorer}/tx/${cancellationTxHash}` : '#'
   }, [cancellationTxHash]);
-
-  const parseTrait = (trait: string, value: any): any => {
-    switch (trait) {
-      case 'startDay':
-        return getDate(Number(value)).toISODate();
-      case 'facilityId':
-        return centerEllipsis(value);
-      case 'spaceId':
-        return centerEllipsis(value);
-      default:
-        return value;
-    }
-  };
 
   const cancelTx = useCallback(
     async () => {
@@ -247,95 +208,59 @@ export const TokenView = ({
       alignSelf='center'
       direction='column'
       pad={{ bottom: 'medium' }}
+      style={{ position: 'relative' }}
     >
-      <Card
+      <Box
         direction='row'
-        pad='medium'
+        justify='between'
+        pad='large'
         round={false}
         width='65rem'
         style={{ borderBottom: '1px solid black' }}
-      // width='large'
       >
-        <CardBody>
-          <CardHeader
-            pad={{ horizontal: 'small' }}
-            background='light-2'
-            justify='end'
-          >
-            <Button
-              icon={<Icons.Close color="plain" />}
-              hoverIndicator
-              onClick={() => navigate('/tokens', { replace: true })}
-            />
-          </CardHeader>
-          {/* <Image
-            fit='cover'
-            src={image}
-          /> */}
+        <Box>
           <Grid
             fill='horizontal'
             pad='small'
-            border='bottom'
             columns={['small', 'auto']}
             responsive
           >
             <Box>
-              <Text weight='bold'>Status</Text>
+              <CustomBoldText weight='bold'>Status</CustomBoldText>
             </Box>
             <Box>
-              <Text>{status ?? 'unknown'}</Text>
+              <CustomText>{status ?? 'unknown'}</CustomText>
             </Box>
           </Grid>
           <Grid
             fill='horizontal'
             pad='small'
-            border='bottom'
             columns={['small', 'auto']}
             responsive
           >
             <Box>
-              <Text weight='bold'>Name</Text>
+              <CustomBoldText weight='bold'>Name</CustomBoldText>
             </Box>
             <Box>
-              <Text>{name}</Text>
+              <CustomText>{name}</CustomText>
             </Box>
           </Grid>
           <Grid
             fill='horizontal'
             pad='small'
-            border='bottom'
             columns={['small', 'auto']}
             responsive
           >
             <Box>
-              <Text weight='bold'>Description</Text>
+              <CustomBoldText weight='bold'>Description</CustomBoldText>
             </Box>
             <Box>
-              <Text>{description}</Text>
+              <CustomText>{description}</CustomText>
             </Box>
           </Grid>
+        </Box>
 
-          {attributes?.map(
-            ({ trait_type, value }, index) => (
-              <Grid
-                key={index}
-                fill='horizontal'
-                pad='small'
-                border='bottom'
-                columns={['small', 'auto']}
-                responsive
-              >
-                <Box>
-                  <Text weight='bold'>{trait_type}</Text>
-                </Box>
-                <Box>
-                  <Text>{parseTrait(trait_type, value)}</Text>
-                </Box>
-              </Grid>
-            )
-          )}
-        </CardBody>
-        <CardFooter pad='medium'>
+        <Box pad={{ vertical: 'small', horizontal: 'large' }} justify='between'>
           <StayVoucherQr
             provider={provider}
             from={owner}
@@ -346,7 +271,7 @@ export const TokenView = ({
 
           {status === 'booked' &&
             <Box>
-              <Button
+              <CustomButton
                 label={
                   <Box direction='row'>
                     <Box>
@@ -371,8 +296,19 @@ export const TokenView = ({
               }
             </Box>
           }
-        </CardFooter>
-      </Card>
+          <Button
+            style={{
+              position: 'absolute',
+              top: 10,
+              right: 10
+            }}
+
+            icon={<Icons.Close color="plain" />}
+            hoverIndicator
+            onClick={() => navigate('/tokens', { replace: true })}
+          />
+        </Box>
+      </Box>
 
       <MessageBox type='error' show={!!error}>
         <Box>
@@ -385,7 +321,7 @@ export const TokenView = ({
           {contractError}
         </Box>
       </MessageBox>
-    </Box>
+    </Box >
   );
 };
 
@@ -412,19 +348,6 @@ export const MyTokens = () => {
     () => tokensLoading || tokenLoading || !isGetDateReady,
     [tokensLoading, tokenLoading, isGetDateReady]
   );
-
-  // const parseTrait = (trait: string, value: any): any => {
-  //   switch (trait) {
-  //     case 'startDay':
-  //       return getDate(Number(value)).toISODate();
-  //     case 'facilityId':
-  //       return centerEllipsis(value);
-  //     case 'spaceId':
-  //       return centerEllipsis(value);
-  //     default:
-  //       return value;
-  //   }
-  // };
 
   const findFacility = (data: TokenData) => {
     const facilityId = data.attributes?.find((attr) => attr.trait_type === 'facilityId')?.value
@@ -478,7 +401,7 @@ export const MyTokens = () => {
       ]}
     >
       <Box background='white'>
-      <Header>Stay tokens </Header>
+        <Header>Stay tokens </Header>
         {/* {token &&
           <TokenView
             getDate={getDate}
@@ -524,11 +447,9 @@ export const MyTokens = () => {
         <Box
           direction='column'
           alignSelf="center"
-        // columns={ResponsiveColumn(winWidth)}
-        // responsive={true}
         >
           {tokens?.map(({ tokenId, data }, index) => (
-            <NewTokenCard
+            <TokenCard
               facility={findFacility(data)}
               key={index}
               onClick={() => setSearchParams({ tokenId })}
@@ -544,7 +465,7 @@ export const MyTokens = () => {
                   {...token}
                 />
                 : null}
-            </NewTokenCard>
+            </TokenCard>
           ))}
         </Box>
       </Box>
