@@ -1,20 +1,35 @@
 import { PageWrapper } from './PageWrapper';
-import { Tag, Box, Text, Image, Carousel, Spinner } from 'grommet';
+import { Box, Text, Image, Carousel, Spinner, Grid } from 'grommet';
 import { useAppState } from '../store';
 import { useMemo, useEffect, useState } from 'react';
 import { ThemeMode } from '../components/SwitchThemeMode';
 import { BookWithDai } from '../components/buttons/BookWithDai';
 import { MessageBox } from '../components/MessageBox';
 import { ExternalLink } from '../components/ExternalLink';
+import * as Icons from 'grommet-icons';
 import { getNetwork } from '../config';
 import { centerEllipsis } from '../utils/strings';
 import { useContract } from '../hooks/useContract';
 import { NavLink } from 'react-router-dom';
 import { utils } from 'ethers'
+import { Header } from './MyTokens';
+import { CustomText, Title } from '../components/StayVoucherQr';
+import styled from 'styled-components';
+
+export const Description = styled(Text)`
+  color: #0D0E0F;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 24px;
+  text-align: start;
+`;
 
 export const Space: React.FC = () => {
   const {
     account,
+    lodgingFacilities,
     searchSpaces,
     themeMode,
     searchParams,
@@ -25,6 +40,15 @@ export const Space: React.FC = () => {
 
   const query = window.location.pathname.substring(7)
   const space = useMemo(() => searchSpaces.find((space) => space.id === query), [searchSpaces, query])
+  const facility = useMemo(() => lodgingFacilities.find((facility) => {
+    const space = facility.spaces.find((space => space.contractData.spaceId === query))
+    if (space) {
+      return true
+    }
+    return false
+  }), [query, lodgingFacilities])
+  // console.log('facility', facility)
+  // console.log('space', space)
 
   const [contract, , errorContract] = useContract(provider, ipfsNode);
 
@@ -124,28 +148,44 @@ export const Space: React.FC = () => {
 
       {isLoading && !space && <Box> No space with given id </Box>}
       {isLoading && !!space && !tokenId && <Box
-        border={{ color: borderColor }}
         flex={true}
-        align='start'
+        align='center'
         background='white'
         overflow='auto'
-        pad='medium'
-        round='small'
+        pad='large'
       >
-        <Box pad={{ bottom: 'small' }}>
-          <Text size='xxlarge'>
-            {space.name}
-          </Text>
-          {/* <Text size='large'>
-            {space.address === undefined ? '' : <Box>
-              <Text>{space.address.country}</Text>
-              <Text>{space.address.locality}</Text>
-              <Text>{space.address.streetAddress}</Text>
-            </Box>}
-          </Text> */}
+        <Image
+          height='120'
+          width='120'
+          style={{ borderRadius: '50%' }}
+          src={space.media.logo}
+        />
+
+        <Header> {space.name}</Header>
+        {facility === undefined ? '' : <CustomText>{facility.address.streetAddress}, {facility.address.postalCode} {facility.address.locality}, {facility.address.country}. </CustomText>}
+        {facility === undefined ? '' : <CustomText>{facility.contact?.email} {facility.contact?.website} {facility.contact?.phone}. </CustomText>}
+
+        <Box style={{ width: '65rem', marginBottom: '2rem' }} pad={{ bottom: 'medium' }}>
+          <Description>{space.description}</Description>
         </Box>
-        <Box width='100%' align='center' gridArea="img" height="xlarge" pad={{ bottom: 'medium' }}>
-          <Carousel height='xxlarge' width='xlarge'>
+
+        <Box style={{ width: '65rem', marginBottom: '2rem' }} >
+          <Box border='bottom' pad={{ bottom: 'small' }} direction='row'>
+            <Title size='xxlarge'>Room type</Title>
+          </Box>
+          <Grid
+            pad={{ vertical: 'medium' }}
+            columns={['1/2', '1/2']}
+          >
+            <Box direction='row' align='center'>
+              <Icons.Checkmark style={{ border: '1px solid #0D0E0F', borderRadius: '50%', padding: '0.3rem', marginRight: '0.5rem' }} color='#000' />
+              <CustomText>{space.type} </CustomText>
+            </Box>
+          </Grid>
+        </Box>
+
+        <Box style={{ width: '65rem', marginBottom: '3rem' }} align='center' pad={{ bottom: 'medium' }}>
+          <Carousel height='large' width='xlarge'>
             {space.media.images?.map((space, i) =>
               <Image
                 key={i}
@@ -157,30 +197,12 @@ export const Space: React.FC = () => {
             )}
           </Carousel>
         </Box>
-        <Box pad={{ bottom: 'small' }}>
-          <Text size='xxlarge'>
-            Info
-          </Text>
-        </Box>
-        <Box pad={{ bottom: 'medium', left: 'small' }}>
-          <Text>{space.description}</Text>
-        </Box>
-        <Box>
-          <Box pad={{ bottom: 'small' }} direction='row'>
-            <Text size='xxlarge'>Room type</Text>
-          </Box>
-          <Box pad={{ bottom: 'small' }} direction='row'>
-            <Tag value={space.type} />
-          </Box>
-        </Box>
-        <Box pad={{ right: 'medium' }} direction='row' justify='between' align='center' gridArea="action">
 
-        </Box>
-        <Box pad={{ right: 'medium' }} direction='row' width='100%' justify='between' align='center' gridArea="action">
-          <Text>Price per Night: <Text color={borderColor} size='large'>
+        <Box direction='row' style={{ width: '65rem' }} justify='between' align='center' >
+          <CustomText>Price per Night: <Title color={borderColor} size='large'>
             {utils.formatUnits(space.contractData.pricePerNightWei, 'ether')}
             DAI
-          </Text></Text>
+          </Title></CustomText>
           <Box align='center'>
             <BookWithDai
               onClick={handler}
