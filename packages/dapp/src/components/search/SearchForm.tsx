@@ -14,11 +14,10 @@ export const BlurredSearch = styled(Box)`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  border-top: 1px solid rgba(255, 255, 255, 0.3);
   color: white;
   width: 100%;
-  background: rgba(13, 14, 15, 0.2);
-  backdrop-filter: blur(36px);
+  position: absolute;
+  bottom: 0;
 `;
 
 export const parseDateToDays = (dayZero: DateTime, firstDate: DateTime, secondDate: DateTime) => {

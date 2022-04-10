@@ -27,7 +27,7 @@ export const SearchResultCard: React.FC<{ space: Space }> = ({ space }) => {
     <Box
       border={{
         color: '#000000',
-        side: 'top',
+        side: 'bottom',
       }}
       pad='large'
       direction='row'

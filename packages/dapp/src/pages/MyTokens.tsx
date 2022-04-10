@@ -400,7 +400,7 @@ export const MyTokens = () => {
         },
       ]}
     >
-      <Box background='white'>
+      <Box>
         <Header>Stay tokens </Header>
         {/* {token &&
           <TokenView

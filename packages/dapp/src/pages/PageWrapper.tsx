@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react';
 import type { Breadcrumb } from '../components/Breadcrumbs';
-import { useContext } from 'react';
-import { Box, ResponsiveContext } from 'grommet';
+// import { useContext } from 'react';
+import { Box } from 'grommet';
 import { useAppState } from '../store';
-import { Breadcrumbs } from '../components/Breadcrumbs';
+// import { Breadcrumbs } from '../components/Breadcrumbs';
 import { MessageBox } from '../components/MessageBox';
 import { getNetwork } from '../config';
 
@@ -15,15 +15,15 @@ export interface PageWrapperProps {
 }
 
 export const PageWrapper = ({ children, breadcrumbs }: PageWrapperProps) => {
-  const size = useContext(ResponsiveContext);
+  // const size = useContext(ResponsiveContext);
   const { isRightNetwork } = useAppState();
 
   return (
     <Box fill>
-      <Breadcrumbs
+      {/* <Breadcrumbs
         breadcrumbs={breadcrumbs}
         size={size}
-      />
+      /> */}
       <Box align='center'>
         <Box width='100%'>
           <MessageBox type='warn' show={!isRightNetwork}>
