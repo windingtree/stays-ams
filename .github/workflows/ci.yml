@@ -5,7 +5,7 @@ jobs:
     name: "Deploy to Netlify"
     runs-on: ubuntu-latest
     environment:
-      name: dev
+      name: test
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v3
