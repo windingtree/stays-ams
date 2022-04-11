@@ -19,7 +19,7 @@ export const WhiteText = styled(Text)`
 
 export const GradientText = styled(Text)`
   font-family: Inter;
-  font-size: 136px;
+  font-size: 72px;
   font-weight: 900;
   line-height: 144px;
   letter-spacing: 0px;
