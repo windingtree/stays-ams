@@ -6,9 +6,9 @@ import { SearchForm } from '../components/search/SearchForm';
 import { useDayZero } from '../hooks/useDayZero';
 import styled from 'styled-components';
 
-export const WhiteText = styled(Text)`
+export const StyledText = styled(Text)`
   text-align: center;
-  color: #fff;
+  color: #000;
   font-family: Inter;
   font-size: 18px;
   font-weight: 400;
@@ -17,7 +17,7 @@ export const WhiteText = styled(Text)`
   text-align: center;
 `;
 
-export const GradientText = styled(Text)`
+export const Amsterdam = styled(Text)`
   font-family: Inter;
   font-size: 72px;
   font-weight: 900;
@@ -25,7 +25,7 @@ export const GradientText = styled(Text)`
   letter-spacing: 0px;
   text-align: center;
 
-  background: linear-gradient(90.72deg, #E2C9C6 -3.09%, #81BDF0 23.35%, #E4F2FF 29.25%, #86C9F0 45.31%, #EDF5FF 81.44%, #A0AACF 101.22%);
+  background: #000;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 `;
@@ -43,17 +43,15 @@ export const Home = () => {
 
   return (
     <PageWrapper>
-      <Box
-        style={{
-          // position: 'relative',
-          background: '#611FF2',
-          height: '90vh',
-        }}
-      >
-        <WhiteText>April 18-25 2022</WhiteText>
-        <WhiteText>Devconnect APRIL 18-25, 2022 Amsterdam, The Netherlands</WhiteText>
-        <GradientText>Amsterdam</GradientText>
-        <WhiteText>A collaborative Ethereum week, built by and for everyone</WhiteText>
+      <Box>
+        <StyledText>April 18-25 2022</StyledText>
+        <StyledText>Devconnect APRIL 18-25, 2022 Amsterdam, The Netherlands</StyledText>
+        <Amsterdam>Amsterdam</Amsterdam>
+        <StyledText>A collaborative Ethereum week, built by and for everyone</StyledText>
+
+        {(!!bootstrapped && isGetDateReady) &&
+          <SearchForm getDate={getDate} />
+        }
 
         <MessageBox type='info' show={isIpfsNodeConnecting || isBootstrapLoading || !isGetDateReady}>
           <Box direction='row'>
@@ -64,9 +62,6 @@ export const Home = () => {
           </Box>
         </MessageBox>
 
-        {(!!bootstrapped && isGetDateReady) &&
-          <SearchForm getDate={getDate} />
-        }
       </Box>
     </PageWrapper>
   );

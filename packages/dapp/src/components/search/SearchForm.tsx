@@ -14,10 +14,8 @@ export const BlurredSearch = styled(Box)`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: #000;
   width: 100%;
-  position: absolute;
-  bottom: 0;
 `;
 
 export const parseDateToDays = (dayZero: DateTime, firstDate: DateTime, secondDate: DateTime) => {
@@ -104,8 +102,8 @@ export const SearchForm: React.FC<{
             size: 'large',
             icon: undefined,
             style: {
-              border: '1px solid rgba(227, 231, 236, 0.3)',
-              color: 'white',
+              border: '1px solid black',
+              color: '#000',
               fontFamily: 'Inter',
               fontStyle: 'normal',
               fontWeight: 400,

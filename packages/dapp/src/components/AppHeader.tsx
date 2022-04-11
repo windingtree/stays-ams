@@ -22,9 +22,6 @@ export const AppHeader = () => {
   return (
     <Header
       pad='medium'
-      style={{
-        background: '#611FF2',
-      }}
       responsive={true}
     >
       {(returnLocation && account) &&

@@ -8,7 +8,7 @@ import { useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { MessageBox } from '../components/MessageBox';
 import { useDayZero } from '../hooks/useDayZero';
-import { GradientText, WhiteText } from './Home';
+import { Amsterdam, StyledText } from './Home';
 import styled from 'styled-components';
 
 export const WhiteParagraph = styled(Text)`
@@ -75,10 +75,10 @@ export const Search = () => {
           height: '90vh',
         }}
       >
-        <WhiteText margin={{ top: 'medium' }}>April 18-25 2022</WhiteText>
-        <WhiteText>Devconnect APRIL 18-25, 2022 Amsterdam, The Netherlands</WhiteText>
-        <GradientText>Amsterdam</GradientText>
-        <WhiteText>A collaborative Ethereum week, built by and for everyone</WhiteText>
+        <StyledText margin={{ top: 'medium' }}>April 18-25 2022</StyledText>
+        <StyledText>Devconnect APRIL 18-25, 2022 Amsterdam, The Netherlands</StyledText>
+        <Amsterdam>Amsterdam</Amsterdam>
+        <StyledText>A collaborative Ethereum week, built by and for everyone</StyledText>
 
         <WhiteParagraph>
           Devconnect Amsterdam brings together hundreds of people from all over the world. Within one week there will be held various independent Ethereum events as well as in-person gatherings with the focus on communication, learning and making progress on specific subjects.
