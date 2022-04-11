@@ -57,12 +57,41 @@ describe("Stays.sol", () => {
     });
   });
 
+  describe('Pausable, Ownable', () => {
+    describe('#pause()', () => {
+      it('should trow if called not by an owner', async () => {
+        await expect(
+          alice.staysContract.pause()
+        ).to.be.revertedWith('Ownable: caller is not the owner');
+      });
+
+      it('should pause contract', async () => {
+        const tx = deployer.staysContract.pause();
+        await expect(tx)
+          .to.emit(deployer.staysContract, "Paused")
+          .withArgs(deployer.address);
+        await deployer.staysContract.unpause();
+      });
+    });
+  });
+
   describe("registerLodgingFacility()", () => {
     before(async () => {
       await alice.staysContract["registerLodgingFacility(string,bool)"](
         testDataUri,
         false
       );
+    });
+
+    it('should trow in paused mode', async () => {
+      await deployer.staysContract.pause();
+      await expect(
+        bob.staysContract["registerLodgingFacility(string,bool)"](
+          testDataUri,
+          true
+        )
+      ).to.be.revertedWith('Pausable: paused');
+      await deployer.staysContract.unpause();
     });
 
     it("should have created facility with correct parameters", async () => {
@@ -168,6 +197,17 @@ describe("Stays.sol", () => {
       );
       // eslint-disable-next-line prefer-destructuring
       facilityId = (await alice.staysContract.getAllLodgingFacilityIds())[0];
+    });
+
+    it('should trow in paused mode', async () => {
+      await deployer.staysContract.pause();
+      await expect(
+        alice.staysContract["registerLodgingFacility(string,bool)"](
+          testDataUri + 'werwerwerwerwe',
+          true
+        )
+      ).to.be.revertedWith('Pausable: paused');
+      await deployer.staysContract.unpause();
     });
 
     it("should revert if non-owner tries to add a Space", async () => {
@@ -317,21 +357,35 @@ describe("Stays.sol", () => {
       });
 
       describe("newStay()", () => {
+        it('should trow in paused mode', async () => {
+          await deployer.staysContract.pause();
+          await expect(
+            alice.staysContract.newStay(
+              sid,
+              10000,
+              1,
+              1,
+              { value: 1000000 }
+            )
+          ).to.be.revertedWith('Pausable: paused');
+          await deployer.staysContract.unpause();
+        });
+
         it("should revert if payment is less than what's required", async () => {
           await expect(
-            alice.staysContract.newStay(sid, 42, 1, 1, {
+            alice.staysContract.newStay(sid, 142, 1, 1, {
               value: 12344,
             })
           ).to.be.revertedWith("Need. More. Money!");
-          alice.staysContract.newStay(sid, 42, 1, 1, {
+          alice.staysContract.newStay(sid, 142, 1, 1, {
             value: 12345,
           });
           await expect(
-            bob.staysContract.newStay(sid, 42, 2, 5, {
+            bob.staysContract.newStay(sid, 142, 2, 5, {
               value: 123449,
             })
           ).to.be.revertedWith("Need. More. Money!");
-          bob.staysContract.newStay(sid, 42, 2, 5, {
+          bob.staysContract.newStay(sid, 142, 2, 5, {
             value: 123450,
           });
         });
@@ -401,7 +455,7 @@ describe("Stays.sol", () => {
     }
   );
 
-  describe("modifications, cancellations", () => {
+  describe("modifications", () => {
     const valuePerNight = 100;
     let fid;
     let f;
@@ -592,118 +646,118 @@ describe("Stays.sol", () => {
         });
       });
 
-      describe('refundStay()', () => {
-        const params = [
-          {
-            startDay: 200,
-            numDays: 1
-          },
-          {
-            startDay: 210,
-            numDays: 2
-          },
-          {
-            startDay: 220,
-            numDays: 3
-          }
-        ];
-        let chainId: number;
-        let tokens: string[];
+      // describe('cancel()', () => {
+      //   const params = [
+      //     {
+      //       startDay: 200,
+      //       numDays: 1
+      //     },
+      //     {
+      //       startDay: 210,
+      //       numDays: 2
+      //     },
+      //     {
+      //       startDay: 220,
+      //       numDays: 3
+      //     }
+      //   ];
+      //   let chainId: number;
+      //   let tokens: string[];
 
-        const createStay = async (sid, startDay, numDays) => {
-          let tx = await alice.staysContract.newStay(
-            sid,
-            startDay,
-            numDays,
-            1,
-            { value: valuePerNight * numDays }
-          );
-          const eventNewStay = await extractEventFromTx(tx, 'NewStay');
-          return eventNewStay.tokenId.toString();
-        };
+      //   const createStay = async (sid, startDay, numDays) => {
+      //     let tx = await alice.staysContract.newStay(
+      //       sid,
+      //       startDay,
+      //       numDays,
+      //       1,
+      //       { value: valuePerNight * numDays }
+      //     );
+      //     const eventNewStay = await extractEventFromTx(tx, 'NewStay');
+      //     return eventNewStay.tokenId.toString();
+      //   };
 
-        before(async () => {
-          const res = await alice.staysContract.provider.getNetwork();
-          chainId = res.chainId;
-          tokens = await Promise.all(
-            params.map(
-              p => createStay(sid, p.startDay, p.numDays)
-            )
-          );
-        });
+      //   before(async () => {
+      //     const res = await alice.staysContract.provider.getNetwork();
+      //     chainId = res.chainId;
+      //     tokens = await Promise.all(
+      //       params.map(
+      //         p => createStay(sid, p.startDay, p.numDays)
+      //       )
+      //     );
+      //   });
 
-        it('should throw if called not by a token owner', async () => {
-          await expect(
-            bob.staysContract.cancel(tokens[0])
-          ).to.revertedWith('Only stay token owner is allowed');
-        });
+      //   it('should throw if called not by a token owner', async () => {
+      //     await expect(
+      //       bob.staysContract.cancel(tokens[0])
+      //     ).to.revertedWith('Only stay token owner is allowed');
+      //   });
 
-        it('should throw if token already checked in', async () => {
-          const voucher = await createVoucher(
-            alice.staysContract.signer,
-            alice.address,
-            bob.address,
-            tokens[0],
-            alice.staysContract.address,
-            chainId
-          );
-          const tx = await bob.staysContract.checkIn(tokens[0], voucher);
-          await tx.wait();
-          await expect(
-            alice.staysContract.cancel(tokens[0])
-          ).to.revertedWith('Refund not allowed in current state');
-        });
+      //   it('should throw if token already checked in', async () => {
+      //     const voucher = await createVoucher(
+      //       alice.staysContract.signer,
+      //       alice.address,
+      //       bob.address,
+      //       tokens[0],
+      //       alice.staysContract.address,
+      //       chainId
+      //     );
+      //     const tx = await bob.staysContract.checkIn(tokens[0], voucher);
+      //     await tx.wait();
+      //     await expect(
+      //       alice.staysContract.cancel(tokens[0])
+      //     ).to.revertedWith('Refund not allowed in current state');
+      //   });
 
-        it('should cancel a stay', async () => {
-          const weiAmount = BigNumber.from(valuePerNight)
-            .mul(BigNumber.from(params[1].numDays));
-          const initialBalanceAlice = await alice.staysContract.provider.getBalance(alice.address);
-          const tx = await alice.staysContract.cancel(tokens[1]);
-          const receipt = await tx.wait();
-          const txCost = receipt.cumulativeGasUsed.mul(receipt.effectiveGasPrice);
-          const cancelBalance = await alice.staysContract.provider.getBalance(alice.address);
-          expect(cancelBalance).to.equal(
-            initialBalanceAlice
-              .add(weiAmount)
-              .sub(txCost)
-          );
-          const refundEvent = await extractEventFromTx(tx, 'Refund');
-          const cancelEvent = await extractEventFromTx(tx, 'Cancel');
-          expect(refundEvent.payee).to.equal(alice.address);
-          expect(refundEvent.weiAmount).to.equal(weiAmount);
-          expect(refundEvent.spaceId).to.equal(sid);
-          expect(refundEvent.tokenId.toString()).to.equal(tokens[1]);
-          expect(cancelEvent.tokenId.toString()).to.equal(tokens[1]);
-          await expect(
-            alice.staysContract.ownerOf(tokens[1])
-          ).to.revertedWith('ERC721: owner query for nonexistent token');
-        });
+      //   it('should cancel a stay', async () => {
+      //     const weiAmount = BigNumber.from(valuePerNight)
+      //       .mul(BigNumber.from(params[1].numDays));
+      //     const initialBalanceAlice = await alice.staysContract.provider.getBalance(alice.address);
+      //     const tx = await alice.staysContract.cancel(tokens[1]);
+      //     const receipt = await tx.wait();
+      //     const txCost = receipt.cumulativeGasUsed.mul(receipt.effectiveGasPrice);
+      //     const cancelBalance = await alice.staysContract.provider.getBalance(alice.address);
+      //     expect(cancelBalance).to.equal(
+      //       initialBalanceAlice
+      //         .add(weiAmount)
+      //         .sub(txCost)
+      //     );
+      //     const refundEvent = await extractEventFromTx(tx, 'Refund');
+      //     const cancelEvent = await extractEventFromTx(tx, 'Cancel');
+      //     expect(refundEvent.payee).to.equal(alice.address);
+      //     expect(refundEvent.weiAmount).to.equal(weiAmount);
+      //     expect(refundEvent.spaceId).to.equal(sid);
+      //     expect(refundEvent.tokenId.toString()).to.equal(tokens[1]);
+      //     expect(cancelEvent.tokenId.toString()).to.equal(tokens[1]);
+      //     await expect(
+      //       alice.staysContract.ownerOf(tokens[1])
+      //     ).to.revertedWith('ERC721: owner query for nonexistent token');
+      //   });
 
-        it('should throw if token already cancelled', async () => {
-          await expect(
-            alice.staysContract.cancel(tokens[1])
-          ).to.revertedWith('ERC721: owner query for nonexistent token');
-        });
+      //   it('should throw if token already cancelled', async () => {
+      //     await expect(
+      //       alice.staysContract.cancel(tokens[1])
+      //     ).to.revertedWith('ERC721: owner query for nonexistent token');
+      //   });
 
-        it('should throw if token already checked out', async () => {
-          const voucher = await createVoucher(
-            alice.staysContract.signer,
-            alice.address,
-            bob.address,
-            tokens[2],
-            alice.staysContract.address,
-            chainId
-          );
-          const tx = await bob.staysContract.checkIn(tokens[2], voucher);
-          await tx.wait();
-          await ethers.provider.send('evm_increaseTime', [(params[2].startDay + 1) * 86400]);
-          const txCheckOut = await bob.staysContract.checkOut(tokens[2]);
-          await txCheckOut.wait();
-          await expect(
-            alice.staysContract.cancel(tokens[2])
-          ).to.revertedWith('Refund not allowed in current state');
-        });
-      });
+      //   it('should throw if token already checked out', async () => {
+      //     const voucher = await createVoucher(
+      //       alice.staysContract.signer,
+      //       alice.address,
+      //       bob.address,
+      //       tokens[2],
+      //       alice.staysContract.address,
+      //       chainId
+      //     );
+      //     const tx = await bob.staysContract.checkIn(tokens[2], voucher);
+      //     await tx.wait();
+      //     await ethers.provider.send('evm_increaseTime', [(params[2].startDay + 1) * 86400]);
+      //     const txCheckOut = await bob.staysContract.checkOut(tokens[2]);
+      //     await txCheckOut.wait();
+      //     await expect(
+      //       alice.staysContract.cancel(tokens[2])
+      //     ).to.revertedWith('Refund not allowed in current state');
+      //   });
+      // });
 
     });
   });

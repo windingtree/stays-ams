@@ -40,7 +40,6 @@ export interface IStaysInterface extends utils.Interface {
     "activateLodgingFacility(bytes32)": FunctionFragment;
     "activateSpace(bytes32)": FunctionFragment;
     "addSpace(bytes32,uint256,uint256,bool,string)": FunctionFragment;
-    "cancel(uint256)": FunctionFragment;
     "checkIn(uint256,(address,address,uint256,bytes))": FunctionFragment;
     "checkOut(uint256)": FunctionFragment;
     "deactivateLodgingFacility(bytes32)": FunctionFragment;
@@ -77,10 +76,6 @@ export interface IStaysInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "addSpace",
     values: [BytesLike, BigNumberish, BigNumberish, boolean, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "cancel",
-    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "checkIn",
@@ -184,7 +179,6 @@ export interface IStaysInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "addSpace", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "cancel", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "checkIn", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "checkOut", data: BytesLike): Result;
   decodeFunctionResult(
@@ -473,11 +467,6 @@ export interface IStays extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    cancel(
-      _tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     checkIn(
       _tokenId: BigNumberish,
       voucher: IStays.CheckInVoucherStruct,
@@ -644,11 +633,6 @@ export interface IStays extends BaseContract {
     _pricePerNightWei: BigNumberish,
     _active: boolean,
     _dataURI: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  cancel(
-    _tokenId: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -820,8 +804,6 @@ export interface IStays extends BaseContract {
       _dataURI: string,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    cancel(_tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
     checkIn(
       _tokenId: BigNumberish,
@@ -1134,11 +1116,6 @@ export interface IStays extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    cancel(
-      _tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     checkIn(
       _tokenId: BigNumberish,
       voucher: IStays.CheckInVoucherStruct,
@@ -1290,11 +1267,6 @@ export interface IStays extends BaseContract {
       _pricePerNightWei: BigNumberish,
       _active: boolean,
       _dataURI: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    cancel(
-      _tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

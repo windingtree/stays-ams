@@ -4,8 +4,6 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/utils/Address.sol";
 import "./IStayEscrow.sol";
 
-import "hardhat/console.sol";
-
 
 abstract contract StayEscrow is IStayEscrow {
   using Address for address payable;

@@ -42,7 +42,6 @@ export interface StaysInterface extends utils.Interface {
     "addSpace(bytes32,uint256,uint256,bool,string)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
-    "cancel(uint256)": FunctionFragment;
     "checkIn(uint256,(address,address,uint256,bytes))": FunctionFragment;
     "checkOut(uint256)": FunctionFragment;
     "dayZero()": FunctionFragment;
@@ -66,17 +65,18 @@ export interface StaysInterface extends utils.Interface {
     "getTokensBySpaceId(bytes32,uint8)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "lodgingFacilities(bytes32)": FunctionFragment;
-    "lodgingFacilitySchemaURI()": FunctionFragment;
     "name()": FunctionFragment;
     "newStay(bytes32,uint256,uint256,uint256)": FunctionFragment;
+    "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
+    "pause()": FunctionFragment;
+    "paused()": FunctionFragment;
     "registerLodgingFacility(string,bool)": FunctionFragment;
+    "renounceOwnership()": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "serviceURI()": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
-    "spaceSchemaURI()": FunctionFragment;
     "spaces(bytes32)": FunctionFragment;
-    "staySchemaURI()": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "tokenByIndex(uint256)": FunctionFragment;
@@ -84,6 +84,8 @@ export interface StaysInterface extends utils.Interface {
     "tokenURI(uint256)": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
+    "transferOwnership(address)": FunctionFragment;
+    "unpause()": FunctionFragment;
     "updateLodgingFacility(bytes32,string)": FunctionFragment;
     "updateSpace(bytes32,uint256,uint256,string)": FunctionFragment;
     "yieldLodgingFacility(bytes32,address)": FunctionFragment;
@@ -106,10 +108,6 @@ export interface StaysInterface extends utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
-  encodeFunctionData(
-    functionFragment: "cancel",
-    values: [BigNumberish]
-  ): string;
   encodeFunctionData(
     functionFragment: "checkIn",
     values: [BigNumberish, IStays.CheckInVoucherStruct]
@@ -199,22 +197,25 @@ export interface StaysInterface extends utils.Interface {
     functionFragment: "lodgingFacilities",
     values: [BytesLike]
   ): string;
-  encodeFunctionData(
-    functionFragment: "lodgingFacilitySchemaURI",
-    values?: undefined
-  ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "newStay",
     values: [BytesLike, BigNumberish, BigNumberish, BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "ownerOf",
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "pause", values?: undefined): string;
+  encodeFunctionData(functionFragment: "paused", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "registerLodgingFacility",
     values: [string, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "renounceOwnership",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "safeTransferFrom",
@@ -228,15 +229,7 @@ export interface StaysInterface extends utils.Interface {
     functionFragment: "setApprovalForAll",
     values: [string, boolean]
   ): string;
-  encodeFunctionData(
-    functionFragment: "spaceSchemaURI",
-    values?: undefined
-  ): string;
   encodeFunctionData(functionFragment: "spaces", values: [BytesLike]): string;
-  encodeFunctionData(
-    functionFragment: "staySchemaURI",
-    values?: undefined
-  ): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [BytesLike]
@@ -263,6 +256,11 @@ export interface StaysInterface extends utils.Interface {
     values: [string, string, BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "transferOwnership",
+    values: [string]
+  ): string;
+  encodeFunctionData(functionFragment: "unpause", values?: undefined): string;
+  encodeFunctionData(
     functionFragment: "updateLodgingFacility",
     values: [BytesLike, string]
   ): string;
@@ -286,7 +284,6 @@ export interface StaysInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "addSpace", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "cancel", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "checkIn", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "checkOut", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "dayZero", data: BytesLike): Result;
@@ -364,15 +361,18 @@ export interface StaysInterface extends utils.Interface {
     functionFragment: "lodgingFacilities",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "lodgingFacilitySchemaURI",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "newStay", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "pause", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "registerLodgingFacility",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -384,15 +384,7 @@ export interface StaysInterface extends utils.Interface {
     functionFragment: "setApprovalForAll",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "spaceSchemaURI",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "spaces", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "staySchemaURI",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
@@ -415,6 +407,11 @@ export interface StaysInterface extends utils.Interface {
     functionFragment: "transferFrom",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "unpause", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "updateLodgingFacility",
     data: BytesLike
@@ -441,12 +438,15 @@ export interface StaysInterface extends utils.Interface {
     "LodgingFacilityRemoved(bytes32)": EventFragment;
     "LodgingFacilityUpdated(bytes32,string)": EventFragment;
     "NewStay(bytes32,uint256)": EventFragment;
+    "OwnershipTransferred(address,address)": EventFragment;
+    "Paused(address)": EventFragment;
     "Refund(address,uint256,bytes32,uint256)": EventFragment;
     "SpaceActiveState(bytes32,bool)": EventFragment;
     "SpaceAdded(bytes32,bytes32,uint256,uint256,bool,string)": EventFragment;
     "SpaceRemoved(bytes32)": EventFragment;
     "SpaceUpdated(bytes32,uint256,uint256,string)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
+    "Unpaused(address)": EventFragment;
     "Withdraw(address,address,uint256,bytes32,uint256)": EventFragment;
   };
 
@@ -464,12 +464,15 @@ export interface StaysInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "LodgingFacilityRemoved"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "LodgingFacilityUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "NewStay"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Refund"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SpaceActiveState"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SpaceAdded"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SpaceRemoved"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SpaceUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Withdraw"): EventFragment;
 }
 
@@ -553,6 +556,18 @@ export type NewStayEvent = TypedEvent<
 
 export type NewStayEventFilter = TypedEventFilter<NewStayEvent>;
 
+export type OwnershipTransferredEvent = TypedEvent<
+  [string, string],
+  { previousOwner: string; newOwner: string }
+>;
+
+export type OwnershipTransferredEventFilter =
+  TypedEventFilter<OwnershipTransferredEvent>;
+
+export type PausedEvent = TypedEvent<[string], { account: string }>;
+
+export type PausedEventFilter = TypedEventFilter<PausedEvent>;
+
 export type RefundEvent = TypedEvent<
   [string, BigNumber, string, BigNumber],
   { payee: string; weiAmount: BigNumber; spaceId: string; tokenId: BigNumber }
@@ -604,6 +619,10 @@ export type TransferEvent = TypedEvent<
 >;
 
 export type TransferEventFilter = TypedEventFilter<TransferEvent>;
+
+export type UnpausedEvent = TypedEvent<[string], { account: string }>;
+
+export type UnpausedEventFilter = TypedEventFilter<UnpausedEvent>;
 
 export type WithdrawEvent = TypedEvent<
   [string, string, BigNumber, string, BigNumber],
@@ -672,11 +691,6 @@ export interface Stays extends BaseContract {
     ): Promise<ContractTransaction>;
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    cancel(
-      _tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
 
     checkIn(
       _tokenId: BigNumberish,
@@ -828,8 +842,6 @@ export interface Stays extends BaseContract {
       }
     >;
 
-    lodgingFacilitySchemaURI(overrides?: CallOverrides): Promise<[string]>;
-
     name(overrides?: CallOverrides): Promise<[string]>;
 
     newStay(
@@ -840,10 +852,18 @@ export interface Stays extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    owner(overrides?: CallOverrides): Promise<[string]>;
+
     ownerOf(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
+
+    pause(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    paused(overrides?: CallOverrides): Promise<[boolean]>;
 
     "registerLodgingFacility(string,bool)"(
       _dataURI: string,
@@ -855,6 +875,10 @@ export interface Stays extends BaseContract {
       _dataURI: string,
       _active: boolean,
       _fren: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -881,8 +905,6 @@ export interface Stays extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    spaceSchemaURI(overrides?: CallOverrides): Promise<[string]>;
-
     spaces(
       arg0: BytesLike,
       overrides?: CallOverrides
@@ -896,8 +918,6 @@ export interface Stays extends BaseContract {
         dataURI: string;
       }
     >;
-
-    staySchemaURI(overrides?: CallOverrides): Promise<[string]>;
 
     supportsInterface(
       interfaceId: BytesLike,
@@ -928,6 +948,15 @@ export interface Stays extends BaseContract {
       from: string,
       to: string,
       tokenId: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    unpause(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -978,11 +1007,6 @@ export interface Stays extends BaseContract {
   ): Promise<ContractTransaction>;
 
   balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-  cancel(
-    _tokenId: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
 
   checkIn(
     _tokenId: BigNumberish,
@@ -1132,8 +1156,6 @@ export interface Stays extends BaseContract {
     }
   >;
 
-  lodgingFacilitySchemaURI(overrides?: CallOverrides): Promise<string>;
-
   name(overrides?: CallOverrides): Promise<string>;
 
   newStay(
@@ -1144,7 +1166,15 @@ export interface Stays extends BaseContract {
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  owner(overrides?: CallOverrides): Promise<string>;
+
   ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
+  pause(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  paused(overrides?: CallOverrides): Promise<boolean>;
 
   "registerLodgingFacility(string,bool)"(
     _dataURI: string,
@@ -1156,6 +1186,10 @@ export interface Stays extends BaseContract {
     _dataURI: string,
     _active: boolean,
     _fren: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  renounceOwnership(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1182,8 +1216,6 @@ export interface Stays extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  spaceSchemaURI(overrides?: CallOverrides): Promise<string>;
-
   spaces(
     arg0: BytesLike,
     overrides?: CallOverrides
@@ -1197,8 +1229,6 @@ export interface Stays extends BaseContract {
       dataURI: string;
     }
   >;
-
-  staySchemaURI(overrides?: CallOverrides): Promise<string>;
 
   supportsInterface(
     interfaceId: BytesLike,
@@ -1226,6 +1256,15 @@ export interface Stays extends BaseContract {
     from: string,
     to: string,
     tokenId: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  transferOwnership(
+    newOwner: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  unpause(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1276,8 +1315,6 @@ export interface Stays extends BaseContract {
     ): Promise<void>;
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    cancel(_tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
     checkIn(
       _tokenId: BigNumberish,
@@ -1421,8 +1458,6 @@ export interface Stays extends BaseContract {
       }
     >;
 
-    lodgingFacilitySchemaURI(overrides?: CallOverrides): Promise<string>;
-
     name(overrides?: CallOverrides): Promise<string>;
 
     newStay(
@@ -1433,7 +1468,13 @@ export interface Stays extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    owner(overrides?: CallOverrides): Promise<string>;
+
     ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
+    pause(overrides?: CallOverrides): Promise<void>;
+
+    paused(overrides?: CallOverrides): Promise<boolean>;
 
     "registerLodgingFacility(string,bool)"(
       _dataURI: string,
@@ -1447,6 +1488,8 @@ export interface Stays extends BaseContract {
       _fren: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,
@@ -1471,8 +1514,6 @@ export interface Stays extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    spaceSchemaURI(overrides?: CallOverrides): Promise<string>;
-
     spaces(
       arg0: BytesLike,
       overrides?: CallOverrides
@@ -1486,8 +1527,6 @@ export interface Stays extends BaseContract {
         dataURI: string;
       }
     >;
-
-    staySchemaURI(overrides?: CallOverrides): Promise<string>;
 
     supportsInterface(
       interfaceId: BytesLike,
@@ -1517,6 +1556,13 @@ export interface Stays extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    unpause(overrides?: CallOverrides): Promise<void>;
 
     updateLodgingFacility(
       _lodgingFacilityId: BytesLike,
@@ -1637,6 +1683,18 @@ export interface Stays extends BaseContract {
     ): NewStayEventFilter;
     NewStay(spaceId?: null, tokenId?: null): NewStayEventFilter;
 
+    "OwnershipTransferred(address,address)"(
+      previousOwner?: string | null,
+      newOwner?: string | null
+    ): OwnershipTransferredEventFilter;
+    OwnershipTransferred(
+      previousOwner?: string | null,
+      newOwner?: string | null
+    ): OwnershipTransferredEventFilter;
+
+    "Paused(address)"(account?: null): PausedEventFilter;
+    Paused(account?: null): PausedEventFilter;
+
     "Refund(address,uint256,bytes32,uint256)"(
       payee?: string | null,
       weiAmount?: null,
@@ -1703,6 +1761,9 @@ export interface Stays extends BaseContract {
       tokenId?: BigNumberish | null
     ): TransferEventFilter;
 
+    "Unpaused(address)"(account?: null): UnpausedEventFilter;
+    Unpaused(account?: null): UnpausedEventFilter;
+
     "Withdraw(address,address,uint256,bytes32,uint256)"(
       payer?: string | null,
       payee?: string | null,
@@ -1746,11 +1807,6 @@ export interface Stays extends BaseContract {
     ): Promise<BigNumber>;
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    cancel(
-      _tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
 
     checkIn(
       _tokenId: BigNumberish,
@@ -1867,8 +1923,6 @@ export interface Stays extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    lodgingFacilitySchemaURI(overrides?: CallOverrides): Promise<BigNumber>;
-
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
     newStay(
@@ -1879,10 +1933,18 @@ export interface Stays extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    owner(overrides?: CallOverrides): Promise<BigNumber>;
+
     ownerOf(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    pause(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    paused(overrides?: CallOverrides): Promise<BigNumber>;
 
     "registerLodgingFacility(string,bool)"(
       _dataURI: string,
@@ -1894,6 +1956,10 @@ export interface Stays extends BaseContract {
       _dataURI: string,
       _active: boolean,
       _fren: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1920,11 +1986,7 @@ export interface Stays extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    spaceSchemaURI(overrides?: CallOverrides): Promise<BigNumber>;
-
     spaces(arg0: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
-
-    staySchemaURI(overrides?: CallOverrides): Promise<BigNumber>;
 
     supportsInterface(
       interfaceId: BytesLike,
@@ -1955,6 +2017,15 @@ export interface Stays extends BaseContract {
       from: string,
       to: string,
       tokenId: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    unpause(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -2008,11 +2079,6 @@ export interface Stays extends BaseContract {
     balanceOf(
       owner: string,
       overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    cancel(
-      _tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     checkIn(
@@ -2134,10 +2200,6 @@ export interface Stays extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    lodgingFacilitySchemaURI(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     newStay(
@@ -2148,10 +2210,18 @@ export interface Stays extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     ownerOf(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    pause(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    paused(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "registerLodgingFacility(string,bool)"(
       _dataURI: string,
@@ -2163,6 +2233,10 @@ export interface Stays extends BaseContract {
       _dataURI: string,
       _active: boolean,
       _fren: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -2189,14 +2263,10 @@ export interface Stays extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    spaceSchemaURI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     spaces(
       arg0: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
-
-    staySchemaURI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     supportsInterface(
       interfaceId: BytesLike,
@@ -2227,6 +2297,15 @@ export interface Stays extends BaseContract {
       from: string,
       to: string,
       tokenId: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    unpause(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

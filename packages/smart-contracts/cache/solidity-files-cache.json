@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/home/kostysh/dev/stays-remote/packages/smart-contracts/contracts/IStays.sol": {
-      "lastModificationDate": 1649357235793,
-      "contentHash": "be7a59bd720640e61befe175379dbd2b",
+      "lastModificationDate": 1649665050647,
+      "contentHash": "270d48bc14948e5d2fa742dd412eb0d7",
       "sourceName": "contracts/IStays.sol",
       "solcConfig": {
         "version": "0.8.7",
@@ -46,8 +46,8 @@
       ]
     },
     "/home/kostysh/dev/stays-remote/packages/smart-contracts/contracts/Stays.sol": {
-      "lastModificationDate": 1649357249205,
-      "contentHash": "7f10d6ec37aa585600320a39fe3339a1",
+      "lastModificationDate": 1649668527909,
+      "contentHash": "36c0128b72d16df66cb8d77a2ac5173e",
       "sourceName": "contracts/Stays.sol",
       "solcConfig": {
         "version": "0.8.7",
@@ -86,10 +86,11 @@
         "@openzeppelin/contracts/utils/Counters.sol",
         "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol",
         "@openzeppelin/contracts/utils/cryptography/ECDSA.sol",
+        "@openzeppelin/contracts/security/Pausable.sol",
+        "@openzeppelin/contracts/access/Ownable.sol",
         "./IStays.sol",
         "./StayEscrow.sol",
-        "./libraries/StayTokenMeta.sol",
-        "hardhat/console.sol"
+        "./libraries/StayTokenMeta.sol"
       ],
       "versionPragmas": [
         "^0.8.0"
@@ -280,8 +281,8 @@
       ]
     },
     "/home/kostysh/dev/stays-remote/packages/smart-contracts/contracts/StayEscrow.sol": {
-      "lastModificationDate": 1648747494768,
-      "contentHash": "f6ad7d4b79e8bb8937be642c4381fd8b",
+      "lastModificationDate": 1649663102574,
+      "contentHash": "e1e928cde24248fe2b281478ede757fc",
       "sourceName": "contracts/StayEscrow.sol",
       "solcConfig": {
         "version": "0.8.7",
@@ -315,8 +316,7 @@
       },
       "imports": [
         "@openzeppelin/contracts/utils/Address.sol",
-        "./IStayEscrow.sol",
-        "hardhat/console.sol"
+        "./IStayEscrow.sol"
       ],
       "versionPragmas": [
         "^0.8.0"
@@ -326,8 +326,8 @@
       ]
     },
     "/home/kostysh/dev/stays-remote/packages/smart-contracts/contracts/libraries/StayTokenMeta.sol": {
-      "lastModificationDate": 1648063920331,
-      "contentHash": "73531ef779aab5d52fb63a59f86227bd",
+      "lastModificationDate": 1649666019390,
+      "contentHash": "22c91eb569d2caf98acfb70cd1c20281",
       "sourceName": "contracts/libraries/StayTokenMeta.sol",
       "solcConfig": {
         "version": "0.8.7",
@@ -1055,6 +1055,94 @@
       ],
       "artifacts": [
         "IStayEscrow"
+      ]
+    },
+    "/home/kostysh/dev/stays-remote/packages/smart-contracts/node_modules/@openzeppelin/contracts/security/Pausable.sol": {
+      "lastModificationDate": 1646740975541,
+      "contentHash": "9c2dccab8e3a43a18c41e358763fe4d8",
+      "sourceName": "@openzeppelin/contracts/security/Pausable.sol",
+      "solcConfig": {
+        "version": "0.8.7",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "devdoc",
+                "userdoc",
+                "storageLayout",
+                "evm.gasEstimates"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": true
+          }
+        }
+      },
+      "imports": [
+        "../utils/Context.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Pausable"
+      ]
+    },
+    "/home/kostysh/dev/stays-remote/packages/smart-contracts/node_modules/@openzeppelin/contracts/access/Ownable.sol": {
+      "lastModificationDate": 1646740975525,
+      "contentHash": "8398972af73b4e9e5ff3b31cad86234f",
+      "sourceName": "@openzeppelin/contracts/access/Ownable.sol",
+      "solcConfig": {
+        "version": "0.8.7",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "devdoc",
+                "userdoc",
+                "storageLayout",
+                "evm.gasEstimates"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": true
+          }
+        }
+      },
+      "imports": [
+        "../utils/Context.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Ownable"
       ]
     }
   }
