@@ -54,26 +54,16 @@ export const AppHeader = () => {
         <GlobalMenu />
       </Box>
 
-      {pathname === '/' || pathname === '/search' || winWidth < 900 ?
-        <Image
+      <Image
           style={{
             position: 'absolute',
             left: ResponsiveAlign(winWidth),
           }}
-          src='logo-small.png'
+          src='logo.svg'
           height='32px'
           onClick={() => navigate('/')}
-        />
-        : <Image
-          style={{
-            position: 'absolute',
-            left: '35vw',
-          }}
-          src='/logo.png'
-          height='32px'
-          onClick={() => navigate('/')}
-        />
-      }
+      />
+
       <Image
         fit="cover"
         src='/bg-img.svg'
