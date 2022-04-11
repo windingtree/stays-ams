@@ -264,7 +264,7 @@ export const TokenView = ({
 
           {status === 'booked' &&
             <Box>
-              <CustomButton
+              {/* <CustomButton
                 label={
                   <Box direction='row'>
                     <Box>
@@ -279,7 +279,7 @@ export const TokenView = ({
                 }
                 disabled={cancelLoading}
                 onClick={cancelTx}
-              />
+              /> */}
               {!!cancellationTxHash
                 ? <ExternalLink
                   href={cancellationTxHashLink}
