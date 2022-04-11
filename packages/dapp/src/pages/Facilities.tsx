@@ -1,6 +1,6 @@
 import type { OwnerLodgingFacility, OwnerSpace } from '../store/actions';
 import { useState } from 'react';
-import { Box, Button, Grid, Spinner } from 'grommet';
+import { Box, Button, Grid, Spinner, Text } from 'grommet';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { PageWrapper } from './PageWrapper';
 import { MessageBox } from '../components/MessageBox';
@@ -11,6 +11,7 @@ import { useDayZero } from '../hooks/useDayZero';
 import { CheckOutView } from '../components/checkOut/CheckOutView';
 import { CheckOutCard } from '../components/checkOut/CheckOutCard';
 import { useCheckOut } from '../hooks/useCheckOut';
+import { AddCircle, Edit } from 'grommet-icons';
 
 const ResponsiveColumn = (winWidth: number): string[] => {
   if (winWidth >= 1300) {
@@ -30,6 +31,7 @@ const ResponsiveColumn = (winWidth: number): string[] => {
 };
 
 const FacilityList: React.FC<{
+  selectedFacilityId: string | undefined,
   facilities: OwnerLodgingFacility[],
   onSelect(facility: OwnerLodgingFacility): void
 }> = ({ facilities, onSelect }) => {
@@ -55,23 +57,38 @@ const SpacesList: React.FC<{
   facility: OwnerLodgingFacility | undefined,
   onSelect(tokens: StayToken[]): void
 }> = ({ facility, onSelect }) => {
+  const navigate = useNavigate();
   if (!facility || !facility.spaces) {
     return null
   }
   return (
-    <Box direction='row'>
+    <Box direction='column'>
       {facility.spaces.map((space: OwnerSpace, i) => (
-        <Box key={i} direction='column'>
-          <Box>
-            <Button
-              onClick={() => onSelect(space.tokens)}
+        <Box
+          key={i}
+          direction='row'
+          align='center'
+          border='bottom'
+          width='100%'
+        >
+          <Box
+            pad='medium'
+            width='100%'
+            onClick={() => onSelect(space.tokens)}
+          >
+            <Text>{space.name}</Text>
+            {/* <Button
+              // onClick={() => onSelect(space.tokens)}
               label={space.name}
-            />
+            /> */}
           </Box>
           <Box>
-            <NavLink to={`/spaces/edit/${facility.contractData.lodgingFacilityId}/${space.spaceId}`}>
-              Edit space profile
-            </NavLink>
+            <Button
+              icon={<Edit size='medium' radius='large' />}
+              onClick={() => navigate(
+                `/spaces/edit/${facility.contractData.lodgingFacilityId}/${space.spaceId}`
+              )}
+            />
           </Box>
         </Box>
       ))}
@@ -128,33 +145,47 @@ export const Facilities = () => {
         pad='small'
         columns={['medium', 'auto']}
         responsive
+        margin={{ top: 'large' }}
         gap='medium'
       >
 
-        <FacilityList facilities={ownFacilities ?? []} onSelect={setSelectedFacility} />
+        <FacilityList
+          selectedFacilityId={selectedFacility?.contractData.lodgingFacilityId}
+          facilities={ownFacilities ?? []} onSelect={setSelectedFacility}
+        />
 
-        <Box direction='column'>
-          <SpacesList onSelect={setTokens} facility={selectedFacility} />
+        <Box
+          pad='small'
+          direction='column'
+        >
 
           {selectedFacility &&
             <>
-              <Box direction='column' margin={{ top: 'small', bottom: 'small' }}>
-                <Box width='200px'>
+              <Box direction='row' align='center' margin={{ top: 'small', bottom: 'small' }}>
+                <Text>{selectedFacility.name}</Text>
+                <Button
+                  icon={<Edit size='medium' radius='large' />}
+                  onClick={() => navigate(
+                    `/facilities/edit/${selectedFacility.contractData.lodgingFacilityId}`
+                  )}
+                />
+              </Box>
+
+              <Box direction='row' align='center' margin={{ top: 'small', bottom: 'small' }}>
+                <Text>Spaces</Text>
+                {selectedFacility &&
                   <Button
-                    primary
-                    label='Edit the facility'
+                    icon={<AddCircle size='medium' radius='large' />}
                     onClick={() => navigate(
                       `/facilities/edit/${selectedFacility.contractData.lodgingFacilityId}`
                     )}
                   />
-                </Box>
-              </Box>
-
-              <NavLink to={`/spaces/add/${selectedFacility.contractData.lodgingFacilityId}`}>
-                Add new space to the facility
-              </NavLink>
+                }
+              </Box>  
             </>
           }
+
+          <SpacesList onSelect={setTokens} facility={selectedFacility} />
 
           <Box margin={{ top: 'small' }}>
             {selectedToken && isGetDateReady && isReady &&
