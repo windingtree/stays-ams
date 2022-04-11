@@ -40,7 +40,7 @@ export const WhiteParagraph18 = styled(Text)`
 export const Search = () => {
   console.log("Search :: start")
 
-  const { searchSpaces, provider, ipfsNode } = useAppState();
+  const { searchSpaces, rpcProvider, ipfsNode } = useAppState();
   const { search } = useLocation();
 
   const { startDay, numberOfDays, guestsAmount } = useMemo(() => {
@@ -55,7 +55,7 @@ export const Search = () => {
   }, [search])
 
   const [loading, error] = useSpaceSearch(startDay, numberOfDays, guestsAmount)
-  const [getDate, isGetDateReady] = useDayZero(provider, ipfsNode);
+  const [getDate, isGetDateReady] = useDayZero(rpcProvider, ipfsNode);
 
   const filteredSpaces = useMemo(() => {
     if (
