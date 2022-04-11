@@ -47,8 +47,8 @@ describe("Stays.sol", () => {
 
   describe("Correct Setup", () => {
     it("should have the right name and symbol", async () => {
-      expect(await deployer.staysContract.name()).to.be.eq("StayToken");
-      expect(await deployer.staysContract.symbol()).to.be.eq("ST22");
+      expect(await deployer.staysContract.name()).to.be.eq("Stay Amsterdam");
+      expect(await deployer.staysContract.symbol()).to.be.eq("STAYAMS");
     });
     it("should have 0 facilities first", async () => {
       expect(
@@ -433,7 +433,7 @@ describe("Stays.sol", () => {
 
           // console.log(JSON.stringify(dataUri, null, 2));
 
-          expect(dataUri.name).to.equal('StayToken #1');
+          expect(dataUri.name).to.equal('Stay Amsterdam #1');
           // @todo add all props
         });
 

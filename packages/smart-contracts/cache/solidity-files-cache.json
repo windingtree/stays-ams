@@ -46,8 +46,8 @@
       ]
     },
     "/home/kostysh/dev/stays-remote/packages/smart-contracts/contracts/Stays.sol": {
-      "lastModificationDate": 1649668527909,
-      "contentHash": "36c0128b72d16df66cb8d77a2ac5173e",
+      "lastModificationDate": 1649669422113,
+      "contentHash": "669a8a8a98ce5ac839b651ed3d7d1d94",
       "sourceName": "contracts/Stays.sol",
       "solcConfig": {
         "version": "0.8.7",
@@ -326,8 +326,8 @@
       ]
     },
     "/home/kostysh/dev/stays-remote/packages/smart-contracts/contracts/libraries/StayTokenMeta.sol": {
-      "lastModificationDate": 1649666019390,
-      "contentHash": "22c91eb569d2caf98acfb70cd1c20281",
+      "lastModificationDate": 1649669570345,
+      "contentHash": "dea9f882464b80104ac8dd38f3c291c7",
       "sourceName": "contracts/libraries/StayTokenMeta.sol",
       "solcConfig": {
         "version": "0.8.7",

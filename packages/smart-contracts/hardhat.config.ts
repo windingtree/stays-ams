@@ -10,7 +10,7 @@ import '@nomiclabs/hardhat-etherscan';
 // import 'solidity-coverage';
 import { nodeUrl, accounts, getKey } from './utils/network';
 
-// import './scripts/tasks';
+import './scripts/tasks';
 import './scripts/testSetup';
 
 const config: HardhatUserConfig = {

@@ -74,7 +74,7 @@ contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable, EIP712
   // spaceId => tokenId[]
   mapping(bytes32 => uint256[]) private _stayTokens;
 
-  constructor() ERC721("StayToken", "ST22") EIP712("Stays", "1") {}
+  constructor() ERC721("Stay Amsterdam", "STAYAMS") EIP712("Stay Amsterdam", "1") {}
 
   /**
    * Modifiers

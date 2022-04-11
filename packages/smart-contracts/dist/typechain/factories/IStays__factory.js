@@ -436,19 +436,6 @@ const _abi = [
                 name: "_tokenId",
                 type: "uint256",
             },
-        ],
-        name: "cancel",
-        outputs: [],
-        stateMutability: "nonpayable",
-        type: "function",
-    },
-    {
-        inputs: [
-            {
-                internalType: "uint256",
-                name: "_tokenId",
-                type: "uint256",
-            },
             {
                 components: [
                     {
