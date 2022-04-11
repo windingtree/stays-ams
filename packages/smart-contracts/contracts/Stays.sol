@@ -20,7 +20,7 @@ contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable, EIP712
 
   uint32 public constant dayZero = 1645567342; // 22 Feb 2022
   string public constant serviceURI = "https://win.so/";
-  string private constant tokenImageURI = 'https://bafybeihqdt5zgbda4yjmmzmsq2ipc4tbu64upaqa5uzglzt6siuxecgi4u.ipfs.dweb.link/token-min.png';
+  string private constant tokenImageURI = 'https://bafybeiakjrhbgmv54l4nsdwxxcdfkpeqh33m45asmw6rkwhujryw2qa7n4.ipfs.dweb.link/token.png';
 
   // Lodging Facility is any type of accommodation: hotel, hostel, apartment, etc.
   struct LodgingFacility {

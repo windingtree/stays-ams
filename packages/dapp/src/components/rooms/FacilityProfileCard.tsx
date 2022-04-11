@@ -1361,7 +1361,7 @@ export const FacilityProfileCard = () => {
 
                                         let unFlattenProfile = unFlattenObject(profileValue);
 
-                                        const initialImagesCount = unFlattenProfile.media.images.length;
+                                        const initialImagesCount = unFlattenProfile?.media?.images?.length || 0;
                                         logger.debug('initialImagesCount', initialImagesCount);
 
                                         for (let i=0; i < images.length; i++) {
@@ -1377,7 +1377,7 @@ export const FacilityProfileCard = () => {
                                               media: {
                                                 ...unFlattenProfile.media,
                                                 images: [
-                                                  ...unFlattenProfile.media.images,
+                                                  ...(unFlattenProfile?.media?.images || []),
                                                   {
                                                     uri,
                                                     description: imagesDescriptions[images[i].name] || ''
