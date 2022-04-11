@@ -12,7 +12,7 @@ export const GlobalStyle: React.FC = ({ children }) => {
   return (
     <Grommet
       full
-      style={{ height: 'auto', minHeight: '100vh' }}
+      style={{ height: 'auto', minHeight: '100vh', width:'100%' }}
       theme={baseTheme}
       themeMode={themeMode}
       background={{ position: 'relative' }}

@@ -73,6 +73,7 @@ export const Search = () => {
           // position: 'relative',
           background: '#611FF2',
           height: '90vh',
+          width: '100%',
         }}
       >
         <StyledText margin={{ top: 'medium' }}>April 18-25 2022</StyledText>
@@ -98,7 +99,7 @@ export const Search = () => {
           src='/bg-img.svg'
           color='#611FF2'
           style={{
-            width: '100vw',
+            width: '100%',
             // height: '100vh',
             position: 'absolute',
             left: '0',
@@ -119,7 +120,7 @@ export const Search = () => {
       <Box
         style={{
           // position: 'absolute',
-          marginTop: '3rem'
+          margin: '3rem 0',
         }}
       >
         {loading ? <Spinner color='accent-1' alignSelf='center' size='medium' /> : null}

@@ -6,3 +6,5 @@ coverage.json
 *.log
 temp
 package-lock.json
+.github
+.idea
