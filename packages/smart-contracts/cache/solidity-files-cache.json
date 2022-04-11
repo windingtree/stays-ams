@@ -46,8 +46,8 @@
       ]
     },
     "/home/kostysh/dev/stays-remote/packages/smart-contracts/contracts/Stays.sol": {
-      "lastModificationDate": 1649669422113,
-      "contentHash": "669a8a8a98ce5ac839b651ed3d7d1d94",
+      "lastModificationDate": 1649674497872,
+      "contentHash": "147ce0289aaa0db9c89d6e811b61f4b3",
       "sourceName": "contracts/Stays.sol",
       "solcConfig": {
         "version": "0.8.7",
