@@ -43,23 +43,31 @@ export const Home = () => {
 
   return (
     <PageWrapper>
-      <WhiteText>April 18-25 2022</WhiteText>
-      <WhiteText>Devconnect APRIL 18-25, 2022 Amsterdam, The Netherlands</WhiteText>
-      <GradientText>Amsterdam</GradientText>
-      <WhiteText>A collaborative Ethereum week, built by and for everyone</WhiteText>
+      <Box
+        style={{
+          // position: 'relative',
+          background: '#611FF2',
+          height: '90vh',
+        }}
+      >
+        <WhiteText>April 18-25 2022</WhiteText>
+        <WhiteText>Devconnect APRIL 18-25, 2022 Amsterdam, The Netherlands</WhiteText>
+        <GradientText>Amsterdam</GradientText>
+        <WhiteText>A collaborative Ethereum week, built by and for everyone</WhiteText>
 
-      <MessageBox type='info' show={isIpfsNodeConnecting || isBootstrapLoading || !isGetDateReady}>
-        <Box direction='row'>
-          <Box>
-            The Dapp is synchronizing with the smart contract. Please wait..&nbsp;
+        <MessageBox type='info' show={isIpfsNodeConnecting || isBootstrapLoading || !isGetDateReady}>
+          <Box direction='row'>
+            <Box>
+              The Dapp is synchronizing with the smart contract. Please wait..&nbsp;
+            </Box>
+            <Spinner />
           </Box>
-          <Spinner />
-        </Box>
-      </MessageBox>
+        </MessageBox>
 
-      {(!!bootstrapped && isGetDateReady) &&
-        <SearchForm getDate={getDate} />
-      }
+        {(!!bootstrapped && isGetDateReady) &&
+          <SearchForm getDate={getDate} />
+        }
+      </Box>
     </PageWrapper>
   );
 };

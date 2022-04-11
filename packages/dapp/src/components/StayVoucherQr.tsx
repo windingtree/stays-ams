@@ -16,7 +16,7 @@ export const Title = styled(Text)`
   font-weight: 900;
   font-size: 28px;
   line-height: 32px;
-  margin-bottom: .5rem;
+  // margin-bottom: .5rem;
 `;
 
 const Price = styled(Text)`
@@ -43,9 +43,8 @@ export const CustomText = styled(Text)`
   font-weight: 400;
   font-size: 18px;
   line-height: 24px;
-  text-align: center;
-  text-justify: center;
-  // margin-bottom: 1.5rem;
+  text-align: start;
+  // text-justify: center;
 `;
 
 export interface StayVoucherQrProps {
@@ -136,7 +135,7 @@ export const StayVoucherQr = ({
               direction='column'
               align='start'
             >
-              <Title>You stay is booked and is now an NFT.</Title>
+              <Title style={{marginBottom: '.5rem'}}>You stay is booked and is now an NFT.</Title>
               <CustomText>Please take a picture or download the QR code as it will be used for you to check-in at the property.</CustomText>
               <CustomButton
                 label='Download QR'
