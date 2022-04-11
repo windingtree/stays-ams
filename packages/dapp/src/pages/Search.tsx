@@ -38,6 +38,8 @@ export const WhiteParagraph18 = styled(Text)`
 `;
 
 export const Search = () => {
+  console.log("Search :: start")
+
   const { searchSpaces, provider, ipfsNode } = useAppState();
   const { search } = useLocation();
 
@@ -56,8 +58,17 @@ export const Search = () => {
   const [getDate, isGetDateReady] = useDayZero(provider, ipfsNode);
 
   const filteredSpaces = useMemo(() => {
+    if (
+      (!searchSpaces || !searchSpaces.length) ||
+      (guestsAmount === 0)
+    ) {
+      return;
+    }
+
     return searchSpaces.filter((space: any) => space.capacity >= guestsAmount)
   }, [searchSpaces, guestsAmount])
+
+  console.log("Search :: end")
 
   return (
     <PageWrapper
@@ -123,7 +134,7 @@ export const Search = () => {
         }}
       >
         {loading ? <Spinner color='accent-1' alignSelf='center' size='medium' /> : null}
-        {filteredSpaces !== undefined && isGetDateReady ? filteredSpaces.map((space) =>
+        {filteredSpaces && filteredSpaces.length && isGetDateReady ? filteredSpaces.map((space) =>
           <SearchResultCard key={space.contractData.spaceId} space={space} />
         ) : null}
       </Box>
