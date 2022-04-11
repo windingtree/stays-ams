@@ -17,12 +17,17 @@ export type UseSpaceAvailabilityHook = [
 
 // This hook provides a callback function for getting a space availability
 export const useSpaceAvailability = (): UseSpaceAvailabilityHook => {
+  console.log("useSpaceAvailability :: start")
+
   const { rpcProvider, ipfsNode } = useAppState();
   const [contract] = useContract(rpcProvider, ipfsNode);
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    setIsReady(!!contract);
+    if (contract && contract.address) {
+      setIsReady(true);
+      console.log("useSpaceAvailability :: isReady === true")
+    }
   }, [contract]);
 
   const cb = useCallback(async (
@@ -31,16 +36,22 @@ export const useSpaceAvailability = (): UseSpaceAvailabilityHook => {
     numberOfDays: number
   ): Promise<number[] | null> => {
     try {
-      if (!contract) {
+      if (!isReady || !contract) {
+        console.log("useSpaceAvailability :: contract not connected")
         throw new Error('Contract is not connected');
       }
-      return contract.getAvailability(spaceId, startDay, numberOfDays);
 
+      console.log("useSpaceAvailability :: trying to get availability")
+      return contract.getAvailability(spaceId, startDay, numberOfDays);
     } catch (error) {
+      console.log("useSpaceAvailability :: some error")
       logger.error(error);
+
       return null;
     }
-  }, [contract]);
+  }, [contract, isReady]);
+
+  console.log("useSpaceAvailability :: end")
 
   return [cb, isReady];
 };
