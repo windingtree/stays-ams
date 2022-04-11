@@ -1,6 +1,6 @@
 import { PageWrapper } from './PageWrapper';
 import { SearchForm } from '../components/search/SearchForm';
-import { Image, Box, Spinner } from 'grommet';
+import { Image, Box, Spinner, Text } from 'grommet';
 import { SearchResultCard } from '../components/SearchResultCard';
 import { useAppState } from '../store';
 import { useSpaceSearch } from '../hooks/useSpaceSearch';
@@ -9,6 +9,33 @@ import { useLocation } from 'react-router-dom';
 import { MessageBox } from '../components/MessageBox';
 import { useDayZero } from '../hooks/useDayZero';
 import { GradientText, WhiteText } from './Home';
+import styled from 'styled-components';
+
+export const WhiteParagraph = styled(Text)`
+  text-align: start;
+  align-self: center;
+  color: #fff;
+  font-family: Inter;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 32px;
+  letter-spacing: 0px;
+  max-width: 50rem;
+  margin-top: 5rem;
+`;
+
+export const WhiteParagraph18 = styled(Text)`
+  text-align: start;
+  align-self: center;
+  color: #fff;
+  font-family: Inter;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0px;
+  max-width: 50rem;
+  margin-top: 2rem;
+`;
 
 export const Search = () => {
   const { searchSpaces, provider, ipfsNode } = useAppState();
@@ -48,10 +75,17 @@ export const Search = () => {
           height: '90vh',
         }}
       >
-        <WhiteText>April 18-25 2022</WhiteText>
+        <WhiteText margin={{ top: 'medium' }}>April 18-25 2022</WhiteText>
         <WhiteText>Devconnect APRIL 18-25, 2022 Amsterdam, The Netherlands</WhiteText>
         <GradientText>Amsterdam</GradientText>
         <WhiteText>A collaborative Ethereum week, built by and for everyone</WhiteText>
+
+        <WhiteParagraph>
+          Devconnect Amsterdam brings together hundreds of people from all over the world. Within one week there will be held various independent Ethereum events as well as in-person gatherings with the focus on communication, learning and making progress on specific subjects.
+        </WhiteParagraph>
+        <WhiteParagraph18>
+          With Win.so you can on-chain your stay in Amsterdam during Devconnect. Book with us. Pay in DAI. Check-in with NFT. Get Rewards for the next ETH event.
+        </WhiteParagraph18>
 
         {isGetDateReady && <SearchForm
           getDate={getDate}
