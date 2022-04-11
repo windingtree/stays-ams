@@ -119,7 +119,7 @@ export const Search = () => {
       <Box
         style={{
           // position: 'absolute',
-          marginTop: '3rem'
+          margin: '3rem 0',
         }}
       >
         {loading ? <Spinner color='accent-1' alignSelf='center' size='medium' /> : null}
