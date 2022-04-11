@@ -56,7 +56,13 @@ const config: HardhatUserConfig = {
     sokol: {
       url: 'https://sokol.poa.network',
       accounts: [process.env.PRIVATE_KEY_SOKOL as string],
-      gasPrice: 40000000000,
+      gasPrice: 30000000000,
+    },
+    xdai: {
+      chainId: 100,
+      url: 'https://rpc.gnosischain.com',
+      accounts: [process.env.PRIVATE_KEY_SOKOL as string],
+      gasPrice: 30000000000,
     },
   },
   // gasReporter: {
