@@ -3,7 +3,7 @@ import { StrictMode } from 'react';
 import { render } from 'react-dom';
 import reportWebVitals from './reportWebVitals';
 import App from './App';
-import './reset.css';
+import 'normalize.css';
 
 const renderApp = () => {
   render(
