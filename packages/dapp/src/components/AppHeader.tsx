@@ -23,44 +23,26 @@ export const AppHeader = () => {
     <Header
       pad='medium'
       style={{
-        position: 'relative',
         background: '#611FF2',
-        width: '100vw',
       }}
       responsive={true}
     >
       {(returnLocation && account) &&
         <Navigate to={returnLocation} state={null} />
       }
-      <Box direction='row' gap={size}>
+      <Box direction='row'>
         <GlobalMenu />
       </Box>
 
-      <Image
-          style={{
-            position: 'absolute',
-            left: '48vw',
-          }}
+      <Box direction='row' align='center'>
+        <Image
           src='logo.svg'
           height='32px'
           onClick={() => navigate('/')}
-      />
+        />
+      </Box>
 
-      <Image
-        fit="cover"
-        src='/bg-img.svg'
-        color='#611FF2'
-        style={{
-          width: '100vw',
-          // height: '100vh',
-          position: 'absolute',
-          left: '0',
-          bottom: '-1.5rem',
-          zIndex: '-100'
-        }}
-      />
-
-      <Box direction='row' align='center' gap={size}>
+      <Box direction='row' align='center'>
         <Account account={account} />
         <Box>
           {account
