@@ -21,7 +21,7 @@ jobs:
           npm install -g typescript
           npm install -g yarn
           yarn install
-          lerna bootsgtrap
+          lerna bootstrap
 
       - name: Create .env file
         run: |
