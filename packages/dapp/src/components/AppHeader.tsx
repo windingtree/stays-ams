@@ -6,28 +6,10 @@ import { useAppState } from '../store';
 import { Account } from '../components/Account';
 import { SignInButton, SignOutButton } from '../components/buttons/web3Modal';
 import { GlobalMenu } from './Routes';
-import { useWindowsDimension } from '../hooks/useWindowsDimension';
-
-export const ResponsiveAlign = (winWidth: number) => {
-  if (winWidth >= 1300) {
-    return '48vw';
-  } else if (winWidth >= 1000) {
-    return '48vw';
-  } else if (winWidth >= 768) {
-    return '48vw';
-  } else if (winWidth >= 600) {
-    return '48vw';
-  } else if (winWidth <= 500) {
-    return '48vw';
-  } else if (winWidth <= 400) {
-    return '48vw';
-  }
-};
 
 export const AppHeader = () => {
   const size = useContext(ResponsiveContext);
-  const { winWidth } = useWindowsDimension();
-  const { state, pathname } = useLocation();
+  const { state } = useLocation();
 
   const navigate = useNavigate();
   const { account } = useAppState();
@@ -57,7 +39,7 @@ export const AppHeader = () => {
       <Image
           style={{
             position: 'absolute',
-            left: ResponsiveAlign(winWidth),
+            left: '48vw',
           }}
           src='logo.svg'
           height='32px'
