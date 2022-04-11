@@ -5,6 +5,12 @@ import reportWebVitals from './reportWebVitals';
 import App from './App';
 import './reset.css';
 
+window.addEventListener('unhandledrejection', event => {
+  event.preventDefault();
+  event.stopPropagation();
+  console.log('Unhandled error event', event);
+});
+
 const renderApp = () => {
   render(
     <StrictMode>

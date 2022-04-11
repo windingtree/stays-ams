@@ -55,6 +55,10 @@ export const useWeb3Modal = (web3ModalConfig: Web3ModalConfig): Web3ModalHook =>
       const updateProvider = async () => {
         const web3ModalProvider = await web3Modal.connect();
 
+        web3ModalProvider.on('error', (err: Error) => {
+          logger.error(err);
+        });
+
         // Subscribe to provider events compatible with EIP-1193 standard
         // Subscribe to accounts change
         web3ModalProvider.on('chainChanged', (chainId: number) => {
