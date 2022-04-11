@@ -18,6 +18,8 @@ export const useSpaceSearch = (
   numberOfDays: number,
   guestsAmount: number
 ): UseSpaceSearchHook => {
+  console.log("useSpaceSearch :: start")
+
   const dispatch = useAppDispatch();
   const { lodgingFacilities, searchTimestamp, searchParams } = useAppState();
   const [cb, isReady] = useSpaceAvailability();
@@ -25,13 +27,17 @@ export const useSpaceSearch = (
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>();
 
+  console.log("useSpaceSearch :: before useEffect")
+
   useEffect(() => {
     setLoading(true);
     setError(undefined);
 
     if (!isReady) {
+      console.log("useSpaceSearch :: isReady === false")
       return
     }
+    console.log("useSpaceSearch :: isReady === true")
 
     if (!!searchParams && searchParams.guestsAmount !== guestsAmount) {
       dispatch({
@@ -127,6 +133,8 @@ export const useSpaceSearch = (
 
     getSpacesAvailability();
   }, [lodgingFacilities, isReady, cb, dispatch, numberOfDays, startDay, searchParams, searchTimestamp, guestsAmount]);
+
+  console.log("useSpaceSearch :: end")
 
   return [
     loading,
