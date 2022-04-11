@@ -7,34 +7,27 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "@openzeppelin/contracts/security/Pausable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "./IStays.sol";
 import "./StayEscrow.sol";
 import "./libraries/StayTokenMeta.sol";
 
-import "hardhat/console.sol";
 
-
-contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable, EIP712 {
+contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable, EIP712, Pausable, Ownable {
   using Counters for Counters.Counter;
   Counters.Counter private _stayTokenIds;
 
   uint32 public constant dayZero = 1645567342; // 22 Feb 2022
-  address private constant _ukraineDAO = 0x633b7218644b83D57d90e7299039ebAb19698e9C; // ukrainedao.eth https://twitter.com/Ukraine_DAO/status/1497274679823941632
-  uint8 private constant _ukraineDAOfee = 2; // percents
-  string public constant serviceURI = "https://localhost:3000/";
-  string private constant tokenImageURI = 'https://bafybeigg7mwwpnnm6mmk3twxc4arizoyc6ijnaye3pdciwcohheo7xi7hm.ipfs.dweb.link/token-image.png';
-
-  // Schema conformance URLs for reference
-  string public constant lodgingFacilitySchemaURI = "";
-  string public constant spaceSchemaURI = "";
-  string public constant staySchemaURI = "";
+  string public constant serviceURI = "https://win.so/";
+  string private constant tokenImageURI = 'https://bafybeihqdt5zgbda4yjmmzmsq2ipc4tbu64upaqa5uzglzt6siuxecgi4u.ipfs.dweb.link/token-min.png';
 
   // Lodging Facility is any type of accommodation: hotel, hostel, apartment, etc.
   struct LodgingFacility {
     address owner;
     bool active;
     bool exists;
-    string dataURI; // must be conformant with "lodgingFacilitySchemaURI"
+    string dataURI;
     address fren;
   }
 
@@ -81,7 +74,7 @@ contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable, EIP712
   // spaceId => tokenId[]
   mapping(bytes32 => uint256[]) private _stayTokens;
 
-  constructor() ERC721("StayToken", "ST22") EIP712("Stays", "1") {}
+  constructor() ERC721("Stay Amsterdam", "STAYAMS") EIP712("Stay Amsterdam", "1") {}
 
   /**
    * Modifiers
@@ -249,7 +242,13 @@ contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable, EIP712
    */
 
   // Lodging Facility registration (with fren option)
-  function registerLodgingFacility(string calldata _dataURI, bool _active, address _fren) public override {
+  function registerLodgingFacility(
+    string calldata _dataURI,
+    bool _active,
+    address _fren
+  )
+    public override whenNotPaused
+  {
     _dataUriMustBeProvided(_dataURI);
 
     bytes32 _id = keccak256(
@@ -275,11 +274,16 @@ contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable, EIP712
   }
 
   // Lodging Facility registration (WITHOUT fren option)
-  function registerLodgingFacility(string calldata _dataURI, bool _active) public override {
+  function registerLodgingFacility(string calldata _dataURI, bool _active)
+    public override whenNotPaused
+  {
     return registerLodgingFacility(_dataURI, _active, address(0));
   }
 
-  function updateLodgingFacility(bytes32 _lodgingFacilityId, string calldata _newDataURI) public override onlyLodgingFacilityOwner(_lodgingFacilityId) {
+  function updateLodgingFacility(
+    bytes32 _lodgingFacilityId,
+    string calldata _newDataURI
+  ) public override onlyLodgingFacilityOwner(_lodgingFacilityId) {
     lodgingFacilities[_lodgingFacilityId].dataURI = _newDataURI;
     emit LodgingFacilityUpdated(_lodgingFacilityId, _newDataURI);
   }
@@ -313,7 +317,7 @@ contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable, EIP712
     uint256 _pricePerNightWei,
     bool _active,
     string calldata _dataURI
-  ) public override {
+  ) public override whenNotPaused {
     bytes32 _i = _lodgingFacilityId;
 
     _facilityShouldExist(_i);
@@ -418,97 +422,13 @@ contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable, EIP712
    * Stays
    */
 
-  // // Returns a list of currently occupied spaces
-  // function getCurrentStayIdsByFacilityId(bytes32 _lodgingFacilityId)
-  //   public view override returns (bytes32[] memory)
-  // {
-  //   if (block.timestamp < dayZero) {
-  //     return new bytes32[](0);
-  //   }
-
-  //   bytes32[] memory _activeSpacesIds =
-  //     getActiveSpaceIdsByFacilityId(_lodgingFacilityId);
-
-  //   uint256 currentDay = (block.timestamp - dayZero) / 86400;
-  //   uint256 currentCount;
-  //   Stay memory stay;
-
-  //   for (uint256 i = 0; i < _activeSpacesIds.length; i++) {
-  //     for (uint256 t=0; t < _stayTokens[_activeSpacesIds[i]].length; t++) {
-  //       stay = _stays[_stayTokens[_activeSpacesIds[i]][t]];
-  //       if (
-  //         currentDay >= stay.startDay &&
-  //         currentDay <= (stay.startDay + stay.numberOfDays)
-  //       ) {
-  //         currentCount++;
-  //       }
-  //     }
-  //   }
-
-  //   bytes32[] memory stayIds = new bytes32[](currentCount);
-  //   uint256 index;
-
-  //   for (uint256 i = 0; i < currentCount; i++) {
-  //     for (uint256 t=0; t < _stayTokens[_activeSpacesIds[i]].length; t++) {
-  //       stay = _stays[_stayTokens[_activeSpacesIds[i]][t]];
-  //       if (
-  //         currentDay >= stay.startDay &&
-  //         currentDay <= (stay.startDay + stay.numberOfDays)
-  //       ) {
-  //         stayIds[index] = _activeSpacesIds[i];
-  //       }
-  //     }
-  //   }
-
-  //   return stayIds;
-  // }
-
-  // // Returns a list of booked spaces (except for checked in spaces)
-  // function getFutureStayIdsByFacilityId(bytes32 _lodgingFacilityId)
-  //   public view override returns (bytes32[] memory)
-  // {
-  //   if (block.timestamp < dayZero) {
-  //     return new bytes32[](0);
-  //   }
-
-  //   bytes32[] memory _activeSpacesIds =
-  //     getActiveSpaceIdsByFacilityId(_lodgingFacilityId);
-
-  //   uint256 currentDay = (block.timestamp - dayZero) / 86400;
-  //   uint256 futureCount;
-  //   Stay memory stay;
-
-  //   for (uint256 i = 0; i < _activeSpacesIds.length; i++) {
-  //     for (uint256 t=0; t < _stayTokens[_activeSpacesIds[i]].length; t++) {
-  //       stay = _stays[_stayTokens[_activeSpacesIds[i]][t]];
-  //       if ((stay.startDay + stay.numberOfDays) > currentDay) {
-  //         futureCount++;
-  //       }
-  //     }
-  //   }
-
-  //   bytes32[] memory stayIds = new bytes32[](futureCount);
-  //   uint256 index;
-
-  //   for (uint256 i = 0; i < futureCount; i++) {
-  //     for (uint256 t=0; t < _stayTokens[_activeSpacesIds[i]].length; t++) {
-  //       stay = _stays[_stayTokens[_activeSpacesIds[i]][t]];
-  //       if ((stay.startDay + stay.numberOfDays) > currentDay) {
-  //         stayIds[index] = _activeSpacesIds[i];
-  //       }
-  //     }
-  //   }
-
-  //   return stayIds;
-  // }
-
   // Book a new stay in a space
   function newStay(
     bytes32 _spaceId,
     uint256 _startDay,
     uint256 _numberOfDays,
     uint256 _quantity
-  ) public payable override returns (uint256) {
+  ) public payable override whenNotPaused returns (uint256) {
     _checkBookingParams(_spaceId, _startDay, _numberOfDays);
 
     Space storage _s = spaces[_spaceId];
@@ -552,11 +472,6 @@ contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable, EIP712
     _stayTokens[_spaceId].push(_newStayTokenId);
 
     deposit(_msgSender(), _spaceId, _newStayTokenId);
-
-    // @todo LIF/WIN
-    // @todo LodgingFacility loyalty token
-    // @todo divert all the excess WEI to Ukraine DAO
-    // @todo Receive Ukraine Supporter NFT
 
     emit NewStay(_spaceId, _newStayTokenId);
 
@@ -642,14 +557,6 @@ contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable, EIP712
     emit CheckOut(_tokenId);
   }
 
-  // Makes stay cancellation
-  function cancel(uint256 _tokenId) public override onlyTokenOwner(_tokenId) {
-    refund(payable(ownerOf(_tokenId)), _stays[_tokenId].spaceId, _tokenId);
-    _burn(_tokenId);
-
-    emit Cancel(_tokenId);
-  }
-
   /*
    * Helpers
    */
@@ -716,6 +623,16 @@ contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable, EIP712
     );
 
     return recovered;
+  }
+
+  /** Governance */
+
+  function pause() public whenNotPaused onlyOwner {
+    _pause();
+  }
+
+  function unpause() public whenPaused onlyOwner {
+    _unpause();
   }
 
   /** Overrides */

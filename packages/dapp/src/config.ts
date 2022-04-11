@@ -52,12 +52,12 @@ if (
 }
 
 const allowedNetworks: NetworkInfo[] = [
-  {
-    name: 'Hardhat Testnet',
-    chainId: 31337,
-    address: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
-    blockExplorer: "",
-  },
+  // {
+  //   name: 'Hardhat Testnet',
+  //   chainId: 31337,
+  //   address: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
+  //   blockExplorer: "",
+  // },
   {
     name: 'Ropsten Testnet',
     chainId: 3,
@@ -81,6 +81,12 @@ const allowedNetworks: NetworkInfo[] = [
     chainId: 77,
     address: '',
     blockExplorer: 'https://blockscout.com/poa/sokol',
+  },
+  {
+    name: 'Gnosis Chain (xDAI)',
+    chainId: 100,
+    address: '',
+    blockExplorer: 'https://blockscout.com/xdai/mainnet',
   },
 ];
 

@@ -21,7 +21,7 @@ library StayTokenMeta {
       string(
         abi.encodePacked(
           '{',
-          createMandatoryProps(tokenId, tokenImageURI, serviceURI, spaceId),
+          createMandatoryProps(tokenId, tokenImageURI, serviceURI),
           ',',
           createAttributesProps(facilityId, spaceId, startDay, numberOfDays, quantity),
           '}'
@@ -33,19 +33,18 @@ library StayTokenMeta {
   function createMandatoryProps(
     uint256 tokenId,
     string memory tokenImageURI,
-    string memory serviceURI,
-    bytes32 spaceId
+    string memory serviceURI
   ) internal pure returns (string memory) {
     return string(
       abi.encodePacked(
-        '"name":"StayToken #',
+        '"name":"Stay Amsterdam #',
         uintToString(tokenId),
         '","description":"Stay at lodging facility","image":"',
         tokenImageURI,
         '","external_url":"',
         serviceURI,
-        'space/',
-        toHex(spaceId),
+        'tokens?tokenId=',
+        uintToString(tokenId),
         '"'
       )
     );
