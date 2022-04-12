@@ -7,6 +7,7 @@ Make sure you have `node` and `nvm` installed.
 ```bash
 nvm use
 npm install -g yarn
+npm install -g lerna
 yarn install
 lerna bootstrap
 ```

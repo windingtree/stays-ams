@@ -103,7 +103,6 @@ export const TokenCard = ({
   const total = BN.from(quantity).mul(BN.from(numberOfDays)).mul(space?.contractData.pricePerNightWei ?? 0).toString();
   const totalEther = utils.formatUnits(total, 'ether');
 
-
   return (
     <Box>
       <Box
@@ -127,7 +126,7 @@ export const TokenCard = ({
           <CustomText>{space?.name},{quantity} {quantity > 1 ? 'persons' : 'person'} </CustomText>
         </Box>
         <Box align='center' justify='center' pad='small'>
-          <CustomText>{getDate(parseTrait('startDay')).toISODate()} - {getDate(Number(parseTrait('startDay')) + Number(parseTrait('numberOfDays'))).toISODate()}</CustomText>
+          <CustomText>{getDate(parseTrait('startDay')).toFormat('MM.dd.yyyy')} - {getDate(Number(parseTrait('startDay')) + Number(parseTrait('numberOfDays'))).toFormat('MM.dd.yyyy')}</CustomText>
         </Box>
         <Box
           alignSelf='center'
@@ -165,7 +164,7 @@ export const TokenView = ({
   const navigate = useNavigate();
   // const showMessage = useGoToMessage();
   // const [cancelLoading, setCancelLoading] = useState<boolean>(false);
-  const [cancellationTxHash, ] = useState<string | undefined>();
+  const [cancellationTxHash,] = useState<string | undefined>();
   const [error, setError] = useState<string | undefined>();
   const cancellationTxHashLink = useMemo(() => {
     const network = getNetwork()
@@ -196,7 +195,7 @@ export const TokenView = ({
   //   [showMessage, contract, tokenId]
   // );
 
-  if (!getDate) {
+  if (!getDate || !attributes || !facility) {
     return null;
   }
 

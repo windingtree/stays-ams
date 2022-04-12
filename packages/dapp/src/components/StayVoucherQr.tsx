@@ -163,7 +163,7 @@ export const StayVoucherQr = ({
               direction='column'
               align='start'
             >
-              <Title style={{marginBottom: '.5rem'}}>You stay is booked and is now an NFT.</Title>
+              <Title style={{ marginBottom: '.5rem' }}>You stay is booked and is now an NFT.</Title>
               <CustomText>Please take a picture or download the QR code as it will be used for you to check-in at the property.</CustomText>
               <CustomButton
                 label='Download QR'

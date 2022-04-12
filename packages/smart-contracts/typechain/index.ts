@@ -2,7 +2,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { Ownable } from "./Ownable";
-export type { IERC1271 } from "./IERC1271";
 export type { Pausable } from "./Pausable";
 export type { ERC721 } from "./ERC721";
 export type { ERC721Enumerable } from "./ERC721Enumerable";
@@ -19,7 +18,6 @@ export type { StayEscrow } from "./StayEscrow";
 export type { Stays } from "./Stays";
 
 export { Ownable__factory } from "./factories/Ownable__factory";
-export { IERC1271__factory } from "./factories/IERC1271__factory";
 export { Pausable__factory } from "./factories/Pausable__factory";
 export { ERC721__factory } from "./factories/ERC721__factory";
 export { ERC721Enumerable__factory } from "./factories/ERC721Enumerable__factory";

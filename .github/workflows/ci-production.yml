@@ -1,5 +1,12 @@
 name: ci-production
-on: [push]
+
+on:
+  push:
+    branches: [ production ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
 jobs:
   deploy:
     name: "Update production env"
@@ -24,6 +31,12 @@ jobs:
           lerna bootstrap
 
       - name: Create .env file
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          FILE_WEB3STORAGE_KEY: ${{ secrets.FILE_WEB3STORAGE_KEY }}
+          NETWORK_ID: ${{ secrets.NETWORK_ID }}
+          NETWORK_PROVIDER: ${{ secrets.NETWORK_PROVIDER }}
+          CONTRACT_ADDRESS: ${{ secrets.CONTRACT_ADDRESS }}
         run: |
           rm -rf ./packages/dapp/.env
           touch ./packages/dapp/.env
@@ -32,12 +45,12 @@ jobs:
           BROWSER=false
           HTTPS=true
           REACT_APP_LOG_LEVEL=debug
-          REACT_APP_FILE_WEB3STORAGE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDBGOGNjZTA5YjlENjc5RjY4RUFhOWJhQTYxMGM2NDcyMWEzRjQ0OTUiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NDM4NDY0NTYzMzEsIm5hbWUiOiJPUkdJRF9URVN>
-          REACT_APP_GOOGLE_API_KEY=AIzaSyANAKdIUm0EZJkKzcCBpq1ROzMlRbr0mN4
           REACT_APP_MODE=production
-          REACT_APP_NETWORK_ID=77
-          REACT_APP_NETWORK_PROVIDER=https://sokol.poa.network
-          REACT_APP_CONTRACT_ADDRESS=0xAD4B90b5053F7382A1313812559E044219BAE523
+          REACT_APP_FILE_WEB3STORAGE_KEY=$FILE_WEB3STORAGE_KEY
+          REACT_APP_GOOGLE_API_KEY=$GOOGLE_API_KEY
+          REACT_APP_NETWORK_ID=$NETWORK_ID
+          REACT_APP_NETWORK_PROVIDER=$NETWORK_PROVIDER
+          REACT_APP_CONTRACT_ADDRESS=$CONTRACT_ADDRESS
           END
 
       - name: Build dapp
@@ -47,6 +60,7 @@ jobs:
           rm -rf ./docs
           mkdir -p ./docs
           cd ./packages/dapp/
+          rm -rf ./build
           yarn ghpages
 
       - name: Deploy to Netlify
