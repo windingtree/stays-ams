@@ -14,7 +14,7 @@ const logger = Logger('useContract');
 export type UseContractHook = [
   contract: Contract | undefined,
   loading: boolean,
-  error: string | undefined
+  error: string | undefined,
 ];
 
 const { address } = getNetwork();
@@ -22,6 +22,7 @@ const { address } = getNetwork();
 export const useContract = (
   provider: providers.JsonRpcProvider | Web3ModalProvider | undefined,
   ipfsNode: IPFS | undefined,
+  withSigner = true
 ): UseContractHook => {
   const web3Storage = useWeb3StorageApi(ipfsNode);
   const [contract, setContract] = useState<Contract | undefined>();
@@ -39,7 +40,8 @@ export const useContract = (
         new Contract(
           address,
           provider as KnownProvider,
-          web3Storage
+          web3Storage,
+          withSigner
         )
       );
       setLoading(false);
@@ -49,7 +51,7 @@ export const useContract = (
       setError(message);
       setLoading(false);
     }
-  }, [provider, web3Storage]);
+  }, [provider, web3Storage, withSigner]);
 
   return [contract, loading, error];
 };

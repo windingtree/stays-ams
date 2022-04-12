@@ -18,7 +18,7 @@ export const useDayZero = (
   provider: providers.JsonRpcProvider | undefined,
   ipfsNode: IPFS | undefined
 ): UseDayZeroHook => {
-  const [contract, ,] = useContract(provider, ipfsNode);
+  const [contract, ,] = useContract(provider, ipfsNode, false);
   const [isReady, setIsReady] = useState<boolean>(false);
   const [dayZero, setDayZero] = useState<number | undefined>();
   const [error, setError] = useState<string | undefined>();

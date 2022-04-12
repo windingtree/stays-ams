@@ -74,7 +74,7 @@ export const useSmartContractData = (
   ipfsNode: IPFS | undefined,
   bootstrapped: number | undefined
 ): UseSmartContractDataHook => {
-  const [contract,, contractError] = useContract(provider, ipfsNode);
+  const [contract,, contractError] = useContract(provider, ipfsNode, false);
   const [error, setError] = useState<string | undefined>(undefined);
 
   useEffect(() => {

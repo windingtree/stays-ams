@@ -17,7 +17,7 @@ export const useDayZeroDate = (
   provider: providers.JsonRpcProvider | undefined,
   ipfsNode: IPFS | undefined
 ): UseDayZeroHook => {
-  const [contract,,] = useContract(provider, ipfsNode);
+  const [contract,,] = useContract(provider, ipfsNode, false);
   const [getDate, setGetDate] = useState<((days: number) => DateTime) | undefined>();
   const [error, setError] = useState<string | undefined>();
 

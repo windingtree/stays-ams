@@ -35,7 +35,7 @@ const checkOut_1 = require("./api/checkOut");
 const cancel_1 = require("./api/cancel");
 __exportStar(require("./types"), exports);
 class Contract {
-    constructor(contractAddress, providerOrUri, web3Storage) {
+    constructor(contractAddress, providerOrUri, web3Storage, withSigner = true) {
         if (org_id_utils_1.regexp.ethereumAddress.exec(contractAddress)) {
             this.address = contractAddress;
         }
@@ -61,9 +61,8 @@ class Contract {
         // @todo Implement ipfsNode validity check
         this.web3Storage = web3Storage;
         this.contract = new ethers_1.ethers.Contract(this.address, stays_smart_contracts_1.StaysContract.abi, this.provider);
-        const defaultSigner = this.provider.getSigner();
-        if (defaultSigner._address !== null) {
-            this.contract = this.contract.connect(defaultSigner);
+        if (withSigner) {
+            this.contract = this.contract.connect(this.provider.getSigner());
         }
     }
     getDayZero() {
