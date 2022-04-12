@@ -1,0 +1,1 @@
+{"version":3,"file":"EventsService.js","sourceRoot":"","sources":["../../../src/services/EventsService.ts"],"names":[],"mappings":";;AAEA;IAGE,YAAY,MAAc;QACxB,IAAI,CAAC,MAAM,GAAG,MAAM,CAAC;IACvB,CAAC;IAEM,YAAY;QACjB,OAAO,EAAE,CAAC;IACZ,CAAC;IAEM,IAAI;QACT,OAAO,IAAI,CAAC,MAAM,CAAC,IAAI,EAAE,CAAC;IAC5B,CAAC;CACF;AAdD,4BAcC"}
