@@ -34,15 +34,14 @@ const setup = deployments.createFixture(async () => {
 });
 
 describe("Stays.sol", () => {
-  let users: ({ address: string } & { staysContract: Stays })[];
+  // let users: ({ address: string } & { staysContract: Stays })[];
   let deployer: { address: string } & { staysContract: Stays };
   let alice: { address: string } & { staysContract: Stays };
   let bob: { address: string } & { staysContract: Stays };
   const testDataUri = "https://some.uri";
 
-  before("load fixture", async () => {
-    ({ users, deployer, alice, bob } = await setup());
-    console.log('New setup');
+  beforeEach("load fixture", async () => {
+    ({ deployer, alice, bob } = await setup());
   });
 
   describe("Correct Setup", () => {
@@ -59,7 +58,7 @@ describe("Stays.sol", () => {
 
   describe('Pausable, Ownable', () => {
     describe('#pause()', () => {
-      it('should trow if called not by an owner', async () => {
+      it('should throw if called not by an owner', async () => {
         await expect(
           alice.staysContract.pause()
         ).to.be.revertedWith('Ownable: caller is not the owner');
@@ -76,14 +75,14 @@ describe("Stays.sol", () => {
   });
 
   describe("registerLodgingFacility()", () => {
-    before(async () => {
+    beforeEach(async () => {
       await alice.staysContract["registerLodgingFacility(string,bool)"](
         testDataUri,
         false
       );
     });
 
-    it('should trow in paused mode', async () => {
+    it('should throw in paused mode', async () => {
       await deployer.staysContract.pause();
       await expect(
         bob.staysContract["registerLodgingFacility(string,bool)"](
@@ -138,12 +137,52 @@ describe("Stays.sol", () => {
         )
       ).to.be.revertedWith("Facility already exists");
     });
+
+    it("can deactivate/activate the facility", async () => {
+      const facilityId = (
+        await alice.staysContract.getAllLodgingFacilityIds()
+      )[0];
+      await expect(bob.staysContract.deactivateLodgingFacility(facilityId)).to.be.revertedWith('Only lodging facility owner is allowed')
+      await expect(alice.staysContract.deactivateLodgingFacility(facilityId)).to.not.be.reverted
+      await expect(alice.staysContract.activateLodgingFacility(facilityId)).to.not.be.reverted
+
+      const {active} = await alice.staysContract.getLodgingFacilityById(facilityId)
+      expect(active).to.be.equal(true)
+    })
+
+    it("can delete the facility", async () => {
+      const facilityId = (
+        await alice.staysContract.getAllLodgingFacilityIds()
+      )[0];
+      await expect(bob.staysContract.deleteLodgingFacility(facilityId)).to.be.revertedWith('Only lodging facility owner is allowed')
+      await expect(alice.staysContract.deleteLodgingFacility(facilityId)).to.not.be.reverted
+    })
+
+    it("should transfer the facility's ownership to bob", async () => {
+      const facilityId = (
+        await alice.staysContract.getAllLodgingFacilityIds()
+      )[0];
+      const numFacilities_1 = (await alice.staysContract.getLodgingFacilityIdsByOwner(alice.address)).length
+      await expect(alice.staysContract.yieldLodgingFacility(facilityId, bob.address)).to.not.be.reverted
+      const facilities = await alice.staysContract.getLodgingFacilityIdsByOwner(alice.address)
+      expect(facilities.length).to.be.equal(numFacilities_1 - 1)
+    })
+
+    it("can update the lodging facility's URI", async () => {
+      const facilityId = (
+        await alice.staysContract.getAllLodgingFacilityIds()
+      )[0];
+      await expect(alice.staysContract.updateLodgingFacility(facilityId, "")).to.be.revertedWith('Data URI must be provided')
+      await expect(alice.staysContract.updateLodgingFacility(facilityId, "updatedUri")).to.not.be.reverted
+      
+      const { dataURI } = await alice.staysContract.getLodgingFacilityById(facilityId)
+      expect(dataURI).to.be.equal("updatedUri")
+    })
   });
 
   describe("getAllLodgingFacilityIds()", () => {
-    let facilitiesNumber;
-    before(async () => {
-      facilitiesNumber = (await alice.staysContract.getActiveLodgingFacilityIds()).length + 1;
+    it("should return an array of all lodging facility Ids", async () => {
+      const initFacilitiesNumber = (await alice.staysContract.getActiveLodgingFacilityIds()).length;
       await alice.staysContract["registerLodgingFacility(string,bool)"](
         testDataUri + 'alice',
         true
@@ -156,19 +195,16 @@ describe("Stays.sol", () => {
         testDataUri + 'bob',
         true
       );
-    });
 
-    it("should return an array of all lodging facility Ids", async () => {
       expect(
         await deployer.staysContract.getAllLodgingFacilityIds()
-      ).to.be.of.length(facilitiesNumber + 3);
+      ).to.be.of.length(initFacilitiesNumber + 3);
     });
   });
 
   describe("getMyLodgingFacilities()", () => {
-    let facilitiesNumber;
-    before(async () => {
-      facilitiesNumber = (await alice.staysContract.getActiveLodgingFacilityIds()).length + 1;
+    it("should return an array of Alice's loding facility Ids", async () => {
+      const initFacilitiesNumber = (await alice.staysContract.getActiveLodgingFacilityIds()).length;
 
       await alice.staysContract["registerLodgingFacility(string,bool)"](
         testDataUri + 'aaa',
@@ -178,19 +214,17 @@ describe("Stays.sol", () => {
         testDataUri + "blaa",
         true
       );
-    });
 
-    it("should return an array of Alice's loding facility Ids", async () => {
       expect(
         await alice.staysContract.getAllLodgingFacilityIds()
-      ).to.be.of.length(facilitiesNumber + 2);
+      ).to.be.of.length(initFacilitiesNumber + 2);
     });
   });
 
   describe("addSpace()", () => {
     let facilityId: BytesLike;
 
-    before(async () => {
+    beforeEach(async () => {
       await alice.staysContract["registerLodgingFacility(string,bool)"](
         testDataUri + 'aaaa',
         true
@@ -199,7 +233,7 @@ describe("Stays.sol", () => {
       facilityId = (await alice.staysContract.getAllLodgingFacilityIds())[0];
     });
 
-    it('should trow in paused mode', async () => {
+    it('should throw in paused mode', async () => {
       await deployer.staysContract.pause();
       await expect(
         alice.staysContract["registerLodgingFacility(string,bool)"](
@@ -234,7 +268,9 @@ describe("Stays.sol", () => {
       const spaceIds = await alice.staysContract.getSpaceIdsByFacilityId(
         facilityId
       );
-      const space = await alice.staysContract.spaces(spaceIds[0]);
+      let space = await alice.staysContract.spaces(spaceIds[0]);
+
+      await expect(alice.staysContract.addSpace(facilityId, 1, 2, true, dataUri)).to.be.revertedWith('Space already exists')
 
       expect(spaceIds).to.be.of.length(1);
       expect(space.lodgingFacilityId).to.equal(facilityId);
@@ -243,6 +279,40 @@ describe("Stays.sol", () => {
       expect(space.active).to.be.true;
       expect(space.exists).to.be.true;
       expect(space.dataURI).to.equal(dataUri);
+
+      let activeSpaceIds = await alice.staysContract.getActiveSpaceIdsByFacilityId(facilityId)
+      expect(activeSpaceIds.length).to.be.equal(1)
+      expect(activeSpaceIds[0]).to.be.equal(spaceIds[0])
+
+      await expect(bob.staysContract.deactivateSpace(spaceIds[0])).to.be.revertedWith('Only space owner is allowed')
+      await alice.staysContract.deactivateSpace(spaceIds[0])
+      
+      activeSpaceIds = await alice.staysContract.getActiveSpaceIdsByFacilityId(facilityId)
+      expect(activeSpaceIds.length).to.be.equal(0)
+
+      await alice.staysContract.activateSpace(spaceIds[0])
+
+      await alice.staysContract.updateSpace(
+        spaceIds[0],
+        69,
+        10,
+        "test"
+      )
+
+      space = await alice.staysContract.spaces(spaceIds[0]);
+
+      expect(space.capacity).to.equal(69);
+      expect(space.pricePerNightWei).to.equal(10);
+      expect(space.dataURI).to.equal("test");
+
+      const spaceGetter = await alice.staysContract.getSpaceById(spaceIds[0])
+      expect(spaceGetter.exists).to.be.equal(true)
+      expect(spaceGetter.lodgingFacilityId).to.be.equal(facilityId)
+      expect(spaceGetter.capacity).to.be.equal(69)
+      expect(spaceGetter.pricePerNightWei).to.be.equal(10)
+      expect(spaceGetter.active).to.be.equal(true)
+      expect(spaceGetter.dataURI).to.be.equal("test")
+
     });
 
     it("should emit SpaceAdded with correct params", async () => {
@@ -263,7 +333,7 @@ describe("Stays.sol", () => {
       let sid: BytesLike;
       let s;
 
-      before(async () => {
+      beforeEach(async () => {
         let tx = await alice.staysContract["registerLodgingFacility(string,bool)"](
           testDataUri + 'aaa123',
           true
@@ -357,7 +427,7 @@ describe("Stays.sol", () => {
       });
 
       describe("newStay()", () => {
-        it('should trow in paused mode', async () => {
+        it('should throw in paused mode', async () => {
           await deployer.staysContract.pause();
           await expect(
             alice.staysContract.newStay(
@@ -418,6 +488,13 @@ describe("Stays.sol", () => {
 
         it("should send user a Stay NFT", async () => {
           const initialBalance = await deployer.staysContract.balanceOf(alice.address);
+          const tokenId = await alice.staysContract.callStatic.newStay(
+            sid,
+            10000,
+            1,
+            1,
+            { value: 1000000 }
+          );
           await alice.staysContract.newStay(
             sid,
             10000,
@@ -425,6 +502,12 @@ describe("Stays.sol", () => {
             1,
             { value: 1000000 }
           );
+
+          const tokensForCheckIn = await alice.staysContract.getTokensBySpaceId(sid, 0)
+
+          const { exists } = await alice.staysContract.getSpaceByTokenId(tokenId)
+          expect(exists).to.be.equal(true)
+
           expect(await deployer.staysContract.balanceOf(alice.address))
             .to.equal(initialBalance.add(BigNumber.from(1)));
           expect(await deployer.staysContract.ownerOf(1)).to.equal(alice.address);
@@ -455,6 +538,12 @@ describe("Stays.sol", () => {
     }
   );
 
+  describe("interfaces", () => {
+    it("supports erc165", async () => {
+      expect(await bob.staysContract.supportsInterface('0x80ac58cd')).to.be.equal(true)
+    })
+  })
+
   describe("modifications", () => {
     const valuePerNight = 100;
     let fid;
@@ -462,7 +551,7 @@ describe("Stays.sol", () => {
     let sid: BytesLike;
     let s;
 
-    before(async () => {
+    beforeEach(async () => {
       let tx = await bob.staysContract["registerLodgingFacility(string,bool)"](
         testDataUri + '9769768',
         true
@@ -497,7 +586,7 @@ describe("Stays.sol", () => {
         let forbiddenVoucher;
         let voucher;
 
-        before(async () => {
+        beforeEach(async () => {
           initialBalanceBob = await bob.staysContract.provider.getBalance(bob.address);
           let tx = await alice.staysContract.newStay(
             sid,
@@ -572,19 +661,16 @@ describe("Stays.sol", () => {
               .add(BigNumber.from(valuePerNight))
               .sub(txCost)
           );
-        });
 
-        it("should throw id already checked in", async () => {
+          // already checked in
           await expect(
             alice.staysContract.checkIn(tokenId, voucher)
           ).to.revertedWith('Already checked in');
-        });
-
-        it("should change Stay status to 'checked_in'", async () => {
+          // change of deposit state
           expect(
             await alice.staysContract.depositState(tokenId)
           ).to.equal(1);
-        })
+        });
       });
 
       describe("checkOut()", () => {
@@ -592,7 +678,7 @@ describe("Stays.sol", () => {
         const numDays = 3;
         let tokenId;
 
-        before(async () => {
+        beforeEach(async () => {
           let tx = await alice.staysContract.newStay(
             sid,
             startDay,
@@ -627,6 +713,10 @@ describe("Stays.sol", () => {
           ).to.revertedWith('Forbidden unless checkout date');
         });
 
+        it('should not be able to checkout a non-existant stay', async () => {
+          await expect(bob.staysContract.checkOut(9849823)).to.be.revertedWith('Stay not found')
+        })
+
         it('should checkout', async () => {
           const initialBalanceBob = await bob.staysContract.provider.getBalance(bob.address);
           await ethers.provider.send('evm_increaseTime', [(startDay + 1) * 86400]);
@@ -643,6 +733,8 @@ describe("Stays.sol", () => {
               .add(BigNumber.from(valuePerNight).mul(BigNumber.from(numDays-1)))
               .sub(checkoutTxCost)
           );
+
+          await expect(bob.staysContract.checkOut(tokenId)).to.be.revertedWith('Already checked out')
         });
       });
 
