@@ -12,7 +12,7 @@ export const FacilityProfile = (): JSX.Element => {
           label: "Home",
         },
         {
-          path: "/facilities",
+          // path: "/facilities",
           label: "Facilities",
         },
       ]}
