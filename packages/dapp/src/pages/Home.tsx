@@ -48,10 +48,10 @@ export const Home = () => {
     <PageWrapper>
       <Box align='center' margin={{ bottom: 'large' }}>
         <Text size='xxlarge'>
-          April 18-25 2022
+          April 17-25 2022
         </Text>
         <Text size='large'>
-          Devconnect APRIL 18-25, 2022 Amsterdam, The Netherlands
+          Devconnect APRIL 17-25, 2022 Amsterdam, The Netherlands
         </Text>
         <GradientText>Amsterdam</GradientText>
         <Text size='large' margin={{ bottom: 'large' }}>
