@@ -76,6 +76,7 @@ export interface TokenCardProps extends TokenData {
 
 export interface TokenViewProps extends StayToken {
   getDate?: (days: number) => DateTime;
+  facility: LodgingFacilityRecord | undefined
   facilityOwner: string | undefined;
 }
 
@@ -101,6 +102,7 @@ export const TokenCard = ({
   const numberOfDays = Number(parseTrait('numberOfDays'))
   const total = BN.from(quantity).mul(BN.from(numberOfDays)).mul(space?.contractData.pricePerNightWei ?? 0).toString();
   const totalEther = utils.formatUnits(total, 'ether');
+
   return (
     <Box>
       <Box
@@ -124,7 +126,7 @@ export const TokenCard = ({
           <CustomText>{space?.name},{quantity} {quantity > 1 ? 'persons' : 'person'} </CustomText>
         </Box>
         <Box align='center' justify='center' pad='small'>
-          <CustomText>{getDate(parseTrait('startDay')).toISODate()} - {getDate(Number(parseTrait('startDay')) + Number(parseTrait('numberOfDays'))).toISODate()}</CustomText>
+          <CustomText>{getDate(parseTrait('startDay')).toFormat('MM.dd.yyyy')} - {getDate(Number(parseTrait('startDay')) + Number(parseTrait('numberOfDays'))).toFormat('MM.dd.yyyy')}</CustomText>
         </Box>
         <Box
           alignSelf='center'
@@ -154,14 +156,15 @@ export const TokenView = ({
     description,
     image,
     attributes
-  }
+  },
+  facility
 }: TokenViewProps) => {
   const { provider, ipfsNode } = useAppState();
   const [, , contractError] = useContract(provider, ipfsNode);
   const navigate = useNavigate();
   // const showMessage = useGoToMessage();
   // const [cancelLoading, setCancelLoading] = useState<boolean>(false);
-  const [cancellationTxHash, ] = useState<string | undefined>();
+  const [cancellationTxHash,] = useState<string | undefined>();
   const [error, setError] = useState<string | undefined>();
   const cancellationTxHashLink = useMemo(() => {
     const network = getNetwork()
@@ -192,7 +195,7 @@ export const TokenView = ({
   //   [showMessage, contract, tokenId]
   // );
 
-  if (!getDate) {
+  if (!getDate || !attributes || !facility) {
     return null;
   }
 
@@ -260,6 +263,10 @@ export const TokenView = ({
             to={facilityOwner}
             tokenId={tokenId}
             onError={err => setError(err)}
+            attributes={attributes}
+            facility={facility}
+            getDate={getDate}
+
           />
 
           {status === 'booked' &&
@@ -439,6 +446,7 @@ export const MyTokens = () => {
                 <TokenView
                   getDate={getDate}
                   facilityOwner={facilityOwner}
+                  facility={findFacility(data)}
                   {...token}
                 />
                 : null}
