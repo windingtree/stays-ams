@@ -2,12 +2,12 @@ import 'dotenv/config';
 import { HardhatUserConfig } from 'hardhat/types';
 import '@nomiclabs/hardhat-ethers';
 import '@nomiclabs/hardhat-waffle';
-// import '@nomiclabs/hardhat-solhint';
+import '@nomiclabs/hardhat-solhint';
 import '@typechain/hardhat';
 import 'hardhat-deploy';
 import '@nomiclabs/hardhat-etherscan';
 // import 'hardhat-gas-reporter';
-// import 'solidity-coverage';
+import 'solidity-coverage';
 import { nodeUrl, accounts, getKey } from './utils/network';
 
 import './scripts/tasks';
@@ -55,13 +55,13 @@ const config: HardhatUserConfig = {
     },
     sokol: {
       url: 'https://sokol.poa.network',
-      accounts: [process.env.PRIVATE_KEY_SOKOL as string],
+      accounts: accounts('sokol'),
       gasPrice: 30000000000,
     },
     xdai: {
       chainId: 100,
       url: 'https://rpc.gnosischain.com',
-      accounts: [process.env.PRIVATE_KEY_SOKOL as string],
+      accounts: accounts('xdai'),
       gasPrice: 30000000000,
     },
   },

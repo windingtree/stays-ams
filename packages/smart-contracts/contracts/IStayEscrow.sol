@@ -34,9 +34,5 @@ abstract contract IStayEscrow {
   ) internal virtual;
 
   // Refund deposit
-  function refund(
-    address payable payee,
-    bytes32 spaceId,
-    uint256 tokenId
-  ) internal virtual;
+  // @todo function refund(address payable payee, bytes32 spaceId, uint256 tokenId) internal virtual;
 }
