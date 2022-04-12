@@ -1,23 +1,27 @@
 import { DateTime } from 'luxon';
-import { Box, TextInput, Button, Text, DateInput } from 'grommet';
+import { Box, TextInput, Button, DateInput } from 'grommet';
 import { useNavigate } from 'react-router-dom';
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import styled from 'styled-components';
+import { useAppState } from '../../store';
+import { WhiteButton } from '../buttons';
 
 export const Label = styled.div`
   @include g-font($g-fontsize-xs,$glider-color-text-labels,$g-fontweight-normal);
   margin-left: 4px;
 `;
 
-export const BlurredSearch = styled(Box)`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  width: 100%;
-  position: absolute;
-  bottom: 0;
+export const GuestsNumber = styled(TextInput)`
+  height: 2.5rem;
+  background: white;
+  color: black;
+  border: 1px solid black;
+  border-radius: 2.5rem;
+  &:hover,&:active {
+    box-shadow: 0px 0px 0px 2px black;
+  }
+  -moz-appearance: textfield;
+  -webkit-appearance: none;
 `;
 
 export const parseDateToDays = (dayZero: DateTime, firstDate: DateTime, secondDate: DateTime) => {
@@ -38,41 +42,26 @@ const dateFormat = new Intl.DateTimeFormat(undefined, {
 const today = DateTime.now().set({ hour: 12 });
 const tomorrow = today.plus({ days: 1 });
 
-
 export const SearchForm: React.FC<{
-  getDate: (days: number) => DateTime,
   startDay?: number | undefined,
   numberOfDays?: number | undefined,
   initGuestsAmount?: number | undefined,
-}> = ({ getDate, startDay, numberOfDays, initGuestsAmount }) => {
-
+}> = ({ startDay, numberOfDays, initGuestsAmount }) => {
+  const navigate = useNavigate();
+  const { getDate } = useAppState();
   const [departureDate, setDepartureDate] = useState<string>(today.toISO());
   const [returnDate, setReturnDate] = useState<string>(tomorrow.toISO());
-
-  useEffect(() => {
-    if (!!startDay && !!numberOfDays) {
-      const departureDay = getDate(startDay)
-      const returnDay = getDate(startDay + numberOfDays)
-
-      setDepartureDate(departureDay.toISO())
-      setReturnDate(returnDay.toISO())
-    }
-
-  }, [getDate, startDay, numberOfDays])
-
   const [guestsAmount, setGuestsAmount] = useState(initGuestsAmount ?? 1);
 
-  const query = useMemo(() => {
-    const { startDay, numberOfDays } = parseDateToDays(getDate(0), DateTime.fromISO(departureDate), DateTime.fromISO(returnDate))
-    return new URLSearchParams([
-      ['startDay', String(startDay)],
-      ['numberOfDays', String(numberOfDays)],
-      ['guestsAmount', String(guestsAmount)],
-    ])
-  }, [departureDate, returnDate, guestsAmount, getDate])
+  useEffect(() => {
+    if (getDate !== undefined && !!startDay && !!numberOfDays) {
+      const departureDay = getDate(startDay);
+      const returnDay = getDate(startDay + numberOfDays);
 
-  const navigate = useNavigate()
-
+      setDepartureDate(departureDay.toISO());
+      setReturnDate(returnDay.toISO());
+    }
+  }, [getDate, startDay, numberOfDays]);
 
   const handleDateChange = ({ value }: { value: string[] }) => {
     const now = DateTime.now().set({ hour: 12 })
@@ -91,11 +80,36 @@ export const SearchForm: React.FC<{
     }
   }
 
+  const handleSearch = useCallback(
+    () => {
+      if (getDate === undefined) {
+        return () => {};
+      }
+      const { startDay, numberOfDays } = parseDateToDays(
+        getDate(0),
+        DateTime.fromISO(departureDate),
+        DateTime.fromISO(returnDate)
+      );
+      const query = new URLSearchParams([
+        ['startDay', String(startDay)],
+        ['numberOfDays', String(numberOfDays)],
+        ['guestsAmount', String(guestsAmount)],
+      ]);
+      navigate(`/search?${query}`, { replace: true });
+    },
+    [navigate, getDate, departureDate, returnDate, guestsAmount]
+  );
+
   return (
-    <BlurredSearch>
-      <Box pad='small'
-        height='100%'
+    <Box
+      direction='row'
+      align='end'
+      justify='center'
+      margin={{ bottom: 'small' }}
+    >
+      <Box
         direction='column'
+        margin={{ right: 'small' }}
       >
         <Label>When</Label>
         <DateInput
@@ -104,14 +118,11 @@ export const SearchForm: React.FC<{
             size: 'large',
             icon: undefined,
             style: {
-              border: '1px solid rgba(227, 231, 236, 0.3)',
-              color: 'white',
-              fontFamily: 'Inter',
-              fontStyle: 'normal',
-              fontWeight: 400,
-              fontSize: '1.25rem',
-              lineHeight: '1.5rem',
-              borderRadius: '.5rem'
+              height: '2.5rem',
+              background: 'white',
+              color: 'black',
+              border: '1px solid black',
+              borderRadius: '2.5rem',
             }
           }}
           calendarProps={{
@@ -125,31 +136,20 @@ export const SearchForm: React.FC<{
         />
       </Box>
       <Box
-        pad='small'
-        height='100%'
+        width='80px'
         direction='column'
+        margin={{ right: 'small' }}
       >
         <Label>Guests</Label>
         <Box>
-          <TextInput
-            size='xlarge'
+          <GuestsNumber
+            size='medium'
             focusIndicator={false}
-            style={{
-              border: '1px solid rgba(227, 231, 236, 0.3)',
-              fontFamily: 'Inter',
-              fontStyle: 'normal',
-              fontWeight: 400,
-              fontSize: '1.25rem',
-              lineHeight: '1.5rem',
-              borderRadius: '.5rem',
-              width: '4rem',
-              padding: '6px'
-            }}
-            // suggestions={['1', '2', '3','4', '5', '6','7', '2', '3']}
+            suggestions={['1', '2', '3', '4', '5', '6', '7']}
             placeholder='Guests'
             value={guestsAmount}
             type='number'
-            // onSelect={({ suggestion }) => setGuestsAmount(Number(suggestion))}
+            onSelect={({ suggestion }) => setGuestsAmount(Number(suggestion))}
             onChange={(event) => {
               const value = Number(event.target.value)
               setGuestsAmount(value !== 0 ? value : 1)
@@ -157,36 +157,23 @@ export const SearchForm: React.FC<{
           />
         </Box>
       </Box>
-      <Button
-        style={{
-          border: '1px solid rgba(227, 231, 236, 0.3)',
-          fontFamily: 'Inter',
-          fontStyle: 'normal',
-          fontWeight: 400,
-          color: '#fff',
-          fontSize: '1.25rem',
-          lineHeight: '1.5rem',
-          borderRadius: '.5rem',
-          alignSelf: 'end',
-        }}
-        margin='small'
-        onClick={() => navigate(`/search?${query}`, { replace: true })}
-      >
-        {() => (
-          <Box direction='row' justify='center' align='center' pad='small'>
-            <Text style={{
-              // border: '1px solid rgba(227, 231, 236, 0.3)',
-              fontFamily: 'Inter',
-              fontStyle: 'normal',
-              fontWeight: 400,
-              fontSize: '1rem',
-            }}
-            >
-              Search
-            </Text>
-          </Box>
-        )}
-      </Button>
-    </BlurredSearch>
+      <WhiteButton
+        // style={{
+        //   border: '1px solid rgba(227, 231, 236, 0.3)',
+        //   fontFamily: 'Inter',
+        //   fontStyle: 'normal',
+        //   fontWeight: 400,
+        //   color: '#fff',
+        //   fontSize: '1.25rem',
+        //   lineHeight: '1.5rem',
+        //   borderRadius: '.5rem',
+        //   alignSelf: 'end',
+        // }}
+        disabled={getDate === undefined}
+        size='large'
+        label='Search'
+        onClick={() => handleSearch()}
+      />
+    </Box>
   );
 };

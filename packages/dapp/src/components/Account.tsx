@@ -23,13 +23,15 @@ const AccountHash = styled(Text)`
 `;
 
 const AccountWrap = styled(Box)`
-  background: rgba(13, 14, 15, 0.2);
+  /* background: rgba(13, 14, 15, 0.2); */
   backdrop-filter: blur(36px);
   height: 2.5rem;
   min-width:2.5rem;
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: black;
+  /* border: 1px solid rgba(255, 255, 255, 0.3); */
   border-radius: 2rem;
+
+  border: 1px solid black;
 `;
 
 

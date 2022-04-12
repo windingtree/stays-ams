@@ -1,8 +1,7 @@
 import { PageWrapper } from './PageWrapper';
 import { Box, Text, Image, Carousel, Spinner, Grid } from 'grommet';
 import { useAppState } from '../store';
-import { useMemo, useEffect, useState } from 'react';
-import { ThemeMode } from '../components/SwitchThemeMode';
+import { useMemo, useEffect, useState, useCallback } from 'react';
 import { BookWithDai } from '../components/buttons/BookWithDai';
 import { MessageBox } from '../components/MessageBox';
 import { ExternalLink } from '../components/ExternalLink';
@@ -11,7 +10,7 @@ import { getNetwork } from '../config';
 import { centerEllipsis } from '../utils/strings';
 import { useContract } from '../hooks/useContract';
 import { NavLink } from 'react-router-dom';
-import { utils } from 'ethers'
+import { utils, BigNumber as BN } from 'ethers';
 import { Header } from './MyTokens';
 import { CustomText, Title } from '../components/StayVoucherQr';
 import styled from 'styled-components';
@@ -38,17 +37,15 @@ export const Space: React.FC = () => {
     bootstrapped
   } = useAppState();
 
-  const query = window.location.pathname.substring(7)
-  const space = useMemo(() => searchSpaces.find((space) => space.id === query), [searchSpaces, query])
+  const query = window.location.pathname.substring(7);
+  const space = useMemo(() => searchSpaces.find((space) => space.id === query), [searchSpaces, query]);
   const facility = useMemo(() => lodgingFacilities.find((facility) => {
     const space = facility.spaces.find((space => space.contractData.spaceId === query))
     if (space) {
       return true
     }
     return false
-  }), [query, lodgingFacilities])
-  // console.log('facility', facility)
-  // console.log('space', space)
+  }), [query, lodgingFacilities]);
 
   const [contract, , errorContract] = useContract(provider, ipfsNode);
 
@@ -66,49 +63,52 @@ export const Space: React.FC = () => {
     return hash ? `${network.blockExplorer}/tx/${hash}` : null
   }, [hash])
 
-  const handler = async () => {
-    try {
-      setLoading(true)
-      if (!contract) {
-        throw new Error('Contract is not connected');
-      }
-      if (searchParams === undefined) {
-        throw new Error('searchParams is undefined')
-      }
-      if (space === undefined) {
-        throw new Error('space is undefined')
-      }
-      if (!account) {
-        throw new Error('account is undefined')
-      }
-      if (!provider) {
-        throw new Error('provider is undefined')
-      }
-      const balance = await provider.getBalance(account)
-      const total = Number(utils.formatUnits(space.contractData.pricePerNightWei, 'ether')) * Number(searchParams.numberOfDays)
-      if (Number(utils.formatUnits(balance, 'ether')) < total) {
-        throw new Error('not enough DAI')
-      }
-      setError(undefined);
+  const bookHandler = useCallback(
+    async () => {
+      try {
+        setLoading(true)
+        if (!contract) {
+          throw new Error('Contract is not connected');
+        }
+        if (searchParams === undefined) {
+          throw new Error('searchParams is undefined');
+        }
+        if (space === undefined) {
+          throw new Error('space is undefined');
+        }
+        if (!account) {
+          throw new Error('account is undefined');
+        }
+        if (!provider) {
+          throw new Error('provider is undefined');
+        }
+        const balance = await provider.getBalance(account)
+        const total = Number(utils.formatUnits(space.contractData.pricePerNightWei, 'ether')) * Number(searchParams.numberOfDays)
 
-      const res = await contract.book(
-        space.id,
-        searchParams.startDay,
-        searchParams.numberOfDays,
-        searchParams.guestsAmount,
-        undefined,
-        setHash
-      )
-      setTokenId(res)
-      setLoading(false)
-    } catch (error) {
-      setLoading(false)
-      setError((error as Error).message);
-    }
-  }
+        if (Number(utils.formatUnits(balance, 'ether')) < total) {
+          throw new Error('not enough DAI')
+        }
+        setError(undefined);
 
-  const isLoading = useMemo(() => !!bootstrapped && !!contract, [bootstrapped, contract])
-  const borderColor = themeMode === ThemeMode.light ? 'brand' : 'accent-1'
+        const res = await contract.book(
+          space.id,
+          searchParams.startDay,
+          searchParams.numberOfDays,
+          searchParams.guestsAmount,
+          undefined,
+          setHash
+        );
+        setTokenId(res);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        setError((error as Error).message);
+      }
+    },
+    [account, contract, provider, searchParams, space]
+  );
+
+  const isLoading = useMemo(() => !!bootstrapped && !!contract, [bootstrapped, contract]);
 
   const searchQuery = useMemo(() => {
     return new URLSearchParams([
@@ -116,7 +116,28 @@ export const Space: React.FC = () => {
       ['numberOfDays', String(searchParams?.numberOfDays)],
       ['guestsAmount', String(searchParams?.guestsAmount)],
     ])
-  }, [searchParams])
+  }, [searchParams]);
+
+  const numberDays = useMemo(
+    () => searchParams?.numberOfDays || 1,
+    [searchParams]
+  );
+
+  const guestsAmount = useMemo(
+    () => searchParams?.guestsAmount || 1,
+    [searchParams]
+  );
+
+  const getPrice = useCallback(
+    (nights: number, guestsAmount: number): string  => {
+      const perNight = BN.from(space?.contractData.pricePerNightWei ?? 0);
+      return utils.formatUnits(
+        perNight.mul(BN.from(nights)).mul(BN.from(guestsAmount)),
+        'ether'
+      );
+    },
+    [space]
+  );
 
   return (
     <PageWrapper
@@ -139,96 +160,103 @@ export const Space: React.FC = () => {
       <MessageBox type='info' show={!!tokenId}>
         <Box direction='row'>
           <Box>
-            Booked succesfully!
+            Booked successfully!
             <NavLink to={`/tokens?tokenId=${tokenId}`}> Check details </NavLink>
           </Box>
         </Box>
       </MessageBox>
 
-
       {isLoading && !space && <Box> No space with given id </Box>}
-      {isLoading && !!space && !tokenId && <Box
-        flex={true}
-        align='center'
-        background='white'
-        overflow='auto'
-        pad='large'
-      >
-        <Image
-          height='120'
-          width='120'
-          style={{ borderRadius: '50%' }}
-          src={space.media.logo}
-        />
+      {isLoading && !!space && !tokenId &&
+        <Box align='center' overflow='hidden'>
+          <Image
+            height='150'
+            width='150'
+            style={{ borderRadius: '50%' }}
+            src={space.media.logo}
+          />
 
-        <Header> {space.name}</Header>
-        {facility === undefined ? '' : <CustomText>{facility.address.streetAddress}, {facility.address.postalCode} {facility.address.locality}, {facility.address.country}. </CustomText>}
-        {facility === undefined ? '' : <CustomText>{facility.contact?.email} {facility.contact?.website} {facility.contact?.phone}. </CustomText>}
+          <Header> {space.name}</Header>
 
-        <Box style={{ width: '65rem', marginBottom: '2rem' }} pad={{ bottom: 'medium' }}>
-          <Description>{space.description}</Description>
-        </Box>
+          {!!facility &&
+            <Box align='center'>
+              <Text size='large'>
+                {facility.address.streetAddress}, {facility.address.postalCode} {facility.address.locality}, {facility.address.country}.
+              </Text>
+              <Text size='large'>
+                {facility.contact?.email} {facility.contact?.website} {facility.contact?.phone}.
+              </Text>
+            </Box>
+          }
 
-        <Box style={{ width: '65rem', marginBottom: '2rem' }} >
-          <Box border='bottom' pad={{ bottom: 'small' }} direction='row'>
-            <Title size='xxlarge'>Room type</Title>
-          </Box>
-          <Grid
-            pad={{ vertical: 'medium' }}
-            columns={['1/2', '1/2']}
+          <Box
+            fill
+            align='center'
+            pad={{ bottom: 'medium' }}
           >
-            <Box direction='row' align='center'>
-              <Icons.Checkmark style={{ border: '1px solid #0D0E0F', borderRadius: '50%', padding: '0.3rem', marginRight: '0.5rem' }} color='#000' />
-              <CustomText>{space.type} </CustomText>
+            <Description>{space.description}</Description>
+          </Box>
+
+          <Box fill>
+            <Box border='bottom' pad={{ bottom: 'small' }} direction='row'>
+              <Text size='xxlarge' weight='bold'>Room type</Text>
             </Box>
-          </Grid>
-        </Box>
-
-        <Box style={{ width: '65rem', marginBottom: '3rem' }} align='center' pad={{ bottom: 'medium' }}>
-          <Carousel height='large' width='xlarge'>
-            {space.media.images?.map((space, i) =>
-              <Image
-                key={i}
-                width='xlarge'
-                fit="cover"
-                alignSelf='center'
-                src={space.uri}
-              />
-            )}
-          </Carousel>
-        </Box>
-
-        <Box direction='row' style={{ width: '65rem' }} justify='between' align='center' >
-          <Box direction='row' align='center'>
-            <CustomText>Price per Night: </CustomText>
-            <Title color={borderColor} size='large'>
-              {utils.formatUnits(space.contractData.pricePerNightWei, 'ether')}
-              DAI
-            </Title>
-          </Box>
-          <Box align='center'>
-            <BookWithDai
-              onClick={handler}
-              loading={loading}
-              disabled={!!tokenId}
-            />
-
-            {hashLink !== null ?
-              <ExternalLink href={hashLink} label={centerEllipsis(hash)} />
-              : null}
-          </Box>
-        </Box>
-
-        <Box width='xxlarge' pad={{ top: 'medium' }}>
-          <MessageBox type='error' show={!!error}>
-            <Box direction='row'>
-              <Box>
-                {error}
+            <Grid
+              pad={{ vertical: 'medium' }}
+              columns={['1/2', '1/2']}
+            >
+              <Box direction='row' align='center'>
+                <Icons.Checkmark style={{ border: '1px solid #0D0E0F', borderRadius: '50%', padding: '0.3rem', marginRight: '0.5rem' }} color='#000' />
+                <Text size='large'>{space.type} </Text>
               </Box>
+            </Grid>
+          </Box>
+
+          <Box fill align='center' margin={{ bottom: 'xlarge' }}>
+            <Carousel height='large' width='xlarge'>
+              {space.media.images?.map((space, i) =>
+                <Image
+                  key={i}
+                  width='xlarge'
+                  fit="cover"
+                  alignSelf='center'
+                  src={space.uri}
+                />
+              )}
+            </Carousel>
+          </Box>
+
+          <Box fill direction='row' justify='between' >
+            <Box direction='row' align='center'>
+              <Text size='xxlarge' weight='bold'>Price:&nbsp;</Text>
+              <Text color='black' size='xxlarge'>
+                {getPrice(numberDays, guestsAmount)}&nbsp;DAI
+              </Text>
             </Box>
-          </MessageBox>
+            <Box align='center'>
+              <BookWithDai
+                onClick={bookHandler}
+                loading={loading}
+                disabled={!!tokenId}
+              />
+
+              {hashLink !== null ?
+                <ExternalLink href={hashLink} label={centerEllipsis(hash)} />
+                : null}
+            </Box>
+          </Box>
+
+          <Box fill pad={{ top: 'medium' }}>
+            <MessageBox type='error' show={!!error}>
+              <Box direction='row'>
+                <Box>
+                  {error}
+                </Box>
+              </Box>
+            </MessageBox>
+          </Box>
         </Box>
-      </Box>}
+      }
     </PageWrapper>
   );
 };

@@ -13,6 +13,7 @@ import { useAccount } from '../hooks/useAccount';
 import { useIpfsNode } from '../hooks/useIpfsNode';
 import { useSmartContractData } from '../hooks/useSmartContractData';
 import { useOwnFacilities } from '../hooks/useOwnFacilities';
+import { useDayZeroDate } from '../hooks/useDayZeroDate';
 
 // Config
 import { getNetwork } from '../config';
@@ -86,6 +87,7 @@ export const AppStateProvider = ({ children }: PropsType) => {
   const [account, isAccountLoading, accountError] = useAccount(provider);
   const [ipfsNode, startIpfsNode, stopIpfsNode, ipfsNodeLoading, ipfsNodeError] = useIpfsNode();
   const { bootstrapped, ownFacilitiesBootstrapped } = state;
+  const [dayZero, dayZeroError] = useDayZeroDate(rpcProvider, ipfsNode);
 
   // Global data bootstrap
   const [bootstrapError] = useSmartContractData(
@@ -157,10 +159,16 @@ export const AppStateProvider = ({ children }: PropsType) => {
         payload: ownFacilitiesError
       })
     }
+    if (dayZeroError) {
+      dispatch({
+        type: 'ERROR_ADD',
+        payload: dayZeroError
+      })
+    }
   }, [
     dispatch, web3ModalError, networkError,
     accountError, ipfsNodeError, bootstrapError,
-    rpcProviderError, ownFacilitiesError
+    rpcProviderError, ownFacilitiesError, dayZeroError
   ]);
 
   useEffect(() => {
@@ -239,6 +247,13 @@ export const AppStateProvider = ({ children }: PropsType) => {
       }
     })
   }, [dispatch, ipfsNode, startIpfsNode, stopIpfsNode]);
+
+  useEffect(() => {
+    dispatch({
+      type: 'SET_GET_DATE',
+      payload: dayZero
+    })
+  }, [dispatch, dayZero]);
 
   return (
     <StateContext.Provider value={state}>
