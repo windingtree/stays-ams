@@ -45,15 +45,20 @@ const FacilityList: React.FC<{
   facilities: OwnerLodgingFacility[],
   onSelect(facility: OwnerLodgingFacility): void,
 }> = ({ facilities, onSelect, children }) => {
+  const [tabIndex, setTabIndex] = useState<number>();
   const navigate = useNavigate();
+
   if (!facilities) {
     return null
   }
 
-  return <Tabs margin={{ top: 'large' }}>
+  return <Tabs activeIndex={tabIndex} margin={{ top: 'large' }}>
     {facilities.map((facility, i) => (
       <Tab
-        onClick={() => onSelect(facility)}
+        onClick={() => {
+          onSelect(facility)
+          setTabIndex(i)
+        }}
         key={i}
         title={<CustomText>{facility.name}</CustomText>}
       >
