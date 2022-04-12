@@ -1,6 +1,6 @@
+import type { providers } from 'ethers';
 import type { LodgingFacilityRecord } from '../store/actions';
 import type { TokenAttribute } from 'stays-core';
-import { providers, utils, BigNumber as BN } from 'ethers';
 import { useState, useCallback } from 'react';
 import { Box, Grid, Text } from 'grommet';
 import { Modal } from '../components/Modal';
@@ -8,8 +8,9 @@ import QRCode from 'react-qr-code';
 import { useSignVoucher } from '../hooks/useSignVoucher';
 import Logger from '../utils/logger';
 import styled from 'styled-components';
-import { CustomButton } from './SearchResultCard';
 import { DateTime } from 'luxon';
+import { utils, BigNumber as BN } from 'ethers';
+import { CustomButton } from './SearchResultCard';
 
 // Initialize logger
 const logger = Logger('StayVoucherQr');
@@ -51,14 +52,17 @@ export const CustomText = styled(Text)`
 `;
 
 export interface StayVoucherQrProps {
-  provider: providers.JsonRpcProvider | undefined,
+  provider?: providers.JsonRpcProvider,
   from: string | undefined,
   to: string | undefined,
   tokenId: string,
-  facility: LodgingFacilityRecord,
-  attributes: TokenAttribute[],
-  getDate: (days: number) => DateTime;
   onError: (error: string) => void
+  name: string;
+  description: string;
+  attributes?: TokenAttribute[];
+  facility?: LodgingFacilityRecord;
+  getDate?: (days: number) => DateTime;
+  pricePerNightWei?: string;
 }
 
 export const StayVoucherQr = ({
@@ -66,10 +70,12 @@ export const StayVoucherQr = ({
   from,
   to,
   tokenId,
+  onError,
+  name,
+  description,
   attributes,
   facility,
-  getDate,
-  onError
+  getDate
 }: StayVoucherQrProps) => {
   const [signCallback, isSignerReady] = useSignVoucher(provider);
   const [qrData, setQrData] = useState<string | undefined>();
@@ -111,18 +117,22 @@ export const StayVoucherQr = ({
     [signCallback, onError, from, to, tokenId]
   );
 
-  if (!isSignerReady) {
-    return null;
-  }
+  const parseTrait = useCallback(
+    (trait: string): any => {
+      return (attributes || []).find(attr => attr.trait_type === trait)?.value ?? ''
+    },
+    [attributes]
+  );
 
-  const parseTrait = (trait: string): any => {
-    return attributes?.find(attr => attr.trait_type === trait)?.value ?? ''
-  };
   const space = facility?.spaces.find(space => space.contractData.spaceId === parseTrait('spaceId').toLowerCase())
   const quantity = Number(parseTrait('quantity'))
   const numberOfDays = Number(parseTrait('numberOfDays'))
-  const total = BN.from(quantity).mul(BN.from(numberOfDays)).mul(space?.contractData.pricePerNightWei ?? 0).toString();
+  const total = BN.from(quantity).mul(BN.from(numberOfDays)).mul(BN.from(space?.contractData.pricePerNightWei || 0)).toString();
   const totalEther = utils.formatUnits(total, 'ether');
+
+  if (!isSignerReady || !getDate) {
+    return null;
+  }
 
   return (
     <Box>
@@ -174,11 +184,11 @@ export const StayVoucherQr = ({
               gridArea='hotel-data'
               border='top'
             >
-              <HotelTitle>{facility.name}</HotelTitle>
-              <CustomText>{facility.address.streetAddress}, {facility.address.postalCode} {facility.address.locality}, {facility.address.country}.</CustomText>
-              <CustomText>{getDate(parseTrait('startDay')).toFormat('MM.dd.yyyy')} - {getDate(Number(parseTrait('startDay')) + Number(parseTrait('numberOfDays'))).toFormat('MM.dd.yyyy')}</CustomText>
-              <CustomText>{space?.name},{quantity} {quantity > 1 ? 'persons' : 'person'}</CustomText>
-              <Price>{totalEther}</Price>
+              <HotelTitle>{facility?.name}</HotelTitle>
+              <CustomText>{facility?.description}</CustomText>
+              <CustomText>{getDate(parseTrait('startDay')).toISODate()} - {getDate(Number(parseTrait('startDay')) + Number(parseTrait('numberOfDays'))).toISODate()}</CustomText>
+              <CustomText>{facility?.type}, {parseTrait('numberOfDays')} persons.</CustomText>
+              <Price>{totalEther} DAI</Price>
             </Box>
           </Grid>
         }

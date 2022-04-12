@@ -76,8 +76,8 @@ export interface TokenCardProps extends TokenData {
 
 export interface TokenViewProps extends StayToken {
   getDate?: (days: number) => DateTime;
-  facility: LodgingFacilityRecord | undefined
   facilityOwner: string | undefined;
+  facility: LodgingFacilityRecord | undefined;
 }
 
 export const TokenCard = ({
@@ -95,7 +95,7 @@ export const TokenCard = ({
     return null
   }
   const parseTrait = (trait: string): any => {
-    return attributes.find(attr => attr.trait_type === trait)?.value ?? ''
+    return (attributes || []).find(attr => attr.trait_type === trait)?.value ?? ''
   };
   const space = facility.spaces.find(space => space.contractData.spaceId === parseTrait('spaceId').toLowerCase())
   const quantity = Number(parseTrait('quantity'))
@@ -150,14 +150,14 @@ export const TokenView = ({
   owner,
   getDate,
   facilityOwner,
+  facility,
   status,
   data: {
     name,
     description,
     image,
     attributes
-  },
-  facility
+  }
 }: TokenViewProps) => {
   const { provider, ipfsNode } = useAppState();
   const [, , contractError] = useContract(provider, ipfsNode);
@@ -263,10 +263,12 @@ export const TokenView = ({
             to={facilityOwner}
             tokenId={tokenId}
             onError={err => setError(err)}
+            name={name}
+            description={description}
             attributes={attributes}
             facility={facility}
             getDate={getDate}
-
+            pricePerNightWei={'0'}
           />
 
           {status === 'booked' &&
@@ -394,14 +396,6 @@ export const MyTokens = () => {
     <PageWrapper>
       <Box>
         <Header>Stay tokens</Header>
-        {/* {token &&
-          <TokenView
-            getDate={getDate}
-            isGetDateReady={isGetDateReady}
-            facilityOwner={facilityOwner}
-            {...token}
-          />
-        } */}
 
         <MessageBox type='info' show={isLoading}>
           <Box direction='row'>
