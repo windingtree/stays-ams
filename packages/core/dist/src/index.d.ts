@@ -11,7 +11,7 @@ export declare class Contract {
     readonly provider: providers.Provider;
     readonly contract: Stays;
     readonly web3Storage: Web3StorageApi;
-    constructor(contractAddress: string, providerOrUri: KnownProvider, web3Storage: Web3StorageApi);
+    constructor(contractAddress: string, providerOrUri: KnownProvider, web3Storage: Web3StorageApi, withSigner?: boolean);
     getDayZero(): Promise<number>;
     getLodgingFacilityIds(active: boolean): Promise<string[]>;
     getLodgingFacilityIdsByOwner(owner: string): Promise<string[]>;
