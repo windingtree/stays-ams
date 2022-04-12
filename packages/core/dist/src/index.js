@@ -61,8 +61,10 @@ class Contract {
         // @todo Implement ipfsNode validity check
         this.web3Storage = web3Storage;
         this.contract = new ethers_1.ethers.Contract(this.address, stays_smart_contracts_1.StaysContract.abi, this.provider);
-        // Apply the default Signer
-        this.contract = this.contract.connect(this.provider.getSigner());
+        const defaultSigner = this.provider.getSigner();
+        if (defaultSigner._address !== null) {
+            this.contract = this.contract.connect(defaultSigner);
+        }
     }
     getDayZero() {
         return (0, getDayZero_1.getDayZero)(this.contract);

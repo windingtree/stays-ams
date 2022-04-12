@@ -1,7 +1,7 @@
 import type { OwnerLodgingFacility, OwnerSpace } from '../store/actions';
-import { useContext, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { Box, Button, ResponsiveContext, Spinner, Tab, Tabs, Text } from 'grommet';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { PageWrapper } from './PageWrapper';
 import { MessageBox } from '../components/MessageBox';
 import { useAppState } from '../store';
@@ -43,10 +43,11 @@ const CustomText = styled(Text)`
 const FacilityList: React.FC<{
   selectedFacilityId: string | undefined,
   facilities: OwnerLodgingFacility[],
-  onSelect(facility: OwnerLodgingFacility): void,
-}> = ({ facilities, onSelect, children }) => {
-  const [tabIndex, setTabIndex] = useState<number>();
+}> = ({ selectedFacilityId, facilities, children }) => {
   const navigate = useNavigate();
+  const tabIndex = useMemo(() => {
+    return facilities.findIndex(el => el.contractData.lodgingFacilityId === selectedFacilityId)
+  }, [selectedFacilityId, facilities])
 
   if (!facilities) {
     return null
@@ -56,8 +57,10 @@ const FacilityList: React.FC<{
     {facilities.map((facility, i) => (
       <Tab
         onClick={() => {
-          onSelect(facility)
-          setTabIndex(i)
+          const query = new URLSearchParams([
+            ['facilityId', String(facility.contractData.lodgingFacilityId)],
+          ]);
+          navigate(`/facilities?${query}`, { replace: true });
         }}
         key={i}
         title={<CustomText>{facility.name}</CustomText>}
@@ -143,6 +146,7 @@ const SpacesList: React.FC<{
 
 export const Facilities = () => {
   const navigate = useNavigate();
+  const { search } = useLocation();
   const size = useContext(ResponsiveContext);
 
   const {
@@ -162,7 +166,12 @@ export const Facilities = () => {
     ipfsNode,
   )
 
-  const [selectedFacility, setSelectedFacility] = useState<OwnerLodgingFacility | undefined>()
+  const facility = useMemo(() => {
+    const params = new URLSearchParams(search)
+    const facilityId = params.get('facilityId')
+    console.log('useMemo', facilityId, ownFacilities)
+    return ownFacilities?.find(f => f.contractData.lodgingFacilityId === facilityId)
+  }, [search, ownFacilities])
 
   return (
     <PageWrapper
@@ -183,34 +192,33 @@ export const Facilities = () => {
       </MessageBox>
 
       <FacilityList
-        selectedFacilityId={selectedFacility?.contractData.lodgingFacilityId}
-        facilities={ownFacilities ?? []} onSelect={setSelectedFacility}
+        selectedFacilityId={facility?.contractData.lodgingFacilityId}
+        facilities={ownFacilities ?? []}
       >
 
         <Box
           pad={size}
           direction='column'
         >
-
-          {selectedFacility &&
+          {facility &&
             <>
               <Box direction='row' align='center' margin={{ top: 'small', bottom: 'small' }}>
-                <CustomText>{selectedFacility.name}</CustomText>
+                <CustomText>{facility.name}</CustomText>
                 <Button
                   icon={<Edit size='medium' radius='large' />}
                   onClick={() => navigate(
-                    `/facilities/edit/${selectedFacility.contractData.lodgingFacilityId}`
+                    `/facilities/edit/${facility.contractData.lodgingFacilityId}`
                   )}
                 />
               </Box>
 
               <Box direction='row' align='center' margin={{ top: 'small', bottom: 'small' }}>
                 <CustomText>Spaces</CustomText>
-                {selectedFacility &&
+                {facility &&
                   <Button
                     icon={<AddCircle size='medium' radius='large' />}
                     onClick={() => navigate(
-                      `/spaces/add/${selectedFacility.contractData.lodgingFacilityId}`
+                      `/spaces/add/${facility.contractData.lodgingFacilityId}`
                     )}
                   />
                 }
@@ -224,10 +232,9 @@ export const Facilities = () => {
               getDate={getDate}
               error={checkOutError}
               loading={checkOutLoading}
-              facility={selectedFacility}
+              facility={facility}
             />
           }
-
         </Box>
       </FacilityList>
     </PageWrapper >
