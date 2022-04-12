@@ -1,6 +1,10 @@
 {
-  "short_name": "ORGiD profile manager",
-  "name": "An ORGiD organization profile manager Dapp",
+  "short_name": "WIN Stays Amsterdam",
+  "name": "Book Hotels On-Chain. Pay in xDai. Check-in with NFT. Help Local Communities.",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#8d1fa3",
+  "background_color": "#ffffff",
   "icons": [
     {
       "src": "favicon.ico",
@@ -8,18 +12,14 @@
       "type": "image/x-icon"
     },
     {
-      "src": "logo192.png",
-      "type": "image/png",
+      "src": "logo.svg",
+      "type": "image/svg",
       "sizes": "192x192"
     },
     {
       "src": "logo512.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "256x256 512x512"
     }
-  ],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  ]
 }

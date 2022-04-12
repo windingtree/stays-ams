@@ -54,7 +54,7 @@ export const AppHeader = () => {
           position: 'absolute',
           left: ResponsiveAlign(winWidth),
         }}
-        src='/logo-small.png'
+        src='/logo.svg'
         height='32px'
         onClick={() => navigate('/')}
       />
