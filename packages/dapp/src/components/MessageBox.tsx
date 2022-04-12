@@ -32,6 +32,7 @@ export const MessageBox = ({
 
   return (
     <Box
+      fill
       direction='row'
       background='light-2'
       align='center'

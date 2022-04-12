@@ -1,40 +1,58 @@
-import { Box, Text, Image, Grid, Button } from 'grommet';
+import { Box, Text, Image, Grid, Button, Notification } from 'grommet';
 import type { Space } from 'stays-data-models'
 import { useNavigate } from 'react-router-dom';
 import { useAppState } from '../store';
-// import { ThemeMode } from './SwitchThemeMode';
-import { SignInButton } from './buttons/web3Modal';
 import styled from 'styled-components';
+import { useCallback, useState } from 'react';
+import { utils, BigNumber as BN } from 'ethers';
 
 export const CustomButton = styled(Button)`
-  color:white;
-  border: none;
+  color: black;
+  border: 1px solid black;
   height: 2.5rem;
   width: 10rem;
   border-radius: 2.5rem;
-  background: linear-gradient(90.72deg, #FFF500, #3B37FF, #0D0E0F);
+  /* background: linear-gradient(90.72deg, #FFF500, #3B37FF, #0D0E0F); */
 
   font-weight: 700;
   font-size: 16px;
   line-height: 24px;
+
+  &:hover,&:active {
+    box-shadow: 0px 0px 0px 2px black;
+  }
 `;
 
-export const SearchResultCard: React.FC<{ space: Space }> = ({ space }) => {
+export const SearchResultCard: React.FC<{
+  space: Space,
+  numberOfDays: number,
+  guestsAmount: number
+}> = ({ space, numberOfDays, guestsAmount }) => {
   const { account } = useAppState();
   const navigate = useNavigate();
+  const [notification, setNotification] = useState<string | undefined>();
+
+  const getPrice = useCallback(
+    (nights: number, guestsAmount: number): string  => {
+      const perNight = BN.from(space?.contractData.pricePerNightWei ?? 0);
+      return utils.formatUnits(
+        perNight.mul(BN.from(nights)).mul(BN.from(guestsAmount)),
+        'ether'
+      );
+    },
+    [space]
+  );
 
   return (
     <Box
+      fill
       border={{
         color: '#000000',
         side: 'bottom',
       }}
-      pad='large'
       direction='row'
       align='center'
       alignSelf='center'
-
-      style={{ width: '64rem' }}
       overflow='hidden'
     >
       <Grid
@@ -51,7 +69,7 @@ export const SearchResultCard: React.FC<{ space: Space }> = ({ space }) => {
         ]}
         align='center'
       >
-        <Box gridArea="img" height="100%" >
+        <Box gridArea="img" fill>
           <Image
             fit="cover"
             src={space.media.logo}
@@ -70,17 +88,31 @@ export const SearchResultCard: React.FC<{ space: Space }> = ({ space }) => {
           </Text> */}
         </Box>
         <Box direction='column' justify='start' gridArea="main">
-          lordem
+          {space.description}
         </Box>
         <Box pad={{ right: 'medium' }} direction='row' justify='between' align='center' gridArea="action">
-          <Text size='large'>From: $$$</Text>
-          {account ? <CustomButton
+          <Text size='large'>Price: {getPrice(numberOfDays, guestsAmount)} DAI</Text>
+          <CustomButton
             size='large'
             label='Check Space'
-            onClick={() => navigate(`/space/${space.contractData.spaceId}`)}
-          /> : <SignInButton />}
+            onClick={() => {
+              if (account) {
+                navigate(`/space/${space.contractData.spaceId}`);
+              } else {
+                setNotification('Please connect wallet');
+                setTimeout(() => setNotification(undefined), 2000);
+              }
+            }}
+          />
         </Box>
       </Grid>
+      {notification &&
+        <Notification
+          toast
+          title={notification}
+          status='warning'
+        />
+      }
     </Box>
   );
 };

@@ -5,6 +5,7 @@ import type { IProviderInfo } from 'web3modal';
 import type { providers } from 'ethers';
 import { ThemeMode } from '../components/SwitchThemeMode';
 import type { StayToken } from 'stays-core';
+import { DateTime } from 'luxon';
 export interface GenericStateRecord {
   id: string;
   [key: string]: unknown;
@@ -55,6 +56,7 @@ export interface State {
   ownFacilitiesRefresh?: Function;
   searchSpaces: SpaceRecord[];
   searchParams?: SearchParams;
+  getDate?: (days: number) => DateTime;
   [key: string]: unknown | GenericStateRecord[];
 
 }
@@ -203,6 +205,11 @@ export interface SetOwnFacilitiesBootstrappedAction {
   type: 'RESET_OWN_FACILITIES';
 }
 
+export interface SetGetDateAction {
+  type: 'SET_GET_DATE',
+  payload?: (days: number) => DateTime
+}
+
 export type Action =
   | SetConnectingAction
   | SetAccountAction
@@ -225,6 +232,7 @@ export type Action =
   | SetOwnFacilitiesRefreshAction
   | SetOwnFacilitiesLoadingAction
   | SetOwnFacilitiesBootstrappedAction
+  | SetGetDateAction
   | SetAvailabilityTimestampAction
   | SetSearchParamsAction
   | AddErrorAction

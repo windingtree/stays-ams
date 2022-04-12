@@ -26,6 +26,7 @@ export const Breadcrumbs = ({ breadcrumbs, size }: BreadcrumbsProps) => {
           onClick={() => path === undefined ? navigate(-1) : navigate(path)}
           icon={<FormPrevious />}
           gap='xsmall'
+          color='black'
         />
       )
     ),

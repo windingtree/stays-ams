@@ -99,6 +99,11 @@ export const mainReducer = (state: State, action: Action): State => {
           startIpfsNode: action.payload.startIpfsNode,
           stopIpfsNode: action.payload.stopIpfsNode
         };
+      case 'SET_GET_DATE':
+        return {
+          ...state,
+          getDate: action.payload
+        };
       case 'ERROR_ADD':
         return {
           ...state,

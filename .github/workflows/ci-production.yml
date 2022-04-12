@@ -1,0 +1,67 @@
+name: ci-production
+on: [push]
+jobs:
+  deploy:
+    name: "Update production env"
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+    if: github.event_name == 'push' && github.ref == 'refs/heads/production'
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js runtime
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Setup prereqs
+        run: |
+          npm install -g lerna
+          npm install -g typescript
+          npm install -g yarn
+          yarn install
+          lerna bootstrap
+
+      - name: Create .env file
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          FILE_WEB3STORAGE_KEY: ${{ secrets.FILE_WEB3STORAGE_KEY }}
+        run: |
+          rm -rf ./packages/dapp/.env
+          touch ./packages/dapp/.env
+          cat > ./packages/dapp/.env << END
+          FAST_REFRESH=true
+          BROWSER=false
+          HTTPS=true
+          REACT_APP_LOG_LEVEL=debug
+          REACT_APP_FILE_WEB3STORAGE_KEY=$FILE_WEB3STORAGE_KEY
+          REACT_APP_GOOGLE_API_KEY=$GOOGLE_API_KEY
+          REACT_APP_MODE=production
+          REACT_APP_NETWORK_ID=77
+          REACT_APP_NETWORK_PROVIDER=https://sokol.poa.network
+          REACT_APP_CONTRACT_ADDRESS=0xAD4B90b5053F7382A1313812559E044219BAE523
+          END
+
+      - name: Build dapp
+        env:
+          NODE_OPTIONS: --max_old_space_size=8192
+        run: |
+          rm -rf ./docs
+          mkdir -p ./docs
+          cd ./packages/dapp/
+          yarn ghpages
+
+      - name: Deploy to Netlify
+        uses: nwtgck/actions-netlify@v1.2
+        with:
+          publish-dir: './docs'
+          production-branch: production
+          production-deploy: true
+          enable-pull-request-comment: false
+          enable-commit-comment: false
+          overwrites-pull-request-comment: false
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        timeout-minutes: 1
