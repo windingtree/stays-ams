@@ -77,6 +77,7 @@ export interface TokenCardProps extends TokenData {
 export interface TokenViewProps extends StayToken {
   getDate?: (days: number) => DateTime;
   facilityOwner: string | undefined;
+  facility: LodgingFacilityRecord | undefined;
 }
 
 export const TokenCard = ({
@@ -94,13 +95,15 @@ export const TokenCard = ({
     return null
   }
   const parseTrait = (trait: string): any => {
-    return attributes.find(attr => attr.trait_type === trait)?.value ?? ''
+    return (attributes || []).find(attr => attr.trait_type === trait)?.value ?? ''
   };
   const space = facility.spaces.find(space => space.contractData.spaceId === parseTrait('spaceId').toLowerCase())
   const quantity = Number(parseTrait('quantity'))
   const numberOfDays = Number(parseTrait('numberOfDays'))
   const total = BN.from(quantity).mul(BN.from(numberOfDays)).mul(space?.contractData.pricePerNightWei ?? 0).toString();
   const totalEther = utils.formatUnits(total, 'ether');
+
+
   return (
     <Box>
       <Box
@@ -148,6 +151,7 @@ export const TokenView = ({
   owner,
   getDate,
   facilityOwner,
+  facility,
   status,
   data: {
     name,
@@ -260,6 +264,12 @@ export const TokenView = ({
             to={facilityOwner}
             tokenId={tokenId}
             onError={err => setError(err)}
+            name={name}
+            description={description}
+            attributes={attributes}
+            facility={facility}
+            getDate={getDate}
+            pricePerNightWei={'0'}
           />
 
           {status === 'booked' &&
@@ -387,14 +397,6 @@ export const MyTokens = () => {
     <PageWrapper>
       <Box>
         <Header>Stay tokens</Header>
-        {/* {token &&
-          <TokenView
-            getDate={getDate}
-            isGetDateReady={isGetDateReady}
-            facilityOwner={facilityOwner}
-            {...token}
-          />
-        } */}
 
         <MessageBox type='info' show={isLoading}>
           <Box direction='row'>
@@ -439,6 +441,7 @@ export const MyTokens = () => {
                 <TokenView
                   getDate={getDate}
                   facilityOwner={facilityOwner}
+                  facility={findFacility(data)}
                   {...token}
                 />
                 : null}
