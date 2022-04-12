@@ -2,7 +2,7 @@
 
 ## Installation
 
-Make sure you have `node` and `nvm` installed.
+Make sure you have `node` and `nvm` installed:
 
 ```bash
 nvm use v16
