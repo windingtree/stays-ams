@@ -72,10 +72,32 @@ abstract contract IStays is IStayEscrow {
   function activateSpace(bytes32 _spaceId) public virtual;
   function deactivateSpace(bytes32 _spaceId) public virtual;
   function updateSpace(bytes32 _spaceId, uint256 _capacity, uint256 _pricePerNightWei, string calldata _dataURI) public virtual;
-  function deleteSpace(bytes32 _spaceId) public virtual;
+  // @todo function deleteSpace(bytes32 _spaceId) public virtual;
+
+  // Delegates (addresses that can perform certain actions, like check-in and check-out)
+  // function addDelegate(bytes32 _lodgingFacilityId, address _delegate, uint8 _accessLevel) public virtual;
+  // function changeDelegateAccessLevel(bytes32 _lodgingFacilityId, address _delegate, uint8 _accessLevel) public virtual;
+  // function removeDelegate(bytes32 _lodgingFacilityId, address _delegate) public virtual;
 
   // Stays
   function newStay(bytes32 _spaceId, uint256 _startDay, uint256 _numberOfDays, uint256 _quantity) public payable virtual returns (uint256);
+  // getting all my Stays is via built-in NFT contract getter
+  // getting Stay details is via NFT's tokenURI getter
+  // function getAllStayIdsByFacilityId(bytes32 _lodgingFacilityId) public virtual returns (uint256[] memory);
+  // function getCurrentStayIdsByFacilityId(bytes32 _lodgingFacilityId) public virtual returns (bytes32[] memory);
+  // function getFutureStayIdsByFacilityId(bytes32 _lodgingFacilityId) public virtual returns (bytes32[] memory);
   function checkIn(uint256 _tokenId, CheckInVoucher memory voucher) public virtual;
   function checkOut(uint256 _tokenId) public virtual;
+  // function cancel(uint256 _tokenId) public virtual;
+
+  // function requestChange(uint256 _tokenId, bytes32 _spaceId, uint256 _startDay, uint256 _numberOfDays, uint256 _quantity) public payable virtual;
+  // function requestCancel(int256 _tokenId) public virtual;
+  // function requestResponse(uint256 _tokenId, bool _answer) public virtual;
+  // @todo change my contact information
+
+  // Reviews
+  // @todo leave a LF review
+  // @todo leave a Guest review
+  // @todo answer a review
+  // @todo start a dispute on a review
 }

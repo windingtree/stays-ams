@@ -38,7 +38,6 @@ abstract contract StayEscrow is IStayEscrow {
   ) internal override(IStayEscrow) virtual {
     uint256 payment = _deposits[spaceId][payer][tokenId];
 
-    require(payment >= 0, "Insufficient funds");
     require(
       _states[tokenId] == State.Checkout,
       "Complete withdraw not allowed in this state"
@@ -69,23 +68,4 @@ abstract contract StayEscrow is IStayEscrow {
     emit Withdraw(payer, payee, payment, spaceId, tokenId);
   }
 
-  // Refund deposit
-  function refund(
-    address payable payee,
-    bytes32 spaceId,
-    uint256 tokenId
-  ) internal override(IStayEscrow) virtual {
-    require(
-      _states[tokenId] == State.Checkin,
-      "Refund not allowed in current state"
-    );
-    require(_deposits[spaceId][payee][tokenId] > 0, "Insufficient funds");
-
-    uint256 payment = _deposits[spaceId][payee][tokenId];
-    _deposits[spaceId][payee][tokenId] = 0;
-    _states[tokenId] = State.Closed;
-    payee.sendValue(payment);
-
-    emit Refund(payee, payment, spaceId, tokenId);
-  }
 }
