@@ -27,7 +27,7 @@ export const ResponsiveAlign = (winWidth: number) => {
 export const AppHeader = () => {
   const size = useContext(ResponsiveContext);
   const { winWidth } = useWindowsDimension();
-  const { state, pathname } = useLocation();
+  const { state } = useLocation();
 
   const navigate = useNavigate();
   const { account } = useAppState();

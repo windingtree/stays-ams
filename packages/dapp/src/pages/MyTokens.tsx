@@ -5,7 +5,7 @@ import * as Icons from 'grommet-icons';
 import { Grid, Spinner, Button, Box, Image, Text } from 'grommet';
 import { PageWrapper } from './PageWrapper';
 import { MessageBox } from '../components/MessageBox';
-import { CustomText, Title, StayVoucherQr } from '../components/StayVoucherQr';
+import { CustomText, StayVoucherQr } from '../components/StayVoucherQr';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAppState } from '../store';
 // import { useWindowsDimension } from "../hooks/useWindowsDimension";

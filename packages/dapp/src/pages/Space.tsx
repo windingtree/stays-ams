@@ -12,7 +12,7 @@ import { useContract } from '../hooks/useContract';
 import { NavLink } from 'react-router-dom';
 import { utils, BigNumber as BN } from 'ethers';
 import { Header } from './MyTokens';
-import { CustomText, Title } from '../components/StayVoucherQr';
+// import { CustomText, Title } from '../components/StayVoucherQr';
 import styled from 'styled-components';
 
 export const Description = styled(Text)`
@@ -30,7 +30,7 @@ export const Space: React.FC = () => {
     account,
     lodgingFacilities,
     searchSpaces,
-    themeMode,
+    // themeMode,
     searchParams,
     provider,
     ipfsNode,
