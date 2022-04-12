@@ -51,7 +51,8 @@ export class Contract {
   constructor(
     contractAddress: string,
     providerOrUri: KnownProvider,
-    web3Storage: Web3StorageApi
+    web3Storage: Web3StorageApi,
+    withSigner = true
   ) {
     if (regexp.ethereumAddress.exec(contractAddress)) {
       this.address = contractAddress;
@@ -91,10 +92,10 @@ export class Contract {
       this.provider
     ) as Stays;
 
-    const defaultSigner = (this.provider as providers.Web3Provider).getSigner();
-
-    if (defaultSigner._address !== null) {
-      this.contract = this.contract.connect(defaultSigner);
+    if (withSigner) {
+      this.contract = this.contract.connect(
+        (this.provider as providers.Web3Provider).getSigner()
+      );
     }
   }
 

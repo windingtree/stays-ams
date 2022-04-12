@@ -20,7 +20,7 @@ export const useSpaceAvailability = (): UseSpaceAvailabilityHook => {
   console.log("useSpaceAvailability :: start")
 
   const { rpcProvider, ipfsNode } = useAppState();
-  const [contract] = useContract(rpcProvider, ipfsNode);
+  const [contract] = useContract(rpcProvider, ipfsNode, false);
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
