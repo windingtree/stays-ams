@@ -9,10 +9,7 @@ const App = () => {
   return (
     <AppStateProvider>
       <GlobalStyle>
-        <Main
-          fill
-          responsive
-        >
+        <Main>
           <AppHeader />
           <AppRoutes />
         </Main>

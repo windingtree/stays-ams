@@ -23,8 +23,7 @@ import { Facilities } from '../pages/Facilities';
 
 const CustomMenu = styled(Menu)`
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  // border:
+  border: 1px solid black;
 `;
 
 export interface RouteConfig {
@@ -165,10 +164,10 @@ export const GlobalMenu = () => {
       dropBackground={{ color: 'black', opacity: 0.9 }}
       dropAlign={{
         top: "bottom",
-        right: "right",
+        left: "right",
       }}
       disabled={isConnecting}
-      icon={(<MenuIcon color='white' />)}
+      icon={(<MenuIcon color='black' />)}
       items={buildMenuConfig}
     />
   );
