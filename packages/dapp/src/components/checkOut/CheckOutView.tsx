@@ -1,19 +1,32 @@
 import type { StayToken } from 'stays-core';
 import { useMemo, useState } from 'react';
 import { DateTime } from 'luxon';
-import * as Icons from 'grommet-icons';
-import { Grid, Button, Box, Card, CardBody, CardHeader, CardFooter, Image, Text, Spinner } from 'grommet';
+import { Grid, Button, Box, Text, Spinner } from 'grommet';
 import { centerEllipsis } from '../../utils/strings';
 import { TxHashCallbackFn } from 'stays-core/dist/src/utils/sendHelper';
 import { getNetwork } from '../../config';
 import { ExternalLink } from '../ExternalLink';
 import styled from 'styled-components';
 import { MessageBox } from '../MessageBox';
+import { CustomText } from '../StayVoucherQr';
 
 const InnerSpinner = styled(Spinner)`
   margin-left: 8px;
 `;
 
+const BlackButton = styled(Button)`
+  color: #fff;
+  background: #0D0E0F;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 24px;
+  // max-height: 3rem;
+  border-radius: 2rem;
+  border: none;
+  width: 8rem
+`;
 
 export interface CheckOutProps extends StayToken {
   getDate: (days: number) => DateTime;
@@ -53,130 +66,59 @@ export const CheckOutView = ({
     return hash ? `${network.blockExplorer}/tx/${hash}` : null
   }, [hash])
 
-  const parseTrait = (trait: string, value: any): any => {
-    switch (trait) {
-      case 'startDay':
-        return getDate(Number(value)).toISODate();
-      case 'facilityId':
-        return centerEllipsis(value);
-      case 'spaceId':
-        return centerEllipsis(value);
-      default:
-        return value;
-    }
+  const parseTrait = (trait: string): any => {
+    return attributes?.find(attr => attr.trait_type === trait)?.value ?? ''
   };
 
   return (
     <Box
       alignSelf='center'
-      direction='column'
-      pad={{ bottom: 'medium' }}
+      direction='row'
+      align='center'
+      justify='start'
+      // pad={{ bottom: 'medium' }}
+      fill
     >
-      <Card
-        width='large'
+      <Grid
+        fill='horizontal'
+        // pad='small'
+        align='center'
+        columns={['medium', 'small', 'auto']}
+        responsive
       >
-        <CardBody>
-          <CardHeader
-            pad={{ horizontal: 'small' }}
-            background='light-2'
-            justify='end'
-          >
-            <Button
-              icon={<Icons.Close color="plain" />}
-              hoverIndicator
-              onClick={() => onClose()}
-            />
-          </CardHeader>
-          <Image
-            fit='cover'
-            src={image}
-          />
-          <Grid
-            fill='horizontal'
-            pad='small'
-            border='bottom'
-            columns={['small', 'auto']}
-            responsive
-          >
-            <Box>
-              <Text weight='bold'>Status</Text>
-            </Box>
-            <Box>
-              <Text>{status ?? 'unknown'}</Text>
-            </Box>
-          </Grid>
-          <Grid
-            fill='horizontal'
-            pad='small'
-            border='bottom'
-            columns={['small', 'auto']}
-            responsive
-          >
-            <Box>
-              <Text weight='bold'>Name</Text>
-            </Box>
-            <Box>
-              <Text>{name}</Text>
-            </Box>
-          </Grid>
-          <Grid
-            fill='horizontal'
-            pad='small'
-            border='bottom'
-            columns={['small', 'auto']}
-            responsive
-          >
-            <Box>
-              <Text weight='bold'>Description</Text>
-            </Box>
-            <Box>
-              <Text>{description}</Text>
-            </Box>
-          </Grid>
+        <Box>
+          <CustomText>{name}</CustomText>
+        </Box>
+        <Box>
+          <CustomText>{status ?? 'unknown'}</CustomText>
+        </Box>
+        <Box>
+          <CustomText>{getDate(parseTrait('startDay')).toISODate()} - {getDate(Number(parseTrait('startDay')) + Number(parseTrait('numberOfDays'))).toISODate()}</CustomText>
+        </Box>
+      </Grid>
 
-          {attributes?.map(
-            ({ trait_type, value }, index) => (
-              <Grid
-                key={index}
-                fill='horizontal'
-                pad='small'
-                border='bottom'
-                columns={['small', 'auto']}
-                responsive
-              >
-                <Box>
-                  <Text weight='bold'>{trait_type}</Text>
-                </Box>
-                <Box>
-                  <Text>{parseTrait(trait_type, value)}</Text>
-                </Box>
-              </Grid>
-            )
-          )}
-        </CardBody>
-        <CardFooter pad='medium'>
-          <Button onClick={() => checkOut(tokenId, checkOutDate, setHash)} >
-            {() => (
-              <Box direction='row' align='center' pad='small'>
-                <Text>
-                  Check out
-                </Text>
-                {loading && <InnerSpinner />}
-              </Box>
-            )}
-          </Button>
-          {hashLink !== null ?
-            <ExternalLink href={hashLink} label={centerEllipsis(hash)} />
-            : null}
-          <MessageBox type='error' show={!!error}>
-            <Box direction='row'>
-              <Box>
-                {error}
-              </Box>
+      <Box pad='medium'>
+        <BlackButton onClick={() => checkOut(tokenId, checkOutDate, setHash)} >
+          {() => (
+            <Box direction='row' align='center' justify='center' pad='small'>
+              <Text>
+                Check out
+              </Text>
+              {loading && <InnerSpinner />}
             </Box>
-          </MessageBox>
-        </CardFooter>
-      </Card>
+          )}
+        </BlackButton>
+        {hashLink !== null ?
+          <ExternalLink href={hashLink} label={centerEllipsis(hash)} />
+          : null}
+        <MessageBox type='error' show={!!error}>
+          <Box direction='row'>
+            <Box>
+              {error}
+            </Box>
+          </Box>
+        </MessageBox>
+      </Box>
     </Box>
   );
 };
