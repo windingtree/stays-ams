@@ -91,10 +91,11 @@ export class Contract {
       this.provider
     ) as Stays;
 
-    // Apply the default Signer
-    this.contract = this.contract.connect(
-      (this.provider as providers.Web3Provider).getSigner()
-    );
+    const defaultSigner = (this.provider as providers.Web3Provider).getSigner();
+
+    if (defaultSigner._address !== null) {
+      this.contract = this.contract.connect(defaultSigner);
+    }
   }
 
   getDayZero(): Promise<number> {
