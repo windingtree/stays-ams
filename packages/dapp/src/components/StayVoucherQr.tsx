@@ -1,4 +1,6 @@
-import type { providers } from 'ethers';
+import type { LodgingFacilityRecord } from '../store/actions';
+import type { TokenAttribute } from 'stays-core';
+import { providers, utils, BigNumber as BN } from 'ethers';
 import { useState, useCallback } from 'react';
 import { Box, Grid, Text } from 'grommet';
 import { Modal } from '../components/Modal';
@@ -7,6 +9,7 @@ import { useSignVoucher } from '../hooks/useSignVoucher';
 import Logger from '../utils/logger';
 import styled from 'styled-components';
 import { CustomButton } from './SearchResultCard';
+import { DateTime } from 'luxon';
 
 // Initialize logger
 const logger = Logger('StayVoucherQr');
@@ -52,6 +55,9 @@ export interface StayVoucherQrProps {
   from: string | undefined,
   to: string | undefined,
   tokenId: string,
+  facility: LodgingFacilityRecord,
+  attributes: TokenAttribute[],
+  getDate: (days: number) => DateTime;
   onError: (error: string) => void
 }
 
@@ -60,6 +66,9 @@ export const StayVoucherQr = ({
   from,
   to,
   tokenId,
+  attributes,
+  facility,
+  getDate,
   onError
 }: StayVoucherQrProps) => {
   const [signCallback, isSignerReady] = useSignVoucher(provider);
@@ -106,6 +115,15 @@ export const StayVoucherQr = ({
     return null;
   }
 
+  const parseTrait = (trait: string): any => {
+    return attributes?.find(attr => attr.trait_type === trait)?.value ?? ''
+  };
+  const space = facility?.spaces.find(space => space.contractData.spaceId === parseTrait('spaceId').toLowerCase())
+  const quantity = Number(parseTrait('quantity'))
+  const numberOfDays = Number(parseTrait('numberOfDays'))
+  const total = BN.from(quantity).mul(BN.from(numberOfDays)).mul(space?.contractData.pricePerNightWei ?? 0).toString();
+  const totalEther = utils.formatUnits(total, 'ether');
+
   return (
     <Box>
       <CustomButton
@@ -135,7 +153,7 @@ export const StayVoucherQr = ({
               direction='column'
               align='start'
             >
-              <Title style={{marginBottom: '.5rem'}}>You stay is booked and is now an NFT.</Title>
+              <Title style={{ marginBottom: '.5rem' }}>You stay is booked and is now an NFT.</Title>
               <CustomText>Please take a picture or download the QR code as it will be used for you to check-in at the property.</CustomText>
               <CustomButton
                 label='Download QR'
@@ -156,11 +174,11 @@ export const StayVoucherQr = ({
               gridArea='hotel-data'
               border='top'
             >
-              <HotelTitle>Hotel Jakarta Amsterdam</HotelTitle>
-              <CustomText>Nieuwezijds Voorburgwal 50, 1012 SC Amsterdam, The Netherlands.</CustomText>
-              <CustomText>25.03.22 - 27.03.22</CustomText>
-              <CustomText>Economy Double Room, 2 persons.</CustomText>
-              <Price>xxx</Price>
+              <HotelTitle>{facility.name}</HotelTitle>
+              <CustomText>{facility.address.streetAddress}, {facility.address.postalCode} {facility.address.locality}, {facility.address.country}.</CustomText>
+              <CustomText>{getDate(parseTrait('startDay')).toFormat('MM.dd.yyyy')} - {getDate(Number(parseTrait('startDay')) + Number(parseTrait('numberOfDays'))).toFormat('MM.dd.yyyy')}</CustomText>
+              <CustomText>{space?.name},{quantity} {quantity > 1 ? 'persons' : 'person'}</CustomText>
+              <Price>{totalEther}</Price>
             </Box>
           </Grid>
         }
