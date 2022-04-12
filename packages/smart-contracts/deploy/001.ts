@@ -14,9 +14,17 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   // --- Deploy the contracts ---
   await deploy("Stays", {
     from: deployer,
-    // args: ['TestToken', 'TEST'],
     log: true,
-    autoMine: true
+    autoMine: true,
+    proxy: {
+      proxyContract: 'OpenZeppelinTransparentProxy',
+      execute: {
+        init: {
+          methodName: 'initialize',
+          args: []
+        }  
+      }
+    },
   })
 
 }
