@@ -41,6 +41,11 @@ const dateFormat = new Intl.DateTimeFormat(undefined, {
 
 const today = DateTime.now().set({ hour: 12 });
 const tomorrow = today.plus({ days: 1 });
+const startDay = DateTime.fromISO('2022-04-17').set({ hour: 12 });
+const endDay = DateTime.fromISO('2022-04-25').set({ hour: 12 });
+
+const defaultStartDate = today.toMillis() > startDay.toMillis() ? today.toISO() : startDay.toISO()
+const defaultEndDate = tomorrow.toMillis() > endDay.toMillis() ? tomorrow.toISO() : endDay.toISO()
 
 export const SearchForm: React.FC<{
   startDay?: number | undefined,
@@ -49,8 +54,8 @@ export const SearchForm: React.FC<{
 }> = ({ startDay, numberOfDays, initGuestsAmount }) => {
   const navigate = useNavigate();
   const { getDate } = useAppState();
-  const [departureDate, setDepartureDate] = useState<string>(today.toISO());
-  const [returnDate, setReturnDate] = useState<string>(tomorrow.toISO());
+  const [departureDate, setDepartureDate] = useState<string>(defaultStartDate);
+  const [returnDate, setReturnDate] = useState<string>(defaultEndDate);
   const [guestsAmount, setGuestsAmount] = useState(initGuestsAmount ?? 1);
 
   useEffect(() => {
