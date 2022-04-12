@@ -1,5 +1,5 @@
 import type { StayToken, TokenData } from 'stays-core';
-import { ReactChild, useCallback, useMemo, useState } from 'react';
+import { ReactChild, useMemo, useState } from 'react';
 import { DateTime } from 'luxon';
 import * as Icons from 'grommet-icons';
 import { Grid, Spinner, Button, Box, Image, Text } from 'grommet';
@@ -14,11 +14,11 @@ import { useContract } from '../hooks/useContract';
 import { centerEllipsis } from '../utils/strings';
 import { getNetwork } from '../config';
 import { ExternalLink } from '../components/ExternalLink';
-import { useGoToMessage } from '../hooks/useGoToMessage';
+// import { useGoToMessage } from '../hooks/useGoToMessage';
 import { LodgingFacilityRecord } from '../store/actions';
 import styled from 'styled-components';
 import { utils, BigNumber as BN } from 'ethers';
-import { CustomButton } from '../components/SearchResultCard';
+// import { CustomButton } from '../components/SearchResultCard';
 
 const HotelTitle = styled(Text)`
   color: #000;
@@ -157,40 +157,40 @@ export const TokenView = ({
   }
 }: TokenViewProps) => {
   const { provider, ipfsNode } = useAppState();
-  const [contract, , contractError] = useContract(provider, ipfsNode);
+  const [, , contractError] = useContract(provider, ipfsNode);
   const navigate = useNavigate();
-  const showMessage = useGoToMessage();
-  const [cancelLoading, setCancelLoading] = useState<boolean>(false);
-  const [cancellationTxHash, setCancellationTxHash] = useState<string | undefined>();
+  // const showMessage = useGoToMessage();
+  // const [cancelLoading, setCancelLoading] = useState<boolean>(false);
+  const [cancellationTxHash, ] = useState<string | undefined>();
   const [error, setError] = useState<string | undefined>();
   const cancellationTxHashLink = useMemo(() => {
     const network = getNetwork()
     return cancellationTxHash ? `${network.blockExplorer}/tx/${cancellationTxHash}` : '#'
   }, [cancellationTxHash]);
 
-  const cancelTx = useCallback(
-    async () => {
-      setError(undefined);
-      setCancellationTxHash(undefined);
-      if (!contract) {
-        return;
-      }
-      try {
-        setCancelLoading(true);
-        await contract.cancel(tokenId, undefined, setCancellationTxHash);
-        setCancelLoading(false);
-        // Show success message;
-        showMessage(
-          `Stay token #${tokenId} is successfully cancelled. All funds are fully refunded`,
-          'info'
-        );
-      } catch (err) {
-        setError((err as Error).message || 'Unknown cancellation error');
-        setCancelLoading(false);
-      }
-    },
-    [showMessage, contract, tokenId]
-  );
+  // const cancelTx = useCallback(
+  //   async () => {
+  //     setError(undefined);
+  //     setCancellationTxHash(undefined);
+  //     if (!contract) {
+  //       return;
+  //     }
+  //     try {
+  //       setCancelLoading(true);
+  //       await contract.cancel(tokenId, undefined, setCancellationTxHash);
+  //       setCancelLoading(false);
+  //       // Show success message;
+  //       showMessage(
+  //         `Stay token #${tokenId} is successfully cancelled. All funds are fully refunded`,
+  //         'info'
+  //       );
+  //     } catch (err) {
+  //       setError((err as Error).message || 'Unknown cancellation error');
+  //       setCancelLoading(false);
+  //     }
+  //   },
+  //   [showMessage, contract, tokenId]
+  // );
 
   if (!getDate) {
     return null;
@@ -264,7 +264,7 @@ export const TokenView = ({
 
           {status === 'booked' &&
             <Box>
-              <CustomButton
+              {/* <CustomButton
                 label={
                   <Box direction='row'>
                     <Box>
@@ -279,7 +279,7 @@ export const TokenView = ({
                 }
                 disabled={cancelLoading}
                 onClick={cancelTx}
-              />
+              /> */}
               {!!cancellationTxHash
                 ? <ExternalLink
                   href={cancellationTxHashLink}
