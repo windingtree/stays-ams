@@ -5,12 +5,11 @@ import * as Icons from 'grommet-icons';
 import { Grid, Spinner, Button, Box, Image, Text } from 'grommet';
 import { PageWrapper } from './PageWrapper';
 import { MessageBox } from '../components/MessageBox';
-import { CustomText, Title, StayVoucherQr } from '../components/StayVoucherQr';
+import { CustomText, StayVoucherQr } from '../components/StayVoucherQr';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAppState } from '../store';
 // import { useWindowsDimension } from "../hooks/useWindowsDimension";
 import { useMyTokens, useGetToken } from '../hooks/useMyTokens';
-import { useDayZero } from '../hooks/useDayZero';
 import { useContract } from '../hooks/useContract';
 import { centerEllipsis } from '../utils/strings';
 import { getNetwork } from '../config';
@@ -18,7 +17,7 @@ import { ExternalLink } from '../components/ExternalLink';
 import { useGoToMessage } from '../hooks/useGoToMessage';
 import { LodgingFacilityRecord } from '../store/actions';
 import styled from 'styled-components';
-import { utils } from 'ethers';
+import { utils, BigNumber as BN } from 'ethers';
 import { CustomButton } from '../components/SearchResultCard';
 
 const HotelTitle = styled(Text)`
@@ -72,13 +71,11 @@ export interface TokenCardProps extends TokenData {
   onClick?: () => void,
   children?: ReactChild | null,
   facility: LodgingFacilityRecord | undefined
-  isGetDateReady: boolean;
-  getDate: (days: number) => DateTime;
+  getDate?: (days: number) => DateTime;
 }
 
 export interface TokenViewProps extends StayToken {
-  getDate: (days: number) => DateTime;
-  isGetDateReady: boolean;
+  getDate?: (days: number) => DateTime;
   facilityOwner: string | undefined;
 }
 
@@ -90,11 +87,10 @@ export const TokenCard = ({
   onClick = () => { },
   facility,
   getDate,
-  isGetDateReady,
   children
 }: TokenCardProps) => {
   console.log('facility', facility)
-  if (!facility || !isGetDateReady || !attributes) {
+  if (!facility || !getDate || !attributes) {
     return null
   }
   const parseTrait = (trait: string): any => {
@@ -103,20 +99,18 @@ export const TokenCard = ({
   const space = facility.spaces.find(space => space.contractData.spaceId === parseTrait('spaceId').toLowerCase())
   const quantity = Number(parseTrait('quantity'))
   const numberOfDays = Number(parseTrait('numberOfDays'))
-  const price = Number(utils.formatUnits(space?.contractData.pricePerNightWei ?? 0, 'ether'))
-  const total = quantity * numberOfDays * price
+  const total = BN.from(quantity).mul(BN.from(numberOfDays)).mul(space?.contractData.pricePerNightWei ?? 0).toString();
+  const totalEther = utils.formatUnits(total, 'ether');
   return (
     <Box>
       <Box
         direction='row'
         justify='between'
-        pad='large'
-        round={false}
-        width='65rem'
+        pad='small'
         style={{ borderBottom: '1px solid black' }}
         onClick={() => onClick()}
       >
-        <Box>
+        <Box margin={{ right: 'large' }}>
           <Image
             height='120'
             width='120'
@@ -124,7 +118,7 @@ export const TokenCard = ({
             src={image}
           />
         </Box>
-        <Box pad='small' style={{ maxWidth: '30rem' }}>
+        <Box pad='small'>
           <HotelTitle>{facility.name}</HotelTitle>
           <CustomText>{facility.address.streetAddress}, {facility.address.postalCode} {facility.address.locality}, {facility.address.country}. </CustomText>
           <CustomText>{space?.name},{quantity} {quantity > 1 ? 'persons' : 'person'} </CustomText>
@@ -138,9 +132,9 @@ export const TokenCard = ({
           pad={{ horizontal: 'small' }}
         >
           <Box pad='small'>
-            <Title size="xlarge" weight="bold">
-              {total.toFixed(2)}
-            </Title>
+            <Text size="xlarge" weight="bold">
+              {totalEther}
+            </Text>
           </Box>
         </Box>
       </Box>
@@ -153,7 +147,6 @@ export const TokenView = ({
   tokenId,
   owner,
   getDate,
-  isGetDateReady,
   facilityOwner,
   status,
   data: {
@@ -199,7 +192,7 @@ export const TokenView = ({
     [showMessage, contract, tokenId]
   );
 
-  if (!isGetDateReady) {
+  if (!getDate) {
     return null;
   }
 
@@ -326,9 +319,8 @@ export const TokenView = ({
 };
 
 export const MyTokens = () => {
-  const { provider, ipfsNode, account, lodgingFacilities } = useAppState();
+  const { provider, ipfsNode, account, lodgingFacilities, getDate } = useAppState();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [getDate, isGetDateReady, getDateError] = useDayZero(provider, ipfsNode);
   const tokenId = useMemo(
     () => searchParams.get('tokenId') || undefined,
     [searchParams]
@@ -345,8 +337,8 @@ export const MyTokens = () => {
   );
   // const { winWidth } = useWindowsDimension();
   const isLoading = useMemo(
-    () => tokensLoading || tokenLoading || !isGetDateReady,
-    [tokensLoading, tokenLoading, isGetDateReady]
+    () => tokensLoading || tokenLoading || getDate === undefined,
+    [tokensLoading, tokenLoading, getDate]
   );
 
   const findFacility = (data: TokenData) => {
@@ -392,16 +384,9 @@ export const MyTokens = () => {
   // ];
 
   return (
-    <PageWrapper
-      breadcrumbs={[
-        {
-          path: '/',
-          label: 'Home',
-        },
-      ]}
-    >
+    <PageWrapper>
       <Box>
-        <Header>Stay tokens </Header>
+        <Header>Stay tokens</Header>
         {/* {token &&
           <TokenView
             getDate={getDate}
@@ -438,12 +423,6 @@ export const MyTokens = () => {
           </Box>
         </MessageBox>
 
-        <MessageBox type='error' show={!!getDateError}>
-          <Box>
-            {getDateError}
-          </Box>
-        </MessageBox>
-
         <Box
           direction='column'
           alignSelf="center"
@@ -455,12 +434,10 @@ export const MyTokens = () => {
               onClick={() => setSearchParams({ tokenId })}
               {...data}
               getDate={getDate}
-              isGetDateReady={isGetDateReady}
             >
               {(token && token.tokenId === tokenId) ?
                 <TokenView
                   getDate={getDate}
-                  isGetDateReady={isGetDateReady}
                   facilityOwner={facilityOwner}
                   {...token}
                 />

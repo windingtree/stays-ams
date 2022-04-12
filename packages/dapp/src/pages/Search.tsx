@@ -1,14 +1,13 @@
 import { PageWrapper } from './PageWrapper';
 import { SearchForm } from '../components/search/SearchForm';
-import { Image, Box, Spinner, Text } from 'grommet';
+import { Box, Spinner, Text } from 'grommet';
 import { SearchResultCard } from '../components/SearchResultCard';
 import { useAppState } from '../store';
 import { useSpaceSearch } from '../hooks/useSpaceSearch';
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { MessageBox } from '../components/MessageBox';
-import { useDayZero } from '../hooks/useDayZero';
-import { GradientText, WhiteText } from './Home';
+import { GradientText } from './Home';
 import styled from 'styled-components';
 
 export const WhiteParagraph = styled(Text)`
@@ -40,8 +39,9 @@ export const WhiteParagraph18 = styled(Text)`
 export const Search = () => {
   console.log("Search :: start")
 
-  const { searchSpaces, rpcProvider, ipfsNode } = useAppState();
+  const { searchSpaces } = useAppState();
   const { search } = useLocation();
+  const [afterLoading, setAfterLoading] = useState(false);
 
   const { startDay, numberOfDays, guestsAmount } = useMemo(() => {
     const params = new URLSearchParams(search)
@@ -54,89 +54,78 @@ export const Search = () => {
     }
   }, [search])
 
-  const [loading, error] = useSpaceSearch(startDay, numberOfDays, guestsAmount)
-  const [getDate, isGetDateReady] = useDayZero(rpcProvider, ipfsNode);
+  const [loading, error] = useSpaceSearch(startDay, numberOfDays, guestsAmount);
+
+  useEffect(
+    () => {
+      if (!loading) {
+        setTimeout(() => setAfterLoading(false), 3000);
+      } else {
+        setAfterLoading(true);
+      }
+    },
+    [loading]
+  );
 
   const filteredSpaces = useMemo(() => {
     if (
       (!searchSpaces || !searchSpaces.length) ||
       (guestsAmount === 0)
     ) {
-      return;
+      return [];
     }
 
-    return searchSpaces.filter((space: any) => space.capacity >= guestsAmount)
+    return searchSpaces.filter((space: any) => space.capacity >= guestsAmount);
   }, [searchSpaces, guestsAmount])
 
   console.log("Search :: end")
 
   return (
-    <PageWrapper
-      breadcrumbs={[
-        {
-          path: '/',
-          label: 'Home'
-        }
-      ]}
-    >
-      <Box
-        style={{
-          // position: 'relative',
-          background: '#611FF2',
-          height: '90vh',
-        }}
-      >
-        <WhiteText margin={{ top: 'medium' }}>April 18-25 2022</WhiteText>
-        <WhiteText>Devconnect APRIL 18-25, 2022 Amsterdam, The Netherlands</WhiteText>
+    <PageWrapper>
+
+      <Box align='center' margin={{ bottom: 'small' }}>
+        <Text size='xxlarge'>
+          April 18-25 2022
+        </Text>
+        <Text size='large'>
+          Devconnect APRIL 18-25, 2022 Amsterdam, The Netherlands
+        </Text>
         <GradientText>Amsterdam</GradientText>
-        <WhiteText>A collaborative Ethereum week, built by and for everyone</WhiteText>
+      </Box>
 
-        <WhiteParagraph>
-          Devconnect Amsterdam brings together hundreds of people from all over the world. Within one week there will be held various independent Ethereum events as well as in-person gatherings with the focus on communication, learning and making progress on specific subjects.
-        </WhiteParagraph>
-        <WhiteParagraph18>
-          With Win.so you can on-chain your stay in Amsterdam during Devconnect. Book with us. Pay in DAI. Check-in with NFT. Get Rewards for the next ETH event.
-        </WhiteParagraph18>
-
-        {isGetDateReady && <SearchForm
-          getDate={getDate}
+      <Box margin={{ bottom: 'medium' }}>
+        <SearchForm
           startDay={startDay}
           numberOfDays={numberOfDays}
           initGuestsAmount={guestsAmount}
-        />}
-        {isGetDateReady && <Image
-          fit="cover"
-          src='/bg-img.svg'
-          color='#611FF2'
-          style={{
-            width: '100vw',
-            // height: '100vh',
-            position: 'absolute',
-            left: '0',
-            bottom: '-2rem',
-            zIndex: '-100'
-          }}
-        />}
-
-        <MessageBox type='error' show={!!error}>
-          <Box direction='row'>
-            <Box>
-              {error}
-            </Box>
-          </Box>
-        </MessageBox>
+        />
       </Box>
 
-      <Box
-        style={{
-          // position: 'absolute',
-          marginTop: '3rem'
-        }}
-      >
-        {loading ? <Spinner color='accent-1' alignSelf='center' size='medium' /> : null}
-        {filteredSpaces && filteredSpaces.length && isGetDateReady ? filteredSpaces.map((space) =>
-          <SearchResultCard key={space.contractData.spaceId} space={space} />
-        ) : null}
+      <MessageBox type='error' show={!!error}>
+        <Box direction='row'>
+          <Box>
+            {error}
+          </Box>
+        </Box>
+      </MessageBox>
+
+      {afterLoading ? <Spinner color='accent-1' alignSelf='center' size='large' /> : null}
+
+      <MessageBox type='info' show={!afterLoading && filteredSpaces.length === 0}>
+        <Text>
+          No spaces found according your criteria
+        </Text>
+      </MessageBox>
+
+      <Box margin={{ top: 'large' }}>
+        {filteredSpaces.map((space) =>
+          <SearchResultCard
+            key={space.contractData.spaceId}
+            space={space}
+            numberOfDays={numberOfDays}
+            guestsAmount={guestsAmount}
+          />
+        )}
       </Box>
     </PageWrapper>
   );

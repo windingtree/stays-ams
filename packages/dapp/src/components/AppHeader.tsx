@@ -27,7 +27,7 @@ export const ResponsiveAlign = (winWidth: number) => {
 export const AppHeader = () => {
   const size = useContext(ResponsiveContext);
   const { winWidth } = useWindowsDimension();
-  const { state, pathname } = useLocation();
+  const { state } = useLocation();
 
   const navigate = useNavigate();
   const { account } = useAppState();
@@ -40,11 +40,6 @@ export const AppHeader = () => {
   return (
     <Header
       pad='medium'
-      style={{
-        position: 'relative',
-        background: '#611FF2',
-        width: '100vw',
-      }}
       responsive={true}
     >
       {(returnLocation && account) &&
@@ -54,7 +49,17 @@ export const AppHeader = () => {
         <GlobalMenu />
       </Box>
 
-      {pathname === '/' || pathname === '/search' || winWidth < 900 ?
+      <Image
+        style={{
+          position: 'absolute',
+          left: ResponsiveAlign(winWidth),
+        }}
+        src='/logo-small.png'
+        height='32px'
+        onClick={() => navigate('/')}
+      />
+
+      {/* {pathname === '/' || pathname === '/search' || winWidth < 900 ?
         <Image
           style={{
             position: 'absolute',
@@ -73,8 +78,8 @@ export const AppHeader = () => {
           height='32px'
           onClick={() => navigate('/')}
         />
-      }
-      <Image
+      } */}
+      {/* <Image
         fit="cover"
         src='/bg-img.svg'
         color='#611FF2'
@@ -86,9 +91,9 @@ export const AppHeader = () => {
           bottom: '-1.5rem',
           zIndex: '-100'
         }}
-      />
+      /> */}
 
-      <Box direction='row' align='center' gap={size}>
+      <Box direction='row' align='center' gap={size} margin={{ right: 'small' }}>
         <Account account={account} />
         <Box>
           {account

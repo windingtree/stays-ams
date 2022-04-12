@@ -1,18 +1,12 @@
 import { useContext } from 'react';
-import { Button, Box, Spinner, Text, ResponsiveContext } from 'grommet';
+import { Box, Spinner, Text, ResponsiveContext } from 'grommet';
 import { Login, Logout } from 'grommet-icons';
 import styled from 'styled-components';
 import { useAppState } from '../../store';
+import { WhiteButton } from './index';
 
 const InnerSpinner = styled(Spinner)`
   margin-left: 8px;
-`;
-
-const WhiteButton = styled(Button)`
-  height: 2.5rem;
-  background: white;
-  border:none;
-  border-radius: 2rem;
 `;
 
 export const SignInButton = () => {
