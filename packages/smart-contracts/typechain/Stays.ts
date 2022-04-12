@@ -62,6 +62,7 @@ export interface StaysInterface extends utils.Interface {
     "getSpaceByTokenId(uint256)": FunctionFragment;
     "getSpaceIdsByFacilityId(bytes32)": FunctionFragment;
     "getTokensBySpaceId(bytes32,uint8)": FunctionFragment;
+    "initialize()": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "lodgingFacilities(bytes32)": FunctionFragment;
     "name()": FunctionFragment;
@@ -183,6 +184,10 @@ export interface StaysInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "getTokensBySpaceId",
     values: [BytesLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "initialize",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
@@ -344,6 +349,7 @@ export interface StaysInterface extends utils.Interface {
     functionFragment: "getTokensBySpaceId",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
     data: BytesLike
@@ -809,6 +815,10 @@ export interface Stays extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber[]]>;
 
+    initialize(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -1118,6 +1128,10 @@ export interface Stays extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber[]>;
 
+  initialize(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   isApprovedForAll(
     owner: string,
     operator: string,
@@ -1417,6 +1431,8 @@ export interface Stays extends BaseContract {
       _state: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber[]>;
+
+    initialize(overrides?: CallOverrides): Promise<void>;
 
     isApprovedForAll(
       owner: string,
@@ -1886,6 +1902,10 @@ export interface Stays extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    initialize(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -2156,6 +2176,10 @@ export interface Stays extends BaseContract {
       _spaceId: BytesLike,
       _state: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    initialize(
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     isApprovedForAll(
