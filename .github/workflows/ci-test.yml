@@ -2,7 +2,7 @@ name: CI
 on: [push, pull_request]
 jobs:
   deploy:
-    name: "Deploy to Netlify"
+    name: "Update test env"
     runs-on: ubuntu-latest
     environment:
       name: test
