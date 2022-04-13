@@ -1,5 +1,5 @@
 import { PageWrapper } from './PageWrapper';
-import { Box, Text, Image, Carousel, Spinner, Grid } from 'grommet';
+import { Box, Text, Image, Carousel, Spinner, Grid, Anchor } from 'grommet';
 import { useAppState } from '../store';
 import { useMemo, useEffect, useState, useCallback } from 'react';
 import { BookWithDai } from '../components/buttons/BookWithDai';
@@ -29,7 +29,7 @@ export const Description = styled(Text)`
   text-align: start;
 `;
 
-export const Contact = styled(Text)`
+export const Contact = styled(Anchor)`
   color: #0D0E0F;
   font-family: 'Inter';
   font-style: normal;
@@ -201,17 +201,17 @@ export const Space: React.FC = () => {
 
           {!!facility &&
             <Box align='center'>
-              <Contact size='large'>
+              <Description size='large'>
                 {facility.address.streetAddress}, {facility.address.postalCode} {facility.address.locality}, {facility.address.country}.
-              </Contact>
+              </Description>
               <Box align='center'>
-                <Contact size='large'>
+                <Contact href={`mailto:${facility.contact?.email}`}>
                   {facility.contact?.email}
                 </Contact>
-                <Contact size='large'>
+                <Contact href={facility.contact?.website}>
                   {facility.contact?.website}
                 </Contact>
-                <Contact size='large'>
+                <Contact href={`tel:${facility.contact?.phone}`}>
                   {facility.contact?.phone}
                 </Contact>
               </Box>
