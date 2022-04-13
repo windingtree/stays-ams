@@ -134,10 +134,10 @@ export const Space: React.FC = () => {
     [searchParams]
   );
 
-  const guestsAmount = useMemo(
-    () => searchParams?.guestsAmount || 1,
-    [searchParams]
-  );
+  // const guestsAmount = useMemo(
+  //   () => searchParams?.guestsAmount || 1,
+  //   [searchParams]
+  // );
 
   const getPrice = useCallback(
     (nights: number): string  => {
