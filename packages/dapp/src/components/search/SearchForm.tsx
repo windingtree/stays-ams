@@ -11,7 +11,7 @@ export const Label = styled.div`
   margin-left: 4px;
 `;
 
-export const GuestsNumber = styled(TextInput)`
+export const RoomsNumber = styled(TextInput)`
   height: 2.5rem;
   background: white;
   color: black;
@@ -50,13 +50,13 @@ const defaultEndDate = tomorrow.toMillis() > endDay.toMillis() ? tomorrow.toISO(
 export const SearchForm: React.FC<{
   startDay?: number | undefined,
   numberOfDays?: number | undefined,
-  initGuestsAmount?: number | undefined,
-}> = ({ startDay, numberOfDays, initGuestsAmount }) => {
+  initRoomsAmount?: number | undefined,
+}> = ({ startDay, numberOfDays, initRoomsAmount }) => {
   const navigate = useNavigate();
   const { getDate } = useAppState();
   const [departureDate, setDepartureDate] = useState<string>(defaultStartDate);
   const [returnDate, setReturnDate] = useState<string>(defaultEndDate);
-  const [guestsAmount, setGuestsAmount] = useState(initGuestsAmount ?? 1);
+  const [roomsAmount, setRoomsAmount] = useState<number>(initRoomsAmount ?? 1);
 
   useEffect(() => {
     if (getDate !== undefined && !!startDay && !!numberOfDays) {
@@ -98,11 +98,11 @@ export const SearchForm: React.FC<{
       const query = new URLSearchParams([
         ['startDay', String(startDay)],
         ['numberOfDays', String(numberOfDays)],
-        ['guestsAmount', String(guestsAmount)],
+        ['roomsAmount', String(roomsAmount)],
       ]);
       navigate(`/search?${query}`, { replace: true });
     },
-    [navigate, getDate, departureDate, returnDate, guestsAmount]
+    [navigate, getDate, departureDate, returnDate, roomsAmount]
   );
 
   return (
@@ -145,19 +145,19 @@ export const SearchForm: React.FC<{
         direction='column'
         margin={{ right: 'small' }}
       >
-        <Label>Guests</Label>
+        <Label>Rooms</Label>
         <Box>
-          <GuestsNumber
+          <RoomsNumber
             size='medium'
             focusIndicator={false}
             suggestions={['1', '2', '3', '4', '5', '6', '7']}
-            placeholder='Guests'
-            value={guestsAmount}
+            placeholder='Rooms number'
+            value={roomsAmount}
             type='number'
-            onSelect={({ suggestion }) => setGuestsAmount(Number(suggestion))}
+            onSelect={({ suggestion }) => setRoomsAmount(Number(suggestion))}
             onChange={(event) => {
-              const value = Number(event.target.value)
-              setGuestsAmount(value !== 0 ? value : 1)
+              const value = Number(event.target.value);
+              setRoomsAmount(value !== 0 ? value : 1);
             }}
           />
         </Box>

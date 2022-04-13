@@ -43,18 +43,19 @@ export const Search = () => {
   const { search } = useLocation();
   const [afterLoading, setAfterLoading] = useState(false);
 
-  const { startDay, numberOfDays, guestsAmount } = useMemo(() => {
-    const params = new URLSearchParams(search)
-    const startDay = Number(params.get('startDay'))
-    const numberOfDays = Number(params.get('numberOfDays'))
+  const { startDay, numberOfDays, roomsAmount } = useMemo(() => {
+    const params = new URLSearchParams(search);
+    const startDay = Number(params.get('startDay'));
+    const numberOfDays = Number(params.get('numberOfDays'));
+    const roomsAmount = Number(params.get('roomsAmount'));
     return {
       startDay,
       numberOfDays,
-      guestsAmount: Number(params.get('guestsAmount')),
+      roomsAmount
     }
   }, [search])
 
-  const [loading, error] = useSpaceSearch(startDay, numberOfDays, guestsAmount);
+  const [loading, error] = useSpaceSearch(startDay, numberOfDays, roomsAmount);
 
   useEffect(
     () => {
@@ -66,17 +67,6 @@ export const Search = () => {
     },
     [loading]
   );
-
-  const filteredSpaces = useMemo(() => {
-    if (
-      (!searchSpaces || !searchSpaces.length) ||
-      (guestsAmount === 0)
-    ) {
-      return [];
-    }
-
-    return searchSpaces.filter((space: any) => space.capacity >= guestsAmount);
-  }, [searchSpaces, guestsAmount])
 
   console.log("Search :: end")
 
@@ -97,7 +87,7 @@ export const Search = () => {
         <SearchForm
           startDay={startDay}
           numberOfDays={numberOfDays}
-          initGuestsAmount={guestsAmount}
+          initRoomsAmount={roomsAmount}
         />
       </Box>
 
@@ -111,19 +101,19 @@ export const Search = () => {
 
       {afterLoading ? <Spinner color='accent-1' alignSelf='center' size='large' /> : null}
 
-      <MessageBox type='info' show={!afterLoading && filteredSpaces.length === 0}>
+      <MessageBox type='info' show={!afterLoading && searchSpaces.length === 0}>
         <Text>
           No spaces found according your criteria
         </Text>
       </MessageBox>
 
       <Box margin={{ top: 'large' }}>
-        {filteredSpaces.map((space) =>
+        {searchSpaces.map((space) =>
           <SearchResultCard
             key={space.contractData.spaceId}
             space={space}
             numberOfDays={numberOfDays}
-            guestsAmount={guestsAmount}
+            roomsAmount={roomsAmount}
           />
         )}
       </Box>

@@ -26,17 +26,17 @@ export const CustomButton = styled(Button)`
 export const SearchResultCard: React.FC<{
   space: Space,
   numberOfDays: number,
-  guestsAmount: number
-}> = ({ space, numberOfDays, guestsAmount }) => {
+  roomsAmount: number
+}> = ({ space, numberOfDays, roomsAmount }) => {
   const { account } = useAppState();
   const navigate = useNavigate();
   const [notification, setNotification] = useState<string | undefined>();
 
   const getPrice = useCallback(
-    (nights: number): string  => {
+    (nights: number, rooms: number): string  => {
       const perNight = BN.from(space?.contractData.pricePerNightWei ?? 0);
       return utils.formatUnits(
-        perNight.mul(BN.from(nights)),
+        perNight.mul(BN.from(nights)).mul(BN.from(rooms)),
         'ether'
       );
     },
@@ -91,7 +91,7 @@ export const SearchResultCard: React.FC<{
           {space.description}
         </Box>
         <Box pad={{ right: 'medium' }} direction='row' justify='between' align='center' gridArea="action">
-          <Text size='large'>Price: {getPrice(numberOfDays)} DAI</Text>
+          <Text size='large'>Price: {getPrice(numberOfDays, roomsAmount)} DAI</Text>
           <CustomButton
             size='large'
             label='Check Space'

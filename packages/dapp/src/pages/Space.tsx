@@ -105,7 +105,7 @@ export const Space: React.FC = () => {
           space.id,
           searchParams.startDay,
           searchParams.numberOfDays,
-          searchParams.guestsAmount,
+          searchParams.roomsAmount,
           undefined,
           setHash
         );
@@ -125,7 +125,7 @@ export const Space: React.FC = () => {
     return new URLSearchParams([
       ['startDay', String(searchParams?.startDay)],
       ['numberOfDays', String(searchParams?.numberOfDays)],
-      ['guestsAmount', String(searchParams?.guestsAmount)],
+      ['roomsAmount', String(searchParams?.roomsAmount)],
     ])
   }, [searchParams]);
 
@@ -134,8 +134,8 @@ export const Space: React.FC = () => {
     [searchParams]
   );
 
-  // const guestsAmount = useMemo(
-  //   () => searchParams?.guestsAmount || 1,
+  // const roomsAmount = useMemo(
+  //   () => searchParams?.roomsAmount || 1,
   //   [searchParams]
   // );
 
