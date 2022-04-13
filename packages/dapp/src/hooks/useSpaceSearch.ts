@@ -16,7 +16,7 @@ export type UseSpaceSearchHook = [
 export const useSpaceSearch = (
   startDay: number,
   numberOfDays: number,
-  guestsAmount: number
+  roomsNumber: number
 ): UseSpaceSearchHook => {
   console.log("useSpaceSearch :: start")
 
@@ -39,12 +39,12 @@ export const useSpaceSearch = (
     }
     console.log("useSpaceSearch :: isReady === true")
 
-    if (!!searchParams && searchParams.guestsAmount !== guestsAmount) {
+    if (!!searchParams && searchParams.roomsNumber !== roomsNumber) {
       dispatch({
         type: 'SET_SEARCH_PARAMS',
         payload: {
           ...searchParams,
-          guestsAmount
+          roomsNumber
         }
       });
     }
@@ -57,13 +57,13 @@ export const useSpaceSearch = (
       searchParams.startDay === startDay
     ) {
       setLoading(false);
-      return
+      return;
     }
 
     if (startDay < 0) {
       setLoading(false);
       setError('Not valid date')
-      return
+      return;
     }
 
     dispatch({
@@ -115,7 +115,7 @@ export const useSpaceSearch = (
           payload: {
             startDay,
             numberOfDays,
-            guestsAmount
+            roomsNumber
           }
         });
 
@@ -132,7 +132,7 @@ export const useSpaceSearch = (
     };
 
     getSpacesAvailability();
-  }, [lodgingFacilities, isReady, cb, dispatch, numberOfDays, startDay, searchParams, searchTimestamp, guestsAmount]);
+  }, [lodgingFacilities, isReady, cb, dispatch, numberOfDays, startDay, searchParams, searchTimestamp, roomsNumber]);
 
   console.log("useSpaceSearch :: end")
 

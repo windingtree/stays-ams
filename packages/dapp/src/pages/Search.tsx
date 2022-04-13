@@ -43,18 +43,19 @@ export const Search = () => {
   const { search } = useLocation();
   const [afterLoading, setAfterLoading] = useState(false);
 
-  const { startDay, numberOfDays, guestsAmount } = useMemo(() => {
-    const params = new URLSearchParams(search)
-    const startDay = Number(params.get('startDay'))
-    const numberOfDays = Number(params.get('numberOfDays'))
+  const { startDay, numberOfDays, roomsNumber } = useMemo(() => {
+    const params = new URLSearchParams(search);
+    const startDay = Number(params.get('startDay'));
+    const numberOfDays = Number(params.get('numberOfDays'));
+    const roomsNumber = Number(params.get('roomsNumber'));
     return {
       startDay,
       numberOfDays,
-      guestsAmount: Number(params.get('guestsAmount')),
+      roomsNumber
     }
   }, [search])
 
-  const [loading, error] = useSpaceSearch(startDay, numberOfDays, guestsAmount);
+  const [loading, error] = useSpaceSearch(startDay, numberOfDays, roomsNumber);
 
   useEffect(
     () => {
@@ -67,18 +68,17 @@ export const Search = () => {
     [loading]
   );
 
+  console.log("Search :: end")
   const filteredSpaces = useMemo(() => {
     if (
       (!searchSpaces || !searchSpaces.length) ||
-      (guestsAmount === 0)
+      (roomsNumber === 0)
     ) {
       return [];
     }
 
-    return searchSpaces.filter((space: any) => space.capacity >= guestsAmount);
-  }, [searchSpaces, guestsAmount])
-
-  console.log("Search :: end")
+    return searchSpaces.filter((space: any) => space.available >= roomsNumber);
+  }, [searchSpaces, roomsNumber])
 
   return (
     <PageWrapper>
@@ -97,7 +97,7 @@ export const Search = () => {
         <SearchForm
           startDay={startDay}
           numberOfDays={numberOfDays}
-          initGuestsAmount={guestsAmount}
+          initroomsNumber={roomsNumber}
         />
       </Box>
 
@@ -123,7 +123,7 @@ export const Search = () => {
             key={space.contractData.spaceId}
             space={space}
             numberOfDays={numberOfDays}
-            guestsAmount={guestsAmount}
+            roomsNumber={roomsNumber}
           />
         )}
       </Box>
