@@ -48,9 +48,10 @@ const checkSpaceDatesRestrictions = (id: string, start: number, days: number) =>
       days: 8
     }
   };
-  return restrictions[id] &&
-    restrictions[id].start === start &&
-    restrictions[id].days === days;
+  return restrictions[id]
+    ? restrictions[id].start === start &&
+    restrictions[id].days === days
+    : true;
 };
 
 export const Search = () => {
