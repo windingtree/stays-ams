@@ -26,8 +26,8 @@ export const CustomButton = styled(Button)`
 export const SearchResultCard: React.FC<{
   space: Space,
   numberOfDays: number,
-  roomsAmount: number
-}> = ({ space, numberOfDays, roomsAmount }) => {
+  roomsNumber: number
+}> = ({ space, numberOfDays, roomsNumber }) => {
   const { account } = useAppState();
   const navigate = useNavigate();
   const [notification, setNotification] = useState<string | undefined>();
@@ -91,7 +91,7 @@ export const SearchResultCard: React.FC<{
           {space.description}
         </Box>
         <Box pad={{ right: 'medium' }} direction='row' justify='between' align='center' gridArea="action">
-          <Text size='large'>Price: {getPrice(numberOfDays, roomsAmount)} DAI</Text>
+          <Text size='large'>Price: {getPrice(numberOfDays, roomsNumber)} xDAI</Text>
           <CustomButton
             size='large'
             label='Check Space'

@@ -127,7 +127,7 @@ export const StayVoucherQr = ({
   const space = facility?.spaces.find(space => space.contractData.spaceId === parseTrait('spaceId').toLowerCase())
   const quantity = Number(parseTrait('quantity'))
   const numberOfDays = Number(parseTrait('numberOfDays'))
-  const total = BN.from(space?.contractData.pricePerNightWei || 0).mul(BN.from(numberOfDays)).toString();
+  const total = BN.from(space?.contractData.pricePerNightWei || 0).mul(BN.from(numberOfDays)).mul(BN.from(quantity)).toString();
   const totalEther = utils.formatUnits(total, 'ether');
 
   if (!isSignerReady || !getDate) {
@@ -187,7 +187,7 @@ export const StayVoucherQr = ({
               <HotelTitle>{facility?.name}</HotelTitle>
               <CustomText>{getDate(parseTrait('startDay')).toFormat('MM.dd.yyyy')} - {getDate(Number(parseTrait('startDay')) + Number(parseTrait('numberOfDays'))).toFormat('MM.dd.yyyy')}</CustomText>
               <CustomText>{facility?.type}, {quantity} {quantity === 1 ? 'room' : 'rooms'}</CustomText>
-              <Price>{totalEther} DAI</Price>
+              <Price>{totalEther} xDAI</Price>
             </Box>
           </Grid>
         }

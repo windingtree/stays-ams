@@ -50,13 +50,13 @@ const defaultEndDate = tomorrow.toMillis() > endDay.toMillis() ? tomorrow.toISO(
 export const SearchForm: React.FC<{
   startDay?: number | undefined,
   numberOfDays?: number | undefined,
-  initRoomsAmount?: number | undefined,
-}> = ({ startDay, numberOfDays, initRoomsAmount }) => {
+  initroomsNumber?: number | undefined,
+}> = ({ startDay, numberOfDays, initroomsNumber }) => {
   const navigate = useNavigate();
   const { getDate } = useAppState();
   const [departureDate, setDepartureDate] = useState<string>(defaultStartDate);
   const [returnDate, setReturnDate] = useState<string>(defaultEndDate);
-  const [roomsAmount, setRoomsAmount] = useState<number>(initRoomsAmount ?? 1);
+  const [roomsNumber, setroomsNumber] = useState<number>(initroomsNumber ?? 1);
 
   useEffect(() => {
     if (getDate !== undefined && !!startDay && !!numberOfDays) {
@@ -98,11 +98,11 @@ export const SearchForm: React.FC<{
       const query = new URLSearchParams([
         ['startDay', String(startDay)],
         ['numberOfDays', String(numberOfDays)],
-        ['roomsAmount', String(roomsAmount)],
+        ['roomsNumber', String(roomsNumber)],
       ]);
       navigate(`/search?${query}`, { replace: true });
     },
-    [navigate, getDate, departureDate, returnDate, roomsAmount]
+    [navigate, getDate, departureDate, returnDate, roomsNumber]
   );
 
   return (
@@ -152,12 +152,13 @@ export const SearchForm: React.FC<{
             focusIndicator={false}
             suggestions={['1', '2', '3', '4', '5', '6', '7']}
             placeholder='Rooms number'
-            value={roomsAmount}
+            value={roomsNumber}
             type='number'
-            onSelect={({ suggestion }) => setRoomsAmount(Number(suggestion))}
+            min={1}
+            onSelect={({ suggestion }) => setroomsNumber(Number(suggestion))}
             onChange={(event) => {
               const value = Number(event.target.value);
-              setRoomsAmount(value !== 0 ? value : 1);
+              setroomsNumber(value !== 0 ? value : 1);
             }}
           />
         </Box>

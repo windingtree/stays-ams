@@ -61,7 +61,7 @@ export const Home = () => {
           Devconnect Amsterdam brings together hundreds of people from all over the world. Within one week there will be held various independent Ethereum events as well as in-person gatherings with the focus on communication, learning and making progress on specific subjects.
         </Text>
         <Text size='xlarge' textAlign='center'>
-          With Win.so you can on-chain your stay in Amsterdam during Devconnect. Book with us. Pay in DAI. Check-in with NFT. Get Rewards for the next ETH event.
+          With Win.so you can on-chain your stay in Amsterdam during Devconnect. Book with us. Pay in xDAI. Check-in with NFT. Get Rewards for the next ETH event.
         </Text>
       </Box>
 

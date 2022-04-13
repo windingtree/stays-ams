@@ -77,13 +77,13 @@ const allowedNetworks: NetworkInfo[] = [
     blockExplorer: 'https://rinkeby-explorer.arbitrum.io',
   },
   {
-    name: 'Sokol Testnet (xDAI)',
+    name: 'Sokol Testnet (xxDAI)',
     chainId: 77,
     address: '',
     blockExplorer: 'https://blockscout.com/poa/sokol',
   },
   {
-    name: 'Gnosis Chain (xDAI)',
+    name: 'Gnosis Chain (xxDAI)',
     chainId: 100,
     address: '',
     blockExplorer: 'https://blockscout.com/xdai/mainnet',

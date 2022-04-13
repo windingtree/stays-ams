@@ -26,7 +26,7 @@ export interface SearchParams {
   // timestamp: number;
   startDay: number;
   numberOfDays: number;
-  roomsAmount: number;
+  roomsNumber: number;
 }
 
 export interface State {
