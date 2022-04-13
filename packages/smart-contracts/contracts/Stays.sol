@@ -652,11 +652,32 @@ contract Stays is Initializable, ERC721Upgradeable, ERC721EnumerableUpgradeable,
 
   /** Overrides */
 
+  /**
+    * @dev Hook that is called before any token transfer. This includes minting
+    * and burning.
+    *
+    * Calling conditions:
+    *
+    * - When `from` and `to` are both non-zero, ``from``'s `tokenId` will be
+    * transferred to `to`.
+    * - When `from` is zero, `tokenId` will be minted for `to`.
+    * - When `to` is zero, ``from``'s `tokenId` will be burned.
+    * - `from` and `to` are never both zero.
+    *
+    * To learn more about hooks, head to xref:ROOT:extending-contracts.adoc#using-hooks[Using Hooks].
+    */
   function _beforeTokenTransfer(address from, address to, uint256 tokenId)
     internal
     override(ERC721Upgradeable, ERC721EnumerableUpgradeable)
   {
-    super._beforeTokenTransfer(from, to, tokenId);
+    if (from != address(0) && to != address(0)) {
+      bytes32 spaceId = _stays[tokenId].spaceId;
+      uint256 deposit = _deposits[spaceId][from][tokenId];
+
+      // move the deposit
+      _deposits[spaceId][from][tokenId] = 0;
+      _deposits[spaceId][to][tokenId] = deposit;
+    }
   }
 
   function _burn(uint256 tokenId) internal override(ERC721Upgradeable, ERC721URIStorageUpgradeable) {

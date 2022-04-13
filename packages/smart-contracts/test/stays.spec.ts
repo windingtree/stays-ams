@@ -18,7 +18,7 @@ import { createVoucher } from '../src/voucher';
 
 const setup = deployments.createFixture(async () => {
   await deployments.fixture("Stays");
-  const { deployer, alice, bob } = await getNamedAccounts();
+  const { deployer, alice, bob, carol } = await getNamedAccounts();
   const contracts = {
     staysContract: <Stays>await ethers.getContract("Stays"),
   };
@@ -29,6 +29,7 @@ const setup = deployments.createFixture(async () => {
     deployer: await setupUser(deployer, contracts),
     alice: await setupUser(alice, contracts),
     bob: await setupUser(bob, contracts),
+    carol: await setupUser(carol, contracts),
     ...contracts,
   };
 });
@@ -38,10 +39,11 @@ describe("Stays.sol", () => {
   let deployer: { address: string } & { staysContract: Stays };
   let alice: { address: string } & { staysContract: Stays };
   let bob: { address: string } & { staysContract: Stays };
+  let carol: { address: string } & { staysContract: Stays };
   const testDataUri = "https://some.uri";
 
   beforeEach("load fixture", async () => {
-    ({ deployer, alice, bob } = await setup());
+    ({ deployer, alice, bob, carol } = await setup());
   });
 
   describe("Correct Setup", () => {
@@ -677,6 +679,8 @@ describe("Stays.sol", () => {
         const startDay = 100;
         const numDays = 3;
         let tokenId;
+        let voucher;
+        let chainId;
 
         beforeEach(async () => {
           let tx = await alice.staysContract.newStay(
@@ -688,8 +692,8 @@ describe("Stays.sol", () => {
           );
           const eventNewStay = await extractEventFromTx(tx, 'NewStay');
           tokenId = eventNewStay.tokenId;
-          const { chainId } = await alice.staysContract.provider.getNetwork();
-          const voucher = await createVoucher(
+          ({ chainId } = await alice.staysContract.provider.getNetwork());
+          voucher = await createVoucher(
             alice.staysContract.signer,
             alice.address,
             bob.address,
@@ -697,9 +701,12 @@ describe("Stays.sol", () => {
             alice.staysContract.address,
             chainId
           );
+        });
+
+        it('successfully checks in', async () => {
           const txCheckIn = await bob.staysContract.checkIn(tokenId, voucher);
           await txCheckIn.wait();
-        });
+        })
 
         it('should throw if called not by an owner', async () => {
           await expect(
@@ -718,6 +725,52 @@ describe("Stays.sol", () => {
         })
 
         it('should checkout', async () => {
+          const txCheckIn = await bob.staysContract.checkIn(tokenId, voucher);
+          await txCheckIn.wait();
+          const initialBalanceBob = await bob.staysContract.provider.getBalance(bob.address);
+          await ethers.provider.send('evm_increaseTime', [(startDay + 1) * 86400]);
+          const txCheckOut = await bob.staysContract.checkOut(tokenId);
+          const receipt = await txCheckOut.wait();
+          // console.log('RECEIPT', receipt);
+          const checkoutTxCost = receipt.cumulativeGasUsed.mul(receipt.effectiveGasPrice);
+          const eventCheckOut = await extractEventFromTx(txCheckOut, 'CheckOut');
+          expect(eventCheckOut.tokenId).to.equal(tokenId);
+
+          const finalBalanceBob = await bob.staysContract.provider.getBalance(bob.address);
+          expect(finalBalanceBob).to.equal(
+            initialBalanceBob
+              .add(BigNumber.from(valuePerNight).mul(BigNumber.from(numDays-1)))
+              .sub(checkoutTxCost)
+          );
+
+          await expect(bob.staysContract.checkOut(tokenId)).to.be.revertedWith('Already checked out')
+        });
+
+        it('can send stay as a gift and not have the giftee steal', async () => {
+          // alice checks the deposit that she has made
+          const deposit = await alice.staysContract.depositOf(alice.address, sid, tokenId)
+
+          // alice gifts carol a stay
+          await alice.staysContract.transferFrom(alice.address, carol.address, tokenId)
+          expect(await alice.staysContract.depositOf(alice.address, sid, tokenId)).to.be.eq(0)
+          expect(await carol.staysContract.depositOf(carol.address, sid, tokenId)).to.be.eq(deposit)
+
+          // alice is mean and tries to check-in to bob's hotel using carol's gift
+          await expect(bob.staysContract.checkIn(tokenId, voucher)).to.be.revertedWith('Voucher signer is not allowed')
+
+          // carol generates her voucher
+          voucher = await createVoucher(
+            carol.staysContract.signer,
+            carol.address,
+            bob.address,
+            tokenId.toString(),
+            carol.staysContract.address,
+            chainId
+          );
+
+          // carol checks into bob's hotel
+          await expect(bob.staysContract.checkIn(tokenId, voucher)).to.not.be.reverted
+
           const initialBalanceBob = await bob.staysContract.provider.getBalance(bob.address);
           await ethers.provider.send('evm_increaseTime', [(startDay + 1) * 86400]);
           const txCheckOut = await bob.staysContract.checkOut(tokenId);
