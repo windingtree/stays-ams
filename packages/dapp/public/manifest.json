@@ -1,6 +1,6 @@
 {
   "short_name": "WIN Stays Amsterdam",
-  "name": "Book Hotels On-Chain. Pay in xDai. Check-in with NFT. Help Local Communities.",
+  "name": "Book Hotels On Gnosis Chain with up to 50% discount. Pay in xDai. Check-in with NFT.",
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#8d1fa3",
@@ -12,12 +12,12 @@
       "type": "image/x-icon"
     },
     {
-      "src": "logo.svg",
-      "type": "image/svg",
+      "src": "win-logo-192.png",
+      "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "logo512.png",
+      "src": "win-logo-512.png",
       "type": "image/png",
       "sizes": "256x256 512x512"
     }
