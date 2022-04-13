@@ -3,7 +3,6 @@ import Logger from '../utils/logger';
 import { useAppDispatch, useAppState } from '../store';
 import { LodgingFacility, Space } from 'stays-data-models';
 import { useSpaceAvailability } from './useSpaceAvailability';
-import { SpaceRecord } from '../store/actions';
 
 // Initialize logger
 const logger = Logger('useSpaceSearch');
