@@ -96,7 +96,7 @@ export const Space: React.FC = () => {
         logger.debug('price', total.toString());
 
         if (balance.lt(total)) {
-          throw new Error('not enough DAI')
+          throw new Error('not enough xDAI')
         }
 
         setError(undefined);
@@ -105,7 +105,7 @@ export const Space: React.FC = () => {
           space.id,
           searchParams.startDay,
           searchParams.numberOfDays,
-          searchParams.guestsAmount,
+          searchParams.roomsNumber,
           undefined,
           setHash
         );
@@ -125,7 +125,7 @@ export const Space: React.FC = () => {
     return new URLSearchParams([
       ['startDay', String(searchParams?.startDay)],
       ['numberOfDays', String(searchParams?.numberOfDays)],
-      ['guestsAmount', String(searchParams?.guestsAmount)],
+      ['roomsNumber', String(searchParams?.roomsNumber)],
     ])
   }, [searchParams]);
 
@@ -134,16 +134,16 @@ export const Space: React.FC = () => {
     [searchParams]
   );
 
-  // const guestsAmount = useMemo(
-  //   () => searchParams?.guestsAmount || 1,
-  //   [searchParams]
-  // );
+  const roomsNumber = useMemo(
+    () => searchParams?.roomsNumber || 1,
+    [searchParams]
+  );
 
   const getPrice = useCallback(
-    (nights: number): string  => {
+    (nights: number, roomsNumber: number): string  => {
       const perNight = BN.from(space?.contractData.pricePerNightWei ?? 0);
       return utils.formatUnits(
-        perNight.mul(BN.from(nights)),
+        perNight.mul(BN.from(nights)).mul(BN.from(roomsNumber)),
         'ether'
       );
     },
@@ -241,7 +241,7 @@ export const Space: React.FC = () => {
             <Box direction='row' align='center'>
               <Text size='xxlarge' weight='bold'>Price:&nbsp;</Text>
               <Text color='black' size='xxlarge'>
-                {getPrice(numberDays)}&nbsp;DAI
+                {getPrice(numberDays, roomsNumber)}&nbsp;xDAI
               </Text>
             </Box>
             <Box align='center'>

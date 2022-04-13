@@ -56,6 +56,7 @@ export const AppHeader = () => {
         }}
         src='/logo.svg'
         height='32px'
+        margin={{ left: '-26px' }}
         onClick={() => navigate('/')}
       />
 
