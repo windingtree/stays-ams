@@ -69,6 +69,16 @@ export const Search = () => {
   );
 
   console.log("Search :: end")
+  const filteredSpaces = useMemo(() => {
+    if (
+      (!searchSpaces || !searchSpaces.length) ||
+      (roomsAmount === 0)
+    ) {
+      return [];
+    }
+
+    return searchSpaces.filter((space: any) => space.capacity >= roomsAmount);
+  }, [searchSpaces, roomsAmount])
 
   return (
     <PageWrapper>
@@ -101,14 +111,14 @@ export const Search = () => {
 
       {afterLoading ? <Spinner color='accent-1' alignSelf='center' size='large' /> : null}
 
-      <MessageBox type='info' show={!afterLoading && searchSpaces.length === 0}>
+      <MessageBox type='info' show={!afterLoading && filteredSpaces.length === 0}>
         <Text>
           No spaces found according your criteria
         </Text>
       </MessageBox>
 
       <Box margin={{ top: 'large' }}>
-        {searchSpaces.map((space) =>
+        {filteredSpaces.map((space) =>
           <SearchResultCard
             key={space.contractData.spaceId}
             space={space}
