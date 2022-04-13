@@ -29,7 +29,11 @@ export const GlobalStyle: React.FC = ({ children }) => {
       style={{ height: 'auto', minHeight: '100vh' }}
       theme={baseTheme}
       themeMode={themeMode}
-      background={{ position: 'relative' }}
+      background={{
+        image: 'url(/gradient.jpg)',
+        position: 'center',
+        size: 'cover'
+      }}
     >
       {children}
     </Grommet>

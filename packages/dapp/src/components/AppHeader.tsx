@@ -8,7 +8,6 @@ import { SignInButton, SignOutButton } from '../components/buttons/web3Modal';
 import { GlobalMenu } from './Routes';
 
 export const AppHeader = () => {
-  const size = useContext(ResponsiveContext);
   const { state } = useLocation();
 
   const navigate = useNavigate();

@@ -12,7 +12,7 @@ export const GradientText = styled(Text)`
   line-height: 1.2em;
   font-weight: 900;
   text-align: center;
-  background: linear-gradient(to right, #68bab7, #84e488, #9df04c, #be8747, #c5393f, #5312a8);
+  background: linear-gradient(to right, #68bab7, #84e488, #be8747, #c5393f, #5312a8);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 `;
@@ -68,7 +68,7 @@ export const Home = () => {
         <a href="https://windingtree.com">
           <Image
             style={{ height: '32px' }}
-            src='https://raw.githubusercontent.com/windingtree/branding/master/winding-tree/svg/winding-tree-symbol.svg'
+            src='https://raw.githubusercontent.com/windingtree/branding/master/winding-tree/svg/winding-tree-symbol-dark.svg'
             alt='Powered by Winding Tree'
             title='Powered by Winding Tree'
           />
