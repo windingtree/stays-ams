@@ -125,7 +125,7 @@ export const StayVoucherQr = ({
   );
 
   const space = facility?.spaces.find(space => space.contractData.spaceId === parseTrait('spaceId').toLowerCase())
-  // const quantity = Number(parseTrait('quantity'))
+  const quantity = Number(parseTrait('quantity'))
   const numberOfDays = Number(parseTrait('numberOfDays'))
   const total = BN.from(space?.contractData.pricePerNightWei || 0).mul(BN.from(numberOfDays)).toString();
   const totalEther = utils.formatUnits(total, 'ether');
@@ -185,9 +185,8 @@ export const StayVoucherQr = ({
               border='top'
             >
               <HotelTitle>{facility?.name}</HotelTitle>
-              <CustomText>{facility?.description}</CustomText>
-              <CustomText>{getDate(parseTrait('startDay')).toISODate()} - {getDate(Number(parseTrait('startDay')) + Number(parseTrait('numberOfDays'))).toISODate()}</CustomText>
-              <CustomText>{facility?.type}, {parseTrait('numberOfDays')} persons.</CustomText>
+              <CustomText>{getDate(parseTrait('startDay')).toFormat('MM.dd.yyyy')} - {getDate(Number(parseTrait('startDay')) + Number(parseTrait('numberOfDays'))).toFormat('MM.dd.yyyy')}</CustomText>
+              <CustomText>{facility?.type}, {quantity} {quantity === 1 ? 'room' : 'rooms'}</CustomText>
               <Price>{totalEther} DAI</Price>
             </Box>
           </Grid>
