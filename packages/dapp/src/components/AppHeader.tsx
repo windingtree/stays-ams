@@ -32,7 +32,7 @@ export const AppHeader = () => {
       <Image
         src='/logo.svg'
         onClick={() => navigate('/')}
-        style={{ height: '32px' }}
+        style={{ height: '32px', cursor: 'pointer' }}
       />
 
       <Box direction='row' align='right' gap='small'>
