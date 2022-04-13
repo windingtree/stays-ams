@@ -9,6 +9,7 @@ import { useLocation } from 'react-router-dom';
 import { MessageBox } from '../components/MessageBox';
 import { GradientText } from './Home';
 import styled from 'styled-components';
+import { SpaceRecord } from '../store/actions';
 
 export const WhiteParagraph = styled(Text)`
   text-align: start;
@@ -35,6 +36,22 @@ export const WhiteParagraph18 = styled(Text)`
   max-width: 50rem;
   margin-top: 2rem;
 `;
+
+const checkSpaceDatesRestrictions = (id: string, start: number, days: number) => {
+  const restrictions: Record<string, { start: number, days: number }> = {
+    '0x1d50703e2ae2f103b45d81812d328567c2383f120024d888b646e9bffb2630c0': {
+      start: 54,
+      days: 8
+    },
+    '0xac6bde3c8b75bb65189ab09c634a903a78b35c1acb1653b664e71a406c2f6a94': {
+      start: 54,
+      days: 8
+    }
+  };
+  return restrictions[id] &&
+    restrictions[id].start === start &&
+    restrictions[id].days === days;
+};
 
 export const Search = () => {
   console.log("Search :: start")
@@ -77,8 +94,14 @@ export const Search = () => {
       return [];
     }
 
-    return searchSpaces.filter((space: any) => space.available >= roomsNumber);
-  }, [searchSpaces, roomsNumber])
+    console.log('@@@', searchSpaces);
+
+    return searchSpaces.filter(
+      (space: SpaceRecord) => space.available &&
+        space.available >= roomsNumber &&
+        checkSpaceDatesRestrictions(space.id, startDay, numberOfDays)
+    );
+  }, [searchSpaces, startDay, numberOfDays, roomsNumber])
 
   return (
     <PageWrapper>
