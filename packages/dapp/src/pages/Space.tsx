@@ -1,5 +1,5 @@
 import { PageWrapper } from './PageWrapper';
-import { Box, Text, Image, Carousel, Spinner, Grid } from 'grommet';
+import { Box, Text, Image, Carousel, Spinner, Grid, Anchor } from 'grommet';
 import { useAppState } from '../store';
 import { useMemo, useEffect, useState, useCallback } from 'react';
 import { BookWithDai } from '../components/buttons/BookWithDai';
@@ -27,6 +27,16 @@ export const Description = styled(Text)`
   font-size: 18px;
   line-height: 24px;
   text-align: start;
+`;
+
+export const Contact = styled(Anchor)`
+  color: #0D0E0F;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 24px;
+  text-align: center;
 `;
 
 export const Space: React.FC = () => {
@@ -140,7 +150,7 @@ export const Space: React.FC = () => {
   );
 
   const getPrice = useCallback(
-    (nights: number, roomsNumber: number): string  => {
+    (nights: number, roomsNumber: number): string => {
       const perNight = BN.from(space?.contractData.pricePerNightWei ?? 0);
       return utils.formatUnits(
         perNight.mul(BN.from(nights)).mul(BN.from(roomsNumber)),
@@ -191,12 +201,20 @@ export const Space: React.FC = () => {
 
           {!!facility &&
             <Box align='center'>
-              <Text size='large'>
+              <Description size='large'>
                 {facility.address.streetAddress}, {facility.address.postalCode} {facility.address.locality}, {facility.address.country}.
-              </Text>
-              <Text size='large'>
-                {facility.contact?.email} {facility.contact?.website} {facility.contact?.phone}.
-              </Text>
+              </Description>
+              <Box align='center'>
+                <Contact href={`mailto:${facility.contact?.email}`}>
+                  {facility.contact?.email}
+                </Contact>
+                <Contact href={facility.contact?.website}>
+                  {facility.contact?.website}
+                </Contact>
+                <Contact href={`tel:${facility.contact?.phone}`}>
+                  {facility.contact?.phone}
+                </Contact>
+              </Box>
             </Box>
           }
 
