@@ -14,6 +14,10 @@ import { utils, BigNumber as BN } from 'ethers';
 import { Header } from './MyTokens';
 // import { CustomText, Title } from '../components/StayVoucherQr';
 import styled from 'styled-components';
+import Logger from '../utils/logger';
+
+// Initialize logger
+const logger = Logger('Space');
 
 export const Description = styled(Text)`
   color: #0D0E0F;
@@ -83,11 +87,18 @@ export const Space: React.FC = () => {
           throw new Error('provider is undefined');
         }
         const balance = await provider.getBalance(account)
-        const total = Number(utils.formatUnits(space.contractData.pricePerNightWei, 'ether')) * Number(searchParams.numberOfDays)
+        const total = BN.from(space.contractData.pricePerNightWei)
+          .mul(BN.from(searchParams.numberOfDays));
 
-        if (Number(utils.formatUnits(balance, 'ether')) < total) {
+        // const total = Number(utils.formatUnits(space.contractData.pricePerNightWei, 'ether')) * Number(searchParams.numberOfDays);
+
+        logger.debug('balance', balance.toString());
+        logger.debug('price', total.toString());
+
+        if (balance.lt(total)) {
           throw new Error('not enough DAI')
         }
+
         setError(undefined);
 
         const res = await contract.book(
@@ -129,10 +140,10 @@ export const Space: React.FC = () => {
   );
 
   const getPrice = useCallback(
-    (nights: number, guestsAmount: number): string  => {
+    (nights: number): string  => {
       const perNight = BN.from(space?.contractData.pricePerNightWei ?? 0);
       return utils.formatUnits(
-        perNight.mul(BN.from(nights)).mul(BN.from(guestsAmount)),
+        perNight.mul(BN.from(nights)),
         'ether'
       );
     },
@@ -230,7 +241,7 @@ export const Space: React.FC = () => {
             <Box direction='row' align='center'>
               <Text size='xxlarge' weight='bold'>Price:&nbsp;</Text>
               <Text color='black' size='xxlarge'>
-                {getPrice(numberDays, guestsAmount)}&nbsp;DAI
+                {getPrice(numberDays)}&nbsp;DAI
               </Text>
             </Box>
             <Box align='center'>

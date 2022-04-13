@@ -125,9 +125,9 @@ export const StayVoucherQr = ({
   );
 
   const space = facility?.spaces.find(space => space.contractData.spaceId === parseTrait('spaceId').toLowerCase())
-  const quantity = Number(parseTrait('quantity'))
+  // const quantity = Number(parseTrait('quantity'))
   const numberOfDays = Number(parseTrait('numberOfDays'))
-  const total = BN.from(quantity).mul(BN.from(numberOfDays)).mul(BN.from(space?.contractData.pricePerNightWei || 0)).toString();
+  const total = BN.from(space?.contractData.pricePerNightWei || 0).mul(BN.from(numberOfDays)).toString();
   const totalEther = utils.formatUnits(total, 'ether');
 
   if (!isSignerReady || !getDate) {
