@@ -670,6 +670,7 @@ contract Stays is Initializable, ERC721Upgradeable, ERC721EnumerableUpgradeable,
     internal
     override(ERC721Upgradeable, ERC721EnumerableUpgradeable)
   {
+    super._beforeTokenTransfer(from, to, tokenId);
     if (from != address(0) && to != address(0)) {
       bytes32 spaceId = _stays[tokenId].spaceId;
       uint256 deposit = _deposits[spaceId][from][tokenId];
