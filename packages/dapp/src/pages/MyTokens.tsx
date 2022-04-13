@@ -123,7 +123,7 @@ export const TokenCard = ({
         <Box pad='small'>
           <HotelTitle>{facility.name}</HotelTitle>
           <CustomText>{facility.address.streetAddress}, {facility.address.postalCode} {facility.address.locality}, {facility.address.country}. </CustomText>
-          <CustomText>{space?.name},{quantity} {quantity > 1 ? 'persons' : 'person'} </CustomText>
+          <CustomText>{space?.name},{quantity} {quantity === 1 ? 'room' : 'rooms'} </CustomText>
         </Box>
         <Box align='center' justify='center' pad='small'>
           <CustomText>{getDate(parseTrait('startDay')).toFormat('MM.dd.yyyy')} - {getDate(Number(parseTrait('startDay')) + Number(parseTrait('numberOfDays'))).toFormat('MM.dd.yyyy')}</CustomText>
