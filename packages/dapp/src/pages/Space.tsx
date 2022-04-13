@@ -29,6 +29,16 @@ export const Description = styled(Text)`
   text-align: start;
 `;
 
+export const Contact = styled(Text)`
+  color: #0D0E0F;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 24px;
+  text-align: center;
+`;
+
 export const Space: React.FC = () => {
   const {
     account,
@@ -140,7 +150,7 @@ export const Space: React.FC = () => {
   );
 
   const getPrice = useCallback(
-    (nights: number, roomsNumber: number): string  => {
+    (nights: number, roomsNumber: number): string => {
       const perNight = BN.from(space?.contractData.pricePerNightWei ?? 0);
       return utils.formatUnits(
         perNight.mul(BN.from(nights)).mul(BN.from(roomsNumber)),
@@ -191,12 +201,20 @@ export const Space: React.FC = () => {
 
           {!!facility &&
             <Box align='center'>
-              <Text size='large'>
+              <Contact size='large'>
                 {facility.address.streetAddress}, {facility.address.postalCode} {facility.address.locality}, {facility.address.country}.
-              </Text>
-              <Text size='large'>
-                {facility.contact?.email} {facility.contact?.website} {facility.contact?.phone}.
-              </Text>
+              </Contact>
+              <Box align='center'>
+                <Contact size='large'>
+                  {facility.contact?.email}
+                </Contact>
+                <Contact size='large'>
+                  {facility.contact?.website}
+                </Contact>
+                <Contact size='large'>
+                  {facility.contact?.phone}
+                </Contact>
+              </Box>
             </Box>
           }
 
