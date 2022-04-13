@@ -12,7 +12,9 @@ export interface GenericStateRecord {
 }
 
 export interface LodgingFacilityRecord extends GenericStateRecord, LodgingFacility {}
-export interface SpaceRecord extends Space, GenericStateRecord {}
+export interface SpaceRecord extends Space, GenericStateRecord {
+  available?: number | null;
+}
 
 export interface OwnerSpace extends SpaceRaw {
   spaceId: string;
