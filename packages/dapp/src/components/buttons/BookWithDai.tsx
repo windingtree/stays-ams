@@ -17,7 +17,7 @@ export const BookWithDai: React.FC<{
     >
       {() => (
         <Box justify='center' direction='row' align='center' pad='small'>
-          <Text>
+          <Text size='large'>
             {text}
           </Text>
           {loading && <InnerSpinner />}
