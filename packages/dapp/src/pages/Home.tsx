@@ -7,12 +7,12 @@ import { SearchForm } from '../components/search/SearchForm';
 import styled from 'styled-components';
 
 export const GradientText = styled(Text)`
-  font-family: Inter;
-  font-size: 4em;
-  line-height: 1.2em;
+  font-size: 3em;
+  line-height: 1.36em;
   font-weight: 900;
   text-align: center;
-  background: linear-gradient(to right, #68bab7, #84e488, #be8747, #c5393f, #5312a8);
+  font-family: Inter;
+  background: linear-gradient(to right, #68bab7, #cc0033, #be8747, #c5393f, #5312a8);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 `;
@@ -32,7 +32,7 @@ export const Home = () => {
 
   return (
     <PageWrapper>
-      <Box align='center' margin='large'>
+      <Box align='center' margin={{ bottom: 'large', top: 'large' }}>
         <GradientText>Book Hotels On Gnosis Chain with up to 50% discount. Pay in xDai. Check-in with NFT.</GradientText>
       </Box>
 
