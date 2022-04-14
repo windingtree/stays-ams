@@ -64,7 +64,6 @@ export const SearchResultCard: React.FC<{
 
   const navigate = useNavigate();
   const [notification, setNotification] = useState<string | undefined>();
-  console.log('SPACE', space)
 
   const facility = useMemo(
     () => lodgingFacilities.find((facility) => facility.id === space.contractData.lodgingFacilityId),
