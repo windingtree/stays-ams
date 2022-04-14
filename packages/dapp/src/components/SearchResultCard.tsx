@@ -1,4 +1,4 @@
-import { Box, Text, Image, Grid, Button, Notification, Carousel } from 'grommet';
+import { Box, Text, Image, Grid, Button, Notification, Carousel, Anchor } from 'grommet';
 import type { Space } from 'stays-data-models'
 import { useNavigate } from 'react-router-dom';
 import { useAppState } from '../store';
@@ -11,7 +11,7 @@ export const CustomButton = styled(Button)`
   color: black;
   border: 1px solid black;
   height: 2.5rem;
-  width: 10rem;
+  minWidth: 10rem;
   border-radius: 2.5rem;
   /* background: linear-gradient(90.72deg, #FFF500, #3B37FF, #0D0E0F); */
 
@@ -118,20 +118,29 @@ export const SearchResultCard: React.FC<{
           </Carousel>
         </Box>
         <Box gridArea="header">
-          <Text size='xxlarge'>
-            {space.name}
+          <Text size='xxlarge' margin={{ bottom: 'medium' }}>
+            {space.name} {'🛌🏾 '.repeat(space.beds)}
           </Text>
           <Text size='xlarge'>
             {facility?.name}
+            &nbsp;
+            <Anchor
+              label="🏨"
+              href={facility?.contact.website}
+              title={facility?.name}
+              target="_blank"
+            />
           </Text>
         </Box>
         <Box direction='column' justify='start' gridArea="main">
-          {space.description}
+          <Text size='large'>
+            {space.description}
+          </Text>
         </Box>
-        <Box direction='row' justify='between' align='center' gridArea="action">
-          <Text size='large'>Price: {getPrice(numberOfDays, roomsNumber)} xDAI</Text>
+        <Box direction='column' justify='between' align='center' gridArea="action">
+          <Text size='large'>{numberOfDays} nights, {roomsNumber} room{roomsNumber > 1 ? 's' : ''}</Text>
           <CustomButton
-            label='Check Space'
+            label={'Book for ' + getPrice(numberOfDays, roomsNumber) + ' xDAI'}
             onClick={() => {
               if (account) {
                 navigate(`/space/${space.contractData.spaceId}`);
