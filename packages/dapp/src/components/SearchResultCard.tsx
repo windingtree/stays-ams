@@ -125,7 +125,7 @@ export const SearchResultCard: React.FC<{
             {facility?.name}
             &nbsp;
             <Anchor
-              label="🏨"
+              label="🌎"
               href={facility?.contact.website}
               title={facility?.name}
               target="_blank"

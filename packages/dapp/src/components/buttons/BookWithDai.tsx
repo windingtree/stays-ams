@@ -7,8 +7,8 @@ const InnerSpinner = styled(Spinner)`
 `;
 
 export const BookWithDai: React.FC<{
-  loading: boolean; disabled: boolean; onClick: () => void
-}> = ({ loading, disabled, onClick }) => {
+  loading: boolean; disabled: boolean; text: string; onClick: () => void
+}> = ({ loading, disabled, onClick, text }) => {
 
   return (
     <CustomButton
@@ -18,7 +18,7 @@ export const BookWithDai: React.FC<{
       {() => (
         <Box justify='center' direction='row' align='center' pad='small'>
           <Text>
-            Book with xDAI
+            {text}
           </Text>
           {loading && <InnerSpinner />}
         </Box>
