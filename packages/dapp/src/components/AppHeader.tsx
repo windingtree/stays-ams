@@ -1,6 +1,6 @@
-import { useContext, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useNavigate, useLocation, Navigate } from 'react-router-dom';
-import { Image, Header, Box, ResponsiveContext } from 'grommet';
+import { Image, Header, Box } from 'grommet';
 import { useAppState } from '../store';
 // import { usePageTitle } from '../hooks/usePageTitle';
 import { Account } from '../components/Account';
