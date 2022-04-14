@@ -1,32 +1,18 @@
 import { useMemo } from 'react';
-import { Box, Spinner, Text } from 'grommet';
+import { Image, Box, Spinner, Text } from 'grommet';
 import { useAppState } from '../store';
 import { PageWrapper } from '../pages/PageWrapper';
 import { MessageBox } from '../components/MessageBox';
 import { SearchForm } from '../components/search/SearchForm';
 import styled from 'styled-components';
 
-// export const WhiteText = styled(Text)`
-//   text-align: center;
-//   color: black;
-//   font-family: Inter;
-//   font-size: 18px;
-//   font-weight: 400;
-//   line-height: 24px;
-//   letter-spacing: 0px;
-//   text-align: center;
-// `;
-
 export const GradientText = styled(Text)`
   font-family: Inter;
-  font-size: 90px;
+  font-size: 4em;
+  line-height: 1.2em;
   font-weight: 900;
-  line-height: 144px;
-  letter-spacing: 0px;
   text-align: center;
-  background: linear-gradient(to right, orange , yellow, green, cyan, blue, violet);
-
-  /* background: linear-gradient(90.72deg, #E2C9C6 -3.09%, #81BDF0 23.35%, #E4F2FF 29.25%, #86C9F0 45.31%, #EDF5FF 81.44%, #A0AACF 101.22%); */
+  background: linear-gradient(to right, #68bab7, #84e488, #be8747, #c5393f, #5312a8);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 `;
@@ -46,29 +32,14 @@ export const Home = () => {
 
   return (
     <PageWrapper>
-      <Box align='center' margin={{ bottom: 'large' }}>
-        <Text size='xxlarge'>
-          April 17-25 2022
-        </Text>
-        <Text size='large'>
-          Devconnect APRIL 17-25, 2022 Amsterdam, The Netherlands
-        </Text>
-        <GradientText>Amsterdam</GradientText>
-        <Text size='large' margin={{ bottom: 'large' }}>
-          A collaborative Ethereum week, built by and for everyone
-        </Text>
-        <Text size='xlarge' margin={{ bottom: 'large' }} textAlign='center'>
-          Devconnect Amsterdam brings together hundreds of people from all over the world. Within one week there will be held various independent Ethereum events as well as in-person gatherings with the focus on communication, learning and making progress on specific subjects.
-        </Text>
-        <Text size='xlarge' textAlign='center'>
-          With Win.so you can on-chain your stay in Amsterdam during Devconnect. Book with us. Pay in xDAI. Check-in with NFT. Get Rewards for the next ETH event.
-        </Text>
+      <Box align='center' margin='large'>
+        <GradientText>Book Hotels On Gnosis Chain with up to 50% discount. Pay in xDai. Check-in with NFT.</GradientText>
       </Box>
 
       <MessageBox type='info' show={isIpfsNodeConnecting || isBootstrapLoading}>
         <Box direction='row'>
           <Box>
-            The Dapp is synchronizing with the smart contract. Please wait..&nbsp;
+            🙀 Your Experience is Loading 🙀
           </Box>
           <Spinner />
         </Box>
@@ -76,13 +47,33 @@ export const Home = () => {
 
       <MessageBox type='error' show={isReady && !!!bootstrapped}>
         <Text>
-          Something goes wrong. It was not possible to sync up the application with the smart contract. Try to reboot.
+          💔 Uh-oh... The app couldn't sync with the smart contract. Try refreshing the page? 💔
         </Text>
       </MessageBox>
 
       {isReady && !!bootstrapped &&
         <SearchForm />
       }
+
+      <Box align='center' margin='large'>
+        <Text size='large'>
+          Created with 💖 for <a href="https://devconnect.org/">Devconnect</a>
+        </Text>
+        <Text size='large'>
+          April 17&ndash;25, Amsterdam
+        </Text>
+      </Box>
+
+      <Box align='center'>
+        <a href="https://windingtree.com">
+          <Image
+            style={{ height: '32px' }}
+            src='https://raw.githubusercontent.com/windingtree/branding/master/winding-tree/svg/winding-tree-symbol-dark.svg'
+            alt='Powered by Winding Tree'
+            title='Powered by Winding Tree'
+          />
+        </a>
+      </Box>
     </PageWrapper>
   );
 };
