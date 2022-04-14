@@ -183,6 +183,7 @@ export const Space: React.FC = () => {
           <Box>
             Booked successfully!
             <NavLink to={`/tokens?tokenId=${tokenId}`}> Check details </NavLink>
+            <NavLink to='https://discord.gg/kZYnMncsg4'> Join our discord</NavLink>
           </Box>
         </Box>
       </MessageBox>
