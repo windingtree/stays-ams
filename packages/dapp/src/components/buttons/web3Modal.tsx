@@ -3,7 +3,7 @@ import { Box, Spinner, Text, ResponsiveContext } from 'grommet';
 import { Login, Logout } from 'grommet-icons';
 import styled from 'styled-components';
 import { useAppState } from '../../store';
-import { WhiteButton } from './index';
+import { StyledButton } from './index';
 
 const InnerSpinner = styled(Spinner)`
   margin-left: 8px;
@@ -14,7 +14,7 @@ export const SignInButton = () => {
   const { isConnecting, signIn } = useAppState();
 
   return (
-    <WhiteButton
+    <StyledButton
       onClick={() => signIn()}
       disabled={isConnecting}
     >
@@ -31,7 +31,7 @@ export const SignInButton = () => {
           {isConnecting && <InnerSpinner />}
         </Box>
       )}
-    </WhiteButton>
+    </StyledButton>
   )
 };
 
@@ -40,7 +40,7 @@ export const SignOutButton = () => {
   const { isConnecting, signOut } = useAppState();
 
   return (
-    <WhiteButton
+    <StyledButton
       onClick={() => signOut()}
       disabled={isConnecting}
     >
@@ -57,6 +57,6 @@ export const SignOutButton = () => {
           {isConnecting && <InnerSpinner />}
         </Box>
       )}
-    </WhiteButton>
+    </StyledButton>
   )
 };

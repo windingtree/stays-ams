@@ -123,13 +123,10 @@ export const Search = () => {
     <PageWrapper>
 
       <Box align='center' margin={{ bottom: 'small' }}>
+        <GradientText>Amsterdam Devconnect</GradientText>
         <Text size='xxlarge'>
-          April 17-25 2022
+          April 17&ndash;25
         </Text>
-        <Text size='large'>
-          Devconnect APRIL 17-25, 2022 Amsterdam, The Netherlands
-        </Text>
-        <GradientText>Amsterdam</GradientText>
       </Box>
 
       <Box margin={{ bottom: 'medium' }}>
@@ -152,7 +149,7 @@ export const Search = () => {
 
       <MessageBox type='info' show={!afterLoading && noResults}>
         <Text>
-          No spaces found according your criteria
+          No Rooms Found
         </Text>
       </MessageBox>
 

@@ -110,7 +110,7 @@ export const SearchForm: React.FC<{
       direction='row'
       align='end'
       justify='center'
-      margin={{ bottom: 'small' }}
+      margin={{ top: 'large', bottom: 'small' }}
     >
       <Box
         direction='column'
@@ -165,17 +165,6 @@ export const SearchForm: React.FC<{
         </Box>
       </Box>
       <WhiteButton
-        // style={{
-        //   border: '1px solid rgba(227, 231, 236, 0.3)',
-        //   fontFamily: 'Inter',
-        //   fontStyle: 'normal',
-        //   fontWeight: 400,
-        //   color: '#fff',
-        //   fontSize: '1.25rem',
-        //   lineHeight: '1.5rem',
-        //   borderRadius: '.5rem',
-        //   alignSelf: 'end',
-        // }}
         disabled={getDate === undefined}
         size='large'
         label='Search'
