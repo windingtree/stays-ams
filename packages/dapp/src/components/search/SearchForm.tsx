@@ -110,7 +110,7 @@ export const SearchForm: React.FC<{
       direction='row'
       align='end'
       justify='center'
-      margin={{ bottom: 'small' }}
+      margin={{ top: 'large', bottom: 'small' }}
     >
       <Box
         direction='column'

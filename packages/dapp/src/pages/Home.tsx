@@ -36,14 +36,9 @@ export const Home = () => {
         <GradientText>Book Hotels On Gnosis Chain with up to 50% discount. Pay in xDai. Check-in with NFT.</GradientText>
       </Box>
 
-      <MessageBox type='info' show={isIpfsNodeConnecting || isBootstrapLoading}>
-        <Box direction='row'>
-          <Box margin={{ right: 'small' }}>
-            🙀 Your Experience is Loading 🙀
-          </Box>
-          <Spinner />
-        </Box>
-      </MessageBox>
+      {(isIpfsNodeConnecting || isBootstrapLoading) &&
+        <Spinner color='accent-2' alignSelf='center' size='large' margin={{ top: 'large' }} />
+      }
 
       <MessageBox type='error' show={isReady && !!!bootstrapped}>
         <Text>
