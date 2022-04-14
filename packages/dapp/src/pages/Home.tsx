@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Image, Box, Spinner, Text } from 'grommet';
+import { Box, Spinner, Text } from 'grommet';
 import { useAppState } from '../store';
 import { PageWrapper } from '../pages/PageWrapper';
 import { MessageBox } from '../components/MessageBox';
@@ -54,26 +54,6 @@ export const Home = () => {
       {isReady && !!bootstrapped &&
         <SearchForm />
       }
-
-      <Box align='center' margin='large'>
-        <Text size='large'>
-          Created with 💖 for <a href="https://devconnect.org/">Devconnect</a>
-        </Text>
-        <Text size='large'>
-          April 17&ndash;25, Amsterdam
-        </Text>
-      </Box>
-
-      <Box align='center'>
-        <a href="https://windingtree.com">
-          <Image
-            style={{ height: '32px' }}
-            src='https://raw.githubusercontent.com/windingtree/branding/master/winding-tree/svg/winding-tree-symbol-dark.svg'
-            alt='Powered by Winding Tree'
-            title='Powered by Winding Tree'
-          />
-        </a>
-      </Box>
     </PageWrapper>
   );
 };
