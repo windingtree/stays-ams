@@ -7,7 +7,7 @@ export interface NetworkInfo {
 
 export interface NetworkWithRpc extends NetworkInfo {
   rpc: string;
-};
+}
 
 export interface ApiKeys {
   [name: string]: string;
@@ -25,73 +25,73 @@ export interface NetworkProviders {
 
 if (
   !process.env.REACT_APP_NETWORK_PROVIDER ||
-  process.env.REACT_APP_NETWORK_PROVIDER === ''
+  process.env.REACT_APP_NETWORK_PROVIDER === ""
 ) {
-  throw new Error('REACT_APP_NETWORK_PROVIDER must be provided in the ENV');
+  throw new Error("REACT_APP_NETWORK_PROVIDER must be provided in the ENV");
 }
 
 if (
   !process.env.REACT_APP_NETWORK_ID ||
-  process.env.REACT_APP_NETWORK_ID === ''
+  process.env.REACT_APP_NETWORK_ID === ""
 ) {
-  throw new Error('REACT_APP_NETWORK_ID must be provided in the ENV');
+  throw new Error("REACT_APP_NETWORK_ID must be provided in the ENV");
 }
 
 if (
   !process.env.REACT_APP_CONTRACT_ADDRESS ||
-  process.env.REACT_APP_CONTRACT_ADDRESS === ''
+  process.env.REACT_APP_CONTRACT_ADDRESS === ""
 ) {
-  throw new Error('REACT_APP_CONTRACT_ADDRESS must be provided in the ENV');
+  throw new Error("REACT_APP_CONTRACT_ADDRESS must be provided in the ENV");
 }
 
 if (
   !process.env.REACT_APP_FILE_WEB3STORAGE_KEY ||
-  process.env.REACT_APP_FILE_WEB3STORAGE_KEY === ''
+  process.env.REACT_APP_FILE_WEB3STORAGE_KEY === ""
 ) {
-  throw new Error('REACT_APP_FILE_WEB3STORAGE_KEY must be provided in the ENV');
+  throw new Error("REACT_APP_FILE_WEB3STORAGE_KEY must be provided in the ENV");
 }
 
 const allowedNetworks: NetworkInfo[] = [
-  // {
-  //   name: 'Hardhat Testnet',
-  //   chainId: 31337,
-  //   address: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
-  //   blockExplorer: "",
-  // },
   {
-    name: 'Ropsten Testnet',
-    chainId: 3,
-    address: '',
-    blockExplorer: 'https://ropsten.etherscan.io',
+    name: "Hardhat Testnet",
+    chainId: 31337,
+    address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+    blockExplorer: "",
   },
   {
-    name: 'Rinkeby Testnet',
+    name: "Ropsten Testnet",
+    chainId: 3,
+    address: "",
+    blockExplorer: "https://ropsten.etherscan.io",
+  },
+  {
+    name: "Rinkeby Testnet",
     chainId: 4,
     address: "",
-    blockExplorer: 'https://rinkeby.etherscan.io',
+    blockExplorer: "https://rinkeby.etherscan.io",
   },
   {
-    name: 'Arbitrum Rinkeby',
+    name: "Arbitrum Rinkeby",
     chainId: 421611,
-    address: '',
-    blockExplorer: 'https://rinkeby-explorer.arbitrum.io',
+    address: "",
+    blockExplorer: "https://rinkeby-explorer.arbitrum.io",
   },
   {
-    name: 'Sokol Testnet (xxDAI)',
+    name: "Sokol Testnet (xxDAI)",
     chainId: 77,
-    address: '',
-    blockExplorer: 'https://blockscout.com/poa/sokol',
+    address: "",
+    blockExplorer: "https://blockscout.com/poa/sokol",
   },
   {
-    name: 'Gnosis Chain (xxDAI)',
+    name: "Gnosis Chain (xxDAI)",
     chainId: 100,
-    address: '',
-    blockExplorer: 'https://blockscout.com/xdai/mainnet',
+    address: "",
+    blockExplorer: "https://blockscout.com/xdai/mainnet",
   },
 ];
 
 const network = allowedNetworks.find(
-  n => n.chainId === Number(process.env.REACT_APP_NETWORK_ID)
+  (n) => n.chainId === Number(process.env.REACT_APP_NETWORK_ID)
 ) as NetworkWithRpc;
 
 if (network === undefined) {
@@ -104,11 +104,11 @@ network.address = process.env.REACT_APP_CONTRACT_ADDRESS;
 network.rpc = process.env.REACT_APP_NETWORK_PROVIDER;
 
 const config: DappConfig = {
-  mode: process.env.REACT_APP_MODE || 'development',
+  mode: process.env.REACT_APP_MODE || "development",
   network,
   apiKeys: {
-    web3Storage: process.env.REACT_APP_FILE_WEB3STORAGE_KEY
-  }
+    web3Storage: process.env.REACT_APP_FILE_WEB3STORAGE_KEY,
+  },
 };
 
 export const getDappMode = (): string => config.mode;

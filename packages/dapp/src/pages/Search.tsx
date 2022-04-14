@@ -7,7 +7,7 @@ import { useSpaceSearch } from '../hooks/useSpaceSearch';
 import { useMemo, useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { MessageBox } from '../components/MessageBox';
-import { GradientText } from './Home';
+//import { GradientText } from './Home';
 import styled from 'styled-components';
 import { SpaceRecord } from '../store/actions';
 
@@ -114,7 +114,6 @@ export const Search = () => {
         <Text size='large'>
           Devconnect APRIL 17-25, 2022 Amsterdam, The Netherlands
         </Text>
-        <GradientText>Amsterdam</GradientText>
       </Box>
 
       <Box margin={{ bottom: 'medium' }}>

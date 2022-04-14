@@ -31,6 +31,7 @@
     ]
   },
   "devDependencies": {
+    "@pathofdev/react-tag-input": "1.0.7",
     "@storybook/addon-actions": "^6.4.18",
     "@storybook/addon-essentials": "^6.4.18",
     "@storybook/addon-interactions": "^6.4.18",
@@ -56,32 +57,41 @@
     "@windingtree/ipfs-apis": "1.0.0",
     "@windingtree/org.id-utils": "1.0.0-beta.47",
     "@windingtree/org.json-schema": "1.0.2",
+    "crypto-js": "4.1.1",
     "ethers": "5.6.2",
     "grommet": "^2.20.1",
-    "grommet-icons": "^4.7.0",
-    "grommet-theme-hpe": "^2.3.0",
     "luxon": "2.3.0",
     "react": "^17.0.2",
     "react-blockies": "1.4.1",
+    "react-content-loader": "6.2.0",
     "react-dom": "^17.0.2",
     "react-error-overlay": "6.0.9",
     "react-qr-code": "2.0.3",
     "react-qr-reader": "3.0.0-beta-1",
     "react-router-dom": "6.2.1",
     "react-scripts": "4.0.3",
-    "react-content-loader": "6.2.0",
+    "stays-core": "0.0.1",
+    "stays-data-models": "0.0.1",
     "stays-smart-contracts": "0.0.1",
     "styled-components": "5.3.3",
     "typescript": "4.5.5",
     "web-vitals": "2.1.4",
-    "web3modal": "1.9.6",
-    "crypto-js": "4.1.1",
-    "stays-core": "0.0.1",
-    "stays-data-models": "0.0.1",
-    "@pathofdev/react-tag-input": "1.0.7"
+    "web3modal": "1.9.6"
   },
   "resolutions": {
     "babel-loader": "8.1.0",
     "react-error-overlay": "6.0.9"
+  },
+  "dependencies": {
+    "@mantine/core": "^4.1.3",
+    "@mantine/dates": "^4.1.3",
+    "@mantine/dropzone": "^4.1.3",
+    "@mantine/form": "^4.1.3",
+    "@mantine/hooks": "^4.1.3",
+    "@mantine/modals": "^4.1.3",
+    "@mantine/notifications": "^4.1.3",
+    "@mantine/rte": "^4.1.3",
+    "dayjs": "^1.11.0",
+    "tabler-icons-react": "^1.44.0"
   }
 }

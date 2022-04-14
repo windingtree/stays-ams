@@ -1,109 +1,152 @@
-import { useContext, useMemo } from 'react';
-import { useNavigate, useLocation, Navigate } from 'react-router-dom';
-import { Image, Header, Box, ResponsiveContext } from 'grommet';
-import { useAppState } from '../store';
-// import { usePageTitle } from '../hooks/usePageTitle';
-import { Account } from '../components/Account';
-import { SignInButton, SignOutButton } from '../components/buttons/web3Modal';
-import { GlobalMenu } from './Routes';
-import { useWindowsDimension } from '../hooks/useWindowsDimension';
+import React, { useState } from "react";
+import {
+  createStyles,
+  Header,
+  Container,
+  Group,
+  Burger,
+  Paper,
+  Transition,
+  Button,
+} from "@mantine/core";
+import { useBooleanToggle } from "@mantine/hooks";
 
-export const ResponsiveAlign = (winWidth: number) => {
-  if (winWidth >= 1300) {
-    return '48vw';
-  } else if (winWidth >= 1000) {
-    return '48vw';
-  } else if (winWidth >= 768) {
-    return '48vw';
-  } else if (winWidth >= 600) {
-    return '48vw';
-  } else if (winWidth <= 500) {
-    return '48vw';
-  } else if (winWidth <= 400) {
-    return '48vw';
-  }
-};
+const HEADER_HEIGHT = 60;
 
-export const AppHeader = () => {
-  const size = useContext(ResponsiveContext);
-  const { winWidth } = useWindowsDimension();
-  const { state } = useLocation();
+const useStyles = createStyles((theme) => ({
+  root: {
+    position: "relative",
+    zIndex: 1,
+  },
 
-  const navigate = useNavigate();
-  const { account } = useAppState();
+  dropdown: {
+    position: "absolute",
+    top: HEADER_HEIGHT,
+    left: 0,
+    right: 0,
+    zIndex: 0,
+    borderTopRightRadius: 0,
+    borderTopLeftRadius: 0,
+    borderTopWidth: 0,
+    overflow: "hidden",
 
-  const returnLocation = useMemo(
-    () => (state as any)?.location as Location,
-    [state]
-  );
+    [theme.fn.largerThan("sm")]: {
+      display: "none",
+    },
+  },
+
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    height: "100%",
+  },
+
+  links: {
+    [theme.fn.smallerThan("sm")]: {
+      display: "none",
+    },
+  },
+
+  burger: {
+    [theme.fn.largerThan("sm")]: {
+      display: "none",
+    },
+  },
+
+  logo: {
+    width: "60px",
+    [theme.fn.largerThan("sm")]: { width: "110px" },
+  },
+
+  link: {
+    display: "block",
+    lineHeight: 1,
+    padding: "8px 12px",
+    borderRadius: theme.radius.sm,
+    textDecoration: "none",
+    color:
+      theme.colorScheme === "dark"
+        ? theme.colors.dark[0]
+        : theme.colors.gray[7],
+    fontSize: theme.fontSizes.sm,
+    fontWeight: 500,
+
+    "&:hover": {
+      backgroundColor:
+        theme.colorScheme === "dark"
+          ? theme.colors.dark[6]
+          : theme.colors.gray[0],
+    },
+
+    [theme.fn.smallerThan("sm")]: {
+      borderRadius: 0,
+      padding: theme.spacing.md,
+    },
+  },
+
+  linkActive: {
+    "&, &:hover": {
+      backgroundColor:
+        theme.colorScheme === "dark"
+          ? theme.fn.rgba(theme.colors[theme.primaryColor][9], 0.25)
+          : theme.colors[theme.primaryColor][0],
+      color:
+        theme.colors[theme.primaryColor][theme.colorScheme === "dark" ? 3 : 7],
+    },
+  },
+}));
+
+interface AppHeaderProps {
+  links: { link: string; label: string }[];
+}
+
+export function AppHeader({ links }: AppHeaderProps) {
+  const [opened, toggleOpened] = useBooleanToggle(false);
+  const [active, setActive] = useState(links[0].link);
+  const { classes, cx } = useStyles();
+
+  const items = links.map((link) => (
+    <a
+      key={link.label}
+      href={link.link}
+      className={cx(classes.link, {
+        [classes.linkActive]: active === link.link,
+      })}
+      onClick={(event) => {
+        event.preventDefault();
+        setActive(link.link);
+        toggleOpened(false);
+      }}
+    >
+      {link.label}
+    </a>
+  ));
 
   return (
-    <Header
-      pad='medium'
-      responsive={true}
-    >
-      {(returnLocation && account) &&
-        <Navigate to={returnLocation} state={null} />
-      }
-      <Box direction='row' gap={size}>
-        <GlobalMenu />
-      </Box>
+    <Header height={HEADER_HEIGHT} mb={120} className={classes.root}>
+      <Container className={classes.header}>
+        <img src="/logo.svg" alt="WIN Stays" className={classes.logo} />
+        <Group spacing={5} className={classes.links}>
+          {items}
+        </Group>
+        <Button className={classes.links}>Connect</Button>
 
-      <Image
-        style={{
-          position: 'absolute',
-          left: ResponsiveAlign(winWidth),
-        }}
-        src='/logo.svg'
-        height='32px'
-        margin={{ left: '-26px' }}
-        onClick={() => navigate('/')}
-      />
-
-      {/* {pathname === '/' || pathname === '/search' || winWidth < 900 ?
-        <Image
-          style={{
-            position: 'absolute',
-            left: ResponsiveAlign(winWidth),
-          }}
-          src='logo-small.png'
-          height='32px'
-          onClick={() => navigate('/')}
+        <Burger
+          opened={opened}
+          onClick={() => toggleOpened()}
+          className={classes.burger}
+          size="sm"
         />
-        : <Image
-          style={{
-            position: 'absolute',
-            left: '35vw',
-          }}
-          src='/logo.png'
-          height='32px'
-          onClick={() => navigate('/')}
-        />
-      } */}
-      {/* <Image
-        fit="cover"
-        src='/bg-img.svg'
-        color='#611FF2'
-        style={{
-          width: '100vw',
-          // height: '100vh',
-          position: 'absolute',
-          left: '0',
-          bottom: '-1.5rem',
-          zIndex: '-100'
-        }}
-      /> */}
 
-      <Box direction='row' align='center' gap={size} margin={{ right: 'small' }}>
-        <Account account={account} />
-        <Box>
-          {account
-            ? <SignOutButton />
-            : <SignInButton />
-          }
-        </Box>
-        {/* <SwitchThemeMode /> */}
-      </Box>
+        <Transition transition="pop-top-right" duration={200} mounted={opened}>
+          {(styles) => (
+            <Paper className={classes.dropdown} withBorder style={styles}>
+              {items}
+            </Paper>
+          )}
+        </Transition>
+      </Container>
     </Header>
   );
-};
+}
