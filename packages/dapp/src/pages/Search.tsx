@@ -10,6 +10,10 @@ import { MessageBox } from '../components/MessageBox';
 import { GradientText } from './Home';
 import styled from 'styled-components';
 import { SpaceRecord } from '../store/actions';
+import Logger from '../utils/logger';
+
+// Initialize logger
+const logger = Logger('Search');
 
 export const WhiteParagraph = styled(Text)`
   text-align: start;
@@ -74,6 +78,7 @@ export const Search = () => {
 
   const [loading, noResults, error] = useSpaceSearch(startDay, numberOfDays, roomsNumber);
   const [afterLoading, setAfterLoading] = useState(false);
+  const [filteredSpaces, setFilteredSpaces] = useState<SpaceRecord[]>([]);
 
   useEffect(
     () => {
@@ -86,20 +91,33 @@ export const Search = () => {
     [loading]
   );
 
-  const filteredSpaces = useMemo(() => {
-    if (
-      (!searchSpaces || !searchSpaces.length) ||
-      (roomsNumber === 0)
-    ) {
-      return [];
-    }
+  useEffect(
+    () => {
+      if (
+        (!searchSpaces || !searchSpaces.length) ||
+        (roomsNumber === 0)
+      ) {
+        logger.debug('Reset filtered spaces: search result is empty');
+        setFilteredSpaces([]);
+        return;
+      }
 
-    return searchSpaces.filter(
-      (space: SpaceRecord) => space.available &&
-        space.available >= roomsNumber &&
-        checkSpaceDatesRestrictions(space.id, startDay, numberOfDays)
-    );
-  }, [searchSpaces, startDay, numberOfDays, roomsNumber])
+      const filtered = searchSpaces.filter(
+        (space: SpaceRecord) => space.available &&
+          space.available >= roomsNumber &&
+          checkSpaceDatesRestrictions(space.id, startDay, numberOfDays)
+      );
+      logger.debug('Filtered spaces', filtered);
+
+      setFilteredSpaces(filtered);
+
+      return () => {
+        logger.debug('Reset filtered spaces: dependencies changed');
+        setFilteredSpaces([]);
+      };
+    },
+    [searchSpaces, startDay, numberOfDays, roomsNumber]
+  );
 
   return (
     <PageWrapper>
