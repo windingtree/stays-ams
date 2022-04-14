@@ -526,7 +526,7 @@ contract Stays is Initializable, ERC721Upgradeable, ERC721EnumerableUpgradeable,
       "Wrong caller"
     );
 
-    uint256 firstNight = _space.pricePerNightWei;
+    uint256 firstNight = _deposits[_stay.spaceId][recovered][_tokenId] / _stay.numberOfDays;
 
     // Partial withdraw, just for a first night
     _stay.checkIn = true;
