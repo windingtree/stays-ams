@@ -38,7 +38,7 @@ export const Home = () => {
 
       <MessageBox type='info' show={isIpfsNodeConnecting || isBootstrapLoading}>
         <Box direction='row'>
-          <Box>
+          <Box margin={{ right: 'small' }}>
             🙀 Your Experience is Loading 🙀
           </Box>
           <Spinner />

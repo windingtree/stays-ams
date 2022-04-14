@@ -9,6 +9,7 @@ const logger = Logger('useSpaceSearch');
 
 export type UseSpaceSearchHook = [
   isLoading: boolean,
+  isNoResults: boolean,
   error: string | undefined
 ];
 
@@ -23,8 +24,8 @@ export const useSpaceSearch = (
   const dispatch = useAppDispatch();
   const { lodgingFacilities, searchTimestamp, searchParams } = useAppState();
   const [cb, isReady] = useSpaceAvailability();
-
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [isNoResults, setIsNoResults] = useState(false);
   const [error, setError] = useState<string | undefined>();
 
   console.log("useSpaceSearch :: before useEffect")
@@ -32,12 +33,11 @@ export const useSpaceSearch = (
   useEffect(() => {
     setLoading(true);
     setError(undefined);
+    setIsNoResults(false);
 
     if (!isReady) {
-      console.log("useSpaceSearch :: isReady === false")
-      return
+      return;
     }
-    console.log("useSpaceSearch :: isReady === true")
 
     if (!!searchParams && searchParams.roomsNumber !== roomsNumber) {
       dispatch({
@@ -92,6 +92,10 @@ export const useSpaceSearch = (
           )
         );
 
+        if (newSpaces.length === 0) {
+          setIsNoResults(true);
+        }
+
         // Add all obtained records to state
         for (const record of newSpaces) {
           dispatch({
@@ -138,6 +142,7 @@ export const useSpaceSearch = (
 
   return [
     loading,
+    isNoResults,
     error
   ];
 };

@@ -50,13 +50,13 @@ const defaultEndDate = tomorrow.toMillis() > defaultEndDay.toMillis() ? tomorrow
 export const SearchForm: React.FC<{
   startDay?: number | undefined,
   numberOfDays?: number | undefined,
-  initroomsNumber?: number | undefined,
-}> = ({ startDay, numberOfDays, initroomsNumber }) => {
+  initRoomsNumber?: number | undefined,
+}> = ({ startDay, numberOfDays, initRoomsNumber }) => {
   const navigate = useNavigate();
   const { getDate } = useAppState();
   const [departureDate, setDepartureDate] = useState<string>(defaultStartDate);
   const [returnDate, setReturnDate] = useState<string>(defaultEndDate);
-  const [roomsNumber, setroomsNumber] = useState<number>(initroomsNumber ?? 1);
+  const [roomsNumber, setroomsNumber] = useState<number>(initRoomsNumber ?? 1);
 
   useEffect(() => {
     if (getDate !== undefined && !!startDay && !!numberOfDays) {
