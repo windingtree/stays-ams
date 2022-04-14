@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Image, Box, Spinner, Text } from 'grommet';
+import { Box, Spinner, Text } from 'grommet';
 import { useAppState } from '../store';
 import { PageWrapper } from '../pages/PageWrapper';
 import { MessageBox } from '../components/MessageBox';
