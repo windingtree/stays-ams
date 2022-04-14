@@ -164,7 +164,7 @@ export const GlobalMenu = () => {
       dropBackground={{ color: 'black', opacity: 0.9 }}
       dropAlign={{
         top: "bottom",
-        left: "right",
+        left: "left",
       }}
       disabled={isConnecting}
       icon={(<MenuIcon color='black' />)}
