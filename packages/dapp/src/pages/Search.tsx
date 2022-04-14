@@ -59,7 +59,6 @@ export const Search = () => {
 
   const { searchSpaces } = useAppState();
   const { search } = useLocation();
-  const [afterLoading, setAfterLoading] = useState(false);
 
   const { startDay, numberOfDays, roomsNumber } = useMemo(() => {
     const params = new URLSearchParams(search);
@@ -73,7 +72,8 @@ export const Search = () => {
     }
   }, [search])
 
-  const [loading, error] = useSpaceSearch(startDay, numberOfDays, roomsNumber);
+  const [loading, noResults, error] = useSpaceSearch(startDay, numberOfDays, roomsNumber);
+  const [afterLoading, setAfterLoading] = useState(false);
 
   useEffect(
     () => {
@@ -86,7 +86,6 @@ export const Search = () => {
     [loading]
   );
 
-  console.log("Search :: end")
   const filteredSpaces = useMemo(() => {
     if (
       (!searchSpaces || !searchSpaces.length) ||
@@ -94,8 +93,6 @@ export const Search = () => {
     ) {
       return [];
     }
-
-    console.log('@@@', searchSpaces);
 
     return searchSpaces.filter(
       (space: SpaceRecord) => space.available &&
@@ -121,7 +118,7 @@ export const Search = () => {
         <SearchForm
           startDay={startDay}
           numberOfDays={numberOfDays}
-          initroomsNumber={roomsNumber}
+          initRoomsNumber={roomsNumber}
         />
       </Box>
 
@@ -133,9 +130,9 @@ export const Search = () => {
         </Box>
       </MessageBox>
 
-      {afterLoading ? <Spinner color='accent-1' alignSelf='center' size='large' /> : null}
+      {loading ? <Spinner color='accent-1' alignSelf='center' size='large' /> : null}
 
-      <MessageBox type='info' show={!afterLoading && filteredSpaces.length === 0}>
+      <MessageBox type='info' show={!afterLoading && noResults}>
         <Text>
           No spaces found according your criteria
         </Text>

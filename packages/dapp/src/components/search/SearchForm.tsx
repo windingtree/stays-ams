@@ -41,22 +41,22 @@ const dateFormat = new Intl.DateTimeFormat(undefined, {
 
 const today = DateTime.now().set({ hour: 12 });
 const tomorrow = today.plus({ days: 1 });
-const startDay = DateTime.fromISO('2022-04-17').set({ hour: 12 });
-const endDay = DateTime.fromISO('2022-04-25').set({ hour: 12 });
+const defaultStartDay = DateTime.fromISO('2022-04-17').set({ hour: 12 });
+const defaultEndDay = DateTime.fromISO('2022-04-25').set({ hour: 12 });
 
-const defaultStartDate = today.toMillis() > startDay.toMillis() ? today.toISO() : startDay.toISO()
-const defaultEndDate = tomorrow.toMillis() > endDay.toMillis() ? tomorrow.toISO() : endDay.toISO()
+const defaultStartDate = today.toMillis() > defaultStartDay.toMillis() ? today.toISO() : defaultStartDay.toISO()
+const defaultEndDate = tomorrow.toMillis() > defaultEndDay.toMillis() ? tomorrow.toISO() : defaultEndDay.toISO()
 
 export const SearchForm: React.FC<{
   startDay?: number | undefined,
   numberOfDays?: number | undefined,
-  initroomsNumber?: number | undefined,
-}> = ({ startDay, numberOfDays, initroomsNumber }) => {
+  initRoomsNumber?: number | undefined,
+}> = ({ startDay, numberOfDays, initRoomsNumber }) => {
   const navigate = useNavigate();
   const { getDate } = useAppState();
   const [departureDate, setDepartureDate] = useState<string>(defaultStartDate);
   const [returnDate, setReturnDate] = useState<string>(defaultEndDate);
-  const [roomsNumber, setroomsNumber] = useState<number>(initroomsNumber ?? 1);
+  const [roomsNumber, setroomsNumber] = useState<number>(initRoomsNumber ?? 1);
 
   useEffect(() => {
     if (getDate !== undefined && !!startDay && !!numberOfDays) {
@@ -131,6 +131,7 @@ export const SearchForm: React.FC<{
             }
           }}
           calendarProps={{
+            bounds: [defaultStartDay.toISO(), defaultEndDay.toISO()],
             fill: false,
             alignSelf: 'center',
             margin: 'small',

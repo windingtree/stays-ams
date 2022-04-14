@@ -9,7 +9,7 @@ abstract contract StayEscrow is IStayEscrow {
   using Address for address payable;
 
   // spaceId => payer address => tokenId => deposit
-  mapping(bytes32 => mapping (address => mapping(uint256 => uint256))) private _deposits;
+  mapping(bytes32 => mapping (address => mapping(uint256 => uint256))) internal _deposits;
 
   // tokenId => State
   mapping(uint256 => State) private _states;
