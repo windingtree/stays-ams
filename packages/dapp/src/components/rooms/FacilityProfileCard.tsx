@@ -484,7 +484,7 @@ export const FacilityProfileCard = () => {
   const deployToIpfs = useCallback(
     async (
       file: File,
-      loadingSetter = () => {},
+      loadingSetter = () => { },
       isImage = false
     ) => {
       try {
@@ -1262,7 +1262,7 @@ export const FacilityProfileCard = () => {
                                 SELECT ROOM IMAGES
                               </Text>
                             </CardHeader>
-                            <CardBody style={{ padding: 20 }}>
+                            <CardBody style={{ padding: 20, maxHeight: '80vh', overflow: 'scroll' }}>
                               <form>
                                 <FormField htmlFor="fileInput">
                                   <FileInput
@@ -1364,10 +1364,10 @@ export const FacilityProfileCard = () => {
                                         const initialImagesCount = unFlattenProfile?.media?.images?.length || 0;
                                         logger.debug('initialImagesCount', initialImagesCount);
 
-                                        for (let i=0; i < images.length; i++) {
+                                        for (let i = 0; i < images.length; i++) {
                                           const uri = await deployToIpfs(
                                             images[i],
-                                            () => {},
+                                            () => { },
                                             true
                                           );
 
