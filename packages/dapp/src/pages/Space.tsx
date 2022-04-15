@@ -216,7 +216,7 @@ export const Space: React.FC = () => {
                 <Anchor
                   size='large'
                   label="🌎"
-                  href={facility?.contact.website}
+                  href={facility?.contact?.website}
                   title={facility?.name}
                   target="_blank"
                   style={{ fontSize: '3em' }}
