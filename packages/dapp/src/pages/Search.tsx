@@ -84,7 +84,7 @@ export const Search = () => {
   useEffect(
     () => {
       if (!loading) {
-        setTimeout(() => setAfterLoading(false), 3000);
+        setTimeout(() => setAfterLoading(false), 1000);
       } else {
         setSearchActivated(true);
         setAfterLoading(true);
@@ -147,14 +147,12 @@ export const Search = () => {
         </Box>
       </MessageBox>
 
-      {loading ? <Spinner color='accent-1' alignSelf='center' size='large' /> : null}
+      {loading || afterLoading ? <Spinner color='accent-1' alignSelf='center' size='large' /> : null}
 
       <MessageBox type='info' show={
         searchActivated &&
-        (
-          (!afterLoading && noResults) ||
-          filteredSpaces.length === 0
-        )
+        !afterLoading &&
+        (noResults || filteredSpaces.length === 0)
       }>
         <Text>
           No Rooms Found
