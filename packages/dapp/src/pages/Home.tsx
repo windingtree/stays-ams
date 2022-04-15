@@ -33,7 +33,7 @@ export const Home = () => {
   return (
     <PageWrapper>
       <Box align='center' margin={{ bottom: 'large', top: 'large' }}>
-        <GradientText>Book Hotels On Gnosis Chain with up to 50% discount. Pay in xDai. Check-in with NFT.</GradientText>
+        <GradientText>Book Hotels On Gnosis Chain with up to 50% discount. Pay in xDai. Check-in with NFT. Stay&nbsp;for&nbsp;<a href="https://www.iamsterdam.com/en/see-and-do/whats-on/major-events-and-celebrations/kings-day">King's Day</a> (April 27).</GradientText>
       </Box>
 
       {(isIpfsNodeConnecting || isBootstrapLoading) &&
