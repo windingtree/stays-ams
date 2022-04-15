@@ -109,8 +109,9 @@ export const SearchResultCard: React.FC<{
               fit="cover"
               src={space.media.logo}
             />
-            {space.media.images?.map((img) =>
+            {space.media.images?.map((img, i) =>
               <Image
+                key={i}
                 fit="cover"
                 src={img.uri}
               />
@@ -126,8 +127,8 @@ export const SearchResultCard: React.FC<{
             &nbsp;
             <Anchor
               label="🌎"
-              href={facility?.contact.website}
-              title={facility?.name}
+              href={facility?.contact?.website ?? ''}
+              title={facility?.name ?? ''}
               target="_blank"
             />
           </Text>

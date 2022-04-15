@@ -15,7 +15,7 @@ export const AppFooter = () => {
           Created with 💖 for <a href="https://devconnect.org/">Devconnect</a>
         </Text>
         <Text size='large'>
-          April 17&ndash;25, Amsterdam
+          April 17&ndash;28, Amsterdam
         </Text>
       </Box>
 
