@@ -1,7 +1,6 @@
-import type { IPFS, Options } from './utils';
 import { Web3StorageApi } from './apis/web3Storage';
-import { startIpfsGateway, obj2File, getIpfsChunks } from './utils';
+import { obj2File } from './utils';
 
-const utils = { startIpfsGateway, obj2File, getIpfsChunks };
+const utils = { obj2File };
 
-export { IPFS, Options, Web3StorageApi, utils };
+export { Web3StorageApi, utils };

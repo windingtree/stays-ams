@@ -1,6 +1,6 @@
 import type { LodgingFacility, Space, SpaceRaw } from 'stays-data-models';
 import type { Web3ModalProvider } from '../hooks/useWeb3Modal';
-import type { IPFS } from '@windingtree/ipfs-apis';
+import type { Web3StorageApi } from '@windingtree/ipfs-apis';
 import type { IProviderInfo } from 'web3modal';
 import type { providers } from 'ethers';
 import { ThemeMode } from '../components/SwitchThemeMode';
@@ -43,10 +43,7 @@ export interface State {
   signOut: Function;
   errors: string[];
   themeMode: ThemeMode;
-  ipfsNode?: IPFS;
-  isIpfsNodeConnecting: boolean;
-  startIpfsNode: Function;
-  stopIpfsNode: Function;
+  ipfsNode?: Web3StorageApi;
   isBootstrapLoading: boolean;
   bootstrapped?: number;
   bootstrappedContract?: string;
@@ -58,7 +55,6 @@ export interface State {
   ownFacilitiesRefresh?: Function;
   searchSpaces: SpaceRecord[];
   searchParams?: SearchParams;
-  getDate?: (days: number) => DateTime;
   [key: string]: unknown | GenericStateRecord[];
 
 }
@@ -126,18 +122,9 @@ export interface SetThemeModeAction {
   payload: ThemeMode;
 }
 
-export interface SetIpfsNodeConnectingAction {
-  type: 'SET_IPFS_NODE_CONNECTING';
-  payload: boolean;
-}
-
 export interface SetIpfsNodeAction {
   type: 'SET_IPFS_NODE';
-  payload: {
-    ipfsNode: IPFS | undefined;
-    startIpfsNode: Function;
-    stopIpfsNode: Function;
-  }
+  payload?: Web3StorageApi;
 }
 
 export interface SetRecordAction {
@@ -207,11 +194,6 @@ export interface SetOwnFacilitiesBootstrappedAction {
   type: 'RESET_OWN_FACILITIES';
 }
 
-export interface SetGetDateAction {
-  type: 'SET_GET_DATE',
-  payload?: (days: number) => DateTime
-}
-
 export type Action =
   | SetConnectingAction
   | SetAccountAction
@@ -222,7 +204,6 @@ export type Action =
   | SetInjectedProviderAction
   | SetRpcProviderAction
   | SetWeb3modalFunctionsAction
-  | SetIpfsNodeConnectingAction
   | SetIpfsNodeAction
   | SetRecordAction
   | RemoveRecordAction
@@ -234,7 +215,6 @@ export type Action =
   | SetOwnFacilitiesRefreshAction
   | SetOwnFacilitiesLoadingAction
   | SetOwnFacilitiesBootstrappedAction
-  | SetGetDateAction
   | SetAvailabilityTimestampAction
   | SetSearchParamsAction
   | AddErrorAction

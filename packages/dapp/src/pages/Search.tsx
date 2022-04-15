@@ -77,7 +77,8 @@ export const Search = () => {
   }, [search])
 
   const [loading, noResults, error] = useSpaceSearch(startDay, numberOfDays, roomsNumber);
-  const [afterLoading, setAfterLoading] = useState(false);
+  const [searchActivated, setSearchActivated] = useState<boolean>(false);
+  const [afterLoading, setAfterLoading] = useState<boolean>(false);
   const [filteredSpaces, setFilteredSpaces] = useState<SpaceRecord[]>([]);
 
   useEffect(
@@ -85,6 +86,7 @@ export const Search = () => {
       if (!loading) {
         setTimeout(() => setAfterLoading(false), 3000);
       } else {
+        setSearchActivated(true);
         setAfterLoading(true);
       }
     },
@@ -147,7 +149,13 @@ export const Search = () => {
 
       {loading ? <Spinner color='accent-1' alignSelf='center' size='large' /> : null}
 
-      <MessageBox type='info' show={!afterLoading && noResults}>
+      <MessageBox type='info' show={
+        searchActivated &&
+        (
+          (!afterLoading && noResults) ||
+          filteredSpaces.length === 0
+        )
+      }>
         <Text>
           No Rooms Found
         </Text>
