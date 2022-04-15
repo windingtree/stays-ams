@@ -39,6 +39,7 @@ import { ResponsiveColumn } from '../../utils/roomProfile';
 import { getNetwork } from '../../config';
 import Logger from '../../utils/logger';
 import '@pathofdev/react-tag-input/build/index.css';
+import { utils } from 'ethers';
 
 // Initialize logger
 const logger = Logger('SpaceProfileCard');
@@ -168,6 +169,10 @@ export const SpaceProfileCard = () => {
         delete profile.contractData;
         delete profile.updated;
 
+        // convert xWEI to xDAI
+        const xDaiValue = utils.formatEther(profile.price);
+        profile.price = xDaiValue
+
         setSelectedFacilityProfile(profile);
         setProfileValue(flattenObject(profile));
         logger.debug('Selected space profile', profile);
@@ -252,6 +257,9 @@ export const SpaceProfileCard = () => {
         setProfileCreating(true);
 
         const profileData = unFlattenObject(profileValue) as SpaceRaw;
+        // convert xDAI to xWEI
+        const xWeiValue = utils.parseEther(profileData.price);
+        profileData.price = xWeiValue.toString()
 
         logger.debug('profileData', profileData);
         validateSpaceData(profileData);
