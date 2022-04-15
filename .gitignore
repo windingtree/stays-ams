@@ -6,3 +6,5 @@ coverage.json
 *.log
 temp
 package-lock.json
+
+packages/smart-contracts/cache/
