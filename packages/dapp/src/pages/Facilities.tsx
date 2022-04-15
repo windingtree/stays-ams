@@ -93,6 +93,7 @@ const SpacesList: React.FC<{
     <Box direction='column'>
       {facility.spaces.map((space: OwnerSpace, i) => (
         <Box
+          key={i}
           border='bottom'
           pad='medium'
         >
