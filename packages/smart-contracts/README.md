@@ -152,6 +152,37 @@ Commands above will:
 > Here the link where listed predefined accounts for the node: https://hardhat.org/hardhat-network/reference/#initial-state
 > First one is used for deployments
 
+## Working on **FORKED** production
+
+Ensure that you have access to a Gnosis Chain archive node. [Pokt](https://www.portal.pokt.network/)
+is a great resource for RPC endpoints, you can get your archive node RPC access there.
+
+1. Sign up for an RPC endpoint at pokt.
+2. Set that RPC endpoint in `ETH_NODE_URI_GNOSIS` in `.env` (use `.env.example` as a template).
+3. Ensure that you configure a 'Local' network in Metamask using RPC endpoint http://127.0.0.1:8545/ 
+   with chain id 31337.
+4. Set the following in the `.env` in the **`dapp`** package:
+
+    ```
+    REACT_APP_NETWORK_ID=31337
+    REACT_APP_NETWORK_PROVIDER=http://127.0.0.1:8545
+    REACT_APP_CONTRACT_ADDRESS=0xEcfF1da7acD4025c532C04db3B57b454bAB95b4E
+    ```
+5. Now in the **this** package (`smart-contracts`), start the forked node:
+
+   ```bash
+   npx hardhat node
+   ```
+
+6. Now in the **dapp** package, start your development server:
+
+   ```bash
+  yarn start
+  ```
+
+Using this flow, your development mnemonic that was configured will be automatically credited
+10000 XDAI and be able to use the production environment in a **forked** configuration. 
+
 
 ## Working on Sokol POA (xDAI Testnet)
 
