@@ -145,9 +145,9 @@ export const Search = () => {
         </Box>
       </MessageBox>
 
-      {loading ? <Spinner color='accent-1' alignSelf='center' size='large' /> : null}
+      {loading || afterLoading ? <Spinner color='accent-1' alignSelf='center' size='large' /> : null}
 
-      <MessageBox type='info' show={!afterLoading && noResults}>
+      <MessageBox type='info' show={!afterLoading && !loading && filteredSpaces.length === 0}>
         <Text>
           No Rooms Found
         </Text>
