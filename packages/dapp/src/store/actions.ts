@@ -5,7 +5,6 @@ import type { IProviderInfo } from 'web3modal';
 import type { providers } from 'ethers';
 import { ThemeMode } from '../components/SwitchThemeMode';
 import type { StayToken } from 'stays-core';
-import { DateTime } from 'luxon';
 export interface GenericStateRecord {
   id: string;
   [key: string]: unknown;
