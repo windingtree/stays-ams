@@ -125,7 +125,7 @@ export const Search = () => {
       <Box align='center' margin={{ bottom: 'small' }}>
         <GradientText>Amsterdam Devconnect</GradientText>
         <Text size='xxlarge'>
-          April 17&ndash;25
+          April 17&ndash;28
         </Text>
       </Box>
 
