@@ -3,6 +3,7 @@ import Logger from '../utils/logger';
 import { useAppDispatch, useAppState } from '../store';
 import { LodgingFacility, Space } from 'stays-data-models';
 import { useSpaceAvailability } from './useSpaceAvailability';
+import { SpaceRecord } from '../store/actions';
 
 // Initialize logger
 const logger = Logger('useSpaceSearch');
@@ -80,24 +81,33 @@ export const useSpaceSearch = (
           (previousValue, currentValue) => [...previousValue, ...currentValue.spaces as Space[]],
           [] as Space[]
         );
-        const newSpaces = await Promise.all(
+        let newSpaces = await Promise.all(
           spaces.map(
             async space => {
-              const availability = await cb(space.contractData.spaceId, startDay, numberOfDays)
-              return {
-                ...space,
-                available: availability === null ? availability : Math.min(...availability)
+              try {
+                logger.debug('Fetch availability for:', space.contractData.spaceId);
+                const availability = await cb(space.contractData.spaceId, startDay, numberOfDays)
+                logger.debug('Availability for:', space.contractData.spaceId, availability);
+                return {
+                  ...space,
+                  available: availability === null ? availability : Math.min(...availability)
+                }
+              } catch (err) {
+                logger.error(err);
+                logger.debug('Failed to get availability for:', space.contractData.spaceId);
+                return null;
               }
             }
           )
         );
+        newSpaces = newSpaces.filter(s => s !== null);
 
         if (newSpaces.length === 0) {
           setIsNoResults(true);
         }
 
         // Add all obtained records to state
-        for (const record of newSpaces) {
+        for (const record of newSpaces as SpaceRecord[]) {
           dispatch({
             type: 'SET_RECORD',
             payload: {
