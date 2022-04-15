@@ -53,14 +53,14 @@ const config: HardhatUserConfig = {
       allowUnlimitedContractSize: true,
     },
     sokol: {
-      url: 'https://sokol.poa.network',
+      url: nodeUrl('sokol'),
       accounts: accounts('sokol'),
       gasPrice: 30000000000,
     },
-    xdai: {
+    gnosis: {
       chainId: 100,
-      url: 'https://rpc.gnosischain.com',
-      accounts: accounts('xdai'),
+      url: nodeUrl('gnosis'),
+      accounts: accounts('gnosis'),
       gasPrice: 30000000000,
     },
   },

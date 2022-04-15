@@ -52,12 +52,6 @@ if (
 }
 
 const allowedNetworks: NetworkInfo[] = [
-  // {
-  //   name: 'Hardhat Testnet',
-  //   chainId: 31337,
-  //   address: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
-  //   blockExplorer: "",
-  // },
   {
     name: 'Ropsten Testnet',
     chainId: 3,
@@ -77,18 +71,28 @@ const allowedNetworks: NetworkInfo[] = [
     blockExplorer: 'https://rinkeby-explorer.arbitrum.io',
   },
   {
-    name: 'Sokol Testnet (xxDAI)',
+    name: 'Sokol Testnet (xDai)',
     chainId: 77,
     address: '',
     blockExplorer: 'https://blockscout.com/poa/sokol',
   },
   {
-    name: 'Gnosis Chain (xxDAI)',
+    name: 'Gnosis Chain (xDai)',
     chainId: 100,
     address: '',
     blockExplorer: 'https://blockscout.com/xdai/mainnet',
   },
 ];
+
+// if in test environment - allow the hardhat test network.
+if (process.env.NODE_ENV === 'development') {
+  allowedNetworks.push({
+    name: 'Local Testnet',
+    chainId: 31337,
+    address: '',
+    blockExplorer: "",
+  })
+}
 
 const network = allowedNetworks.find(
   n => n.chainId === Number(process.env.REACT_APP_NETWORK_ID)
