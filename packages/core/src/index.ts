@@ -9,7 +9,7 @@ import type {
 import type { Stays, StaysVoucher } from 'stays-smart-contracts';
 import type { MethodOverrides, TxHashCallbackFn } from './utils/sendHelper';
 import type { StayToken, StayTokenState } from './types';
-import { ethers } from 'ethers';
+import {BigNumber, ethers} from 'ethers';
 import { StaysContract } from 'stays-smart-contracts';
 import { regexp }  from '@windingtree/org.id-utils';
 
@@ -32,7 +32,7 @@ import { getDayZero } from './api/getDayZero';
 import { checkIn } from './api/checkIn';
 import { checkOut } from './api/checkOut';
 import { cancel } from './api/cancel';
-
+import { getNewBookingsTokenIds } from './api/getNewBookingsTokenIds'
 export * from './types';
 
 export type KnownProvider =
@@ -304,5 +304,9 @@ export class Contract {
       transactionHashCb,
       confirmations
     );
+  }
+
+  getNewBookingsTokenIds(fromBlock: number): Promise<BigNumber[]> {
+    return getNewBookingsTokenIds(this.contract, fromBlock);
   }
 }

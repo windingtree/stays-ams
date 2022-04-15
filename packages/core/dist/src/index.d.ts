@@ -4,6 +4,7 @@ import type { LodgingFacilityRaw, LodgingFacility, SpaceRaw, Space } from 'stays
 import type { Stays, StaysVoucher } from 'stays-smart-contracts';
 import type { MethodOverrides, TxHashCallbackFn } from './utils/sendHelper';
 import type { StayToken, StayTokenState } from './types';
+import { BigNumber } from 'ethers';
 export * from './types';
 export declare type KnownProvider = providers.ExternalProvider | providers.JsonRpcProvider | providers.Web3Provider | providers.Provider | string;
 export declare class Contract {
@@ -32,4 +33,5 @@ export declare class Contract {
     checkIn(tokenId: string, voucher: StaysVoucher, overrides?: MethodOverrides, transactionHashCb?: TxHashCallbackFn, confirmations?: number): Promise<void>;
     checkOut(tokenId: string, overrides?: MethodOverrides, transactionHashCb?: TxHashCallbackFn, confirmations?: number): Promise<void>;
     cancel(tokenId: string, overrides?: MethodOverrides, transactionHashCb?: TxHashCallbackFn, confirmations?: number): Promise<void>;
+    getNewBookingsTokenIds(fromBlock: number): Promise<BigNumber[]>;
 }
