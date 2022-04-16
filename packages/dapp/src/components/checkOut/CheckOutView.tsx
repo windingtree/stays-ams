@@ -126,10 +126,10 @@ export const CheckOutView = ({
           {tokenStatus === 'booked' ?
             <StayVoucherQr
               provider={provider}
-              from={facilityOwner}// facility owner adres
-              to={owner}// user adress
+              from={facilityOwner}// facility owner adress
+              to={owner}// stay token owner adress
               tokenId={tokenId}
-              onError={err => setQrError(err)} //TODO
+              onError={err => setQrError(err)}
               name={name}
               description={description}
               attributes={attributes}

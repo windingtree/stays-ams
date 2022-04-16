@@ -72,7 +72,7 @@ const FacilityList: React.FC<{
 }
 
 const SpacesList: React.FC<{
-  facility: OwnerLodgingFacility | undefined,
+  ownerFacility: OwnerLodgingFacility | undefined,
   checkOut: (
     tokenId: string,
     checkOutDate: DateTime,
@@ -81,17 +81,17 @@ const SpacesList: React.FC<{
   loading: boolean,
   error: string | undefined,
   provider: providers.Web3Provider | undefined,
-  facilityOpen: LodgingFacilityRecord
-}> = ({ facility, checkOut, loading, error, provider, facilityOpen }) => {
+  facility: LodgingFacilityRecord
+}> = ({ ownerFacility, checkOut, loading, error, provider, facility }) => {
   const navigate = useNavigate();
   const [showTokens, setShowTokens] = useState<string>()
-  if (!facility || !facility.spaces) {
+  if (!ownerFacility || !ownerFacility.spaces) {
     return null
   }
 
   return (
     <Box direction='column'>
-      {facility.spaces.map((space: OwnerSpace, i) => (
+      {ownerFacility.spaces.map((space: OwnerSpace, i) => (
         <Box
           key={i}
           border='bottom'
@@ -114,7 +114,7 @@ const SpacesList: React.FC<{
               <Button
                 icon={<Edit size='medium' radius='large' />}
                 onClick={() => navigate(
-                  `/spaces/edit/${facility.contractData.lodgingFacilityId}/${space.spaceId}`
+                  `/spaces/edit/${ownerFacility.contractData.lodgingFacilityId}/${space.spaceId}`
                 )}
               />
             </Box>
@@ -124,9 +124,9 @@ const SpacesList: React.FC<{
               {space.tokens.length > 0 ? space.tokens.map((token, index) => (
                 <CheckOutView
                   key={index}
-                  facilityOwner={facility.contractData.owner}
+                  facilityOwner={ownerFacility.contractData.owner}
                   checkOut={checkOut}
-                  facility={facilityOpen}
+                  facility={facility}
                   error={error}
                   loading={loading}
                   {...token}
@@ -166,14 +166,14 @@ export const Facilities = () => {
     ipfsNode,
   );
 
-  const facility = useMemo(() => {
+  const ownerFacility = useMemo(() => {
     const params = new URLSearchParams(search)
     const facilityId = params.get('facilityId')
     console.log('useMemo', facilityId, ownFacilities)
     return ownFacilities?.find(f => f.contractData.lodgingFacilityId === facilityId)
   }, [search, ownFacilities]);
 
-  const facilityOpen = useMemo(() => {
+  const facility = useMemo(() => {
     const params = new URLSearchParams(search)
     const facilityId = params.get('facilityId')
     return lodgingFacilities.find(f => f.contractData.lodgingFacilityId === facilityId)
@@ -199,7 +199,7 @@ export const Facilities = () => {
       </MessageBox>
 
       <FacilityList
-        selectedFacilityId={facility?.contractData.lodgingFacilityId}
+        selectedFacilityId={ownerFacility?.contractData.lodgingFacilityId}
         facilities={ownFacilities ?? []}
       >
 
@@ -207,25 +207,25 @@ export const Facilities = () => {
           pad={size}
           direction='column'
         >
-          {facility &&
+          {ownerFacility &&
             <>
               <Box direction='row' align='center' margin={{ top: 'small', bottom: 'small' }}>
-                <CustomText>{facility.name}</CustomText>
+                <CustomText>{ownerFacility.name}</CustomText>
                 <Button
                   icon={<Edit size='medium' radius='large' />}
                   onClick={() => navigate(
-                    `/facilities/edit/${facility.contractData.lodgingFacilityId}`
+                    `/facilities/edit/${ownerFacility.contractData.lodgingFacilityId}`
                   )}
                 />
               </Box>
 
               <Box direction='row' align='center' margin={{ top: 'small', bottom: 'small' }}>
                 <CustomText>Spaces</CustomText>
-                {facility &&
+                {ownerFacility &&
                   <Button
                     icon={<AddCircle size='medium' radius='large' />}
                     onClick={() => navigate(
-                      `/spaces/add/${facility.contractData.lodgingFacilityId}`
+                      `/spaces/add/${ownerFacility.contractData.lodgingFacilityId}`
                     )}
                   />
                 }
@@ -233,14 +233,14 @@ export const Facilities = () => {
             </>
           }
 
-          {isReady && facilityOpen !== undefined &&
+          {isReady && facility !== undefined &&
             <SpacesList
               checkOut={checkOut}
               error={checkOutError}
               loading={checkOutLoading}
-              facility={facility}
+              ownerFacility={ownerFacility}
               provider={provider}
-              facilityOpen={facilityOpen}
+              facility={facility}
             />
           }
         </Box>
