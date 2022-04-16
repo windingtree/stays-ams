@@ -1,7 +1,7 @@
 import type { StayToken } from 'stays-core';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { DateTime } from 'luxon';
-import { Grid, Button, Box, Text, Spinner } from 'grommet';
+import { Grid, Box, Text, Spinner } from 'grommet';
 import { centerEllipsis } from '../../utils/strings';
 import { TxHashCallbackFn } from 'stays-core/dist/src/utils/sendHelper';
 import { getNetwork } from '../../config';
@@ -15,23 +15,10 @@ import { LodgingFacilityRecord } from '../../store/actions';
 import { usePoller } from '../../hooks/usePoller';
 import { useContract } from '../../hooks/useContract';
 import { useAppState } from '../../store';
+import { CustomButton } from '../SearchResultCard';
 
 const InnerSpinner = styled(Spinner)`
   margin-left: 8px;
-`;
-
-const BlackButton = styled(Button)`
-  color: #fff;
-  background: #0D0E0F;
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 700;
-  font-size: 16px;
-  line-height: 24px;
-  // max-height: 3rem;
-  border-radius: 2rem;
-  border: none;
-  width: 8rem
 `;
 
 export interface CheckOutProps extends StayToken {
@@ -64,7 +51,7 @@ export const CheckOutView = ({
   owner,
   provider,
   facility,
-  facilityOwner
+  facilityOwner,
 }: CheckOutProps) => {
   const { rpcProvider, ipfsNode } = useAppState();
   const [contract] = useContract(rpcProvider, ipfsNode, false);
@@ -84,6 +71,8 @@ export const CheckOutView = ({
   };
   const [pollerEnabled, setPollerEnabled] = useState(false);
   const [tokenStatus, setTokenStatus] = useState(status);
+  const [errorEnabled, setErrorEnabled] = useState(false);
+  const [qrError, setQrError] = useState<string>();
 
   useEffect(() => {
     setPollerEnabled(true)
@@ -115,17 +104,13 @@ export const CheckOutView = ({
   return (
     <Box
       alignSelf='center'
-      direction='row'
-      align='center'
-      justify='start'
-      // pad={{ bottom: 'medium' }}
+      direction='column'
       fill
     >
       <Grid
         fill='horizontal'
-        // pad='small'
         align='center'
-        columns={['medium', 'small', 'auto']}
+        columns={['medium', 'small', 'auto', '10rem']}
         responsive
       >
         <Box>
@@ -137,34 +122,52 @@ export const CheckOutView = ({
         <Box>
           <CustomText>{getDate(parseTrait('startDay')).toISODate()} - {getDate(Number(parseTrait('startDay')) + Number(parseTrait('numberOfDays'))).toISODate()}</CustomText>
         </Box>
+        <Box pad={{ vertical: 'medium' }}>
+          {tokenStatus === 'booked' ?
+            <StayVoucherQr
+              provider={provider}
+              from={facilityOwner}// facility owner adres
+              to={owner}// user adress
+              tokenId={tokenId}
+              onError={err => setQrError(err)} //TODO
+              name={name}
+              description={description}
+              attributes={attributes}
+              facility={facility}
+              pricePerNightWei={'0'}
+            />
+            : null}
+          {tokenStatus === 'checked-in' ?
+            <CustomButton onClick={() => {
+              checkOut(tokenId, checkOutDate, setHash)
+              setErrorEnabled(true)
+            }}>
+              {() => (
+                <Box>
+                  <Text size='1rem'>
+                    Check out
+                  </Text>
+                  {loading && <InnerSpinner />}
+                </Box>
+              )}
+            </CustomButton>
+            : null}
+
+          {hashLink !== null ?
+            <ExternalLink href={hashLink} label={centerEllipsis(hash)} />
+            : null}
+        </Box>
       </Grid>
 
-      <Box pad='medium'>
-        <StayVoucherQr
-          provider={provider}
-          from={facilityOwner}// facility owner adres
-          to={owner}// user adress
-          tokenId={tokenId}
-          onError={err => console.log(err)} //TODO
-          name={name}
-          description={description}
-          attributes={attributes}
-          facility={facility}
-          pricePerNightWei={'0'}
-        />
-        <BlackButton onClick={() => checkOut(tokenId, checkOutDate, setHash)} >
-          {() => (
-            <Box direction='row' align='center' justify='center' pad='small'>
-              <Text>
-                Check out
-              </Text>
-              {loading && <InnerSpinner />}
-            </Box>
-          )}
-        </BlackButton>
-        {hashLink !== null ?
-          <ExternalLink href={hashLink} label={centerEllipsis(hash)} />
-          : null}
+      <MessageBox type='error' show={!!qrError}>
+        <Box direction='row'>
+          <Box>
+            {qrError}
+          </Box>
+        </Box>
+      </MessageBox>
+
+      {errorEnabled &&
         <MessageBox type='error' show={!!error}>
           <Box direction='row'>
             <Box>
@@ -172,7 +175,7 @@ export const CheckOutView = ({
             </Box>
           </Box>
         </MessageBox>
-      </Box>
+      }
     </Box>
   );
 };
