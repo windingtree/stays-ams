@@ -1,5 +1,5 @@
 import type { providers } from 'ethers';
-import type { IPFS } from '@windingtree/ipfs-apis';
+import type { Web3StorageApi } from '@windingtree/ipfs-apis';
 import { useState, useEffect, useCallback } from 'react';
 import { useContract } from './useContract';
 import Logger from '../utils/logger';
@@ -17,14 +17,14 @@ export type UseProceedCheckOut = [
   ) => void,
   isReady: boolean,
   loading: boolean,
-  error: string | undefined,
+  error?: string,
 ];
 
 // useCheckOut react hook
 export const useCheckOut = (
-  account: string | undefined,
-  provider: providers.JsonRpcProvider | undefined,
-  ipfsNode: IPFS | undefined,
+  account?: string,
+  provider?: providers.JsonRpcProvider,
+  ipfsNode?: Web3StorageApi,
 ): UseProceedCheckOut => {
   const [contract, , contractError] = useContract(provider, ipfsNode);
   const [error, setError] = useState<string | undefined>(undefined);

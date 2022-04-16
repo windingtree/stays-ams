@@ -1,70 +1,38 @@
-import type { IpfsApiAddResponse } from './base';
-import type { IPFS } from '../utils';
-import { BaseIpfsStorageApi } from './base';
-import { getIpfsChunks } from '../utils';
-import { http } from '@windingtree/org.id-utils';
+import type { Web3Storage } from 'web3.storage';
+import { Web3Storage as w3s } from 'web3.storage/dist/bundle.esm.min.js';
+// import { Web3Storage as w3s } from 'web3.storage';
 
-const web3StorageApiPath = 'https://api.web3.storage';
+export class Web3StorageApi {
+  private w3Api: Web3Storage;
 
-export class Web3StorageApi extends BaseIpfsStorageApi {
-  private authToken: string;
-  private ipfsGateway: IPFS;
-
-  constructor(token: string, gateway: IPFS) {
-    super();
-
+  constructor(token: string) {
     if (!token) {
       throw new Error('Web3Storage Authorization API token must be provided');
     }
 
-    if (!gateway) {
-      throw new Error('IPFS gateway must be provided');
-    }
-
-    this.authToken = token;
-    this.ipfsGateway = gateway;
+    this.w3Api = new w3s({ token });
   }
 
-  authHeader() {
-    return {
-      'Authorization': `Bearer ${this.authToken}`,
-      'X-Client': 'web3.storage/js'
-    };
-  }
-
-  async add(
-    file: File
-  ): Promise<IpfsApiAddResponse> {
-    return http.request(
-      `${web3StorageApiPath}/upload`,
-      'POST',
-      await file.arrayBuffer(),
+  add(file: File): Promise<string> {
+    return this.w3Api.put(
+      [
+        file
+      ],
       {
-        ...this.authHeader(),
-        'X-NAME': file.name
-      }
-    ) as Promise<IpfsApiAddResponse>;
-  }
-
-  async get(cid: string): Promise<unknown> {
-    return getIpfsChunks(this.ipfsGateway.cat(cid));
-  }
-
-  // Faked until Web3.storage not implemented /user/uploads/{cid}
-  // https://github.com/web3-storage/web3.storage/issues/314
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  delete(cid: string): Promise<void> {
-    return Promise.resolve();
-  }
-
-  async _delete(cid: string): Promise<void> {
-    await http.request(
-      `${web3StorageApiPath}/user/uploads/${cid}`,
-      'DELETE',
-      undefined,
-      {
-        ...this.authHeader()
+        wrapWithDirectory: false
       }
     );
+  }
+
+  async get(cid: string): Promise<string> {
+    const res = await this.w3Api.get(cid);
+
+    if (!res || !res.ok) {
+      throw new Error(`Failed to get ${cid}`);
+    }
+
+    const files = await res.files();
+
+    return files[0].text();
   }
 }

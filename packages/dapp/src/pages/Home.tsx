@@ -21,13 +21,12 @@ export const Home = () => {
   const {
     isIpfsNodeConnecting,
     isBootstrapLoading,
-    bootstrapped,
-    getDate
+    bootstrapped
   } = useAppState();
 
   const isReady = useMemo(
-    () => !isIpfsNodeConnecting && !isBootstrapLoading && getDate !== undefined,
-    [isIpfsNodeConnecting, isBootstrapLoading, getDate]
+    () => !isIpfsNodeConnecting && !isBootstrapLoading,
+    [isIpfsNodeConnecting, isBootstrapLoading]
   );
 
   return (

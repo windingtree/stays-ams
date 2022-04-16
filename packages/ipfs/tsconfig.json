@@ -13,7 +13,7 @@
     "declarationMap": true,
     "incremental": true,
     "composite": true,
-    "isolatedModules": true,
+    // "isolatedModules": true,
     "removeComments": true,
     "sourceMap": true,
     // module resolution
@@ -35,7 +35,8 @@
   "include": [
     "dist",
     "src",
-    "test"
+    "test",
+    "temp"
   ],
   "exclude": [
     "node_modules"

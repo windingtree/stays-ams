@@ -5,7 +5,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { PageWrapper } from './PageWrapper';
 import { MessageBox } from '../components/MessageBox';
 import { useAppState } from '../store';
-import { useDayZero } from '../hooks/useDayZero';
 import { CheckOutView } from '../components/checkOut/CheckOutView';
 import { useCheckOut } from '../hooks/useCheckOut';
 import { AddCircle, Edit } from 'grommet-icons';
@@ -74,7 +73,6 @@ const FacilityList: React.FC<{
 
 const SpacesList: React.FC<{
   facility: OwnerLodgingFacility | undefined,
-  getDate: (days: number) => DateTime,
   checkOut: (
     tokenId: string,
     checkOutDate: DateTime,
@@ -82,7 +80,7 @@ const SpacesList: React.FC<{
   ) => void,
   loading: boolean,
   error: string | undefined,
-}> = ({ facility, getDate, checkOut, loading, error }) => {
+}> = ({ facility, checkOut, loading, error }) => {
   const navigate = useNavigate();
   const [showTokens, setShowTokens] = useState<string>()
   if (!facility || !facility.spaces) {
@@ -124,7 +122,6 @@ const SpacesList: React.FC<{
               {space.tokens.length > 0 ? space.tokens.map((token, index) => (
                 <CheckOutView
                   key={index}
-                  getDate={getDate}
                   facilityOwner={facility.contractData.owner}
                   checkOut={checkOut}
                   error={error}
@@ -152,27 +149,24 @@ export const Facilities = () => {
 
   const {
     account,
-    isIpfsNodeConnecting,
     ownFacilities,
     ownFacilitiesLoading,
     provider,
     ipfsNode,
   } = useAppState();
 
-  const [getDate, isGetDateReady,] = useDayZero(provider, ipfsNode);
-
   const [checkOut, isReady, checkOutLoading, checkOutError] = useCheckOut(
     account,
     provider,
     ipfsNode,
-  )
+  );
 
   const facility = useMemo(() => {
     const params = new URLSearchParams(search)
     const facilityId = params.get('facilityId')
     console.log('useMemo', facilityId, ownFacilities)
     return ownFacilities?.find(f => f.contractData.lodgingFacilityId === facilityId)
-  }, [search, ownFacilities])
+  }, [search, ownFacilities]);
 
   return (
     <PageWrapper
@@ -183,7 +177,7 @@ export const Facilities = () => {
         }
       ]}
     >
-      <MessageBox type='info' show={isIpfsNodeConnecting || !!ownFacilitiesLoading}>
+      <MessageBox type='info' show={!!ownFacilitiesLoading}>
         <Box direction='row'>
           <Box>
             The Dapp is synchronizing with the smart contract. Please wait..&nbsp;
@@ -227,10 +221,9 @@ export const Facilities = () => {
             </>
           }
 
-          {isGetDateReady && isReady &&
+          {isReady &&
             <SpacesList
               checkOut={checkOut}
-              getDate={getDate}
               error={checkOutError}
               loading={checkOutLoading}
               facility={facility}
@@ -238,6 +231,6 @@ export const Facilities = () => {
           }
         </Box>
       </FacilityList>
-    </PageWrapper >
+    </PageWrapper>
   );
 };
