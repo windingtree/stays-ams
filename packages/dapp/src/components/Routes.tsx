@@ -19,6 +19,7 @@ import { Space } from '../pages/Space';
 import { MyTokens } from '../pages/MyTokens';
 import { CheckIn } from '../pages/CheckIn';
 import { Facilities } from '../pages/Facilities';
+import { Token } from '../pages/Token';
 
 
 const CustomMenu = styled(Menu)`
@@ -52,6 +53,12 @@ export const pagesRoutesConfig: Routes = [
     path: "/search",
     element: <Search />,
     title: "Search for lodging facility",
+  },
+  {
+    path: "/token",
+    element: <Token />,
+    title: "Token information",
+    label: 'Token'
   },
   // {
   //   path: "/rooms",

@@ -394,7 +394,7 @@ export const MyTokens = () => {
 
         <MessageBox type='info' show={isLoading}>
           <Box direction='row'>
-            <Box>
+            <Box margin={{ right: 'small '}}>
               Tokens data is loading. Please wait..&nbsp;
             </Box>
             <Spinner />
