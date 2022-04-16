@@ -1,4 +1,4 @@
-import type { OwnerLodgingFacility, OwnerSpace } from '../store/actions';
+import type { LodgingFacilityRecord, OwnerLodgingFacility, OwnerSpace } from '../store/actions';
 import { useContext, useMemo, useState } from 'react';
 import { Box, Button, ResponsiveContext, Spinner, Tab, Tabs, Text } from 'grommet';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -11,7 +11,7 @@ import { AddCircle, Edit } from 'grommet-icons';
 import styled from 'styled-components';
 import { DateTime } from 'luxon';
 import { TxHashCallbackFn } from 'stays-core/dist/src/utils/sendHelper';
-
+import { providers } from 'ethers'
 const CustomText = styled(Text)`
   color: #0D0E0F;
   font-family: 'Inter';
@@ -72,7 +72,7 @@ const FacilityList: React.FC<{
 }
 
 const SpacesList: React.FC<{
-  facility: OwnerLodgingFacility | undefined,
+  ownerFacility: OwnerLodgingFacility | undefined,
   checkOut: (
     tokenId: string,
     checkOutDate: DateTime,
@@ -80,16 +80,18 @@ const SpacesList: React.FC<{
   ) => void,
   loading: boolean,
   error: string | undefined,
-}> = ({ facility, checkOut, loading, error }) => {
+  provider: providers.Web3Provider | undefined,
+  facility: LodgingFacilityRecord
+}> = ({ ownerFacility, checkOut, loading, error, provider, facility }) => {
   const navigate = useNavigate();
   const [showTokens, setShowTokens] = useState<string>()
-  if (!facility || !facility.spaces) {
+  if (!ownerFacility || !ownerFacility.spaces) {
     return null
   }
 
   return (
     <Box direction='column'>
-      {facility.spaces.map((space: OwnerSpace, i) => (
+      {ownerFacility.spaces.map((space: OwnerSpace, i) => (
         <Box
           key={i}
           border='bottom'
@@ -112,7 +114,7 @@ const SpacesList: React.FC<{
               <Button
                 icon={<Edit size='medium' radius='large' />}
                 onClick={() => navigate(
-                  `/spaces/edit/${facility.contractData.lodgingFacilityId}/${space.spaceId}`
+                  `/spaces/edit/${ownerFacility.contractData.lodgingFacilityId}/${space.spaceId}`
                 )}
               />
             </Box>
@@ -122,11 +124,13 @@ const SpacesList: React.FC<{
               {space.tokens.length > 0 ? space.tokens.map((token, index) => (
                 <CheckOutView
                   key={index}
-                  facilityOwner={facility.contractData.owner}
+                  facilityOwner={ownerFacility.contractData.owner}
                   checkOut={checkOut}
+                  facility={facility}
                   error={error}
                   loading={loading}
                   {...token}
+                  provider={provider}
                   onClose={() => setShowTokens('undefined')}
                 />
               )) :
@@ -153,6 +157,7 @@ export const Facilities = () => {
     ownFacilitiesLoading,
     provider,
     ipfsNode,
+    lodgingFacilities
   } = useAppState();
 
   const [checkOut, isReady, checkOutLoading, checkOutError] = useCheckOut(
@@ -161,12 +166,19 @@ export const Facilities = () => {
     ipfsNode,
   );
 
-  const facility = useMemo(() => {
+  const ownerFacility = useMemo(() => {
     const params = new URLSearchParams(search)
     const facilityId = params.get('facilityId')
     console.log('useMemo', facilityId, ownFacilities)
     return ownFacilities?.find(f => f.contractData.lodgingFacilityId === facilityId)
   }, [search, ownFacilities]);
+
+  const facility = useMemo(() => {
+    const params = new URLSearchParams(search)
+    const facilityId = params.get('facilityId')
+    return lodgingFacilities.find(f => f.contractData.lodgingFacilityId === facilityId)
+  }, [search, lodgingFacilities]);
+
 
   return (
     <PageWrapper
@@ -187,7 +199,7 @@ export const Facilities = () => {
       </MessageBox>
 
       <FacilityList
-        selectedFacilityId={facility?.contractData.lodgingFacilityId}
+        selectedFacilityId={ownerFacility?.contractData.lodgingFacilityId}
         facilities={ownFacilities ?? []}
       >
 
@@ -195,25 +207,25 @@ export const Facilities = () => {
           pad={size}
           direction='column'
         >
-          {facility &&
+          {ownerFacility &&
             <>
               <Box direction='row' align='center' margin={{ top: 'small', bottom: 'small' }}>
-                <CustomText>{facility.name}</CustomText>
+                <CustomText>{ownerFacility.name}</CustomText>
                 <Button
                   icon={<Edit size='medium' radius='large' />}
                   onClick={() => navigate(
-                    `/facilities/edit/${facility.contractData.lodgingFacilityId}`
+                    `/facilities/edit/${ownerFacility.contractData.lodgingFacilityId}`
                   )}
                 />
               </Box>
 
               <Box direction='row' align='center' margin={{ top: 'small', bottom: 'small' }}>
                 <CustomText>Spaces</CustomText>
-                {facility &&
+                {ownerFacility &&
                   <Button
                     icon={<AddCircle size='medium' radius='large' />}
                     onClick={() => navigate(
-                      `/spaces/add/${facility.contractData.lodgingFacilityId}`
+                      `/spaces/add/${ownerFacility.contractData.lodgingFacilityId}`
                     )}
                   />
                 }
@@ -221,11 +233,13 @@ export const Facilities = () => {
             </>
           }
 
-          {isReady &&
+          {isReady && facility !== undefined &&
             <SpacesList
               checkOut={checkOut}
               error={checkOutError}
               loading={checkOutLoading}
+              ownerFacility={ownerFacility}
+              provider={provider}
               facility={facility}
             />
           }
