@@ -30,6 +30,7 @@
     "@web-std/file": "3.0.2",
     "chai": "^4.3.6",
     "chai-ethers": "^0.0.1",
+    "chalk": "^4.1.2",
     "dotenv": "^16.0.0",
     "eslint": "^8.10.0",
     "eslint-config-prettier": "^8.5.0",
