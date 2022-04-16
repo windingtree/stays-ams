@@ -1,4 +1,4 @@
-import type { OwnerLodgingFacility, OwnerSpace } from '../store/actions';
+import type { LodgingFacilityRecord, OwnerLodgingFacility, OwnerSpace } from '../store/actions';
 import { useContext, useMemo, useState } from 'react';
 import { Box, Button, ResponsiveContext, Spinner, Tab, Tabs, Text } from 'grommet';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -11,7 +11,7 @@ import { AddCircle, Edit } from 'grommet-icons';
 import styled from 'styled-components';
 import { DateTime } from 'luxon';
 import { TxHashCallbackFn } from 'stays-core/dist/src/utils/sendHelper';
-
+import { providers } from 'ethers'
 const CustomText = styled(Text)`
   color: #0D0E0F;
   font-family: 'Inter';
@@ -80,7 +80,9 @@ const SpacesList: React.FC<{
   ) => void,
   loading: boolean,
   error: string | undefined,
-}> = ({ facility, checkOut, loading, error }) => {
+  provider: providers.Web3Provider | undefined,
+  facilityOpen: LodgingFacilityRecord
+}> = ({ facility, checkOut, loading, error, provider, facilityOpen }) => {
   const navigate = useNavigate();
   const [showTokens, setShowTokens] = useState<string>()
   if (!facility || !facility.spaces) {
@@ -124,9 +126,11 @@ const SpacesList: React.FC<{
                   key={index}
                   facilityOwner={facility.contractData.owner}
                   checkOut={checkOut}
+                  facility={facilityOpen}
                   error={error}
                   loading={loading}
                   {...token}
+                  provider={provider}
                   onClose={() => setShowTokens('undefined')}
                 />
               )) :
@@ -153,6 +157,7 @@ export const Facilities = () => {
     ownFacilitiesLoading,
     provider,
     ipfsNode,
+    lodgingFacilities
   } = useAppState();
 
   const [checkOut, isReady, checkOutLoading, checkOutError] = useCheckOut(
@@ -167,6 +172,13 @@ export const Facilities = () => {
     console.log('useMemo', facilityId, ownFacilities)
     return ownFacilities?.find(f => f.contractData.lodgingFacilityId === facilityId)
   }, [search, ownFacilities]);
+
+  const facilityOpen = useMemo(() => {
+    const params = new URLSearchParams(search)
+    const facilityId = params.get('facilityId')
+    return lodgingFacilities.find(f => f.contractData.lodgingFacilityId === facilityId)
+  }, [search, lodgingFacilities]);
+
 
   return (
     <PageWrapper
@@ -221,12 +233,14 @@ export const Facilities = () => {
             </>
           }
 
-          {isReady &&
+          {isReady && facilityOpen !== undefined &&
             <SpacesList
               checkOut={checkOut}
               error={checkOutError}
               loading={checkOutLoading}
               facility={facility}
+              provider={provider}
+              facilityOpen={facilityOpen}
             />
           }
         </Box>
