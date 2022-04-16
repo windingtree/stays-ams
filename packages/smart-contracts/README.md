@@ -223,3 +223,12 @@ Add one space to the lodging facility
 ```bash
 npx hardhat --config hardhat.config.ts --network sokol addSpace --address <CONTRACT_ADDRESS> --facility <FACILITY_ID>
 ```
+
+## Get production statistics
+
+To get a list of all tokens, and their stats, as well as total number of days booked, from the
+`smart-contracts` package run:
+
+```bash
+npx ts-node ./src/stats.ts
+```

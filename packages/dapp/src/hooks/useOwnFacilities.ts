@@ -1,5 +1,5 @@
 import type { providers } from 'ethers';
-import type { IPFS } from '@windingtree/ipfs-apis';
+import type { Web3StorageApi } from '@windingtree/ipfs-apis';
 import type { Contract, StayTokenState } from 'stays-core';
 import type { OwnerSpace, OwnerLodgingFacility } from '../store/actions';
 import type { Dispatch } from '../store';
@@ -22,13 +22,18 @@ const loadTokens = async (
   state: StayTokenState
 ): Promise<OwnerSpace | null> => {
   try {
-    const tokenIds = await contract.getTokensBySpaceId(spaceId, state);
-    const space = await contract.getSpace(spaceId);
-    const tokens = await Promise.all(
-      tokenIds.map((t) => contract.getToken(t))
+    const states: StayTokenState[] = [0, 1, 2]
+    const tokenIds = await Promise.all(
+      states.map((s) => contract.getTokensBySpaceId(spaceId, s))
     )
 
-    logger.debug('Loaded space:', spaceId, tokenIds);
+    const flattenTokenIds = tokenIds.reduce((a, b) => a.concat(b), []);
+    const space = await contract.getSpace(spaceId);
+    const tokens = await Promise.all(
+      flattenTokenIds.map((t) => contract.getToken(t))
+    )
+
+    logger.debug('Loaded space:', spaceId, flattenTokenIds);
 
     if (space === null) {
       logger.error(`Space with Id: ${spaceId} not found`);
@@ -47,10 +52,10 @@ const loadTokens = async (
 
 export const useOwnFacilities = (
   dispatch: Dispatch,
-  account: string | undefined,
-  provider: providers.JsonRpcProvider | undefined,
-  ipfsNode: IPFS | undefined,
-  ownFacilitiesBootstrapped: boolean | undefined
+  account?: string,
+  provider?: providers.JsonRpcProvider,
+  ipfsNode?: Web3StorageApi,
+  ownFacilitiesBootstrapped?: boolean
 ): UseOwnFacilitiesHook => {
   const [contract,, contractError] = useContract(provider, ipfsNode);
   const [error, setError] = useState<string | undefined>(undefined);

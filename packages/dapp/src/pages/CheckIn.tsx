@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Box, Spinner } from 'grommet';
 import { PageWrapper } from "./PageWrapper";
 import { QrReader } from '../components/QrReader';
@@ -13,7 +13,6 @@ import { centerEllipsis } from '../utils/strings';
 export const CheckIn = (): JSX.Element => {
   const {
     isBootstrapLoading,
-    isIpfsNodeConnecting,
     provider,
     ipfsNode,
     bootstrapped
@@ -65,7 +64,7 @@ export const CheckIn = (): JSX.Element => {
           },
         ]}
       >
-        <MessageBox type='info' show={isIpfsNodeConnecting || isBootstrapLoading || loadingContract}>
+        <MessageBox type='info' show={isBootstrapLoading || loadingContract}>
           <Box direction='row'>
             <Box>
               The Dapp is synchronizing with the smart contract. Please wait..&nbsp;

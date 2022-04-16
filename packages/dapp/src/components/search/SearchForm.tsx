@@ -3,8 +3,8 @@ import { Box, TextInput, DateInput } from 'grommet';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect, useCallback } from 'react'
 import styled from 'styled-components';
-import { useAppState } from '../../store';
 import { WhiteButton } from '../buttons';
+import { getDate } from '../../utils/dates';
 
 export const Label = styled.div`
   @include g-font($g-fontsize-xs,$glider-color-text-labels,$g-fontweight-normal);
@@ -53,20 +53,19 @@ export const SearchForm: React.FC<{
   initRoomsNumber?: number | undefined,
 }> = ({ startDay, numberOfDays, initRoomsNumber }) => {
   const navigate = useNavigate();
-  const { getDate } = useAppState();
   const [departureDate, setDepartureDate] = useState<string>(defaultStartDate);
   const [returnDate, setReturnDate] = useState<string>(defaultEndDate);
-  const [roomsNumber, setroomsNumber] = useState<number>(initRoomsNumber ?? 1);
+  const [roomsNumber, setRoomsNumber] = useState<number>(initRoomsNumber ?? 1);
 
   useEffect(() => {
-    if (getDate !== undefined && !!startDay && !!numberOfDays) {
+    if (!!startDay && !!numberOfDays) {
       const departureDay = getDate(startDay);
       const returnDay = getDate(startDay + numberOfDays);
 
       setDepartureDate(departureDay.toISO());
       setReturnDate(returnDay.toISO());
     }
-  }, [getDate, startDay, numberOfDays]);
+  }, [startDay, numberOfDays]);
 
   const handleDateChange = ({ value }: { value: string[] }) => {
     const now = DateTime.now().set({ hour: 12 })
@@ -87,9 +86,6 @@ export const SearchForm: React.FC<{
 
   const handleSearch = useCallback(
     () => {
-      if (getDate === undefined) {
-        return () => {};
-      }
       const { startDay, numberOfDays } = parseDateToDays(
         getDate(0),
         DateTime.fromISO(departureDate),
@@ -102,7 +98,7 @@ export const SearchForm: React.FC<{
       ]);
       navigate(`/search?${query}`, { replace: true });
     },
-    [navigate, getDate, departureDate, returnDate, roomsNumber]
+    [navigate, departureDate, returnDate, roomsNumber]
   );
 
   return (
@@ -156,16 +152,15 @@ export const SearchForm: React.FC<{
             value={roomsNumber}
             type='number'
             min={1}
-            onSelect={({ suggestion }) => setroomsNumber(Number(suggestion))}
+            onSelect={({ suggestion }) => setRoomsNumber(Number(suggestion))}
             onChange={(event) => {
               const value = Number(event.target.value);
-              setroomsNumber(value !== 0 ? value : 1);
+              setRoomsNumber(value !== 0 ? value : 1);
             }}
           />
         </Box>
       </Box>
       <WhiteButton
-        disabled={getDate === undefined}
         size='large'
         label='Search'
         onClick={() => handleSearch()}

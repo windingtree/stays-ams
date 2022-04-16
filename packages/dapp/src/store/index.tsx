@@ -2,7 +2,6 @@ import type { ReactNode } from 'react';
 import type { Web3ModalConfig } from '../hooks/useWeb3Modal';
 import { createContext, useContext, useEffect } from 'react';
 import WalletConnectProvider from '@walletconnect/web3-provider';
-// import Logger from '../utils/logger';
 import { useAppReducer } from './reducer';
 
 // Custom hooks
@@ -10,10 +9,9 @@ import { useWeb3Modal } from '../hooks/useWeb3Modal';
 import { useRpcProvider } from '../hooks/useRpcProvider';
 import { useNetworkId } from '../hooks/useNetworkId';
 import { useAccount } from '../hooks/useAccount';
-import { useIpfsNode } from '../hooks/useIpfsNode';
+import { useWeb3StorageApi } from '../hooks/useWeb3StorageApi';
 import { useSmartContractData } from '../hooks/useSmartContractData';
 import { useOwnFacilities } from '../hooks/useOwnFacilities';
-import { useDayZeroDate } from '../hooks/useDayZeroDate';
 
 // Config
 import { getNetwork } from '../config';
@@ -85,9 +83,8 @@ export const AppStateProvider = ({ children }: PropsType) => {
     networkError
   ] = useNetworkId(provider, chainId);
   const [account, isAccountLoading, accountError] = useAccount(provider);
-  const [ipfsNode, startIpfsNode, stopIpfsNode, ipfsNodeLoading, ipfsNodeError] = useIpfsNode();
+  const ipfsNode = useWeb3StorageApi();
   const { bootstrapped, ownFacilitiesBootstrapped } = state;
-  const [dayZero, dayZeroError] = useDayZeroDate(rpcProvider, ipfsNode);
 
   // Global data bootstrap
   const [bootstrapError] = useSmartContractData(
@@ -135,12 +132,6 @@ export const AppStateProvider = ({ children }: PropsType) => {
         payload: accountError
       })
     }
-    if (ipfsNodeError) {
-      dispatch({
-        type: 'ERROR_ADD',
-        payload: ipfsNodeError
-      })
-    }
     if (bootstrapError) {
       dispatch({
         type: 'ERROR_ADD',
@@ -159,16 +150,10 @@ export const AppStateProvider = ({ children }: PropsType) => {
         payload: ownFacilitiesError
       })
     }
-    if (dayZeroError) {
-      dispatch({
-        type: 'ERROR_ADD',
-        payload: dayZeroError
-      })
-    }
   }, [
     dispatch, web3ModalError, networkError,
-    accountError, ipfsNodeError, bootstrapError,
-    rpcProviderError, ownFacilitiesError, dayZeroError
+    accountError, bootstrapError,
+    rpcProviderError, ownFacilitiesError
   ]);
 
   useEffect(() => {
@@ -177,13 +162,6 @@ export const AppStateProvider = ({ children }: PropsType) => {
       payload: isConnecting || isNetworkIdLoading || isAccountLoading
     })
   }, [dispatch, isConnecting, isNetworkIdLoading, isAccountLoading]);
-
-  useEffect(() => {
-    dispatch({
-      type: 'SET_IPFS_NODE_CONNECTING',
-      payload: ipfsNodeLoading
-    })
-  }, [dispatch, ipfsNodeLoading]);
 
   useEffect(() => {
     dispatch({
@@ -240,20 +218,9 @@ export const AppStateProvider = ({ children }: PropsType) => {
   useEffect(() => {
     dispatch({
       type: 'SET_IPFS_NODE',
-      payload: {
-        ipfsNode,
-        startIpfsNode,
-        stopIpfsNode
-      }
+      payload: ipfsNode
     })
-  }, [dispatch, ipfsNode, startIpfsNode, stopIpfsNode]);
-
-  useEffect(() => {
-    dispatch({
-      type: 'SET_GET_DATE',
-      payload: dayZero
-    })
-  }, [dispatch, dayZero]);
+  }, [dispatch, ipfsNode]);
 
   return (
     <StateContext.Provider value={state}>

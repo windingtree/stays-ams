@@ -20,7 +20,7 @@
     "typechain",
     "artifacts",
     "src"
-, "src/voucher.ts"  ],
+, "src/voucher.ts", "src/stats.ts"  ],
   "exclude": [
     "node_modules"
   ],

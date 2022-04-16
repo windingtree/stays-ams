@@ -31,7 +31,6 @@ import { validateSpaceData } from 'stays-data-models/dist/src/validators';
 import { enumerators } from 'stays-data-models';
 import { centerEllipsis } from '../../utils/strings';
 import { useAppState } from '../../store';
-import { useWeb3StorageApi } from '../../hooks/useWeb3StorageApi';
 import { useContract } from './../../hooks/useContract';
 import { useWindowsDimension } from '../../hooks/useWindowsDimension';
 import { useGoToMessage } from '../../hooks/useGoToMessage';
@@ -108,7 +107,6 @@ export const SpaceProfileCard = () => {
     ownFacilitiesRefresh
   } = useAppState();
   const [contract, loadingContract] = useContract(provider, ipfsNode);
-  const web3Storage = useWeb3StorageApi(ipfsNode);
   const [profileValue, setProfileValue] = useState<Record<string, any>>(flattenObject(defaultFormValue));
   const [showImagesLoader, setShowImagesLoader] = useState<boolean>(false);
   const [uploadIpfsError, setUploadIpfsError] = useState<string | undefined>();
@@ -126,8 +124,8 @@ export const SpaceProfileCard = () => {
   const [selectedFacilityProfile, setSelectedFacilityProfile] = useState<SpaceRaw | undefined>();
 
   const isLoading = useMemo<boolean>(
-    () => !!!web3Storage || loadingContract,
-    [web3Storage, loadingContract]
+    () => !!!ipfsNode || loadingContract,
+    [ipfsNode, loadingContract]
   );
 
   useEffect(
@@ -217,11 +215,11 @@ export const SpaceProfileCard = () => {
       isImage = false
     ) => {
       try {
-        if (!web3Storage) {
+        if (!ipfsNode) {
           throw new Error("IPFS API not ready yet");
         }
         loadingSetter(true);
-        const { cid } = await web3Storage.add(file);
+        const cid = await ipfsNode.add(file);
         const uri = isImage
           ? `https://${cid}.ipfs.dweb.link`
           : `ipfs://${cid}`;
@@ -236,7 +234,7 @@ export const SpaceProfileCard = () => {
         return null;
       }
     },
-    [web3Storage]
+    [ipfsNode]
   );
 
   const handleSubmit = useCallback(
