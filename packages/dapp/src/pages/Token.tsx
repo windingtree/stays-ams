@@ -1,10 +1,8 @@
 import { Box, Button, Spinner, Text, TextInput } from "grommet";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { TokenData } from "stays-core";
 import { MessageBox } from "../components/MessageBox";
 import { useGetToken } from "../hooks/useMyTokens";
-import { usePoller } from "../hooks/usePoller";
 import { useAppState } from "../store";
 import { TokenCard, TokenView } from "./MyTokens";
 import { PageWrapper } from "./PageWrapper";
