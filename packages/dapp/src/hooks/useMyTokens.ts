@@ -18,7 +18,8 @@ export type UseGetTokenHook = [
   token: StayToken | undefined,
   facilityOwner: string | undefined,
   loading: boolean,
-  error?: string
+  error: string | undefined,
+  refresh: Function
 ];
 
 export const useMyTokens = (
@@ -171,6 +172,11 @@ export const useGetToken = (
     [contract]
   );
 
+  const refresh = useCallback(
+    () => getToken(tokenId),
+    [getToken, tokenId]
+  );
+
   useEffect(
     () => {
       setError(contractError);
@@ -186,5 +192,5 @@ export const useGetToken = (
     [getToken, tokenId]
   );
 
-  return [token, facilityOwner, loading, error];
+  return [token, facilityOwner, loading, error, refresh];
 };

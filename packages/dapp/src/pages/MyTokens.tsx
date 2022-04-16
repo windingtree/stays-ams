@@ -1,5 +1,5 @@
 import type { StayToken, TokenData } from 'stays-core';
-import { ReactChild, useMemo, useState } from 'react';
+import { ReactChild, useCallback, useMemo, useState } from 'react';
 import * as Icons from 'grommet-icons';
 import { Grid, Spinner, Button, Box, Image, Text } from 'grommet';
 import { PageWrapper } from './PageWrapper';
@@ -76,6 +76,7 @@ export interface TokenCardProps extends TokenData {
 export interface TokenViewProps extends StayToken {
   facilityOwner: string | undefined;
   facility: LodgingFacilityRecord | undefined;
+  withCloseButton?: boolean;
 }
 
 export const TokenCard = ({
@@ -153,7 +154,8 @@ export const TokenView = ({
     description,
     image,
     attributes
-  }
+  },
+  withCloseButton = true
 }: TokenViewProps) => {
   const { provider, ipfsNode } = useAppState();
   const [, , contractError] = useContract(provider, ipfsNode);
@@ -293,17 +295,19 @@ export const TokenView = ({
               }
             </Box>
           }
-          <Button
-            style={{
-              position: 'absolute',
-              top: 10,
-              right: 10
-            }}
+          {withCloseButton &&
+            <Button
+              style={{
+                position: 'absolute',
+                top: 10,
+                right: 10
+              }}
 
-            icon={<Icons.Close color="plain" />}
-            hoverIndicator
-            onClick={() => navigate('/tokens', { replace: true })}
-          />
+              icon={<Icons.Close color="plain" />}
+              hoverIndicator
+              onClick={() => navigate('/tokens', { replace: true })}
+            />
+          }
         </Box>
       </Box>
 
@@ -345,11 +349,14 @@ export const MyTokens = () => {
     [tokensLoading, tokenLoading]
   );
 
-  const findFacility = (data: TokenData) => {
-    const facilityId = data.attributes?.find((attr) => attr.trait_type === 'facilityId')?.value
-    console.log('lodgingFacilities', lodgingFacilities, lodgingFacilities.find((facility) => facility.id === facilityId?.toLowerCase()), facilityId)
-    return lodgingFacilities.find((facility) => facility.id === facilityId?.toLowerCase())
-  };
+  const findFacility = useCallback(
+    (data: TokenData) => {
+      const facilityId = data.attributes?.find((attr) => attr.trait_type === 'facilityId')?.value
+      console.log('lodgingFacilities', lodgingFacilities, lodgingFacilities.find((facility) => facility.id === facilityId?.toLowerCase()), facilityId)
+      return lodgingFacilities.find((facility) => facility.id === facilityId?.toLowerCase())
+    },
+    [lodgingFacilities]
+  );
 
   // const tokensTest: StayToken[] = [
   //   {

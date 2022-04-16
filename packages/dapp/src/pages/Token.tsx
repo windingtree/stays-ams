@@ -1,14 +1,17 @@
 import { Box, Button, Spinner, Text, TextInput } from "grommet";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { TokenData } from "stays-core";
 import { MessageBox } from "../components/MessageBox";
 import { useGetToken } from "../hooks/useMyTokens";
+import { usePoller } from "../hooks/usePoller";
 import { useAppState } from "../store";
+import { TokenCard, TokenView } from "./MyTokens";
 import { PageWrapper } from "./PageWrapper";
 
-export const TokenSearch = () => {
+export const TokenSearch = ({ tokenId }: { tokenId?: string }) => {
   const navigate = useNavigate();
-  const [tokenId, setTokenId] = useState<string>('');
+  const [id, setTokenId] = useState<string>(tokenId || '');
 
   return (
     <Box
@@ -28,7 +31,7 @@ export const TokenSearch = () => {
       >
         <TextInput
           size="xlarge"
-          value={tokenId}
+          value={id}
           type='number'
           min={1}
           step={1}
@@ -37,13 +40,14 @@ export const TokenSearch = () => {
       </Box>
       <Box>
         <Button
+          primary
           label='Search'
           onClick={() => {
             if (tokenId === '') {
               return;
             }
             navigate(
-              `/token?tokenId=${tokenId}`,
+              `/token?tokenId=${id}`,
               { replace: true }
             );
           }}
@@ -54,16 +58,24 @@ export const TokenSearch = () => {
 };
 
 export const Token = () => {
-  const { rpcProvider, ipfsNode } = useAppState();
+  const { rpcProvider, ipfsNode, lodgingFacilities } = useAppState();
   const [searchParams] = useSearchParams();
   const tokenId = useMemo(
     () => searchParams.get('tokenId') || undefined,
     [searchParams]
   );
-  const [token, facilityOwner, tokenLoading, tokenError] = useGetToken(
+  const [token, facilityOwner, tokenLoading, tokenError, refreshToken] = useGetToken(
     rpcProvider,
     ipfsNode,
     tokenId
+  );
+
+  const facility = useMemo(
+    () => {
+      const facilityId = token?.data.attributes?.find((attr) => attr.trait_type === 'facilityId')?.value;
+      return lodgingFacilities.find((facility) => facility.id === facilityId?.toLowerCase());
+    },
+    [token, lodgingFacilities]
   );
 
   return (
@@ -75,9 +87,13 @@ export const Token = () => {
         },
       ]}
     >
+      <Box align="center" margin={{ bottom: 'large' }}>
+        <TokenSearch tokenId={tokenId} />
+      </Box>
+
       <MessageBox type='info' show={tokenLoading}>
         <Box direction='row'>
-          <Box margin={{ right: 'small '}}>
+          <Box margin={{ right: 'small'}}>
             Token data is loading. Please wait..
           </Box>
           <Spinner />
@@ -90,15 +106,35 @@ export const Token = () => {
         </Box>
       </MessageBox>
 
-      <Box align="center">
-        <TokenSearch />
-      </Box>
+      {!!token &&
+        <Box
+          margin={{ top: 'large' }}
+        >
+          <TokenCard
+            facility={facility}
+            onClick={() => {}}
+            {...token.data}
+          >
+            <TokenView
+              facilityOwner={facilityOwner}
+              facility={facility}
+              {...token}
+              withCloseButton={false}
+            />
+          </TokenCard>
+        </Box>
+      }
 
-      <Box
-        margin={{ top: 'large' }}
-      >
-        [{tokenId}][{JSON.stringify(token)}]
-      </Box>
+      {!!token &&
+        <Box margin={{ top: 'large' }} width='200px' align="center">
+          <Button
+            primary
+            size="large"
+            label='Refresh token'
+            onClick={() => refreshToken()}
+          />
+        </Box>
+      }
 
     </PageWrapper>
   );
