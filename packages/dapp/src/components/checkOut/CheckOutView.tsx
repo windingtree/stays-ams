@@ -9,6 +9,7 @@ import { ExternalLink } from '../ExternalLink';
 import styled from 'styled-components';
 import { MessageBox } from '../MessageBox';
 import { CustomText } from '../StayVoucherQr';
+import { getDate } from '../../utils/dates';
 
 const InnerSpinner = styled(Spinner)`
   margin-left: 8px;
@@ -29,7 +30,6 @@ const BlackButton = styled(Button)`
 `;
 
 export interface CheckOutProps extends StayToken {
-  getDate: (days: number) => DateTime;
   facilityOwner: string | undefined;
   checkOut: (
     tokenId: string,
@@ -43,7 +43,6 @@ export interface CheckOutProps extends StayToken {
 
 export const CheckOutView = ({
   tokenId,
-  getDate,
   status,
   data: {
     name,

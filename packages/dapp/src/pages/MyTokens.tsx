@@ -1,6 +1,5 @@
 import type { StayToken, TokenData } from 'stays-core';
 import { ReactChild, useMemo, useState } from 'react';
-import { DateTime } from 'luxon';
 import * as Icons from 'grommet-icons';
 import { Grid, Spinner, Button, Box, Image, Text } from 'grommet';
 import { PageWrapper } from './PageWrapper';
@@ -19,6 +18,7 @@ import { LodgingFacilityRecord } from '../store/actions';
 import styled from 'styled-components';
 import { utils, BigNumber as BN } from 'ethers';
 // import { CustomButton } from '../components/SearchResultCard';
+import { getDate } from '../utils/dates';
 
 const HotelTitle = styled(Text)`
   color: #000;
@@ -70,12 +70,10 @@ export const CustomBoldText = styled(Text)`
 export interface TokenCardProps extends TokenData {
   onClick?: () => void,
   children?: ReactChild | null,
-  facility: LodgingFacilityRecord | undefined
-  getDate?: (days: number) => DateTime;
+  facility?: LodgingFacilityRecord;
 }
 
 export interface TokenViewProps extends StayToken {
-  getDate?: (days: number) => DateTime;
   facilityOwner: string | undefined;
   facility: LodgingFacilityRecord | undefined;
 }
@@ -87,11 +85,10 @@ export const TokenCard = ({
   attributes,
   onClick = () => { },
   facility,
-  getDate,
   children
 }: TokenCardProps) => {
   console.log('facility', facility)
-  if (!facility || !getDate || !attributes) {
+  if (!facility || !attributes) {
     return null
   }
   const parseTrait = (trait: string): any => {
@@ -148,7 +145,6 @@ export const TokenCard = ({
 export const TokenView = ({
   tokenId,
   owner,
-  getDate,
   facilityOwner,
   facility,
   status,
@@ -195,7 +191,7 @@ export const TokenView = ({
   //   [showMessage, contract, tokenId]
   // );
 
-  if (!getDate || !attributes || !facility) {
+  if (!attributes || !facility) {
     return null;
   }
 
@@ -267,7 +263,6 @@ export const TokenView = ({
             description={description}
             attributes={attributes}
             facility={facility}
-            getDate={getDate}
             pricePerNightWei={'0'}
           />
 
@@ -328,7 +323,7 @@ export const TokenView = ({
 };
 
 export const MyTokens = () => {
-  const { provider, ipfsNode, account, lodgingFacilities, getDate } = useAppState();
+  const { provider, ipfsNode, account, lodgingFacilities } = useAppState();
   const [searchParams, setSearchParams] = useSearchParams();
   const tokenId = useMemo(
     () => searchParams.get('tokenId') || undefined,
@@ -346,8 +341,8 @@ export const MyTokens = () => {
   );
   // const { winWidth } = useWindowsDimension();
   const isLoading = useMemo(
-    () => tokensLoading || tokenLoading || getDate === undefined,
-    [tokensLoading, tokenLoading, getDate]
+    () => tokensLoading || tokenLoading,
+    [tokensLoading, tokenLoading]
   );
 
   const findFacility = (data: TokenData) => {
@@ -434,11 +429,9 @@ export const MyTokens = () => {
               key={index}
               onClick={() => setSearchParams({ tokenId })}
               {...data}
-              getDate={getDate}
             >
               {(token && token.tokenId === tokenId) ?
                 <TokenView
-                  getDate={getDate}
                   facilityOwner={facilityOwner}
                   facility={findFacility(data)}
                   {...token}

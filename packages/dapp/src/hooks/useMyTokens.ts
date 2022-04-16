@@ -1,6 +1,6 @@
 import type { providers } from 'ethers';
 import type { StayToken } from 'stays-core';
-import type { IPFS } from '@windingtree/ipfs-apis';
+import type { Web3StorageApi } from '@windingtree/ipfs-apis';
 import { useState, useCallback, useEffect } from 'react';
 import { useContract } from './useContract';
 import Logger from '../utils/logger';
@@ -11,20 +11,20 @@ const logger = Logger('useMyTokens');
 export type UseMyTokensHook = [
   tokens: StayToken[],
   loading: boolean,
-  error: string | undefined
+  error?: string
 ];
 
 export type UseGetTokenHook = [
   token: StayToken | undefined,
   facilityOwner: string | undefined,
   loading: boolean,
-  error: string | undefined
+  error?: string
 ];
 
 export const useMyTokens = (
-  provider: providers.JsonRpcProvider | undefined,
-  ipfsNode: IPFS | undefined,
-  account: string | undefined
+  provider?: providers.JsonRpcProvider,
+  ipfsNode?: Web3StorageApi,
+  account?: string
 ): UseMyTokensHook => {
   const [contract,, contractError] = useContract(provider, ipfsNode);
   const [tokens, setTokens] = useState<StayToken[]>([]);
@@ -82,9 +82,9 @@ export const useMyTokens = (
 };
 
 export const useGetToken = (
-  provider: providers.JsonRpcProvider | undefined,
-  ipfsNode: IPFS | undefined,
-  tokenId: string | undefined
+  provider?: providers.JsonRpcProvider,
+  ipfsNode?: Web3StorageApi,
+  tokenId?: string
 ): UseGetTokenHook => {
   const [contract,, contractError] = useContract(provider, ipfsNode);
   const [token, setToken] = useState<StayToken | undefined>();

@@ -1,5 +1,5 @@
 import type { providers } from 'ethers';
-import type { IPFS } from '@windingtree/ipfs-apis';
+import type { Web3StorageApi } from '@windingtree/ipfs-apis';
 import type { Contract, StayTokenState } from 'stays-core';
 import type { OwnerSpace, OwnerLodgingFacility } from '../store/actions';
 import type { Dispatch } from '../store';
@@ -47,10 +47,10 @@ const loadTokens = async (
 
 export const useOwnFacilities = (
   dispatch: Dispatch,
-  account: string | undefined,
-  provider: providers.JsonRpcProvider | undefined,
-  ipfsNode: IPFS | undefined,
-  ownFacilitiesBootstrapped: boolean | undefined
+  account?: string,
+  provider?: providers.JsonRpcProvider,
+  ipfsNode?: Web3StorageApi,
+  ownFacilitiesBootstrapped?: boolean
 ): UseOwnFacilitiesHook => {
   const [contract,, contractError] = useContract(provider, ipfsNode);
   const [error, setError] = useState<string | undefined>(undefined);

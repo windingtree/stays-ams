@@ -17,6 +17,7 @@ export interface DappConfig {
   mode: string;
   network: NetworkWithRpc;
   apiKeys: ApiKeys;
+  dayZero: number;
 }
 
 export interface NetworkProviders {
@@ -112,7 +113,8 @@ const config: DappConfig = {
   network,
   apiKeys: {
     web3Storage: process.env.REACT_APP_FILE_WEB3STORAGE_KEY
-  }
+  },
+  dayZero: 1645567342,
 };
 
 export const getDappMode = (): string => config.mode;
@@ -125,5 +127,7 @@ export const getApiKey = (name: string): string => {
   }
   return config.apiKeys[name];
 };
+
+export const getDayZero = (): number => config.dayZero;
 
 export default config;
