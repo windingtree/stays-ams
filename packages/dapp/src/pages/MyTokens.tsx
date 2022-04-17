@@ -77,6 +77,7 @@ export interface TokenViewProps extends StayToken {
   facilityOwner: string | undefined;
   facility: LodgingFacilityRecord | undefined;
   withCloseButton?: boolean;
+  withRpcProvider?: boolean;
 }
 
 export const TokenCard = ({
@@ -155,10 +156,14 @@ export const TokenView = ({
     image,
     attributes
   },
-  withCloseButton = true
+  withCloseButton = true,
+  withRpcProvider = false
 }: TokenViewProps) => {
-  const { provider, ipfsNode } = useAppState();
-  const [, , contractError] = useContract(provider, ipfsNode);
+  const { provider, rpcProvider, ipfsNode } = useAppState();
+  const [, , contractError] = useContract(
+    withRpcProvider ? rpcProvider : provider,
+    ipfsNode
+  );
   const navigate = useNavigate();
   // const showMessage = useGoToMessage();
   // const [cancelLoading, setCancelLoading] = useState<boolean>(false);
@@ -255,18 +260,20 @@ export const TokenView = ({
         </Box>
 
         <Box pad={{ vertical: 'small', horizontal: 'large' }} justify='between'>
-          <StayVoucherQr
-            provider={provider}
-            from={owner}
-            to={facilityOwner}
-            tokenId={tokenId}
-            onError={err => setError(err)}
-            name={name}
-            description={description}
-            attributes={attributes}
-            facility={facility}
-            pricePerNightWei={'0'}
-          />
+          {!withRpcProvider &&
+            <StayVoucherQr
+              provider={provider}
+              from={owner}
+              to={facilityOwner}
+              tokenId={tokenId}
+              onError={err => setError(err)}
+              name={name}
+              description={description}
+              attributes={attributes}
+              facility={facility}
+              pricePerNightWei={'0'}
+            />
+          }
 
           {status === 'booked' &&
             <Box>

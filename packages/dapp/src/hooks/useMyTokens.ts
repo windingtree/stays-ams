@@ -85,9 +85,10 @@ export const useMyTokens = (
 export const useGetToken = (
   provider?: providers.JsonRpcProvider,
   ipfsNode?: Web3StorageApi,
-  tokenId?: string
+  tokenId?: string,
+  isProviderWithAddress = true
 ): UseGetTokenHook => {
-  const [contract,, contractError] = useContract(provider, ipfsNode);
+  const [contract,, contractError] = useContract(provider, ipfsNode, isProviderWithAddress);
   const [token, setToken] = useState<StayToken | undefined>();
   const [facilityOwner, setFacilityOwner] = useState<string | undefined>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -163,6 +164,7 @@ export const useGetToken = (
 
         setLoading(false);
       } catch (err) {
+        console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
         logger.error(err);
         const message = (err as Error).message || 'Unknown useGetToken error';
         setError(message);
