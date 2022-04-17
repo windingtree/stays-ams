@@ -71,7 +71,8 @@ export const Token = () => {
   const [token, facilityOwner, tokenLoading, tokenError, refreshToken] = useGetToken(
     rpcProvider,
     ipfsNode,
-    tokenId
+    tokenId,
+    false
   );
 
   const facility = useMemo(

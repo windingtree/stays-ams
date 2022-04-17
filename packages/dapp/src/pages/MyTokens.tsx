@@ -260,18 +260,20 @@ export const TokenView = ({
         </Box>
 
         <Box pad={{ vertical: 'small', horizontal: 'large' }} justify='between'>
-          <StayVoucherQr
-            provider={provider}
-            from={owner}
-            to={facilityOwner}
-            tokenId={tokenId}
-            onError={err => setError(err)}
-            name={name}
-            description={description}
-            attributes={attributes}
-            facility={facility}
-            pricePerNightWei={'0'}
-          />
+          {!withRpcProvider &&
+            <StayVoucherQr
+              provider={provider}
+              from={owner}
+              to={facilityOwner}
+              tokenId={tokenId}
+              onError={err => setError(err)}
+              name={name}
+              description={description}
+              attributes={attributes}
+              facility={facility}
+              pricePerNightWei={'0'}
+            />
+          }
 
           {status === 'booked' &&
             <Box>
