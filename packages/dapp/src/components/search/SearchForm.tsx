@@ -41,7 +41,7 @@ const dateFormat = new Intl.DateTimeFormat(undefined, {
 
 const today = DateTime.now().set({ hour: 12 });
 const tomorrow = today.plus({ days: 1 });
-const defaultStartDay = DateTime.fromISO('2022-04-17').set({ hour: 12 });
+const defaultStartDay = DateTime.fromISO('2022-04-19').set({ hour: 12 });
 const defaultEndDay = DateTime.fromISO('2022-04-28').set({ hour: 12 });
 
 const defaultStartDate = today.toMillis() > defaultStartDay.toMillis() ? today.toISO() : defaultStartDay.toISO()
