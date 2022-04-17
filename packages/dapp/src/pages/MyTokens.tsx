@@ -77,6 +77,7 @@ export interface TokenViewProps extends StayToken {
   facilityOwner: string | undefined;
   facility: LodgingFacilityRecord | undefined;
   withCloseButton?: boolean;
+  withRpcProvider?: boolean;
 }
 
 export const TokenCard = ({
@@ -155,10 +156,14 @@ export const TokenView = ({
     image,
     attributes
   },
-  withCloseButton = true
+  withCloseButton = true,
+  withRpcProvider = false
 }: TokenViewProps) => {
-  const { provider, ipfsNode } = useAppState();
-  const [, , contractError] = useContract(provider, ipfsNode);
+  const { provider, rpcProvider, ipfsNode } = useAppState();
+  const [, , contractError] = useContract(
+    withRpcProvider ? rpcProvider : provider,
+    ipfsNode
+  );
   const navigate = useNavigate();
   // const showMessage = useGoToMessage();
   // const [cancelLoading, setCancelLoading] = useState<boolean>(false);

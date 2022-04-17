@@ -33,7 +33,13 @@ export const TokenSearch = ({ tokenId }: { tokenId?: string }) => {
           type='number'
           min={1}
           step={1}
-          onChange={({ target }) => setTokenId(target.value)}
+          onChange={({ target }) => {
+            let id: string =
+              target.value !== '0' && target.value !== ''
+              ? target.value
+              : '1';
+            setTokenId(id);
+          }}
         />
       </Box>
       <Box>
@@ -118,6 +124,7 @@ export const Token = () => {
               facility={facility}
               {...token}
               withCloseButton={false}
+              withRpcProvider={true}
             />
           </TokenCard>
         </Box>
