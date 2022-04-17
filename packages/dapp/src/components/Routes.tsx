@@ -58,7 +58,7 @@ export const pagesRoutesConfig: Routes = [
     path: "/token",
     element: <Token />,
     title: "Token information",
-    label: 'Token'
+    label: 'Tokens'
   },
   // {
   //   path: "/rooms",
