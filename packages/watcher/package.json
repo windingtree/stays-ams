@@ -11,6 +11,10 @@
     "build": "tsc -p tsconfig-build.json",
     "test": "npx mocha -r ts-node/register test/**/*.spec.ts"
   },
+  "dependencies": {
+    "sequelize": "^6.19.0",
+    "sqlite3": "^5.0.4"
+  },
   "devDependencies": {
     "@types/mocha": "9.1.0",
     "@types/chai": "4.3.0",

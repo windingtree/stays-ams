@@ -3,13 +3,15 @@ import {utils, Web3StorageApi} from '@windingtree/ipfs-apis';
 
 export async function makeContract() {
   const key = process.env.APP_FILE_WEB3STORAGE_KEY || '';
+  const contractAddress = process.env.APP_CONTRACT_ADDRESS || '';
+  const provider = process.env.APP_NETWORK_PROVIDER || '';
 
   try {
     const ipfs = await utils.startIpfsGateway();
     const web3Storage = new Web3StorageApi(key, ipfs)
     return new Contract(
-      '0xAD4B90b5053F7382A1313812559E044219BAE523', //todo env
-      'https://sokol.poa.network/',
+      contractAddress,
+      provider,
       web3Storage
     );
   } catch (e) {
