@@ -1,5 +1,11 @@
+import BlockRepository from "./repositories/BlockRepository";
+
 require('./config');
 import {DataTypes, Sequelize} from 'sequelize';
+import {book} from "stays-core/dist/src/api/book";
+import StaysRepository from "./repositories/StaysRepository";
+import StayEntityService from "./services/StayEntityService";
+import {makeContract} from "./helpers";
 
 const User = require('../models/user');
 const BlockNumber = require('../models/blocknumber');
@@ -11,31 +17,18 @@ const {sequelize} = require('../models/index')
 // a();
 
 
-// const User = sequelize.define('User', {
-//   name: DataTypes.STRING,
-//   birthdate: DataTypes.DATE,
-// });
-
-// let sequelize = new Sequelize('sqlite', '', '', {
-//   dialect: 'sqlite',
-//   host: './development.db',
-// });
-let user = User(sequelize, DataTypes)
-// user.create({
-//   name: 'фывафыfdhhhfва',
-//   birthdate: new Date(1980, 6, 20),
-// })
 let block = BlockNumber(sequelize, DataTypes)
 // block.create({
 //   "block_number": 12354001
 // })
+const stay = new StaysRepository()
 const a = async () => {
-  const b = await block.findOne({
-    order: [
-      ['id', 'desc']
-    ]
-  });
-  console.log(b);
+  const contract = await makeContract();
+  if (!contract) throw new Error();
+  const books = new StayEntityService(contract);
+  await books.process();
+  console.log(books.getTokenEntities()[0]);
+  await stay.store(books.getTokenEntities()); //store is ok
 }
 a();
 

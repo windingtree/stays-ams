@@ -1,23 +1,26 @@
-import {StayToken} from "stays-core";
+import {Contract, StayToken} from "stays-core";
 import {TokenEntity} from "../types";
-import {makeContract} from "../helpers";
 
-export default class NewBooks {
+export default class StayEntityService {
   protected contract;
   protected dayZero = new Date(1645567342 * 1000); //date from smart contract (getZeroDay)
   private tokens: Set<Promise<StayToken>>;
   private tokenEntities: TokenEntity[];
 
+  constructor(contract: Contract) {
+    this.contract = contract;
+  }
+
   public async process() {
-    this.contract = await makeContract();
-    if (!this.contract) throw new Error();
     await this.getTokens();
     await this.makeTokenEntities();
     await this.fillNeededFacilitiesAndSpaces();
   }
 
   public async getTokens() {
-    const contractIds = await this.contract.getNewBookingsTokenIds(0) //todo get blockNumber from DB
+    //const blockNumber = await (new BlockRepository()).getLastBlockNumber();
+    const blockNumber = 0; //todo replace to ^ after tests
+    const contractIds = await this.contract.getNewBookingsTokenIds(blockNumber)
     let tokens = new Set<Promise<StayToken>>();
 
     contractIds.map(v => {
@@ -30,7 +33,7 @@ export default class NewBooks {
   public async makeTokenEntities() {
     let tokenEntities = new Set<TokenEntity>();
     let tokens = await Promise.all(this.tokens);
-
+    console.log(tokens);
     tokens.map(t => {
       const startDay = t.data.attributes?.find(i => i.trait_type === 'startDay')?.value || '0';
       const numberOfDays = t.data.attributes?.find(i => i.trait_type === 'numberOfDays')?.value || '0';
@@ -62,7 +65,7 @@ export default class NewBooks {
     const facilities = await Promise.all(facilityIds.map(id => this.contract.getLodgingFacility(id)));
 
     const spaceIds = this.tokenEntities.map(e => e.spaceId || '');
-    const spaces = await Promise.all(spaceIds.map(id => this.contract.getSpace(id)))
+    const spaces = await Promise.all(spaceIds.map(id => this.contract.getSpace(id)));
 
     this.tokenEntities.map(t => {
       t.facility = facilities.find(i => i?.contractData.lodgingFacilityId === t.facilityId) || undefined
@@ -74,5 +77,9 @@ export default class NewBooks {
     const date = new Date(this.dayZero);
     date.setDate(date.getDate() + days + moreDays);
     return date;
+  }
+
+  public getTokenEntities() {
+    return this.tokenEntities;
   }
 }

@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     space_id: DataTypes.STRING,
     token_id: DataTypes.STRING,
     email: DataTypes.STRING,
-    guest_count: DataTypes.NUMBER,
+    guest_count: DataTypes.NUMBER, //room_count
     status: DataTypes.NUMBER,
     start_date: DataTypes.DATE,
     end_date: DataTypes.DATE
