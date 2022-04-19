@@ -47,14 +47,14 @@ Ensure any changes are clear and well-documented. When we say "well-documented":
 * If the changes include code, ensure all additional code has documentation in and around it. This includes documenting the definitions of functions, statements in code, sections.
 * The most helpful code comments explain why, establish context, or efficiently summarize how. Avoid simply repeating details from declarations. When in doubt, favour overexplaining to underexplaining.
 * Code comments should be consistent with their language conventions. For example, please use [JSDoc](https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html) for TypeScript/JavaScript, or [NatSpec](https://docs.soliditylang.org/en/v0.8.13/natspec-format.html) for Solidity.
-* Any new features must have corresponding user documentation. Any removed features must have their user documentation removed from the documents.
+* Any new features must have a corresponding **doc** [issue](#using-the-issue-tracker) raised to ensure the creation of user documentation.
 * Do **NOT** submit commented-out code. If the code does not need to be used anymore, please remove it.
 * While `TODO` comments are frowned upon, every now and then it is OK to put a `TODO` to note that a particular section of code needs to be worked on in the future. However, it is also known that "TODOs" often do not get worked on, and as such, it is more likely you will be asked to complete the TODO at the time you submit it.
 * Write clear, descriptive [commit messages](#commit-messages).
 
-Please provide unit tests with your code if possible. If unable to provide a unit test, please provide an explanation as to why in your pull request, including a description of the steps used to manually verify the changes.
+Please provide unit tests with your code if possible (**mandatory for smart-contracts**). If unable to provide a unit test, please provide an explanation as to why in your pull request, including a description of the steps used to manually verify the changes.
 
-Ensure your commits are atomic. Each commit tells a story about what changes are being made. This makes it easier to identify when a bug is introduced into the codebase, and as such makes it easier to fix.
+We *prefer* atomic changes over the bulk changes of everything. Each commit tells a story about what changes are being made. This makes it easier to identify when a bug is introduced into the codebase, and as such makes it easier to fix.
 
 All commits must either be rebased in atomic order or squashed (if the squashed commit is considered atomic). Merge commits are not accepted. All conflicts must be resolved prior to pushing changes.
 
