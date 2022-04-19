@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL
+// SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/Address.sol";
@@ -9,7 +9,7 @@ abstract contract StayEscrow is IStayEscrow {
   using Address for address payable;
 
   // spaceId => payer address => tokenId => deposit
-  mapping(bytes32 => mapping (address => mapping(uint256 => uint256))) private _deposits;
+  mapping(bytes32 => mapping (address => mapping(uint256 => uint256))) internal _deposits;
 
   // tokenId => State
   mapping(uint256 => State) private _states;

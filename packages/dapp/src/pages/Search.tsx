@@ -9,6 +9,11 @@ import { useLocation } from 'react-router-dom';
 import { MessageBox } from '../components/MessageBox';
 import { GradientText } from './Home';
 import styled from 'styled-components';
+import { SpaceRecord } from '../store/actions';
+import Logger from '../utils/logger';
+
+// Initialize logger
+const logger = Logger('Search');
 
 export const WhiteParagraph = styled(Text)`
   text-align: start;
@@ -36,68 +41,101 @@ export const WhiteParagraph18 = styled(Text)`
   margin-top: 2rem;
 `;
 
+const checkSpaceDatesRestrictions = (id: string, start: number, days: number) => {
+  const restrictions: Record<string, { start: number, days: number }> = {
+    '0x1d50703e2ae2f103b45d81812d328567c2383f120024d888b646e9bffb2630c0': {
+      start: 54,
+      days: 8
+    },
+    '0xac6bde3c8b75bb65189ab09c634a903a78b35c1acb1653b664e71a406c2f6a94': {
+      start: 54,
+      days: 8
+    }
+  };
+  return restrictions[id]
+    ? restrictions[id].start === start &&
+    restrictions[id].days === days
+    : true;
+};
+
 export const Search = () => {
   console.log("Search :: start")
 
   const { searchSpaces } = useAppState();
   const { search } = useLocation();
-  const [afterLoading, setAfterLoading] = useState(false);
 
-  const { startDay, numberOfDays, guestsAmount } = useMemo(() => {
-    const params = new URLSearchParams(search)
-    const startDay = Number(params.get('startDay'))
-    const numberOfDays = Number(params.get('numberOfDays'))
+  const { startDay, numberOfDays, roomsNumber } = useMemo(() => {
+    const params = new URLSearchParams(search);
+    const startDay = Number(params.get('startDay'));
+    const numberOfDays = Number(params.get('numberOfDays'));
+    const roomsNumber = Number(params.get('roomsNumber'));
     return {
       startDay,
       numberOfDays,
-      guestsAmount: Number(params.get('guestsAmount')),
+      roomsNumber
     }
   }, [search])
 
-  const [loading, error] = useSpaceSearch(startDay, numberOfDays, guestsAmount);
+  const [loading, noResults, error] = useSpaceSearch(startDay, numberOfDays, roomsNumber);
+  const [searchActivated, setSearchActivated] = useState<boolean>(false);
+  const [afterLoading, setAfterLoading] = useState<boolean>(false);
+  const [filteredSpaces, setFilteredSpaces] = useState<SpaceRecord[]>([]);
 
   useEffect(
     () => {
       if (!loading) {
-        setTimeout(() => setAfterLoading(false), 3000);
+        setTimeout(() => setAfterLoading(false), 1000);
       } else {
+        setSearchActivated(true);
         setAfterLoading(true);
       }
     },
     [loading]
   );
 
-  const filteredSpaces = useMemo(() => {
-    if (
-      (!searchSpaces || !searchSpaces.length) ||
-      (guestsAmount === 0)
-    ) {
-      return [];
-    }
+  useEffect(
+    () => {
+      if (
+        (!searchSpaces || !searchSpaces.length) ||
+        (roomsNumber === 0)
+      ) {
+        logger.debug('Reset filtered spaces: search result is empty');
+        setFilteredSpaces([]);
+        return;
+      }
 
-    return searchSpaces.filter((space: any) => space.capacity >= guestsAmount);
-  }, [searchSpaces, guestsAmount])
+      const filtered = searchSpaces.filter(
+        (space: SpaceRecord) => space.available &&
+          space.available >= roomsNumber &&
+          checkSpaceDatesRestrictions(space.id, startDay, numberOfDays)
+      );
+      logger.debug('Filtered spaces', filtered);
 
-  console.log("Search :: end")
+      setFilteredSpaces(filtered);
+
+      return () => {
+        logger.debug('Reset filtered spaces: dependencies changed');
+        setFilteredSpaces([]);
+      };
+    },
+    [searchSpaces, startDay, numberOfDays, roomsNumber]
+  );
 
   return (
     <PageWrapper>
 
       <Box align='center' margin={{ bottom: 'small' }}>
+        <GradientText>Amsterdam Devconnect</GradientText>
         <Text size='xxlarge'>
-          April 18-25 2022
+          April 17&ndash;28
         </Text>
-        <Text size='large'>
-          Devconnect APRIL 18-25, 2022 Amsterdam, The Netherlands
-        </Text>
-        <GradientText>Amsterdam</GradientText>
       </Box>
 
       <Box margin={{ bottom: 'medium' }}>
         <SearchForm
           startDay={startDay}
           numberOfDays={numberOfDays}
-          initGuestsAmount={guestsAmount}
+          initRoomsNumber={roomsNumber}
         />
       </Box>
 
@@ -109,11 +147,15 @@ export const Search = () => {
         </Box>
       </MessageBox>
 
-      {afterLoading ? <Spinner color='accent-1' alignSelf='center' size='large' /> : null}
+      {loading || afterLoading ? <Spinner color='accent-1' alignSelf='center' size='large' /> : null}
 
-      <MessageBox type='info' show={!afterLoading && filteredSpaces.length === 0}>
+      <MessageBox type='info' show={
+        searchActivated &&
+        !afterLoading &&
+        (noResults || filteredSpaces.length === 0)
+      }>
         <Text>
-          No spaces found according your criteria
+          No Rooms Found
         </Text>
       </MessageBox>
 
@@ -123,7 +165,7 @@ export const Search = () => {
             key={space.contractData.spaceId}
             space={space}
             numberOfDays={numberOfDays}
-            guestsAmount={guestsAmount}
+            roomsNumber={roomsNumber}
           />
         )}
       </Box>

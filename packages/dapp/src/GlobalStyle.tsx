@@ -25,11 +25,19 @@ export const GlobalStyle: React.FC = ({ children }) => {
 
   return (
     <Grommet
-      full
-      style={{ height: 'auto', minHeight: '100vh' }}
+
       theme={baseTheme}
       themeMode={themeMode}
-      background={{ position: 'relative' }}
+      style={{
+        height: 'auto',
+        minHeight: '100vh',
+        backgroundAttachment: 'fixed'
+      }}
+      background={{
+        image: 'url(/bg.jpg)',
+        position: 'center',
+        size: 'cover'
+      }}
     >
       {children}
     </Grommet>

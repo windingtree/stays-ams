@@ -23,7 +23,7 @@ export const updateSpace = async (
   const pricePerNightWei = profileData.price;
 
   const ipfsCid = await web3Storage.add(profileDataFile);
-  const dataURI = `ipfs://${ipfsCid.cid}`;
+  const dataURI = `ipfs://${ipfsCid}`;
 
   overrides = overrides ? overrides : {};
 

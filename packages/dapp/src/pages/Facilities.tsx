@@ -1,18 +1,17 @@
-import type { OwnerLodgingFacility, OwnerSpace } from '../store/actions';
-import { useContext, useState } from 'react';
+import type { LodgingFacilityRecord, OwnerLodgingFacility, OwnerSpace } from '../store/actions';
+import { useContext, useMemo, useState } from 'react';
 import { Box, Button, ResponsiveContext, Spinner, Tab, Tabs, Text } from 'grommet';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { PageWrapper } from './PageWrapper';
 import { MessageBox } from '../components/MessageBox';
 import { useAppState } from '../store';
-import { useDayZero } from '../hooks/useDayZero';
 import { CheckOutView } from '../components/checkOut/CheckOutView';
 import { useCheckOut } from '../hooks/useCheckOut';
 import { AddCircle, Edit } from 'grommet-icons';
 import styled from 'styled-components';
 import { DateTime } from 'luxon';
 import { TxHashCallbackFn } from 'stays-core/dist/src/utils/sendHelper';
-
+import { providers } from 'ethers'
 const CustomText = styled(Text)`
   color: #0D0E0F;
   font-family: 'Inter';
@@ -43,10 +42,11 @@ const CustomText = styled(Text)`
 const FacilityList: React.FC<{
   selectedFacilityId: string | undefined,
   facilities: OwnerLodgingFacility[],
-  onSelect(facility: OwnerLodgingFacility): void,
-}> = ({ facilities, onSelect, children }) => {
-  const [tabIndex, setTabIndex] = useState<number>();
+}> = ({ selectedFacilityId, facilities, children }) => {
   const navigate = useNavigate();
+  const tabIndex = useMemo(() => {
+    return facilities.findIndex(el => el.contractData.lodgingFacilityId === selectedFacilityId)
+  }, [selectedFacilityId, facilities])
 
   if (!facilities) {
     return null
@@ -56,8 +56,10 @@ const FacilityList: React.FC<{
     {facilities.map((facility, i) => (
       <Tab
         onClick={() => {
-          onSelect(facility)
-          setTabIndex(i)
+          const query = new URLSearchParams([
+            ['facilityId', String(facility.contractData.lodgingFacilityId)],
+          ]);
+          navigate(`/facilities?${query}`, { replace: true });
         }}
         key={i}
         title={<CustomText>{facility.name}</CustomText>}
@@ -70,8 +72,7 @@ const FacilityList: React.FC<{
 }
 
 const SpacesList: React.FC<{
-  facility: OwnerLodgingFacility | undefined,
-  getDate: (days: number) => DateTime,
+  ownerFacility: OwnerLodgingFacility | undefined,
   checkOut: (
     tokenId: string,
     checkOutDate: DateTime,
@@ -79,17 +80,20 @@ const SpacesList: React.FC<{
   ) => void,
   loading: boolean,
   error: string | undefined,
-}> = ({ facility, getDate, checkOut, loading, error }) => {
+  provider: providers.Web3Provider | undefined,
+  facility: LodgingFacilityRecord
+}> = ({ ownerFacility, checkOut, loading, error, provider, facility }) => {
   const navigate = useNavigate();
   const [showTokens, setShowTokens] = useState<string>()
-  if (!facility || !facility.spaces) {
+  if (!ownerFacility || !ownerFacility.spaces) {
     return null
   }
 
   return (
     <Box direction='column'>
-      {facility.spaces.map((space: OwnerSpace, i) => (
+      {ownerFacility.spaces.map((space: OwnerSpace, i) => (
         <Box
+          key={i}
           border='bottom'
           pad='medium'
         >
@@ -110,7 +114,7 @@ const SpacesList: React.FC<{
               <Button
                 icon={<Edit size='medium' radius='large' />}
                 onClick={() => navigate(
-                  `/spaces/edit/${facility.contractData.lodgingFacilityId}/${space.spaceId}`
+                  `/spaces/edit/${ownerFacility.contractData.lodgingFacilityId}/${space.spaceId}`
                 )}
               />
             </Box>
@@ -120,12 +124,13 @@ const SpacesList: React.FC<{
               {space.tokens.length > 0 ? space.tokens.map((token, index) => (
                 <CheckOutView
                   key={index}
-                  getDate={getDate}
-                  facilityOwner={facility.contractData.owner}
+                  facilityOwner={ownerFacility.contractData.owner}
                   checkOut={checkOut}
+                  facility={facility}
                   error={error}
                   loading={loading}
                   {...token}
+                  provider={provider}
                   onClose={() => setShowTokens('undefined')}
                 />
               )) :
@@ -143,26 +148,37 @@ const SpacesList: React.FC<{
 
 export const Facilities = () => {
   const navigate = useNavigate();
+  const { search } = useLocation();
   const size = useContext(ResponsiveContext);
 
   const {
     account,
-    isIpfsNodeConnecting,
     ownFacilities,
     ownFacilitiesLoading,
     provider,
     ipfsNode,
+    lodgingFacilities
   } = useAppState();
-
-  const [getDate, isGetDateReady,] = useDayZero(provider, ipfsNode);
 
   const [checkOut, isReady, checkOutLoading, checkOutError] = useCheckOut(
     account,
     provider,
     ipfsNode,
-  )
+  );
 
-  const [selectedFacility, setSelectedFacility] = useState<OwnerLodgingFacility | undefined>()
+  const ownerFacility = useMemo(() => {
+    const params = new URLSearchParams(search)
+    const facilityId = params.get('facilityId')
+    console.log('useMemo', facilityId, ownFacilities)
+    return ownFacilities?.find(f => f.contractData.lodgingFacilityId === facilityId)
+  }, [search, ownFacilities]);
+
+  const facility = useMemo(() => {
+    const params = new URLSearchParams(search)
+    const facilityId = params.get('facilityId')
+    return lodgingFacilities.find(f => f.contractData.lodgingFacilityId === facilityId)
+  }, [search, lodgingFacilities]);
+
 
   return (
     <PageWrapper
@@ -173,7 +189,7 @@ export const Facilities = () => {
         }
       ]}
     >
-      <MessageBox type='info' show={isIpfsNodeConnecting || !!ownFacilitiesLoading}>
+      <MessageBox type='info' show={!!ownFacilitiesLoading}>
         <Box direction='row'>
           <Box>
             The Dapp is synchronizing with the smart contract. Please wait..&nbsp;
@@ -183,34 +199,33 @@ export const Facilities = () => {
       </MessageBox>
 
       <FacilityList
-        selectedFacilityId={selectedFacility?.contractData.lodgingFacilityId}
-        facilities={ownFacilities ?? []} onSelect={setSelectedFacility}
+        selectedFacilityId={ownerFacility?.contractData.lodgingFacilityId}
+        facilities={ownFacilities ?? []}
       >
 
         <Box
           pad={size}
           direction='column'
         >
-
-          {selectedFacility &&
+          {ownerFacility &&
             <>
               <Box direction='row' align='center' margin={{ top: 'small', bottom: 'small' }}>
-                <CustomText>{selectedFacility.name}</CustomText>
+                <CustomText>{ownerFacility.name}</CustomText>
                 <Button
                   icon={<Edit size='medium' radius='large' />}
                   onClick={() => navigate(
-                    `/facilities/edit/${selectedFacility.contractData.lodgingFacilityId}`
+                    `/facilities/edit/${ownerFacility.contractData.lodgingFacilityId}`
                   )}
                 />
               </Box>
 
               <Box direction='row' align='center' margin={{ top: 'small', bottom: 'small' }}>
                 <CustomText>Spaces</CustomText>
-                {selectedFacility &&
+                {ownerFacility &&
                   <Button
                     icon={<AddCircle size='medium' radius='large' />}
                     onClick={() => navigate(
-                      `/spaces/add/${selectedFacility.contractData.lodgingFacilityId}`
+                      `/spaces/add/${ownerFacility.contractData.lodgingFacilityId}`
                     )}
                   />
                 }
@@ -218,18 +233,18 @@ export const Facilities = () => {
             </>
           }
 
-          {isGetDateReady && isReady &&
+          {isReady && facility !== undefined &&
             <SpacesList
               checkOut={checkOut}
-              getDate={getDate}
               error={checkOutError}
               loading={checkOutLoading}
-              facility={selectedFacility}
+              ownerFacility={ownerFacility}
+              provider={provider}
+              facility={facility}
             />
           }
-
         </Box>
       </FacilityList>
-    </PageWrapper >
+    </PageWrapper>
   );
 };

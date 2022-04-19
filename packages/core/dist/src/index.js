@@ -36,7 +36,7 @@ const cancel_1 = require("./api/cancel");
 const getNewBookingsTokenIds_1 = require("./api/getNewBookingsTokenIds");
 __exportStar(require("./types"), exports);
 class Contract {
-    constructor(contractAddress, providerOrUri, web3Storage) {
+    constructor(contractAddress, providerOrUri, web3Storage, withSigner = true) {
         if (org_id_utils_1.regexp.ethereumAddress.exec(contractAddress)) {
             this.address = contractAddress;
         }
@@ -62,8 +62,9 @@ class Contract {
         // @todo Implement ipfsNode validity check
         this.web3Storage = web3Storage;
         this.contract = new ethers_1.ethers.Contract(this.address, stays_smart_contracts_1.StaysContract.abi, this.provider);
-        // Apply the default Signer
-        this.contract = this.contract.connect(this.provider.getSigner());
+        if (withSigner) {
+            this.contract = this.contract.connect(this.provider.getSigner());
+        }
     }
     getDayZero() {
         return (0, getDayZero_1.getDayZero)(this.contract);

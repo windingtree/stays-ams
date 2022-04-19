@@ -2,10 +2,10 @@
 
 ## Installation
 
-Make sure you have `node` and `nvm` installed.
+Make sure you have `node` and `nvm` installed:
 
 ```bash
-nvm use
+nvm use v16
 npm install -g yarn
 npm install -g lerna
 yarn install

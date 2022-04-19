@@ -1,16 +1,17 @@
-import { Box, Text, Image, Grid, Button, Notification } from 'grommet';
+import { Box, Text, Image, Grid, Button, Notification, Carousel, Anchor } from 'grommet';
 import type { Space } from 'stays-data-models'
 import { useNavigate } from 'react-router-dom';
 import { useAppState } from '../store';
 import styled from 'styled-components';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { utils, BigNumber as BN } from 'ethers';
+import { useWindowsDimension } from '../hooks/useWindowsDimension';
 
 export const CustomButton = styled(Button)`
   color: black;
   border: 1px solid black;
   height: 2.5rem;
-  width: 10rem;
+  minWidth: 10rem;
   border-radius: 2.5rem;
   /* background: linear-gradient(90.72deg, #FFF500, #3B37FF, #0D0E0F); */
 
@@ -23,20 +24,57 @@ export const CustomButton = styled(Button)`
   }
 `;
 
+const ResponsiveColumn = (winWidth: number): string[] => {
+  if (winWidth <= 768) {
+    return ['medium'];
+  }
+  return ['medium', 'flex'];
+};
+
+const ResponsiveRow = (winWidth: number): string[] => {
+  if (winWidth <= 768) {
+    return ['medium', 'xsmall', 'small', 'xsmall'];
+  }
+  return ['xsmall', 'small', 'xsmall'];
+};
+
+const ResponsiveArea = (winWidth: number): any[] => {
+  if (winWidth <= 768) {
+    return [
+      { name: 'img', start: [0, 0], end: [1, 0] },
+      { name: 'header', start: [0, 1], end: [1, 1] },
+      { name: 'main', start: [0, 2], end: [1, 2] },
+      { name: 'action', start: [0, 3], end: [1, 3] },
+    ];
+  }
+  return [
+    { name: 'img', start: [0, 0], end: [1, 2] },
+    { name: 'header', start: [1, 0], end: [1, 1] },
+    { name: 'main', start: [1, 1], end: [1, 1] },
+    { name: 'action', start: [1, 2], end: [1, 2] },
+  ];
+};
 export const SearchResultCard: React.FC<{
   space: Space,
   numberOfDays: number,
-  guestsAmount: number
-}> = ({ space, numberOfDays, guestsAmount }) => {
-  const { account } = useAppState();
+  roomsNumber: number
+}> = ({ space, numberOfDays, roomsNumber }) => {
+  const { account, lodgingFacilities } = useAppState();
+  const { winWidth } = useWindowsDimension();
+
   const navigate = useNavigate();
   const [notification, setNotification] = useState<string | undefined>();
 
+  const facility = useMemo(
+    () => lodgingFacilities.find((facility) => facility.id === space.contractData.lodgingFacilityId),
+    [space, lodgingFacilities]
+  )
+
   const getPrice = useCallback(
-    (nights: number, guestsAmount: number): string  => {
+    (nights: number, rooms: number): string => {
       const perNight = BN.from(space?.contractData.pricePerNightWei ?? 0);
       return utils.formatUnits(
-        perNight.mul(BN.from(nights)).mul(BN.from(guestsAmount)),
+        perNight.mul(BN.from(nights)).mul(BN.from(rooms)),
         'ether'
       );
     },
@@ -58,43 +96,52 @@ export const SearchResultCard: React.FC<{
       <Grid
         responsive
         width='100%'
-        rows={['xsmall', 'small', 'xsmall']}
-        columns={['medium', 'flex']}
+        rows={ResponsiveRow(winWidth)}
+        columns={ResponsiveColumn(winWidth)}
+        areas={ResponsiveArea(winWidth)}
+        pad='medium'
         gap="medium"
-        areas={[
-          { name: 'img', start: [0, 0], end: [1, 2] },
-          { name: 'header', start: [1, 0], end: [1, 1] },
-          { name: 'main', start: [1, 1], end: [1, 1] },
-          { name: 'action', start: [1, 2], end: [1, 2] },
-        ]}
         align='center'
       >
         <Box gridArea="img" fill>
-          <Image
-            fit="cover"
-            src={space.media.logo}
-          />
+          <Carousel fill>
+            <Image
+              fit="cover"
+              src={space.media.logo}
+            />
+            {space.media.images?.map((img, i) =>
+              <Image
+                key={i}
+                fit="cover"
+                src={img.uri}
+              />
+            )}
+          </Carousel>
         </Box>
         <Box gridArea="header">
-          <Text size='xxlarge'  >
-            {space.name}
+          <Text size='xxlarge' margin={{ bottom: 'medium' }}>
+            {space.name} {'🛌🏾 '.repeat(space.beds)}
           </Text>
-          {/* <Text size='large'>
-            {space.address === undefined ? '' : <Box direction='row'>
-              <Text>{space.address.country},</Text>
-              <Text>{space.address.locality},</Text>
-              <Text>{space.address.streetAddress}</Text>
-            </Box>}
-          </Text> */}
+          <Text size='xlarge'>
+            {facility?.name}
+            &nbsp;
+            <Anchor
+              label="🌎"
+              href={facility?.contact?.website ?? ''}
+              title={facility?.name ?? ''}
+              target="_blank"
+            />
+          </Text>
         </Box>
         <Box direction='column' justify='start' gridArea="main">
-          {space.description}
+          <Text size='large'>
+            {space.description}
+          </Text>
         </Box>
-        <Box pad={{ right: 'medium' }} direction='row' justify='between' align='center' gridArea="action">
-          <Text size='large'>Price: {getPrice(numberOfDays, guestsAmount)} DAI</Text>
+        <Box direction='column' justify='between' align='center' gridArea="action">
+          <Text size='large'>{numberOfDays} nights, {roomsNumber} room{roomsNumber > 1 ? 's' : ''}</Text>
           <CustomButton
-            size='large'
-            label='Check Space'
+            label={'Book for ' + getPrice(numberOfDays, roomsNumber) + ' xDAI'}
             onClick={() => {
               if (account) {
                 navigate(`/space/${space.contractData.spaceId}`);

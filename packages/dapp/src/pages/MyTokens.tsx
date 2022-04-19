@@ -1,6 +1,5 @@
 import type { StayToken, TokenData } from 'stays-core';
-import { ReactChild, useMemo, useState } from 'react';
-import { DateTime } from 'luxon';
+import { ReactChild, useCallback, useMemo, useState } from 'react';
 import * as Icons from 'grommet-icons';
 import { Grid, Spinner, Button, Box, Image, Text } from 'grommet';
 import { PageWrapper } from './PageWrapper';
@@ -19,6 +18,7 @@ import { LodgingFacilityRecord } from '../store/actions';
 import styled from 'styled-components';
 import { utils, BigNumber as BN } from 'ethers';
 // import { CustomButton } from '../components/SearchResultCard';
+import { getDate } from '../utils/dates';
 
 const HotelTitle = styled(Text)`
   color: #000;
@@ -70,14 +70,14 @@ export const CustomBoldText = styled(Text)`
 export interface TokenCardProps extends TokenData {
   onClick?: () => void,
   children?: ReactChild | null,
-  facility: LodgingFacilityRecord | undefined
-  getDate?: (days: number) => DateTime;
+  facility?: LodgingFacilityRecord;
 }
 
 export interface TokenViewProps extends StayToken {
-  getDate?: (days: number) => DateTime;
   facilityOwner: string | undefined;
   facility: LodgingFacilityRecord | undefined;
+  withCloseButton?: boolean;
+  withRpcProvider?: boolean;
 }
 
 export const TokenCard = ({
@@ -87,11 +87,10 @@ export const TokenCard = ({
   attributes,
   onClick = () => { },
   facility,
-  getDate,
   children
 }: TokenCardProps) => {
   console.log('facility', facility)
-  if (!facility || !getDate || !attributes) {
+  if (!facility || !attributes) {
     return null
   }
   const parseTrait = (trait: string): any => {
@@ -100,7 +99,7 @@ export const TokenCard = ({
   const space = facility.spaces.find(space => space.contractData.spaceId === parseTrait('spaceId').toLowerCase())
   const quantity = Number(parseTrait('quantity'))
   const numberOfDays = Number(parseTrait('numberOfDays'))
-  const total = BN.from(quantity).mul(BN.from(numberOfDays)).mul(space?.contractData.pricePerNightWei ?? 0).toString();
+  const total = BN.from(space?.contractData.pricePerNightWei || 0).mul(BN.from(numberOfDays)).mul(BN.from(quantity)).toString();
   const totalEther = utils.formatUnits(total, 'ether');
 
   return (
@@ -123,7 +122,7 @@ export const TokenCard = ({
         <Box pad='small'>
           <HotelTitle>{facility.name}</HotelTitle>
           <CustomText>{facility.address.streetAddress}, {facility.address.postalCode} {facility.address.locality}, {facility.address.country}. </CustomText>
-          <CustomText>{space?.name},{quantity} {quantity > 1 ? 'persons' : 'person'} </CustomText>
+          <CustomText>{space?.name},{quantity} {quantity === 1 ? 'room' : 'rooms'} </CustomText>
         </Box>
         <Box align='center' justify='center' pad='small'>
           <CustomText>{getDate(parseTrait('startDay')).toFormat('MM.dd.yyyy')} - {getDate(Number(parseTrait('startDay')) + Number(parseTrait('numberOfDays'))).toFormat('MM.dd.yyyy')}</CustomText>
@@ -148,7 +147,6 @@ export const TokenCard = ({
 export const TokenView = ({
   tokenId,
   owner,
-  getDate,
   facilityOwner,
   facility,
   status,
@@ -157,10 +155,15 @@ export const TokenView = ({
     description,
     image,
     attributes
-  }
+  },
+  withCloseButton = true,
+  withRpcProvider = false
 }: TokenViewProps) => {
-  const { provider, ipfsNode } = useAppState();
-  const [, , contractError] = useContract(provider, ipfsNode);
+  const { provider, rpcProvider, ipfsNode } = useAppState();
+  const [, , contractError] = useContract(
+    withRpcProvider ? rpcProvider : provider,
+    ipfsNode
+  );
   const navigate = useNavigate();
   // const showMessage = useGoToMessage();
   // const [cancelLoading, setCancelLoading] = useState<boolean>(false);
@@ -195,7 +198,7 @@ export const TokenView = ({
   //   [showMessage, contract, tokenId]
   // );
 
-  if (!getDate || !attributes || !facility) {
+  if (!attributes || !facility) {
     return null;
   }
 
@@ -257,19 +260,20 @@ export const TokenView = ({
         </Box>
 
         <Box pad={{ vertical: 'small', horizontal: 'large' }} justify='between'>
-          <StayVoucherQr
-            provider={provider}
-            from={owner}
-            to={facilityOwner}
-            tokenId={tokenId}
-            onError={err => setError(err)}
-            name={name}
-            description={description}
-            attributes={attributes}
-            facility={facility}
-            getDate={getDate}
-            pricePerNightWei={'0'}
-          />
+          {!withRpcProvider &&
+            <StayVoucherQr
+              provider={provider}
+              from={owner}
+              to={facilityOwner}
+              tokenId={tokenId}
+              onError={err => setError(err)}
+              name={name}
+              description={description}
+              attributes={attributes}
+              facility={facility}
+              pricePerNightWei={'0'}
+            />
+          }
 
           {status === 'booked' &&
             <Box>
@@ -298,17 +302,19 @@ export const TokenView = ({
               }
             </Box>
           }
-          <Button
-            style={{
-              position: 'absolute',
-              top: 10,
-              right: 10
-            }}
+          {withCloseButton &&
+            <Button
+              style={{
+                position: 'absolute',
+                top: 10,
+                right: 10
+              }}
 
-            icon={<Icons.Close color="plain" />}
-            hoverIndicator
-            onClick={() => navigate('/tokens', { replace: true })}
-          />
+              icon={<Icons.Close color="plain" />}
+              hoverIndicator
+              onClick={() => navigate('/tokens', { replace: true })}
+            />
+          }
         </Box>
       </Box>
 
@@ -328,7 +334,7 @@ export const TokenView = ({
 };
 
 export const MyTokens = () => {
-  const { provider, ipfsNode, account, lodgingFacilities, getDate } = useAppState();
+  const { provider, ipfsNode, account, lodgingFacilities } = useAppState();
   const [searchParams, setSearchParams] = useSearchParams();
   const tokenId = useMemo(
     () => searchParams.get('tokenId') || undefined,
@@ -346,15 +352,18 @@ export const MyTokens = () => {
   );
   // const { winWidth } = useWindowsDimension();
   const isLoading = useMemo(
-    () => tokensLoading || tokenLoading || getDate === undefined,
-    [tokensLoading, tokenLoading, getDate]
+    () => tokensLoading || tokenLoading,
+    [tokensLoading, tokenLoading]
   );
 
-  const findFacility = (data: TokenData) => {
-    const facilityId = data.attributes?.find((attr) => attr.trait_type === 'facilityId')?.value
-    console.log('lodgingFacilities', lodgingFacilities, lodgingFacilities.find((facility) => facility.id === facilityId?.toLowerCase()), facilityId)
-    return lodgingFacilities.find((facility) => facility.id === facilityId?.toLowerCase())
-  };
+  const findFacility = useCallback(
+    (data: TokenData) => {
+      const facilityId = data.attributes?.find((attr) => attr.trait_type === 'facilityId')?.value
+      console.log('lodgingFacilities', lodgingFacilities, lodgingFacilities.find((facility) => facility.id === facilityId?.toLowerCase()), facilityId)
+      return lodgingFacilities.find((facility) => facility.id === facilityId?.toLowerCase())
+    },
+    [lodgingFacilities]
+  );
 
   // const tokensTest: StayToken[] = [
   //   {
@@ -399,7 +408,7 @@ export const MyTokens = () => {
 
         <MessageBox type='info' show={isLoading}>
           <Box direction='row'>
-            <Box>
+            <Box margin={{ right: 'small '}}>
               Tokens data is loading. Please wait..&nbsp;
             </Box>
             <Spinner />
@@ -434,11 +443,9 @@ export const MyTokens = () => {
               key={index}
               onClick={() => setSearchParams({ tokenId })}
               {...data}
-              getDate={getDate}
             >
               {(token && token.tokenId === tokenId) ?
                 <TokenView
-                  getDate={getDate}
                   facilityOwner={facilityOwner}
                   facility={findFacility(data)}
                   {...token}

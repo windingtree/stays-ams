@@ -10,7 +10,6 @@ import '@nomiclabs/hardhat-etherscan';
 import 'solidity-coverage';
 import { nodeUrl, accounts, getKey } from './utils/network';
 
-import './scripts/tasks';
 import './scripts/testSetup';
 
 const config: HardhatUserConfig = {
@@ -31,7 +30,7 @@ const config: HardhatUserConfig = {
     deployer: 0,
     alice: 1,
     bob: 2,
-    carlos: 3,
+    carol: 3,
   },
   networks: {
     hardhat: {
@@ -54,14 +53,14 @@ const config: HardhatUserConfig = {
       allowUnlimitedContractSize: true,
     },
     sokol: {
-      url: 'https://sokol.poa.network',
+      url: nodeUrl('sokol'),
       accounts: accounts('sokol'),
       gasPrice: 30000000000,
     },
-    xdai: {
+    gnosis: {
       chainId: 100,
-      url: 'https://rpc.gnosischain.com',
-      accounts: accounts('xdai'),
+      url: nodeUrl('gnosis'),
+      accounts: accounts('gnosis'),
       gasPrice: 30000000000,
     },
   },
@@ -72,6 +71,11 @@ const config: HardhatUserConfig = {
   //   coinmarketcap: process.env.COINMARKETCAP_API_KEY,
   //   maxMethodDiff: 10
   // },
+  verify: {
+    etherscan: {
+      apiKey: process.env.ETHERSCAN_API_KEY
+    }
+  },
   typechain: {
     outDir: 'typechain',
     target: 'ethers-v5'

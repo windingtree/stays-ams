@@ -1,30 +1,4 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -63,67 +37,41 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Web3StorageApi = void 0;
-var base_1 = require("./base");
-var utils_1 = require("../utils");
-var org_id_utils_1 = require("@windingtree/org.id-utils");
-var web3StorageApiPath = 'https://api.web3.storage';
-var Web3StorageApi = (function (_super) {
-    __extends(Web3StorageApi, _super);
-    function Web3StorageApi(token, gateway) {
-        var _this = _super.call(this) || this;
+var bundle_esm_min_js_1 = require("web3.storage/dist/bundle.esm.min.js");
+var Web3StorageApi = (function () {
+    function Web3StorageApi(token) {
         if (!token) {
             throw new Error('Web3Storage Authorization API token must be provided');
         }
-        if (!gateway) {
-            throw new Error('IPFS gateway must be provided');
-        }
-        _this.authToken = token;
-        _this.ipfsGateway = gateway;
-        return _this;
+        this.w3Api = new bundle_esm_min_js_1.Web3Storage({ token: token });
     }
-    Web3StorageApi.prototype.authHeader = function () {
-        return {
-            'Authorization': "Bearer ".concat(this.authToken),
-            'X-Client': 'web3.storage/js'
-        };
-    };
     Web3StorageApi.prototype.add = function (file) {
-        return __awaiter(this, void 0, void 0, function () {
-            var _a, _b, _c;
-            return __generator(this, function (_d) {
-                switch (_d.label) {
-                    case 0:
-                        _b = (_a = org_id_utils_1.http).request;
-                        _c = ["".concat(web3StorageApiPath, "/upload"), 'POST'];
-                        return [4, file.arrayBuffer()];
-                    case 1: return [2, _b.apply(_a, _c.concat([_d.sent(), __assign(__assign({}, this.authHeader()), { 'X-NAME': file.name })]))];
-                }
-            });
+        return this.w3Api.put([
+            file
+        ], {
+            wrapWithDirectory: false
         });
     };
     Web3StorageApi.prototype.get = function (cid) {
         return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2, (0, utils_1.getIpfsChunks)(this.ipfsGateway.cat(cid))];
-            });
-        });
-    };
-    Web3StorageApi.prototype.delete = function (cid) {
-        return Promise.resolve();
-    };
-    Web3StorageApi.prototype._delete = function (cid) {
-        return __awaiter(this, void 0, void 0, function () {
+            var res, files;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, org_id_utils_1.http.request("".concat(web3StorageApiPath, "/user/uploads/").concat(cid), 'DELETE', undefined, __assign({}, this.authHeader()))];
+                    case 0: return [4, this.w3Api.get(cid)];
                     case 1:
-                        _a.sent();
-                        return [2];
+                        res = _a.sent();
+                        if (!res || !res.ok) {
+                            throw new Error("Failed to get ".concat(cid));
+                        }
+                        return [4, res.files()];
+                    case 2:
+                        files = _a.sent();
+                        return [2, files[0].text()];
                 }
             });
         });
     };
     return Web3StorageApi;
-}(base_1.BaseIpfsStorageApi));
+}());
 exports.Web3StorageApi = Web3StorageApi;
 //# sourceMappingURL=web3Storage.js.map

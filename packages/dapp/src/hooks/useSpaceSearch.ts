@@ -3,12 +3,14 @@ import Logger from '../utils/logger';
 import { useAppDispatch, useAppState } from '../store';
 import { LodgingFacility, Space } from 'stays-data-models';
 import { useSpaceAvailability } from './useSpaceAvailability';
+import { SpaceRecord } from '../store/actions';
 
 // Initialize logger
 const logger = Logger('useSpaceSearch');
 
 export type UseSpaceSearchHook = [
   isLoading: boolean,
+  isNoResults: boolean,
   error: string | undefined
 ];
 
@@ -16,15 +18,15 @@ export type UseSpaceSearchHook = [
 export const useSpaceSearch = (
   startDay: number,
   numberOfDays: number,
-  guestsAmount: number
+  roomsNumber: number
 ): UseSpaceSearchHook => {
   console.log("useSpaceSearch :: start")
 
   const dispatch = useAppDispatch();
   const { lodgingFacilities, searchTimestamp, searchParams } = useAppState();
   const [cb, isReady] = useSpaceAvailability();
-
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [isNoResults, setIsNoResults] = useState(false);
   const [error, setError] = useState<string | undefined>();
 
   console.log("useSpaceSearch :: before useEffect")
@@ -32,19 +34,18 @@ export const useSpaceSearch = (
   useEffect(() => {
     setLoading(true);
     setError(undefined);
+    setIsNoResults(false);
 
     if (!isReady) {
-      console.log("useSpaceSearch :: isReady === false")
-      return
+      return;
     }
-    console.log("useSpaceSearch :: isReady === true")
 
-    if (!!searchParams && searchParams.guestsAmount !== guestsAmount) {
+    if (!!searchParams && searchParams.roomsNumber !== roomsNumber) {
       dispatch({
         type: 'SET_SEARCH_PARAMS',
         payload: {
           ...searchParams,
-          guestsAmount
+          roomsNumber
         }
       });
     }
@@ -57,13 +58,13 @@ export const useSpaceSearch = (
       searchParams.startDay === startDay
     ) {
       setLoading(false);
-      return
+      return;
     }
 
     if (startDay < 0) {
       setLoading(false);
       setError('Not valid date')
-      return
+      return;
     }
 
     dispatch({
@@ -80,20 +81,33 @@ export const useSpaceSearch = (
           (previousValue, currentValue) => [...previousValue, ...currentValue.spaces as Space[]],
           [] as Space[]
         );
-        const newSpaces = await Promise.all(
+        let newSpaces = await Promise.all(
           spaces.map(
             async space => {
-              const availability = await cb(space.contractData.spaceId, startDay, numberOfDays)
-              return {
-                ...space,
-                available: availability === null ? availability : Math.min(...availability)
+              try {
+                logger.debug('Fetch availability for:', space.contractData.spaceId);
+                const availability = await cb(space.contractData.spaceId, startDay, numberOfDays)
+                logger.debug('Availability for:', space.contractData.spaceId, availability);
+                return {
+                  ...space,
+                  available: availability === null ? availability : Math.min(...availability)
+                }
+              } catch (err) {
+                logger.error(err);
+                logger.debug('Failed to get availability for:', space.contractData.spaceId);
+                return null;
               }
             }
           )
         );
+        newSpaces = newSpaces.filter(s => s !== null);
+
+        if (newSpaces.length === 0) {
+          setIsNoResults(true);
+        }
 
         // Add all obtained records to state
-        for (const record of newSpaces) {
+        for (const record of newSpaces as SpaceRecord[]) {
           dispatch({
             type: 'SET_RECORD',
             payload: {
@@ -115,7 +129,7 @@ export const useSpaceSearch = (
           payload: {
             startDay,
             numberOfDays,
-            guestsAmount
+            roomsNumber
           }
         });
 
@@ -132,12 +146,13 @@ export const useSpaceSearch = (
     };
 
     getSpacesAvailability();
-  }, [lodgingFacilities, isReady, cb, dispatch, numberOfDays, startDay, searchParams, searchTimestamp, guestsAmount]);
+  }, [lodgingFacilities, isReady, cb, dispatch, numberOfDays, startDay, searchParams, searchTimestamp, roomsNumber]);
 
   console.log("useSpaceSearch :: end")
 
   return [
     loading,
+    isNoResults,
     error
   ];
 };

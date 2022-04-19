@@ -1,21 +1,24 @@
-// SPDX-License-Identifier: GPL
+// SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/cryptography/draft-EIP712Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
-import "@openzeppelin/contracts/security/Pausable.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+
 import "./IStays.sol";
 import "./StayEscrow.sol";
 import "./libraries/StayTokenMeta.sol";
 
 
-contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable, EIP712, Pausable, Ownable {
+contract Stays is Initializable, ERC721Upgradeable, ERC721EnumerableUpgradeable, ERC721URIStorageUpgradeable, EIP712Upgradeable, IStays, StayEscrow, PausableUpgradeable, OwnableUpgradeable {
   using Counters for Counters.Counter;
   using EnumerableSet for EnumerableSet.Bytes32Set;
   Counters.Counter private _stayTokenIds;
@@ -76,7 +79,17 @@ contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable, EIP712
   // spaceId => tokenId[]
   mapping(bytes32 => uint256[]) private _stayTokens;
 
-  constructor() ERC721("Stay Amsterdam", "STAYAMS") EIP712("Stay Amsterdam", "1") {}
+  /// @custom:oz-upgrades-unsafe-allow constructor
+  constructor() initializer {}
+
+  function initialize() initializer public {
+      __ERC721_init("Stay Amsterdam", "STAYAMS");
+      __EIP712_init("Stay Amsterdam", "1");
+      __ERC721Enumerable_init();
+      __ERC721URIStorage_init();
+        __Pausable_init();
+        __Ownable_init();
+  }
 
   /**
    * Modifiers
@@ -513,7 +526,7 @@ contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable, EIP712
       "Wrong caller"
     );
 
-    uint256 firstNight = _space.pricePerNightWei;
+    uint256 firstNight = _deposits[_stay.spaceId][recovered][_tokenId] / _stay.numberOfDays;
 
     // Partial withdraw, just for a first night
     _stay.checkIn = true;
@@ -639,21 +652,43 @@ contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable, EIP712
 
   /** Overrides */
 
+  /**
+    * @dev Hook that is called before any token transfer. This includes minting
+    * and burning.
+    *
+    * Calling conditions:
+    *
+    * - When `from` and `to` are both non-zero, ``from``'s `tokenId` will be
+    * transferred to `to`.
+    * - When `from` is zero, `tokenId` will be minted for `to`.
+    * - When `to` is zero, ``from``'s `tokenId` will be burned.
+    * - `from` and `to` are never both zero.
+    *
+    * To learn more about hooks, head to xref:ROOT:extending-contracts.adoc#using-hooks[Using Hooks].
+    */
   function _beforeTokenTransfer(address from, address to, uint256 tokenId)
     internal
-    override(ERC721, ERC721Enumerable)
+    override(ERC721Upgradeable, ERC721EnumerableUpgradeable)
   {
     super._beforeTokenTransfer(from, to, tokenId);
+    if (from != address(0) && to != address(0)) {
+      bytes32 spaceId = _stays[tokenId].spaceId;
+      uint256 deposit = _deposits[spaceId][from][tokenId];
+
+      // move the deposit
+      _deposits[spaceId][from][tokenId] = 0;
+      _deposits[spaceId][to][tokenId] = deposit;
+    }
   }
 
-  function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
+  function _burn(uint256 tokenId) internal override(ERC721Upgradeable, ERC721URIStorageUpgradeable) {
     super._burn(tokenId);
   }
 
   function tokenURI(uint256 tokenId)
     public
     view
-    override(ERC721, ERC721URIStorage)
+    override(ERC721Upgradeable, ERC721URIStorageUpgradeable)
     returns (string memory)
   {
     return super.tokenURI(tokenId);
@@ -662,7 +697,7 @@ contract Stays is IStays, StayEscrow, ERC721URIStorage, ERC721Enumerable, EIP712
   function supportsInterface(bytes4 interfaceId)
     public
     view
-    override(ERC721, ERC721Enumerable)
+    override(ERC721Upgradeable, ERC721EnumerableUpgradeable)
     returns (bool)
   {
     return super.supportsInterface(interfaceId);
