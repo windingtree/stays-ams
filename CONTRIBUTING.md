@@ -1,6 +1,8 @@
 # Contributing
 
-Thank you for your interest in contributing to WindingTree! ❤️🌳
+Thank you for your interest in contributing to WindingTree! ❤️🌳 
+
+Definitions for "MUST", "MUST NOT", "SHOULD", "SHOULD NOT", "MAY" are covered in [RFC2119](https://datatracker.ietf.org/doc/html/rfc2119).
 
 # Using the issue tracker
 
@@ -42,27 +44,27 @@ Feature requests are welcome, but take a moment to find out whether your idea fi
 
 All ongoing development for an upcoming release gets committed to the **`main`** branch. The `main` branch technically serves as the "development" branch as well, but all code that is committed to the `main` branch should be considered *stable*.
 
-Ensure any changes are clear and well-documented. When we say "well-documented":
+You should ensure any changes are clear and well-documented. When we say "well-documented":
 
 * If the changes include code, ensure all additional code has documentation in and around it. This includes documenting the definitions of functions, statements in code, sections.
 * The most helpful code comments explain why, establish context, or efficiently summarize how. Avoid simply repeating details from declarations. When in doubt, favour overexplaining to underexplaining.
 * Code comments should be consistent with their language conventions. For example, please use [JSDoc](https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html) for TypeScript/JavaScript, or [NatSpec](https://docs.soliditylang.org/en/v0.8.13/natspec-format.html) for Solidity.
 * Any new features must have a corresponding **doc** [issue](#using-the-issue-tracker) raised to ensure the creation of user documentation.
-* Do **NOT** submit commented-out code. If the code does not need to be used anymore, please remove it.
+* Commented-out code **shall not** submitted. If the code does not need to be used anymore, please remove it.
 * While `TODO` comments are frowned upon, every now and then it is OK to put a `TODO` to note that a particular section of code needs to be worked on in the future. However, it is also known that "TODOs" often do not get worked on, and as such, it is more likely you will be asked to complete the TODO at the time you submit it.
 * Write clear, descriptive [commit messages](#commit-messages).
 
-Please provide unit tests with your code if possible (**mandatory for smart-contracts**). If unable to provide a unit test, please provide an explanation as to why in your pull request, including a description of the steps used to manually verify the changes.
+Please provide unit tests with your code if possible (**shall be provided for smart-contracts**). If unable to provide a unit test, please provide an explanation as to why in your pull request, including a description of the steps used to manually verify the changes.
 
-We *prefer* atomic changes over the bulk changes of everything. Each commit tells a story about what changes are being made. This makes it easier to identify when a bug is introduced into the codebase, and as such makes it easier to fix.
+You *should* make atomic changes, as these are preferred over bulk changes of everything. Each commit tells a story about what changes are being made. This makes it easier to identify when a bug is introduced into the codebase, and as such makes it easier to fix.
 
-All commits must either be rebased in atomic order or squashed (if the squashed commit is considered atomic). Merge commits are not accepted. All conflicts must be resolved prior to pushing changes.
+All commits shall either be rebased in atomic order or squashed (if the squashed commit is considered atomic). Merge commits shall not be accepted. All conflicts must be resolved prior to pushing changes.
 
 **All pull requests should be made to the `main` branch**. All PRs to `main` branch shall be subject to review. Repository restrictions shall be setup to prohibit the merging of code that has not been reviewed.
 
 ## Commit Messages
 
-Commit messages are to be **strictly** in accordance with [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/#specification). See [why we use conventional commits](https://www.conventionalcommits.org/en/v1.0.0/#why-use-conventional-commits).
+Commit messages **must** be in accordance with [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/#specification). See [why we use conventional commits](https://www.conventionalcommits.org/en/v1.0.0/#why-use-conventional-commits).
 
 ## Submitting Pull Requests
 
@@ -118,7 +120,7 @@ git push origin <topic-branch-name>
 
 # Releases & Versioning
 
-Overall, release tags attempt to follow the [semantic versioning](https://semver.org/) scheme. Tagging of releases will be handled by repository maintainers.
+Overall, release tags should attempt to follow the [semantic versioning](https://semver.org/) scheme. Tagging of releases shall be handled by repository maintainers.
 
 # CI/CD Environments
 
@@ -126,8 +128,8 @@ WindingTree makes use of GitHub actions to automate testing, deployment and rele
 
 ## Development
 
-The development environment will deploy on all merged PRs into the `main` branch.
+The development environment shall deploy on all merged PRs into the `main` branch.
 
 ## Production
 
-The production environment will deploy on all tagged releases from the `main` branch.
+The production environment shall deploy on all tagged releases from the `main` branch.
