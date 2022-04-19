@@ -17,7 +17,7 @@ Guidelines for bug reports:
 
 1. **Use the GitHub issue search** - check if the issue has *already* been reported.
 2. **Check if the issue has been fixed** - try to reproduce it using the latest `main` branch in the repository.
-3. **Isolate the problem** - create a reduce test case and a live example.
+3. **Isolate the problem** - create a reduced test case and a live example.
 
 A good bug report shouldn't leave others needing to chase you up for more information. Please try to be as detailed as possible in your report. What is your environment? What steps will reproduce the issue? What browser(s) and OS experience the problem? What would you expect to be the outcome? All these details will help people to fix any potential bugs.
 
@@ -40,13 +40,13 @@ Feature requests are welcome, but take a moment to find out whether your idea fi
 
 # Engineering standards
 
-All ongoing development for an upcoming release gets commited to the **`main`** branch. The `main` branch technically serves as the "development" branch as well, but all code that is committed to the `main` branch should be considered *stable*.
+All ongoing development for an upcoming release gets committed to the **`main`** branch. The `main` branch technically serves as the "development" branch as well, but all code that is committed to the `main` branch should be considered *stable*.
 
 Ensure any changes are clear and well-documented. When we say "well-documented":
 
-* If the changes include code, ensure all additional code has documentation in and around it. This includes documenting the definitions of fnuctoins, statements in code, sections.
-* The most helpful code comments explain why, establish context, or efficiency summarize how. Avoid simply repeating details from declarations. When in doubt, favour overexplaining to underexplaining.
-* Code comments should be consistent with their languge conventions. For example, please use [JSDoc](https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html) for TypeScript/JavaScript, or [NatSpec](https://docs.soliditylang.org/en/v0.8.13/natspec-format.html) for Solidity.
+* If the changes include code, ensure all additional code has documentation in and around it. This includes documenting the definitions of functions, statements in code, sections.
+* The most helpful code comments explain why, establish context, or efficiently summarize how. Avoid simply repeating details from declarations. When in doubt, favour overexplaining to underexplaining.
+* Code comments should be consistent with their language conventions. For example, please use [JSDoc](https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html) for TypeScript/JavaScript, or [NatSpec](https://docs.soliditylang.org/en/v0.8.13/natspec-format.html) for Solidity.
 * Any new features must have corresponding user documentation. Any removed features must have their user documentation removed from the documents.
 * Do **NOT** submit commented-out code. If the code does not need to be used anymore, please remove it.
 * While `TODO` comments are frowned upon, every now and then it is OK to put a `TODO` to note that a particular section of code needs to be worked on in the future. However, it is also known that "TODOs" often do not get worked on, and as such, it is more likely you will be asked to complete the TODO at the time you submit it.
