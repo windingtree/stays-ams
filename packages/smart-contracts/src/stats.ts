@@ -45,9 +45,9 @@ async function main() {
 
     for (let x = _startDate; x < _startDate + _numDays; x++) {
       if (typeof(bookingsByDay[x]) === 'undefined') {
-        bookingsByDay[x] = 1
+        bookingsByDay[x] = _quantity
       } else {
-        bookingsByDay[x]++
+        bookingsByDay[x] = bookingsByDay[x] + _quantity
       }
     }
 
