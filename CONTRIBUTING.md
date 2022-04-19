@@ -58,7 +58,7 @@ Ensure your commits are atomic. Each commit tells a story about what changes are
 
 All commits must either be rebased in atomic order or squashed (if the squashed commit is considered atomic). Merge commits are not accepted. All conflicts must be resolved prior to pushing changes.
 
-**All pull requests should be made from the `main` branch**. All PRs to `main` branch shall be subject to review. Repository restrictions shall be setup to prohibit the merging of code that has not been reviewed.
+**All pull requests should be made to the `main` branch**. All PRs to `main` branch shall be subject to review. Repository restrictions shall be setup to prohibit the merging of code that has not been reviewed.
 
 ## Commit Messages
 
