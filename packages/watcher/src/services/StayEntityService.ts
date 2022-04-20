@@ -21,7 +21,6 @@ export default class StayEntityService {
 
   public async getTokens() {
     const blockNumber = await (new BlockRepository()).getLastBlockNumber();
-    //const blockNumber = 0; //todo replace to ^ after tests
     const contractIds = await this.contract.getNewBookingsTokenIds(blockNumber)
     let tokens = new Set<Promise<StayToken>>();
 

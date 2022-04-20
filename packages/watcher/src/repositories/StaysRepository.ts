@@ -11,7 +11,7 @@ export default class implements StaysRepositoryInterface {
     this.stayModel = Stay(sequelize);
   }
 
-  async getUnprocessed(): Promise<Array<typeof Stay>> { //todo replace {} to model
+  async getUnprocessed(): Promise<Array<typeof Stay>> {
     return await this.stayModel.findAll(
       {
         where: {
