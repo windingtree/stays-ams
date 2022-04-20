@@ -31,7 +31,6 @@ import { validateSpaceData } from 'stays-data-models/dist/src/validators';
 import { enumerators } from 'stays-data-models';
 import { centerEllipsis } from '../../utils/strings';
 import { useAppState } from '../../store';
-import { useWeb3StorageApi } from '../../hooks/useWeb3StorageApi';
 import { useContract } from './../../hooks/useContract';
 import { useWindowsDimension } from '../../hooks/useWindowsDimension';
 import { useGoToMessage } from '../../hooks/useGoToMessage';
@@ -39,6 +38,7 @@ import { ResponsiveColumn } from '../../utils/roomProfile';
 import { getNetwork } from '../../config';
 import Logger from '../../utils/logger';
 import '@pathofdev/react-tag-input/build/index.css';
+import { utils } from 'ethers';
 
 // Initialize logger
 const logger = Logger('SpaceProfileCard');
@@ -107,7 +107,6 @@ export const SpaceProfileCard = () => {
     ownFacilitiesRefresh
   } = useAppState();
   const [contract, loadingContract] = useContract(provider, ipfsNode);
-  const web3Storage = useWeb3StorageApi(ipfsNode);
   const [profileValue, setProfileValue] = useState<Record<string, any>>(flattenObject(defaultFormValue));
   const [showImagesLoader, setShowImagesLoader] = useState<boolean>(false);
   const [uploadIpfsError, setUploadIpfsError] = useState<string | undefined>();
@@ -125,8 +124,8 @@ export const SpaceProfileCard = () => {
   const [selectedFacilityProfile, setSelectedFacilityProfile] = useState<SpaceRaw | undefined>();
 
   const isLoading = useMemo<boolean>(
-    () => !!!web3Storage || loadingContract,
-    [web3Storage, loadingContract]
+    () => !!!ipfsNode || loadingContract,
+    [ipfsNode, loadingContract]
   );
 
   useEffect(
@@ -168,6 +167,10 @@ export const SpaceProfileCard = () => {
         delete profile.contractData;
         delete profile.updated;
 
+        // convert xWEI to xDAI
+        const xDaiValue = utils.formatEther(profile.price);
+        profile.price = xDaiValue
+
         setSelectedFacilityProfile(profile);
         setProfileValue(flattenObject(profile));
         logger.debug('Selected space profile', profile);
@@ -208,15 +211,15 @@ export const SpaceProfileCard = () => {
   const deployToIpfs = useCallback(
     async (
       file: File,
-      loadingSetter = () => {},
+      loadingSetter = () => { },
       isImage = false
     ) => {
       try {
-        if (!web3Storage) {
+        if (!ipfsNode) {
           throw new Error("IPFS API not ready yet");
         }
         loadingSetter(true);
-        const { cid } = await web3Storage.add(file);
+        const cid = await ipfsNode.add(file);
         const uri = isImage
           ? `https://${cid}.ipfs.dweb.link`
           : `ipfs://${cid}`;
@@ -231,7 +234,7 @@ export const SpaceProfileCard = () => {
         return null;
       }
     },
-    [web3Storage]
+    [ipfsNode]
   );
 
   const handleSubmit = useCallback(
@@ -252,6 +255,9 @@ export const SpaceProfileCard = () => {
         setProfileCreating(true);
 
         const profileData = unFlattenObject(profileValue) as SpaceRaw;
+        // convert xDAI to xWEI
+        const xWeiValue = utils.parseEther(profileData.price);
+        profileData.price = xWeiValue.toString()
 
         logger.debug('profileData', profileData);
         validateSpaceData(profileData);
@@ -699,7 +705,7 @@ export const SpaceProfileCard = () => {
                                 SELECT SPACE IMAGES
                               </Text>
                             </CardHeader>
-                            <CardBody style={{ padding: 20 }}>
+                            <CardBody style={{ padding: 20, maxHeight: '80vh', overflow: 'scroll' }}>
                               <form>
                                 <FormField htmlFor="fileInput">
                                   <FileInput
@@ -801,10 +807,10 @@ export const SpaceProfileCard = () => {
                                         const initialImagesCount = profileClone?.media?.images?.length || 0;
                                         logger.debug('initialImagesCount', initialImagesCount);
 
-                                        for (let i=0; i < images.length; i++) {
+                                        for (let i = 0; i < images.length; i++) {
                                           const uri = await deployToIpfs(
                                             images[i],
-                                            () => {},
+                                            () => { },
                                             true
                                           );
 

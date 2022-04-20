@@ -17,6 +17,7 @@ export interface DappConfig {
   mode: string;
   network: NetworkWithRpc;
   apiKeys: ApiKeys;
+  dayZero: number;
 }
 
 export interface NetworkProviders {
@@ -52,12 +53,6 @@ if (
 }
 
 const allowedNetworks: NetworkInfo[] = [
-  // {
-  //   name: 'Hardhat Testnet',
-  //   chainId: 31337,
-  //   address: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
-  //   blockExplorer: "",
-  // },
   {
     name: 'Ropsten Testnet',
     chainId: 3,
@@ -77,18 +72,28 @@ const allowedNetworks: NetworkInfo[] = [
     blockExplorer: 'https://rinkeby-explorer.arbitrum.io',
   },
   {
-    name: 'Sokol Testnet (xxDAI)',
+    name: 'Sokol Testnet (xDai)',
     chainId: 77,
     address: '',
     blockExplorer: 'https://blockscout.com/poa/sokol',
   },
   {
-    name: 'Gnosis Chain (xxDAI)',
+    name: 'Gnosis Chain (xDai)',
     chainId: 100,
     address: '',
     blockExplorer: 'https://blockscout.com/xdai/mainnet',
   },
 ];
+
+// if in test environment - allow the hardhat test network.
+if (process.env.NODE_ENV === 'development') {
+  allowedNetworks.push({
+    name: 'Local Testnet',
+    chainId: 31337,
+    address: '',
+    blockExplorer: "",
+  })
+}
 
 const network = allowedNetworks.find(
   n => n.chainId === Number(process.env.REACT_APP_NETWORK_ID)
@@ -108,7 +113,8 @@ const config: DappConfig = {
   network,
   apiKeys: {
     web3Storage: process.env.REACT_APP_FILE_WEB3STORAGE_KEY
-  }
+  },
+  dayZero: 1645567342,
 };
 
 export const getDappMode = (): string => config.mode;
@@ -121,5 +127,7 @@ export const getApiKey = (name: string): string => {
   }
   return config.apiKeys[name];
 };
+
+export const getDayZero = (): number => config.dayZero;
 
 export default config;

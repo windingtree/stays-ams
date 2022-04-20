@@ -1,6 +1,6 @@
 import type { providers } from 'ethers';
 import type { StayToken } from 'stays-core';
-import type { IPFS } from '@windingtree/ipfs-apis';
+import type { Web3StorageApi } from '@windingtree/ipfs-apis';
 import { useState, useCallback, useEffect } from 'react';
 import { useContract } from './useContract';
 import Logger from '../utils/logger';
@@ -11,20 +11,21 @@ const logger = Logger('useMyTokens');
 export type UseMyTokensHook = [
   tokens: StayToken[],
   loading: boolean,
-  error: string | undefined
+  error?: string
 ];
 
 export type UseGetTokenHook = [
   token: StayToken | undefined,
   facilityOwner: string | undefined,
   loading: boolean,
-  error: string | undefined
+  error: string | undefined,
+  refresh: Function
 ];
 
 export const useMyTokens = (
-  provider: providers.JsonRpcProvider | undefined,
-  ipfsNode: IPFS | undefined,
-  account: string | undefined
+  provider?: providers.JsonRpcProvider,
+  ipfsNode?: Web3StorageApi,
+  account?: string
 ): UseMyTokensHook => {
   const [contract,, contractError] = useContract(provider, ipfsNode);
   const [tokens, setTokens] = useState<StayToken[]>([]);
@@ -82,11 +83,12 @@ export const useMyTokens = (
 };
 
 export const useGetToken = (
-  provider: providers.JsonRpcProvider | undefined,
-  ipfsNode: IPFS | undefined,
-  tokenId: string | undefined
+  provider?: providers.JsonRpcProvider,
+  ipfsNode?: Web3StorageApi,
+  tokenId?: string,
+  isProviderWithAddress = true
 ): UseGetTokenHook => {
-  const [contract,, contractError] = useContract(provider, ipfsNode);
+  const [contract,, contractError] = useContract(provider, ipfsNode, isProviderWithAddress);
   const [token, setToken] = useState<StayToken | undefined>();
   const [facilityOwner, setFacilityOwner] = useState<string | undefined>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -162,6 +164,7 @@ export const useGetToken = (
 
         setLoading(false);
       } catch (err) {
+        console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
         logger.error(err);
         const message = (err as Error).message || 'Unknown useGetToken error';
         setError(message);
@@ -169,6 +172,11 @@ export const useGetToken = (
       }
     },
     [contract]
+  );
+
+  const refresh = useCallback(
+    () => getToken(tokenId),
+    [getToken, tokenId]
   );
 
   useEffect(
@@ -186,5 +194,5 @@ export const useGetToken = (
     [getToken, tokenId]
   );
 
-  return [token, facilityOwner, loading, error];
+  return [token, facilityOwner, loading, error, refresh];
 };

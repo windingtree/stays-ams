@@ -7,12 +7,12 @@ import { SearchForm } from '../components/search/SearchForm';
 import styled from 'styled-components';
 
 export const GradientText = styled(Text)`
-  font-family: Inter;
-  font-size: 4em;
-  line-height: 1.2em;
+  font-size: 3em;
+  line-height: 1.36em;
   font-weight: 900;
   text-align: center;
-  background: linear-gradient(to right, #68bab7, #84e488, #be8747, #c5393f, #5312a8);
+  font-family: Inter;
+  background: linear-gradient(to right, #68bab7, #cc0033, #be8747, #c5393f, #5312a8);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 `;
@@ -21,29 +21,23 @@ export const Home = () => {
   const {
     isIpfsNodeConnecting,
     isBootstrapLoading,
-    bootstrapped,
-    getDate
+    bootstrapped
   } = useAppState();
 
   const isReady = useMemo(
-    () => !isIpfsNodeConnecting && !isBootstrapLoading && getDate !== undefined,
-    [isIpfsNodeConnecting, isBootstrapLoading, getDate]
+    () => !isIpfsNodeConnecting && !isBootstrapLoading,
+    [isIpfsNodeConnecting, isBootstrapLoading]
   );
 
   return (
     <PageWrapper>
-      <Box align='center' margin='large'>
-        <GradientText>Book Hotels On Gnosis Chain with up to 50% discount. Pay in xDai. Check-in with NFT.</GradientText>
+      <Box align='center' margin={{ bottom: 'large', top: 'large' }}>
+        <GradientText>Book Hotels On Gnosis Chain with up to 50% discount. Pay in xDai. Check-in with NFT. Stay&nbsp;for&nbsp;<a href="https://www.iamsterdam.com/en/see-and-do/whats-on/major-events-and-celebrations/kings-day">King's Day</a> (April 27).</GradientText>
       </Box>
 
-      <MessageBox type='info' show={isIpfsNodeConnecting || isBootstrapLoading}>
-        <Box direction='row'>
-          <Box>
-            🙀 Your Experience is Loading 🙀
-          </Box>
-          <Spinner />
-        </Box>
-      </MessageBox>
+      {(isIpfsNodeConnecting || isBootstrapLoading) &&
+        <Spinner color='accent-2' alignSelf='center' size='large' margin={{ top: 'large' }} />
+      }
 
       <MessageBox type='error' show={isReady && !!!bootstrapped}>
         <Text>

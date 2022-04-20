@@ -3,8 +3,8 @@ import { Box, TextInput, DateInput } from 'grommet';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect, useCallback } from 'react'
 import styled from 'styled-components';
-import { useAppState } from '../../store';
 import { WhiteButton } from '../buttons';
+import { getDate } from '../../utils/dates';
 
 export const Label = styled.div`
   @include g-font($g-fontsize-xs,$glider-color-text-labels,$g-fontweight-normal);
@@ -41,8 +41,8 @@ const dateFormat = new Intl.DateTimeFormat(undefined, {
 
 const today = DateTime.now().set({ hour: 12 });
 const tomorrow = today.plus({ days: 1 });
-const defaultStartDay = DateTime.fromISO('2022-04-17').set({ hour: 12 });
-const defaultEndDay = DateTime.fromISO('2022-04-25').set({ hour: 12 });
+const defaultStartDay = DateTime.fromISO('2022-04-22').set({ hour: 12 });
+const defaultEndDay = DateTime.fromISO('2022-04-28').set({ hour: 12 });
 
 const defaultStartDate = today.toMillis() > defaultStartDay.toMillis() ? today.toISO() : defaultStartDay.toISO()
 const defaultEndDate = tomorrow.toMillis() > defaultEndDay.toMillis() ? tomorrow.toISO() : defaultEndDay.toISO()
@@ -50,23 +50,22 @@ const defaultEndDate = tomorrow.toMillis() > defaultEndDay.toMillis() ? tomorrow
 export const SearchForm: React.FC<{
   startDay?: number | undefined,
   numberOfDays?: number | undefined,
-  initroomsNumber?: number | undefined,
-}> = ({ startDay, numberOfDays, initroomsNumber }) => {
+  initRoomsNumber?: number | undefined,
+}> = ({ startDay, numberOfDays, initRoomsNumber }) => {
   const navigate = useNavigate();
-  const { getDate } = useAppState();
   const [departureDate, setDepartureDate] = useState<string>(defaultStartDate);
   const [returnDate, setReturnDate] = useState<string>(defaultEndDate);
-  const [roomsNumber, setroomsNumber] = useState<number>(initroomsNumber ?? 1);
+  const [roomsNumber, setRoomsNumber] = useState<number>(initRoomsNumber ?? 1);
 
   useEffect(() => {
-    if (getDate !== undefined && !!startDay && !!numberOfDays) {
+    if (!!startDay && !!numberOfDays) {
       const departureDay = getDate(startDay);
       const returnDay = getDate(startDay + numberOfDays);
 
       setDepartureDate(departureDay.toISO());
       setReturnDate(returnDay.toISO());
     }
-  }, [getDate, startDay, numberOfDays]);
+  }, [startDay, numberOfDays]);
 
   const handleDateChange = ({ value }: { value: string[] }) => {
     const now = DateTime.now().set({ hour: 12 })
@@ -87,9 +86,6 @@ export const SearchForm: React.FC<{
 
   const handleSearch = useCallback(
     () => {
-      if (getDate === undefined) {
-        return () => {};
-      }
       const { startDay, numberOfDays } = parseDateToDays(
         getDate(0),
         DateTime.fromISO(departureDate),
@@ -102,7 +98,7 @@ export const SearchForm: React.FC<{
       ]);
       navigate(`/search?${query}`, { replace: true });
     },
-    [navigate, getDate, departureDate, returnDate, roomsNumber]
+    [navigate, departureDate, returnDate, roomsNumber]
   );
 
   return (
@@ -110,7 +106,7 @@ export const SearchForm: React.FC<{
       direction='row'
       align='end'
       justify='center'
-      margin={{ bottom: 'small' }}
+      margin={{ top: 'large', bottom: 'small' }}
     >
       <Box
         direction='column'
@@ -156,27 +152,15 @@ export const SearchForm: React.FC<{
             value={roomsNumber}
             type='number'
             min={1}
-            onSelect={({ suggestion }) => setroomsNumber(Number(suggestion))}
+            onSelect={({ suggestion }) => setRoomsNumber(Number(suggestion))}
             onChange={(event) => {
               const value = Number(event.target.value);
-              setroomsNumber(value !== 0 ? value : 1);
+              setRoomsNumber(value !== 0 ? value : 1);
             }}
           />
         </Box>
       </Box>
       <WhiteButton
-        // style={{
-        //   border: '1px solid rgba(227, 231, 236, 0.3)',
-        //   fontFamily: 'Inter',
-        //   fontStyle: 'normal',
-        //   fontWeight: 400,
-        //   color: '#fff',
-        //   fontSize: '1.25rem',
-        //   lineHeight: '1.5rem',
-        //   borderRadius: '.5rem',
-        //   alignSelf: 'end',
-        // }}
-        disabled={getDate === undefined}
         size='large'
         label='Search'
         onClick={() => handleSearch()}

@@ -33,7 +33,6 @@ import { validateLodgingFacilityData } from 'stays-data-models/dist/src/validato
 import { enumerators } from 'stays-data-models';
 import { centerEllipsis } from '../../utils/strings';
 import { useAppState } from '../../store';
-import { useWeb3StorageApi } from '../../hooks/useWeb3StorageApi';
 import { useContract } from './../../hooks/useContract';
 import { useWindowsDimension } from '../../hooks/useWindowsDimension';
 import { useGoToMessage } from '../../hooks/useGoToMessage';
@@ -388,7 +387,6 @@ export const FacilityProfileCard = () => {
     ownFacilitiesRefresh
   } = useAppState();
   const [contract, loadingContract] = useContract(provider, ipfsNode);
-  const web3Storage = useWeb3StorageApi(ipfsNode);
   const [profileValue, setProfileValue] = useState<Record<string, any>>(flattenObject(defaultFormValue));
   const [countries, setCountries] = useState<string[]>(defaultCountries);
   const [contactOpen, setContactOpen] = useState<boolean>(false);
@@ -410,8 +408,8 @@ export const FacilityProfileCard = () => {
   const [selectedFacilityProfile, setSelectedFacilityProfile] = useState<LodgingFacilityRaw | undefined>();
 
   const isLoading = useMemo<boolean>(
-    () => !!!web3Storage || loadingContract,
-    [web3Storage, loadingContract]
+    () => !!!ipfsNode || loadingContract,
+    [ipfsNode, loadingContract]
   );
 
   useEffect(
@@ -484,15 +482,15 @@ export const FacilityProfileCard = () => {
   const deployToIpfs = useCallback(
     async (
       file: File,
-      loadingSetter = () => {},
+      loadingSetter = () => { },
       isImage = false
     ) => {
       try {
-        if (!web3Storage) {
+        if (!ipfsNode) {
           throw new Error("IPFS API not ready yet");
         }
         loadingSetter(true);
-        const { cid } = await web3Storage.add(file);
+        const cid = await ipfsNode.add(file);
         const uri = isImage
           ? `https://${cid}.ipfs.dweb.link`
           : `ipfs://${cid}`;
@@ -507,7 +505,7 @@ export const FacilityProfileCard = () => {
         return null;
       }
     },
-    [web3Storage]
+    [ipfsNode]
   );
 
   const handleSubmit = useCallback(
@@ -1262,7 +1260,7 @@ export const FacilityProfileCard = () => {
                                 SELECT ROOM IMAGES
                               </Text>
                             </CardHeader>
-                            <CardBody style={{ padding: 20 }}>
+                            <CardBody style={{ padding: 20, maxHeight: '80vh', overflow: 'scroll' }}>
                               <form>
                                 <FormField htmlFor="fileInput">
                                   <FileInput
@@ -1364,10 +1362,10 @@ export const FacilityProfileCard = () => {
                                         const initialImagesCount = unFlattenProfile?.media?.images?.length || 0;
                                         logger.debug('initialImagesCount', initialImagesCount);
 
-                                        for (let i=0; i < images.length; i++) {
+                                        for (let i = 0; i < images.length; i++) {
                                           const uri = await deployToIpfs(
                                             images[i],
-                                            () => {},
+                                            () => { },
                                             true
                                           );
 

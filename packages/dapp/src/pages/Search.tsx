@@ -10,6 +10,10 @@ import { MessageBox } from '../components/MessageBox';
 import { GradientText } from './Home';
 import styled from 'styled-components';
 import { SpaceRecord } from '../store/actions';
+import Logger from '../utils/logger';
+
+// Initialize logger
+const logger = Logger('Search');
 
 export const WhiteParagraph = styled(Text)`
   text-align: start;
@@ -59,7 +63,6 @@ export const Search = () => {
 
   const { searchSpaces } = useAppState();
   const { search } = useLocation();
-  const [afterLoading, setAfterLoading] = useState(false);
 
   const { startDay, numberOfDays, roomsNumber } = useMemo(() => {
     const params = new URLSearchParams(search);
@@ -73,55 +76,66 @@ export const Search = () => {
     }
   }, [search])
 
-  const [loading, error] = useSpaceSearch(startDay, numberOfDays, roomsNumber);
+  const [loading, noResults, error] = useSpaceSearch(startDay, numberOfDays, roomsNumber);
+  const [searchActivated, setSearchActivated] = useState<boolean>(false);
+  const [afterLoading, setAfterLoading] = useState<boolean>(false);
+  const [filteredSpaces, setFilteredSpaces] = useState<SpaceRecord[]>([]);
 
   useEffect(
     () => {
       if (!loading) {
-        setTimeout(() => setAfterLoading(false), 3000);
+        setTimeout(() => setAfterLoading(false), 1000);
       } else {
+        setSearchActivated(true);
         setAfterLoading(true);
       }
     },
     [loading]
   );
 
-  console.log("Search :: end")
-  const filteredSpaces = useMemo(() => {
-    if (
-      (!searchSpaces || !searchSpaces.length) ||
-      (roomsNumber === 0)
-    ) {
-      return [];
-    }
+  useEffect(
+    () => {
+      if (
+        (!searchSpaces || !searchSpaces.length) ||
+        (roomsNumber === 0)
+      ) {
+        logger.debug('Reset filtered spaces: search result is empty');
+        setFilteredSpaces([]);
+        return;
+      }
 
-    console.log('@@@', searchSpaces);
+      const filtered = searchSpaces.filter(
+        (space: SpaceRecord) => space.available &&
+          space.available >= roomsNumber &&
+          checkSpaceDatesRestrictions(space.id, startDay, numberOfDays)
+      );
+      logger.debug('Filtered spaces', filtered);
 
-    return searchSpaces.filter(
-      (space: SpaceRecord) => space.available &&
-        space.available >= roomsNumber &&
-        checkSpaceDatesRestrictions(space.id, startDay, numberOfDays)
-    );
-  }, [searchSpaces, startDay, numberOfDays, roomsNumber])
+      setFilteredSpaces(filtered);
+
+      return () => {
+        logger.debug('Reset filtered spaces: dependencies changed');
+        setFilteredSpaces([]);
+      };
+    },
+    [searchSpaces, startDay, numberOfDays, roomsNumber]
+  );
 
   return (
     <PageWrapper>
 
       <Box align='center' margin={{ bottom: 'small' }}>
+        <GradientText>Amsterdam Devconnect</GradientText>
         <Text size='xxlarge'>
-          April 17-25 2022
+          April 17&ndash;28
         </Text>
-        <Text size='large'>
-          Devconnect APRIL 17-25, 2022 Amsterdam, The Netherlands
-        </Text>
-        <GradientText>Amsterdam</GradientText>
       </Box>
 
       <Box margin={{ bottom: 'medium' }}>
         <SearchForm
           startDay={startDay}
           numberOfDays={numberOfDays}
-          initroomsNumber={roomsNumber}
+          initRoomsNumber={roomsNumber}
         />
       </Box>
 
@@ -133,11 +147,15 @@ export const Search = () => {
         </Box>
       </MessageBox>
 
-      {afterLoading ? <Spinner color='accent-1' alignSelf='center' size='large' /> : null}
+      {loading || afterLoading ? <Spinner color='accent-1' alignSelf='center' size='large' /> : null}
 
-      <MessageBox type='info' show={!afterLoading && filteredSpaces.length === 0}>
+      <MessageBox type='info' show={
+        searchActivated &&
+        !afterLoading &&
+        (noResults || filteredSpaces.length === 0)
+      }>
         <Text>
-          No spaces found according your criteria
+          No Rooms Found
         </Text>
       </MessageBox>
 

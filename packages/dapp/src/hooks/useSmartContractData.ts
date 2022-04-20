@@ -1,7 +1,7 @@
 import type { providers } from 'ethers';
 import type { LodgingFacility, Space } from 'stays-data-models';
-import type { IPFS } from '@windingtree/ipfs-apis';
 import type { Contract } from 'stays-core';
+import type { Web3StorageApi } from '@windingtree/ipfs-apis';
 import { useState, useEffect, useCallback } from 'react';
 import { Dispatch } from '../store';
 import { useContract } from './useContract';
@@ -13,7 +13,7 @@ import Logger from '../utils/logger';
 const logger = Logger('useSmartContractData');
 
 export type UseSmartContractDataHook = [
-  error: string | undefined
+  error?: string
 ];
 
 const loadSpace = async (contract: Contract, spaceId: string): Promise<Space | null> => {
@@ -70,9 +70,9 @@ const loadLodgingFacilities = async (
 // useSmartContractData react hook
 export const useSmartContractData = (
   dispatch: Dispatch,
-  provider: providers.JsonRpcProvider | undefined,
-  ipfsNode: IPFS | undefined,
-  bootstrapped: number | undefined
+  provider?: providers.JsonRpcProvider,
+  ipfsNode?: Web3StorageApi,
+  bootstrapped?: number
 ): UseSmartContractDataHook => {
   const [contract,, contractError] = useContract(provider, ipfsNode, false);
   const [error, setError] = useState<string | undefined>(undefined);
@@ -88,7 +88,7 @@ export const useSmartContractData = (
       const lodgingFacilities = await loadLodgingFacilities(contract, fromBlock);
       logger.debug(`Facilities from block ${fromBlock ? fromBlock : 0}`, lodgingFacilities);
 
-      if (fromBlock !== undefined && lodgingFacilities.length === 0) {
+      if (lodgingFacilities.length === 0) {
         return;
       }
 
@@ -186,7 +186,7 @@ export const useSmartContractData = (
   usePoller(
     getFacilitiesUpdates,
     !!contract,
-    300000, // 5min @todo Move interval configuration to the Dapp config
+    100000,
     'getFacilitiesUpdates'
   );
 

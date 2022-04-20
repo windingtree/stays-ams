@@ -87,22 +87,10 @@ export const mainReducer = (state: State, action: Action): State => {
           ...state,
           bootstrappedContract: action.payload
         };
-      case 'SET_IPFS_NODE_CONNECTING':
-        return {
-          ...state,
-          isIpfsNodeConnecting: action.payload
-        };
       case 'SET_IPFS_NODE':
         return {
           ...state,
-          ipfsNode: action.payload.ipfsNode,
-          startIpfsNode: action.payload.startIpfsNode,
-          stopIpfsNode: action.payload.stopIpfsNode
-        };
-      case 'SET_GET_DATE':
-        return {
-          ...state,
-          getDate: action.payload
+          ipfsNode: action.payload
         };
       case 'ERROR_ADD':
         return {
@@ -134,13 +122,10 @@ export const mainReducer = (state: State, action: Action): State => {
 const initialState: State = {
   isConnecting: false,
   isRightNetwork: true,
-  isIpfsNodeConnecting: false,
   signIn: () => { },
   signOut: () => { },
   errors: [],
   themeMode: ThemeMode.light,
-  startIpfsNode: () => { },
-  stopIpfsNode: () => { },
   isBootstrapLoading: false,
   lodgingFacilities: [],
   searchSpaces: [],

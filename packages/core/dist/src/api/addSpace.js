@@ -18,7 +18,7 @@ const addSpace = (contract, web3Storage, profileData, lodgingFacilityId, capacit
     var _a, _b;
     const profileDataFile = ipfs_apis_1.utils.obj2File(profileData, `space_${org_id_utils_1.uid.simpleUid()}.json`);
     const ipfsCid = yield web3Storage.add(profileDataFile);
-    const dataURI = `ipfs://${ipfsCid.cid}`;
+    const dataURI = `ipfs://${ipfsCid}`;
     overrides = overrides ? overrides : {};
     const receipt = yield (0, sendHelper_1.sendHelper)(contract, 'addSpace', [
         lodgingFacilityId,
