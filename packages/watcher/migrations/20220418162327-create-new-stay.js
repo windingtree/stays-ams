@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('NewStays', {
+    await queryInterface.createTable('Stays', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -22,7 +22,7 @@ module.exports = {
         type: Sequelize.STRING,
         index: '',
       },
-      guest_count: {
+      quantity: {
         type: Sequelize.NUMBER
       },
       start_date: {
@@ -44,11 +44,11 @@ module.exports = {
         type: Sequelize.DATE
       }
     })
-      .then(() => queryInterface.addIndex('NewStays', ['status']))
-      .then(() => queryInterface.addIndex('NewStays', ['token_id']))
+      .then(() => queryInterface.addIndex('Stays', ['status']))
+      .then(() => queryInterface.addIndex('Stays', ['token_id']))
     ;
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('NewStays');
+    await queryInterface.dropTable('Stays');
   }
 };

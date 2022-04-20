@@ -1,19 +1,18 @@
 import {TokenEntity} from "../types";
 import {StaysRepositoryInterface} from "./interfaces/StaysRepositoryInterface";
-import {DataTypes} from "sequelize";
+const Stay = require('../../models/stay');
 
 const {sequelize} = require('../../models/index')
-const NewStay = require('../../models/newstay');
 
 export default class implements StaysRepositoryInterface {
-  private model: any;
+  private stayModel: typeof Stay;
 
   constructor() {
-    this.model = NewStay(sequelize, DataTypes)
+    this.stayModel = Stay(sequelize);
   }
 
-  async getUnprocessed(): Promise<Array<{}>> { //todo replace {} to model
-    return await this.model.findAll(
+  async getUnprocessed(): Promise<Array<typeof Stay>> { //todo replace {} to model
+    return await this.stayModel.findAll(
       {
         where: {
           status: 0
@@ -24,7 +23,7 @@ export default class implements StaysRepositoryInterface {
 
   async store(entities: TokenEntity[]) {
     const mappedEntities = this.mapEntity(entities);
-    await this.model.bulkCreate(mappedEntities)
+    await this.stayModel.bulkCreate(mappedEntities)
 
     return true;
   }
@@ -36,7 +35,7 @@ export default class implements StaysRepositoryInterface {
         space_id: entity.spaceId,
         token_id: entity.tokenId,
         email: entity.facility?.contact.email,
-        guest_count: entity.quantity,
+        quantity: entity.quantity,
         status: 0,
         start_date: entity.startDayParsed,
         end_date: entity.endDayParsed

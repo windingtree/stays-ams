@@ -1,5 +1,6 @@
 import {Contract, StayToken} from "stays-core";
 import {TokenEntity} from "../types";
+import BlockRepository from "../repositories/BlockRepository";
 
 export default class StayEntityService {
   protected contract;
@@ -15,11 +16,12 @@ export default class StayEntityService {
     await this.getTokens();
     await this.makeTokenEntities();
     await this.fillNeededFacilitiesAndSpaces();
+    await this.setLastBlockNumber();
   }
 
   public async getTokens() {
-    //const blockNumber = await (new BlockRepository()).getLastBlockNumber();
-    const blockNumber = 0; //todo replace to ^ after tests
+    const blockNumber = await (new BlockRepository()).getLastBlockNumber();
+    //const blockNumber = 0; //todo replace to ^ after tests
     const contractIds = await this.contract.getNewBookingsTokenIds(blockNumber)
     let tokens = new Set<Promise<StayToken>>();
 
@@ -81,5 +83,10 @@ export default class StayEntityService {
 
   public getTokenEntities() {
     return this.tokenEntities;
+  }
+
+  private async setLastBlockNumber() {
+    const blockNumber = await this.contract.provider.getBlockNumber();
+    await (new BlockRepository()).store(blockNumber);
   }
 }

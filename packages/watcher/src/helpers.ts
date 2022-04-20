@@ -1,6 +1,8 @@
 import {Contract} from "stays-core";
-import {utils, Web3StorageApi} from '@windingtree/ipfs-apis';
-import {logger} from "ethers";
+import Logger from "./utils/logger";
+import { Web3StorageApi } from "@windingtree/ipfs-apis";
+const logger = Logger('poller');
+
 
 export async function makeContract() {
   const key = process.env.APP_FILE_WEB3STORAGE_KEY || '';
@@ -8,19 +10,18 @@ export async function makeContract() {
   const provider = process.env.APP_NETWORK_PROVIDER || '';
 
   try {
-    const ipfs = await utils.startIpfsGateway();
-    const web3Storage = new Web3StorageApi(key, ipfs)
+    const web3Storage = new Web3StorageApi(key)
     return new Contract(
       contractAddress,
       provider,
       web3Storage
     );
-  } catch (e) {
-    //todo errors logger
+  } catch (error) {
+    logger.error(error);
   }
 }
 
-export const Poller = (
+export const poller = (
   fn,
   enabled = true,
   interval = 5000,
@@ -42,7 +43,7 @@ export const Poller = (
       await fn();
     } catch (error) {
       failures++;
-      //logger.error(error);
+      logger.error(error);
     }
 
     if (failures < 100) {

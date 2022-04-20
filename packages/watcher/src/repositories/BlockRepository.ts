@@ -1,14 +1,13 @@
 import {BlockRepositoryInterface} from "./interfaces/BlockRepositoryInterface";
-import {DataTypes} from 'sequelize';
 
 const {sequelize} = require('../../models/index')
 const BlockNumber = require('../../models/blocknumber');
 
 export default class implements BlockRepositoryInterface {
-  private model: any;
+  private model: typeof BlockNumber;
 
   constructor() {
-    this.model = BlockNumber(sequelize, DataTypes)
+    this.model = BlockNumber(sequelize)
   }
 
   async getLastBlockNumber(): Promise<number> {

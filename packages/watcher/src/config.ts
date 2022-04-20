@@ -21,3 +21,15 @@ if (
 ) {
   throw new Error('APP_NETWORK_PROVIDER must be provided in the ENV');
 }
+if (
+  !process.env.SENDGRID_API_KEY ||
+  process.env.SENDGRID_API_KEY === ''
+) {
+  throw new Error('SENDGRID_API_KEY must be provided in the ENV');
+}
+if (
+  !process.env.SENDRID_EMAIL_FROM ||
+  process.env.SENDRID_EMAIL_FROM === ''
+) {
+  throw new Error('SENDRID_EMAIL_FROM must be provided in the ENV');
+}
