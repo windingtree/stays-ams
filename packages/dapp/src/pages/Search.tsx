@@ -1,5 +1,5 @@
 import { PageWrapper } from './PageWrapper';
-import { SearchForm } from '../components/search/SearchForm';
+// import { SearchForm } from '../components/search/SearchForm';
 import { Box, Spinner, Text } from 'grommet';
 import { SearchResultCard } from '../components/SearchResultCard';
 import { useAppState } from '../store';
@@ -132,11 +132,11 @@ export const Search = () => {
       </Box>
 
       <Box margin={{ bottom: 'medium' }}>
-        <SearchForm
+        {/* <SearchForm
           startDay={startDay}
           numberOfDays={numberOfDays}
           initRoomsNumber={roomsNumber}
-        />
+        /> */}
       </Box>
 
       <MessageBox type='error' show={!!error}>
