@@ -1,5 +1,5 @@
 'use strict';
-import { Model, InferAttributes, InferCreationAttributes, CreationOptional, DataTypes } from 'sequelize';
+import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
 
 module.exports = (sequelize) => {
   class Stay extends Model<InferAttributes<Stay>, InferCreationAttributes<Stay>> {
@@ -26,8 +26,8 @@ module.exports = (sequelize) => {
     email: {type: DataTypes.STRING},
     quantity: {type: DataTypes.STRING},
     status: {type: DataTypes.INTEGER},
-    start_date: DataTypes.DATE,
-    end_date: DataTypes.DATE
+    start_date: {type: DataTypes.DATE},
+    end_date: {type: DataTypes.DATE}
   }, {
     sequelize,
     modelName: 'Stay',

@@ -19,14 +19,14 @@ export default class EmailSenderService {
     const end_date = (new Date(stayModel.end_date)).toLocaleDateString("en-US", {timeZone: "UTC"});
 
     this.message = {
-      to: 'galeaf11@inbox.ru',
+      to: stayModel.email,
       from: process.env.SENDRID_EMAIL_FROM || '',
       subject: 'You have new Stay',
       html:
         `Rooms quantity: <strong>${quantity}</strong><br>` +
         `Start Date: <strong>${startDate}</strong><br>` +
         `End Date: <strong>${end_date}</strong><br>` +
-        `Check your accont`
+        `Check your account`
       ,
     };
   }

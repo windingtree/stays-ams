@@ -19,5 +19,10 @@
     "src",
     "test",
     "models"
+  ],
+  "exclude": [
+    "config",
+    "node_modules",
+    "migrations"
   ]
 }
