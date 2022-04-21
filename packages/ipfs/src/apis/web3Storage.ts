@@ -1,6 +1,5 @@
 import type { Web3Storage } from 'web3.storage';
-import { Web3Storage as w3s } from 'web3.storage/dist/bundle.esm.min.js';
-// import { Web3Storage as w3s } from 'web3.storage';
+import { Web3Storage as w3s } from 'web3.storage';
 
 export class Web3StorageApi {
   private w3Api: Web3Storage;

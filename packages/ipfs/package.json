@@ -2,7 +2,7 @@
   "name": "@windingtree/ipfs-apis",
   "version": "1.0.0",
   "description": "IPFS API",
-  "main": "dist/src/index.js",
+  "main": "dist/index.js",
   "types": "dist/src/index.d.ts",
   "files": [
     "dist"
@@ -11,8 +11,7 @@
   "scripts": {
     "lint": "npx eslint . --ext .ts",
     "lint:fix": "npx eslint . --ext .ts --fix",
-    "build": "rm -rf dist && npx tsc -p tsconfig-build.json",
-    "build:old": "rm -rf dist && npx tsc -p tsconfig-build.json && npx webpack --config webpack.config.js",
+    "build": "rm -rf dist && npx tsc -p tsconfig-build.json && npx webpack --config webpack.config.js",
     "test": "npx mocha",
     "test:karma": "npx karma start",
     "test:coverage": "npx nyc --reporter=html --reporter=lcov mocha"

@@ -8,7 +8,7 @@
     "target": "es5",
     "noEmit": false,
     "noEmitOnError": true,
-    "emitDeclarationOnly": false,
+    "emitDeclarationOnly": true,
     "declaration": true,
     "declarationMap": true,
     "incremental": true,
