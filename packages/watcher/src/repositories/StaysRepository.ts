@@ -34,7 +34,7 @@ export default class implements StaysRepositoryInterface {
         facility_id: entity.facilityId,
         space_id: entity.spaceId,
         token_id: entity.tokenId,
-        email: entity.facility?.contact.email,
+        email: entity.facility?.contact?.email,
         quantity: entity.quantity,
         status: 0,
         start_date: entity.startDayParsed,
