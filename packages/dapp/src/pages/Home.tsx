@@ -3,7 +3,7 @@ import { Box, Spinner, Text } from 'grommet';
 import { useAppState } from '../store';
 import { PageWrapper } from '../pages/PageWrapper';
 import { MessageBox } from '../components/MessageBox';
-import { SearchForm } from '../components/search/SearchForm';
+// import { SearchForm } from '../components/search/SearchForm';
 import styled from 'styled-components';
 
 export const GradientText = styled(Text)`
@@ -94,9 +94,9 @@ export const Home = () => {
         </Text>
       </MessageBox>
 
-      {isReady && !!bootstrapped &&
-        <SearchForm />
-      }
+      {/*{isReady && !!bootstrapped &&*/}
+      {/*  <SearchForm />*/}
+      {/*}*/}
     </PageWrapper>
   );
 };
