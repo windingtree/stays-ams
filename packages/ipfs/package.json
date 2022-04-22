@@ -32,16 +32,14 @@
   },
   "browserslist": {
     "production": [
-      "chrome >= 67",
-      "edge >= 79",
-      "firefox >= 68",
-      "opera >= 54",
-      "safari >= 14"
+      "last 2 chrome version",
+      "last 2 firefox version",
+      "last 2 safari version"
     ],
     "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
+      "last 2 chrome version",
+      "last 2 firefox version",
+      "last 2 safari version"
     ]
   },
   "dependencies": {
@@ -67,7 +65,7 @@
     "chai": "4.3.6",
     "chai-as-promised": "7.1.1",
     "eslint": "8.13.0",
-    "karma": "6.3.18",
+    "karma": "6.3.19",
     "karma-chai": "0.1.0",
     "karma-chrome-launcher": "3.1.1",
     "karma-firefox-launcher": "2.1.2",
@@ -81,6 +79,8 @@
     "webpack": "5.72.0",
     "webpack-cli": "4.9.2",
     "@babel/preset-typescript": "7.16.7",
-    "babel-loader": "8.2.4"
+    "@babel/plugin-transform-runtime": "7.17.0",
+    "@babel/preset-env": "7.16.11",
+    "webpack-node-externals": "3.0.0"
   }
 }

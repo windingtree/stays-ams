@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable no-undef */
 const path = require('path');
+const nodeExternals = require('webpack-node-externals');
 
 module.exports = {
-  mode: 'production',
+  mode: 'development',
   entry: './src/index.ts',
   devtool: 'source-map',
   output: {
@@ -42,4 +43,9 @@ module.exports = {
       // },
     ]
   },
+  externals: [
+    nodeExternals({
+      allowlist: ['node-fetch']
+    })
+  ],
 };
