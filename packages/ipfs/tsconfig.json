@@ -5,7 +5,7 @@
     "outDir": "dist",
     "allowJs": true,
     "checkJs": true,
-    "target": "es6",
+    "target": "es5",
     "noEmit": false,
     "noEmitOnError": true,
     "emitDeclarationOnly": true,
@@ -34,11 +34,11 @@
   },
   "include": [
     "src",
-    "test",
-    "temp"
+    "test"
   ],
   "exclude": [
     "dist",
+    "temp",
     "node_modules"
   ]
 }

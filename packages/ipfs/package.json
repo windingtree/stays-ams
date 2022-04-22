@@ -32,14 +32,16 @@
   },
   "browserslist": {
     "production": [
-      "last 2 chrome version",
-      "last 2 firefox version",
-      "last 2 safari version"
+      "chrome >= 67",
+      "edge >= 79",
+      "firefox >= 68",
+      "opera >= 54",
+      "safari >= 14"
     ],
     "development": [
-      "last 2 chrome version",
-      "last 2 firefox version",
-      "last 2 safari version"
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
     ]
   },
   "dependencies": {
@@ -80,6 +82,7 @@
     "webpack-cli": "4.9.2",
     "@babel/preset-typescript": "7.16.7",
     "@babel/plugin-transform-runtime": "7.17.0",
+    "babel-loader": "8.2.5",
     "@babel/preset-env": "7.16.11",
     "webpack-node-externals": "3.0.0"
   }

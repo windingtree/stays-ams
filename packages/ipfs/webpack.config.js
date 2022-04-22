@@ -3,17 +3,10 @@
 const path = require('path');
 const nodeExternals = require('webpack-node-externals');
 
-module.exports = {
-  mode: 'development',
+const baseConfig = {
+  mode: 'production',
   entry: './src/index.ts',
   devtool: 'source-map',
-  output: {
-    filename: 'index.js',
-    path: path.resolve(__dirname, 'dist'),
-    library: {
-      type: 'commonjs'
-    },
-  },
   resolve: {
     extensions: ['.ts', '.js'],
   },
@@ -31,21 +24,40 @@ module.exports = {
           },
         },
       },
-      // {
-      //   test: /\.ts?$/,
-      //   use: {
-      //     loader: 'ts-loader',
-      //     options: {
-      //       configFile: path.resolve(__dirname, './tsconfig-build.json'),
-      //     }
-      //   },
-      //   exclude: /node_modules/,
-      // },
     ]
+  }
+};
+
+const nodeBundle = {
+  ...baseConfig,
+  output: {
+    filename: 'index.node.js',
+    path: path.resolve(__dirname, 'dist'),
+    library: {
+      type: 'commonjs'
+    },
   },
+  target: 'node',
+  externalsPresets: { node: true },
   externals: [
     nodeExternals({
       allowlist: ['node-fetch']
     })
   ],
 };
+
+const browserBundle = {
+  ...baseConfig,
+  output: {
+    filename: 'index.js',
+    path: path.resolve(__dirname, 'dist'),
+    library: {
+      type: 'commonjs'
+    },
+  },
+};
+
+module.exports = [
+  nodeBundle,
+  browserBundle
+];
