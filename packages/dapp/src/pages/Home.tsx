@@ -28,6 +28,14 @@ export const CustomText = styled(Text)`
   // -webkit-text-fill-color: transparent;
 `;
 
+export const CustomLink = styled(Text)`
+  font-size: 1.5em;
+  line-height: 1.36em;
+  font-weight: 600;
+  text-align: center;
+  font-family: Arial;
+`;
+
 export const Home = () => {
   const {
     isIpfsNodeConnecting,
@@ -39,6 +47,13 @@ export const Home = () => {
     () => !isIpfsNodeConnecting && !isBootstrapLoading,
     [isIpfsNodeConnecting, isBootstrapLoading]
   );
+
+  const futureConferences = [
+    { name: 'Prague', link: 'https://utxo.cz/', when: '4-5 June' },
+    { name: 'Barcelona', link: 'https://eblockchainconvention.com/', when: '26-28 June' },
+    { name: 'Paris', link: 'https://metaverse-summit.org/', when: '16-17 July' },
+    { name: 'Bogota', link: 'https://devcon.org/en/#road-to-devcon', when: '11-14 October' },
+  ];
 
   return (
     <PageWrapper>
@@ -55,6 +70,18 @@ export const Home = () => {
         <GradientText>
           Stay in touch for the upcoming events👇
         </GradientText>
+        <div>
+          <ul>
+            {futureConferences.map((conf) => (
+              <li>
+                <CustomLink>
+                  <a href={conf.link}>{conf.name}</a>
+                  [{conf.when}]
+                </CustomLink>
+              </li>
+            ))}
+          </ul>
+        </div>
       </Box>
 
       {(isIpfsNodeConnecting || isBootstrapLoading) &&
