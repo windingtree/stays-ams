@@ -49,9 +49,9 @@ export const Home = () => {
   );
 
   const futureConferences = [
-    { name: 'Prague', link: 'https://utxo.cz/', when: '4-5 June' },
-    { name: 'Barcelona', link: 'https://eblockchainconvention.com/', when: '26-28 June' },
-    { name: 'Paris', link: 'https://metaverse-summit.org/', when: '16-17 July' },
+    { name: 'Prague', link: 'https://ethprague.com/', when: '10-12 June' },
+    { name: 'Barcelona', link: 'https://ethbarcelona.com/', when: '6-7 July' },
+    { name: 'Paris', link: 'https://ethcc.io/', when: '19-21 July' },
     { name: 'Bogota', link: 'https://devcon.org/en/#road-to-devcon', when: '11-14 October' },
   ];
 
