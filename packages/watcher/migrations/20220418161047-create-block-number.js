@@ -9,7 +9,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       block_number: {
-        type: Sequelize.BIGINT
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,

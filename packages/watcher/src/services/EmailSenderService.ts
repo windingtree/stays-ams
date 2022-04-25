@@ -1,18 +1,17 @@
 import sgMail from "@sendgrid/mail";
-
-const Stay = require('../../models/stay');
+import {StayInit} from '../../models/stay';
 
 export default class EmailSenderService {
   private fromEmail: string;
   private message: { subject: string; from: string; html: string; to: string };
-  private stayModel: typeof Stay;
+  private stayModel: typeof StayInit;
 
   constructor() {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY || '');
     this.fromEmail = process.env.SENDRID_EMAIL_FROM || '';
   }
 
-  public setMessage(stayModel: typeof Stay) {
+  public setMessage(stayModel: typeof StayInit) {
     this.stayModel = stayModel;
     const quantity = stayModel.quantity;
     const startDate = (new Date(stayModel.start_date)).toLocaleDateString("en-US", {timeZone: "UTC"});

@@ -3,7 +3,7 @@ import {TokenEntity} from "../types";
 import BlockRepository from "../repositories/BlockRepository";
 
 export default class StayEntityService {
-  protected contract;
+  protected contract: Contract;
   protected dayZero = new Date(1645567342 * 1000); //date from smart contract (getZeroDay)
   private tokens: Set<Promise<StayToken>>;
   private tokenEntities: TokenEntity[];

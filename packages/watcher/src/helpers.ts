@@ -23,7 +23,6 @@ export async function makeContract() {
 
 export const poller = (
   fn,
-  enabled = true,
   interval = 5000,
   pollerName?: string
 ) => {

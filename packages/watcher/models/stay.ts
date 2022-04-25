@@ -1,19 +1,20 @@
 'use strict';
-import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
+import {CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model} from 'sequelize';
 
-module.exports = (sequelize) => {
-  class Stay extends Model<InferAttributes<Stay>, InferCreationAttributes<Stay>> {
-    declare id: CreationOptional<number>
-    declare facility_id: string
-    declare space_id: string
-    declare token_id: string
-    declare email: string
-    declare quantity: number
-    declare status: number
-    declare start_date: Date
-    declare end_date: Date
-  }
+export class Stay extends Model<InferAttributes<Stay>, InferCreationAttributes<Stay>> {
+  declare id: CreationOptional<number>
+  declare facility_id: string
+  declare space_id: string
+  declare token_id: string
+  declare email: string
+  declare quantity: number
+  declare status: number
+  declare start_date: Date
+  declare end_date: Date
+}
 
+export let StayInit;
+export default StayInit = (sequelize): typeof Stay => {
   Stay.init({
     id: {
       type: DataTypes.INTEGER,

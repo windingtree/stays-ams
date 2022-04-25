@@ -1,13 +1,13 @@
 import {BlockRepositoryInterface} from "./interfaces/BlockRepositoryInterface";
+import {sequelize} from '../../models';
 
-const {sequelize} = require('../../models/index')
-const BlockNumber = require('../../models/blocknumber');
+import {BlockNumber, BlockNumberInit} from '../../models/blocknumber';
 
 export default class implements BlockRepositoryInterface {
   private model: typeof BlockNumber;
 
   constructor() {
-    this.model = BlockNumber(sequelize)
+    this.model = BlockNumberInit(sequelize)
   }
 
   async getLastBlockNumber(): Promise<number> {
@@ -16,6 +16,10 @@ export default class implements BlockRepositoryInterface {
         ['id', 'desc']
       ]
     });
+
+    if (!lastModel) {
+      throw new Error('model is empty');
+    }
 
     return lastModel.block_number;
   }

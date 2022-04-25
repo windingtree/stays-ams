@@ -13,5 +13,5 @@ const worker = async () => {
   await stay.store(books.getTokenEntities());
   await new StaysWorkerService();
 }
-poller(worker, true, 60 * 1000)
+poller(worker, 60 * 1000)
 

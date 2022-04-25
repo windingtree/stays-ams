@@ -1,6 +1,6 @@
 import StaysRepository from "../repositories/StaysRepository";
 import EmailSenderService from "./EmailSenderService";
-const Stay = require('../../models/stay');
+import {Stay} from '../../models/stay';
 
 export default class StaysWorkerService {
   private elements: Array<typeof Stay>;
