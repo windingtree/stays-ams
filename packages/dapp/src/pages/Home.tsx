@@ -28,6 +28,14 @@ export const CustomText = styled(Text)`
   // -webkit-text-fill-color: transparent;
 `;
 
+export const CustomLink = styled(Text)`
+  font-size: 1.5em;
+  line-height: 1.36em;
+  font-weight: 600;
+  text-align: center;
+  font-family: Arial;
+`;
+
 export const Home = () => {
   const {
     isIpfsNodeConnecting,
@@ -39,6 +47,13 @@ export const Home = () => {
     () => !isIpfsNodeConnecting && !isBootstrapLoading,
     [isIpfsNodeConnecting, isBootstrapLoading]
   );
+
+  const futureConferences = [
+    { name: 'Prague', link: 'https://ethprague.com/', when: '10-12 June' },
+    { name: 'Barcelona', link: 'https://ethbarcelona.com/', when: '6-7 July' },
+    { name: 'Paris', link: 'https://ethcc.io/', when: '19-21 July' },
+    { name: 'Bogota', link: 'https://devcon.org/en/#road-to-devcon', when: '11-14 October' },
+  ];
 
   return (
     <PageWrapper>
@@ -55,6 +70,18 @@ export const Home = () => {
         <GradientText>
           Stay in touch for the upcoming events👇
         </GradientText>
+        <div>
+          <ul>
+            {futureConferences.map((conf) => (
+              <li>
+                <CustomLink>
+                  <a href={conf.link}>{conf.name}</a>
+                  [{conf.when}]
+                </CustomLink>
+              </li>
+            ))}
+          </ul>
+        </div>
       </Box>
 
       {(isIpfsNodeConnecting || isBootstrapLoading) &&
@@ -67,9 +94,9 @@ export const Home = () => {
         </Text>
       </MessageBox>
 
-      {/* {isReady && !!bootstrapped &&
-        <SearchForm />
-      } */}
+      {/*{isReady && !!bootstrapped &&*/}
+      {/*  <SearchForm />*/}
+      {/*}*/}
     </PageWrapper>
   );
 };

@@ -33,12 +33,12 @@
     "resolveJsonModule": true
   },
   "include": [
-    "dist",
     "src",
-    "test",
-    "temp"
+    "test"
   ],
   "exclude": [
+    "dist",
+    "temp",
     "node_modules"
   ]
 }

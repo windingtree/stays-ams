@@ -131,13 +131,13 @@ export const Search = () => {
         </Text>
       </Box>
 
-      <Box margin={{ bottom: 'medium' }}>
-        {/* <SearchForm
-          startDay={startDay}
-          numberOfDays={numberOfDays}
-          initRoomsNumber={roomsNumber}
-        /> */}
-      </Box>
+      {/*<Box margin={{ bottom: 'medium' }}>*/}
+      {/*  <SearchForm*/}
+      {/*    startDay={startDay}*/}
+      {/*    numberOfDays={numberOfDays}*/}
+      {/*    initRoomsNumber={roomsNumber}*/}
+      {/*  />*/}
+      {/*</Box>*/}
 
       <MessageBox type='error' show={!!error}>
         <Box direction='row'>
