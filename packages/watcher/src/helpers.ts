@@ -1,6 +1,6 @@
-import {Contract} from "stays-core";
+import { Contract } from "stays-core";
 import Logger from "./utils/logger";
-import { Web3StorageApi } from "@windingtree/ipfs-apis";
+import { Web3StorageApi } from "@windingtree/ipfs-apis/dist/index.node";
 const logger = Logger('poller');
 
 

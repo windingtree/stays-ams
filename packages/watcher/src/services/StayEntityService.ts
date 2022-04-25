@@ -22,7 +22,7 @@ export default class StayEntityService {
   public async getTokens() {
     const blockNumber = await (new BlockRepository()).getLastBlockNumber();
     const contractIds = await this.contract.getNewBookingsTokenIds(blockNumber)
-    let tokens = new Set<Promise<StayToken>>();
+    const tokens = new Set<Promise<StayToken>>();
 
     contractIds.map(v => {
       tokens.add(this.contract.getToken(v.toString()));
@@ -32,9 +32,9 @@ export default class StayEntityService {
   }
 
   public async makeTokenEntities() {
-    let tokenEntities = new Set<TokenEntity>();
-    let tokens = await Promise.all(this.tokens);
-    console.log(tokens);
+    const tokenEntities = new Set<TokenEntity>();
+    const tokens = await Promise.all(this.tokens);
+
     tokens.map(t => {
       const startDay = t.data.attributes?.find(i => i.trait_type === 'startDay')?.value || '0';
       const numberOfDays = t.data.attributes?.find(i => i.trait_type === 'numberOfDays')?.value || '0';
