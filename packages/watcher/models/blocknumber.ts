@@ -7,7 +7,6 @@ export class BlockNumber extends Model<InferAttributes<BlockNumber>, InferCreati
   declare block_number: number
 }
 
-//export let BlockNumberInit;
 export const BlockNumberInit = (sequelize): typeof BlockNumber => {
   BlockNumber.init({
     id: {
