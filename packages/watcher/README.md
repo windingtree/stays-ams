@@ -1,4 +1,10 @@
 ## Installation
+
+### env
+- cp .env.example .env
+- Fill the fields in .env
+
+
 ### Database requirements
 sqlite `^3.35.5`
 
@@ -9,6 +15,3 @@ sqlite `^3.35.5`
 
 `npx ts-node src/index.ts` [run worker]
 
-### env
-- cp .env.example .env
-- Fill the fields in .env
