@@ -8,3 +8,7 @@ sqlite `^3.35.5`
 `npx sequelize-cli db:seed:all` [seeder]
 
 `npx ts-node src/index.ts` [run worker]
+
+### env
+- cp .env.example .env
+- Fill the fields in .env
