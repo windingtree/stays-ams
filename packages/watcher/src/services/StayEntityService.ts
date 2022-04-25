@@ -1,5 +1,5 @@
-import {Contract, StayToken} from "stays-core";
-import {TokenEntity} from "../types";
+import { Contract, StayToken } from "stays-core";
+import { TokenEntity } from "../types";
 import BlockRepository from "../repositories/BlockRepository";
 
 export default class StayEntityService {
@@ -21,7 +21,7 @@ export default class StayEntityService {
 
   public async getTokens() {
     const blockNumber = await (new BlockRepository()).getLastBlockNumber();
-    const contractIds = await this.contract.getNewBookingsTokenIds(blockNumber)
+    const contractIds = await this.contract.getNewBookingsTokenIds(blockNumber);
     const tokens = new Set<Promise<StayToken>>();
 
     contractIds.map(v => {
@@ -69,9 +69,9 @@ export default class StayEntityService {
     const spaces = await Promise.all(spaceIds.map(id => this.contract.getSpace(id)));
 
     this.tokenEntities.map(t => {
-      t.facility = facilities.find(i => i?.contractData.lodgingFacilityId === t.facilityId) || undefined
-      t.space = spaces.find(i => i?.contractData.spaceId === t.spaceId) || undefined
-    })
+      t.facility = facilities.find(i => i?.contractData.lodgingFacilityId === t.facilityId) || undefined;
+      t.space = spaces.find(i => i?.contractData.spaceId === t.spaceId) || undefined;
+    });
   }
 
   private addDaysAndParse(days: number, moreDays = 0): Date {

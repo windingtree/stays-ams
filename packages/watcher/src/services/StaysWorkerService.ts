@@ -1,21 +1,21 @@
 import StaysRepository from "../repositories/StaysRepository";
 import EmailSenderService from "./EmailSenderService";
-import {Stay} from '../../models/stay';
+import { Stay } from '../../models/stay';
 
 export default class StaysWorkerService {
   private elements: Array<typeof Stay>;
 
   constructor() {
-    this.process()
+    this.process();
   }
 
   private async process() {
-    await this.getUnprocessedStays()
-    await this.sendEmails()
+    await this.getUnprocessedStays();
+    await this.sendEmails();
   }
 
   private async getUnprocessedStays() {
-    const repo = new StaysRepository()
+    const repo = new StaysRepository();
     this.elements = await repo.getUnprocessed();
   }
 

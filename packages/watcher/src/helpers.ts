@@ -1,6 +1,7 @@
 import { Contract } from "stays-core";
 import Logger from "./utils/logger";
 import { Web3StorageApi } from "@windingtree/ipfs-apis/dist/index.node";
+
 const logger = Logger('poller');
 
 
@@ -10,7 +11,7 @@ export async function makeContract() {
   const provider = process.env.APP_NETWORK_PROVIDER || '';
 
   try {
-    const web3Storage = new Web3StorageApi(key)
+    const web3Storage = new Web3StorageApi(key);
     return new Contract(
       contractAddress,
       provider,
@@ -48,16 +49,16 @@ export const poller = (
     if (failures < 100) {
       setTimeout(poll, interval);
     } else {
-      logger.debug(`Too much errors in poller ${pollerName}. Disabled`);
+      logger.debug(`Too much errors in poller ${ pollerName }. Disabled`);
     }
-  }
+  };
 
   poll();
-  logger.debug(`Poller ${pollerName} started`);
+  logger.debug(`Poller ${ pollerName } started`);
 
   return () => {
     disabled = true;
     failures = 0;
-    logger.debug(`Poller ${pollerName} stopped`);
+    logger.debug(`Poller ${ pollerName } stopped`);
   };
 };

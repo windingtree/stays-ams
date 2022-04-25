@@ -1,7 +1,7 @@
-import {TokenEntity} from "../types";
-import {StaysRepositoryInterface} from "./interfaces/StaysRepositoryInterface";
-import {Stay, StayInit} from '../../models/stay';
-import {sequelize} from '../../models';
+import { TokenEntity } from "../types";
+import { StaysRepositoryInterface } from "./interfaces/StaysRepositoryInterface";
+import { Stay, StayInit } from '../../models/stay';
+import { sequelize } from '../../models';
 
 export default class implements StaysRepositoryInterface {
   private stayModel: typeof Stay;
@@ -22,7 +22,7 @@ export default class implements StaysRepositoryInterface {
 
   async store(entities: TokenEntity[]) {
     const mappedEntities = this.mapEntity(entities);
-    await this.stayModel.bulkCreate(mappedEntities)
+    await this.stayModel.bulkCreate(mappedEntities);
   }
 
   private mapEntity(entities: TokenEntity[]): Array<typeof StayInit> {
@@ -36,7 +36,7 @@ export default class implements StaysRepositoryInterface {
         status: 0,
         start_date: entity.startDayParsed,
         end_date: entity.endDayParsed
-      }
-    })
+      };
+    });
   }
 }

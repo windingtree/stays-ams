@@ -1,5 +1,5 @@
 import sgMail from "@sendgrid/mail";
-import {StayInit} from '../../models/stay';
+import { StayInit } from '../../models/stay';
 
 export default class EmailSenderService {
   private fromEmail: string;
@@ -14,17 +14,17 @@ export default class EmailSenderService {
   public setMessage(stayModel: typeof StayInit) {
     this.stayModel = stayModel;
     const quantity = stayModel.quantity;
-    const startDate = (new Date(stayModel.start_date)).toLocaleDateString("en-US", {timeZone: "UTC"});
-    const end_date = (new Date(stayModel.end_date)).toLocaleDateString("en-US", {timeZone: "UTC"});
+    const startDate = (new Date(stayModel.start_date)).toLocaleDateString("en-US", { timeZone: "UTC" });
+    const end_date = (new Date(stayModel.end_date)).toLocaleDateString("en-US", { timeZone: "UTC" });
 
     this.message = {
       to: stayModel.email,
       from: process.env.SENDRID_EMAIL_FROM || '',
       subject: 'You have new Stay',
       html:
-        `Rooms quantity: <strong>${quantity}</strong><br>` +
-        `Start Date: <strong>${startDate}</strong><br>` +
-        `End Date: <strong>${end_date}</strong><br>` +
+        `Rooms quantity: <strong>${ quantity }</strong><br>` +
+        `Start Date: <strong>${ startDate }</strong><br>` +
+        `End Date: <strong>${ end_date }</strong><br>` +
         `Check your account`
       ,
     };
@@ -32,10 +32,10 @@ export default class EmailSenderService {
 
   public async sendEmail() {
     await sgMail.send(this.message);
-    this.updateStayStatus()
+    this.updateStayStatus();
   }
 
   private updateStayStatus() {
-    this.stayModel.update({status: 1});
+    this.stayModel.update({ status: 1 });
   }
 }

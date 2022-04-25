@@ -1,10 +1,10 @@
 import('./config');
 import StaysRepository from "./repositories/StaysRepository";
 import StayEntityService from "./services/StayEntityService";
-import {makeContract, poller} from "./helpers";
+import { makeContract, poller } from "./helpers";
 import StaysWorkerService from "./services/StaysWorkerService";
 
-const stay = new StaysRepository()
+const stay = new StaysRepository();
 const worker = async () => {
   const contract = await makeContract();
   if (!contract) throw new Error();
@@ -12,6 +12,6 @@ const worker = async () => {
   await books.process();
   await stay.store(books.getTokenEntities());
   await new StaysWorkerService();
-}
+};
 poller(worker, 60 * 1000);
 
