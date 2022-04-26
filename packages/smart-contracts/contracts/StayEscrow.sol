@@ -29,7 +29,7 @@ abstract contract StayEscrow is IStayEscrow {
     emit Deposited(payer, amount, spaceId, tokenId);
   }
 
-  // Complete withdraw  - state "Checkout" only
+  // Complete withdraw
   function withdraw(
     address payer,
     address payable payee,
@@ -38,10 +38,6 @@ abstract contract StayEscrow is IStayEscrow {
   ) internal override(IStayEscrow) virtual {
     uint256 payment = _deposits[spaceId][payer][tokenId];
 
-    require(
-      _states[tokenId] == State.Checkout,
-      "Complete withdraw not allowed in this state"
-    );
     _deposits[spaceId][payer][tokenId] = 0;
     _states[tokenId] = State.Closed;
 
