@@ -1,10 +1,12 @@
-import { useMemo } from 'react';
+import {useMemo, useState} from 'react';
 import { Box, Spinner, Text } from 'grommet';
 import { useAppState } from '../store';
 import { PageWrapper } from '../pages/PageWrapper';
 import { MessageBox } from '../components/MessageBox';
-// import { SearchForm } from '../components/search/SearchForm';
+import { SearchForm } from '../components/search/SearchForm';
 import styled from 'styled-components';
+
+const SEARCH_FORM_DISABLED = process.env.REACT_APP_SEARCH_FORM_DISABLED;
 
 export const GradientText = styled(Text)`
   font-size: 2.9em;
@@ -42,6 +44,7 @@ export const Home = () => {
     isBootstrapLoading,
     bootstrapped
   } = useAppState();
+  const [searchFormDisabled] = useState<boolean>((SEARCH_FORM_DISABLED === 'true'));
 
   const isReady = useMemo(
     () => !isIpfsNodeConnecting && !isBootstrapLoading,
@@ -94,9 +97,12 @@ export const Home = () => {
         </Text>
       </MessageBox>
 
-      {/*{isReady && !!bootstrapped &&*/}
-      {/*  <SearchForm />*/}
-      {/*}*/}
+      {
+        !searchFormDisabled &&
+        isReady &&
+        !!bootstrapped &&
+        <SearchForm />
+      }
     </PageWrapper>
   );
 };
