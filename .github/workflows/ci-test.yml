@@ -37,6 +37,7 @@ jobs:
           NETWORK_ID: ${{ secrets.NETWORK_ID }}
           NETWORK_PROVIDER: ${{ secrets.NETWORK_PROVIDER }}
           CONTRACT_ADDRESS: ${{ secrets.CONTRACT_ADDRESS }}
+          SEARCH_FORM_DISABLED: ${{ secrets.SEARCH_FORM_DISABLED }}
         run: |
           rm -rf ./packages/dapp/.env
           touch ./packages/dapp/.env
@@ -51,6 +52,7 @@ jobs:
           REACT_APP_NETWORK_ID=$NETWORK_ID
           REACT_APP_NETWORK_PROVIDER=$NETWORK_PROVIDER
           REACT_APP_CONTRACT_ADDRESS=$CONTRACT_ADDRESS
+          REACT_APP_SEARCH_FORM_DISABLED=$SEARCH_FORM_DISABLED
           END
 
       - name: Build dapp

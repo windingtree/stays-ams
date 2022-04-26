@@ -12,7 +12,7 @@ import styled from 'styled-components';
 import { SpaceRecord } from '../store/actions';
 import Logger from '../utils/logger';
 
-const SEARCH_FORM_DISABLED = process.env.SEARCH_FORM_DISABLED;
+const SEARCH_FORM_DISABLED = process.env.REACT_APP_SEARCH_FORM_DISABLED;
 
 // Initialize logger
 const logger = Logger('Search');

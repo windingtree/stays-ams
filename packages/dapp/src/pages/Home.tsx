@@ -6,7 +6,7 @@ import { MessageBox } from '../components/MessageBox';
 import { SearchForm } from '../components/search/SearchForm';
 import styled from 'styled-components';
 
-const SEARCH_FORM_DISABLED = process.env.SEARCH_FORM_DISABLED;
+const SEARCH_FORM_DISABLED = process.env.REACT_APP_SEARCH_FORM_DISABLED;
 
 export const GradientText = styled(Text)`
   font-size: 2.9em;
