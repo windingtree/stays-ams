@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for your interest in contributing to WindingTree! ❤️🌳 
+Thank you for your interest in contributing to Winding Tree! ❤️🌳 
 
 Definitions for "MUST", "MUST NOT", "SHOULD", "SHOULD NOT", "MAY" are covered in [RFC2119](https://datatracker.ietf.org/doc/html/rfc2119).
 
