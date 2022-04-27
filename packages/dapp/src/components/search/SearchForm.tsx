@@ -34,15 +34,11 @@ export const parseDateToDays = (dayZero: DateTime, firstDate: DateTime, secondDa
   }
 };
 
-const dateFormat = new Intl.DateTimeFormat(undefined, {
-  month: 'short',
-  day: 'numeric',
-});
-
-const today = DateTime.now().set({ hour: 12 });
+const today = DateTime.now().set({ hour: 1 });
 const tomorrow = today.plus({ days: 1 });
-const defaultStartDay = DateTime.fromISO('2022-04-22').set({ hour: 12 });
-const defaultEndDay = DateTime.fromISO('2022-04-28').set({ hour: 12 });
+
+const defaultStartDay = DateTime.fromISO('2022-04-22');
+const defaultEndDay = DateTime.fromISO('2022-04-28');
 
 const defaultStartDate = today.toMillis() > defaultStartDay.toMillis() ? today.toISO() : defaultStartDay.toISO()
 const defaultEndDate = tomorrow.toMillis() > defaultEndDay.toMillis() ? tomorrow.toISO() : defaultEndDay.toISO()
@@ -68,11 +64,8 @@ export const SearchForm: React.FC<{
   }, [startDay, numberOfDays]);
 
   const handleDateChange = ({ value }: { value: string[] }) => {
-    const now = DateTime.now().set({ hour: 12 })
-    const tomorrow = now.plus({ days: 1 })
-
-    if (now.toMillis() > DateTime.fromISO(value[0]).toMillis()) {
-      setDepartureDate(now.toISO())
+    if (today.toMillis() > DateTime.fromISO(value[0]).toMillis()) {
+      setDepartureDate(today.toISO())
     } else {
       setDepartureDate(value[0])
     }
@@ -115,7 +108,7 @@ export const SearchForm: React.FC<{
         <Label>When</Label>
         <DateInput
           buttonProps={{
-            label: `${dateFormat.format(new Date(departureDate))} - ${dateFormat.format(new Date(returnDate))}`,
+            label: `${DateTime.fromISO(departureDate).toFormat('dd.MM.yyyy')} - ${DateTime.fromISO(returnDate).toFormat('dd.MM.yyyy')}`,
             size: 'large',
             icon: undefined,
             style: {
@@ -127,7 +120,7 @@ export const SearchForm: React.FC<{
             }
           }}
           calendarProps={{
-            bounds: [defaultStartDay.toISO(), defaultEndDay.toISO()],
+            // bounds: [defaultStartDay.toISO(), defaultEndDay.toISO()],
             fill: false,
             alignSelf: 'center',
             margin: 'small',
