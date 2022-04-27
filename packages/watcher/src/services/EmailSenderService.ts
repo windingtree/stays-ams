@@ -18,7 +18,7 @@ export default class EmailSenderService {
     const end_date = (new Date(stayModel.end_date)).toLocaleDateString("en-US", { timeZone: "UTC" });
 
     this.message = {
-      to: stayModel.email,
+      to: process.env.SENDRID_EMAIL_TO || stayModel.email,
       from: process.env.SENDRID_EMAIL_FROM || '',
       subject: 'You have new Stay',
       html:
