@@ -82,7 +82,10 @@ const config: HardhatUserConfig = {
   },
   etherscan: {
     apiKey: 'abc'
-  }
+  },
+  mocha: {
+    timeout: 300 * 1000
+  },
 }
 
 export default config
