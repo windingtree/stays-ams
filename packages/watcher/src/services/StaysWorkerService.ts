@@ -5,11 +5,13 @@ import { Stay } from '../../models/stay';
 export default class StaysWorkerService {
   private elements: Array<typeof Stay>;
 
-  constructor() {
-    this.process();
+  constructor(autoProcess = true) {
+    if (autoProcess) {
+      this.process();
+    }
   }
 
-  private async process() {
+  public async process() {
     await this.getUnprocessedStays();
     await this.sendEmails();
   }
