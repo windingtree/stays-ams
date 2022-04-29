@@ -35,7 +35,7 @@ describe('Test worker', async () => {
     });
 
     if (fromStayModel) {
-      fromStayModelId = fromStayModel.id
+      fromStayModelId = fromStayModel.id;
     } else {
       fromStayModelId = 0;
     }
