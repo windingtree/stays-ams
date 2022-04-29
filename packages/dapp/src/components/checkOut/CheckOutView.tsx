@@ -15,7 +15,7 @@ import { LodgingFacilityRecord } from '../../store/actions';
 import { usePoller } from '../../hooks/usePoller';
 import { useContract } from '../../hooks/useContract';
 import { useAppState } from '../../store';
-import { CustomButton } from '../SearchResultCard';
+import { CustomButton } from '../search/SearchResultCard';
 
 const InnerSpinner = styled(Spinner)`
   margin-left: 8px;
@@ -122,7 +122,7 @@ export const CheckOutView = ({
         <Box>
           <CustomText>{getDate(parseTrait('startDay')).toISODate()} - {getDate(Number(parseTrait('startDay')) + Number(parseTrait('numberOfDays'))).toISODate()}</CustomText>
         </Box>
-        <Box pad={{ vertical: 'medium' }}>
+        <Box pad={{ vertical: 'small' }}>
           {tokenStatus === 'booked' ?
             <StayVoucherQr
               provider={provider}
@@ -137,21 +137,22 @@ export const CheckOutView = ({
               pricePerNightWei={'0'}
             />
             : null}
-          {tokenStatus === 'checked-in' ?
-            <CustomButton onClick={() => {
+          <CustomButton
+            onClick={() => {
               checkOut(tokenId, checkOutDate, setHash)
               setErrorEnabled(true)
-            }}>
-              {() => (
-                <Box>
-                  <Text size='1rem'>
-                    Check out
-                  </Text>
-                  {loading && <InnerSpinner />}
-                </Box>
-              )}
-            </CustomButton>
-            : null}
+            }}
+            disabled={checkOutDate.toMillis() > DateTime.now().toMillis()}
+          >
+            {() => (
+              <Box>
+                <Text size='1rem'>
+                  Check out
+                </Text>
+                {loading && <InnerSpinner />}
+              </Box>
+            )}
+          </CustomButton>
 
           {hashLink !== null ?
             <ExternalLink href={hashLink} label={centerEllipsis(hash)} />

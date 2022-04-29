@@ -1,7 +1,7 @@
 import { PageWrapper } from './PageWrapper';
 import { SearchForm } from '../components/search/SearchForm';
 import { Box, Spinner, Text } from 'grommet';
-import { SearchResultCard } from '../components/SearchResultCard';
+import { SearchResultCard } from '../components/search/SearchResultCard';
 import { useAppState } from '../store';
 import { useSpaceSearch } from '../hooks/useSpaceSearch';
 import { useMemo, useState, useEffect } from 'react';

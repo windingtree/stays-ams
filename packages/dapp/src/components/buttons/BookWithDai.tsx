@@ -1,6 +1,6 @@
 import { Text, Spinner, Box } from 'grommet';
 import styled from 'styled-components';
-import { CustomButton } from '../SearchResultCard';
+import { CustomButton } from '../search/SearchResultCard';
 
 const InnerSpinner = styled(Spinner)`
   margin-left: 8px;
