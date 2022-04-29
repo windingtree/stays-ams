@@ -4,7 +4,8 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { MessageBox } from "../components/MessageBox";
 import { useGetToken } from "../hooks/useMyTokens";
 import { useAppState } from "../store";
-import { TokenCard, TokenView } from "./MyTokens";
+import { TokenCard } from "../components/tokens/TokenCard";
+import { TokenView } from "../components/tokens/TokenView";
 import { PageWrapper } from "./PageWrapper";
 
 export const TokenSearch = ({ tokenId }: { tokenId?: string }) => {

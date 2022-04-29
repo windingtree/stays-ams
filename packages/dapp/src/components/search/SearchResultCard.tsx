@@ -1,11 +1,11 @@
 import { Box, Text, Image, Grid, Button, Notification, Carousel, Anchor } from 'grommet';
 import type { Space } from 'stays-data-models'
 import { useNavigate } from 'react-router-dom';
-import { useAppState } from '../store';
+import { useAppState } from '../../store';
 import styled from 'styled-components';
 import { useCallback, useMemo, useState } from 'react';
 import { utils, BigNumber as BN } from 'ethers';
-import { useWindowsDimension } from '../hooks/useWindowsDimension';
+import { useWindowsDimension } from '../../hooks/useWindowsDimension';
 
 export const CustomButton = styled(Button)`
   color: black;
@@ -14,7 +14,7 @@ export const CustomButton = styled(Button)`
   minWidth: 10rem;
   border-radius: 2.5rem;
   /* background: linear-gradient(90.72deg, #FFF500, #3B37FF, #0D0E0F); */
-
+  margin: 0.25rem 0;
   font-weight: 700;
   font-size: 16px;
   line-height: 24px;
