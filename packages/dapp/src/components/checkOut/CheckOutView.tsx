@@ -15,7 +15,7 @@ import { LodgingFacilityRecord } from '../../store/actions';
 import { usePoller } from '../../hooks/usePoller';
 import { useContract } from '../../hooks/useContract';
 import { useAppState } from '../../store';
-import { CustomButton } from '../SearchResultCard';
+import { CustomButton } from '../search/SearchResultCard';
 
 const InnerSpinner = styled(Spinner)`
   margin-left: 8px;

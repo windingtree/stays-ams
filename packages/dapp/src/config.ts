@@ -1,3 +1,9 @@
+
+import { Settings } from "luxon";
+
+// Configure the time zone
+Settings.defaultZone = 'Etc/GMT0';
+
 export interface NetworkInfo {
   name: string;
   chainId: number;

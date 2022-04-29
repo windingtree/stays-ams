@@ -9,7 +9,7 @@ import { useSignVoucher } from '../hooks/useSignVoucher';
 import Logger from '../utils/logger';
 import styled from 'styled-components';
 import { utils, BigNumber as BN } from 'ethers';
-import { CustomButton } from './SearchResultCard';
+import { CustomButton } from './search/SearchResultCard';
 import { getDate } from '../utils/dates';
 
 
