@@ -14,7 +14,7 @@ export const CustomButton = styled(Button)`
   minWidth: 10rem;
   border-radius: 2.5rem;
   /* background: linear-gradient(90.72deg, #FFF500, #3B37FF, #0D0E0F); */
-
+  margin: 0.25rem 0;
   font-weight: 700;
   font-size: 16px;
   line-height: 24px;
