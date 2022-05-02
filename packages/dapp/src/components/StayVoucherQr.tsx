@@ -30,7 +30,7 @@ const ResponsiveRow = (winWidth: number): string[] => {
   if (winWidth <= 600) {
     return ['auto', 'auto', 'auto'];
   }
-  return ['16rem', '16em'];
+  return ['16rem', 'auto'];
 };
 
 const ResponsiveArea = (winWidth: number): any[] => {
