@@ -14,6 +14,7 @@ import { ExternalLink } from '../ExternalLink';
 import { LodgingFacilityRecord } from '../../store/actions';
 import styled from 'styled-components';
 // import { CustomButton } from '../SearchResultCard';
+import { useWindowsDimension } from '../../hooks/useWindowsDimension';
 
 export const CustomBoldText = styled(Text)`
   color: #0D0E0F;
@@ -22,7 +23,6 @@ export const CustomBoldText = styled(Text)`
   font-weight: 600;
   font-size: 18px;
   line-height: 24px;
-  // margin-bottom: 1.5rem;
 `;
 
 interface TokenViewProps extends StayToken {
@@ -47,6 +47,7 @@ export const TokenView = ({
   withCloseButton = true,
   withRpcProvider = false
 }: TokenViewProps) => {
+  const { winWidth } = useWindowsDimension();
   const { provider, rpcProvider, ipfsNode } = useAppState();
   const [, , contractError] = useContract(
     withRpcProvider ? rpcProvider : provider,
@@ -98,7 +99,7 @@ export const TokenView = ({
       style={{ position: 'relative' }}
     >
       <Box
-        direction='row'
+        direction={winWidth > 768 ? 'row' : 'column'}
         justify='between'
         pad='large'
         round={false}

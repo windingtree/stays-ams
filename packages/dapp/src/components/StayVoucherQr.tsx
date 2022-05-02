@@ -12,11 +12,8 @@ import { utils, BigNumber as BN } from 'ethers';
 import { CustomButton } from './search/SearchResultCard';
 import { getDate } from '../utils/dates';
 
-
 // Initialize logger
 const logger = Logger('StayVoucherQr');
-
-
 
 export const Title = styled(Text)`
   color: #0D0E0F;
@@ -50,8 +47,6 @@ export const CustomText = styled(Text)`
   font-weight: 400;
   font-size: 18px;
   line-height: 24px;
-  text-align: start;
-  // text-justify: center;
 `;
 
 export interface StayVoucherQrProps {
