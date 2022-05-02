@@ -73,7 +73,7 @@ export const TokenCard = ({
           <CustomText>{space?.name},{quantity} {quantity === 1 ? 'room' : 'rooms'} </CustomText>
         </Box>
         <Box align='center' justify='center' pad='small'>
-          <CustomText>{getDate(parseTrait('startDay')).toFormat('dd.MM.yyyy')} - {getDate(Number(parseTrait('startDay')) + Number(parseTrait('numberOfDays'))).toFormat('dd.MM.yyyy')}</CustomText>
+          <CustomText>{getDate(parseTrait('startDay')).toFormat('dd.MM.yyyy')}-{getDate(Number(parseTrait('startDay')) + Number(parseTrait('numberOfDays'))).toFormat('dd.MM.yyyy')}</CustomText>
         </Box>
         <Box
           alignSelf='center'

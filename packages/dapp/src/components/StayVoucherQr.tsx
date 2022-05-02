@@ -181,7 +181,7 @@ export const StayVoucherQr = ({
               border='top'
             >
               <HotelTitle>{facility?.name}</HotelTitle>
-              <CustomText>{getDate(parseTrait('startDay')).toFormat('MM.dd.yyyy')} - {getDate(Number(parseTrait('startDay')) + Number(parseTrait('numberOfDays'))).toFormat('MM.dd.yyyy')}</CustomText>
+              <CustomText>{getDate(parseTrait('startDay')).toFormat('MM.dd.yyyy')}-{getDate(Number(parseTrait('startDay')) + Number(parseTrait('numberOfDays'))).toFormat('MM.dd.yyyy')}</CustomText>
               <CustomText>{facility?.type}, {quantity} {quantity === 1 ? 'room' : 'rooms'}</CustomText>
               <Price>{totalEther} xDAI</Price>
             </Box>
