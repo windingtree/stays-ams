@@ -108,7 +108,7 @@ export const SearchForm: React.FC<{
         <Label>When</Label>
         <DateInput
           buttonProps={{
-            label: `${DateTime.fromISO(departureDate).toFormat('dd.MM.yyyy')} - ${DateTime.fromISO(returnDate).toFormat('dd.MM.yyyy')}`,
+            label: `${DateTime.fromISO(departureDate).toFormat('dd.MM.yy')}-${DateTime.fromISO(returnDate).toFormat('dd.MM.yy')}`,
             size: 'large',
             icon: undefined,
             style: {
