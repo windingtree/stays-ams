@@ -1,0 +1,39 @@
+name: User story
+description: Describe a user story
+labels: ["story"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please ensure that the user story has not already been requested in the issue tracker.
+
+        Thanks for helping us improve Stays!
+  - type: dropdown
+    attributes:
+      label: User
+      description: Who are the main stakeholders in the story?
+      multiple: true
+      options:
+        - Travellers
+        - Accommodation Providers
+        - Event Organizers
+        - Other (please describe)
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Describe the user story
+      description: Please also describe what the feature is aiming to solve, if relevant.
+      placeholder: “As a [persona], I [want to], [so that].”
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Describe the features
+      description: Each user story can include multiple features, please list them in as much detail as possible.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Additional context
+      description: Add any other context to the user story or features (like screenshots, resources)
