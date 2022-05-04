@@ -4,6 +4,8 @@ import chai, { expect, assert } from 'chai';
 import chp from 'chai-as-promised';
 chai.use(chp);
 
+console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+
 describe('Web3Storage API', () => {
   let apiKey: string;
   let stor: Web3StorageApi;

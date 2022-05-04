@@ -1,7 +1,7 @@
 import { PageWrapper } from './PageWrapper';
 import { SearchForm } from '../components/search/SearchForm';
 import { Box, Spinner, Text } from 'grommet';
-import { SearchResultCard } from '../components/SearchResultCard';
+import { SearchResultCard } from '../components/search/SearchResultCard';
 import { useAppState } from '../store';
 import { useSpaceSearch } from '../hooks/useSpaceSearch';
 import { useMemo, useState, useEffect } from 'react';
@@ -11,6 +11,8 @@ import { GradientText } from './Home';
 import styled from 'styled-components';
 import { SpaceRecord } from '../store/actions';
 import Logger from '../utils/logger';
+
+const SEARCH_FORM_DISABLED = process.env.REACT_APP_SEARCH_FORM_DISABLED;
 
 // Initialize logger
 const logger = Logger('Search');
@@ -80,6 +82,7 @@ export const Search = () => {
   const [searchActivated, setSearchActivated] = useState<boolean>(false);
   const [afterLoading, setAfterLoading] = useState<boolean>(false);
   const [filteredSpaces, setFilteredSpaces] = useState<SpaceRecord[]>([]);
+  const [searchFormDisabled] = useState<boolean>((SEARCH_FORM_DISABLED === 'true'));
 
   useEffect(
     () => {
@@ -131,13 +134,16 @@ export const Search = () => {
         </Text>
       </Box>
 
-      <Box margin={{ bottom: 'medium' }}>
-        <SearchForm
-          startDay={startDay}
-          numberOfDays={numberOfDays}
-          initRoomsNumber={roomsNumber}
-        />
-      </Box>
+      {
+        !searchFormDisabled &&
+        <Box margin={{ bottom: 'medium' }}>
+          <SearchForm
+            startDay={startDay}
+            numberOfDays={numberOfDays}
+            initRoomsNumber={roomsNumber}
+          />
+        </Box>
+      }
 
       <MessageBox type='error' show={!!error}>
         <Box direction='row'>

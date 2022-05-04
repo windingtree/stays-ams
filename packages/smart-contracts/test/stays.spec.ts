@@ -61,11 +61,14 @@ describe("Stays.sol", () => {
       expect(await deployer.staysContract.name()).to.be.eq("Stay Amsterdam");
       expect(await deployer.staysContract.symbol()).to.be.eq("STAYAMS");
     });
-    it("should have 0 facilities first", async () => {
-      expect(
-        await deployer.staysContract.getAllLodgingFacilityIds()
-      ).to.be.of.length(0);
-    });
+
+    if (!network.config.tags.includes('forked')) {
+      it("should have 0 facilities first", async () => {
+        expect(
+          await deployer.staysContract.getAllLodgingFacilityIds()
+        ).to.be.gt(0);
+      });
+    }
   });
 
   describe('Pausable, Ownable', () => {
@@ -87,7 +90,7 @@ describe("Stays.sol", () => {
   });
 
   describe("registerLodgingFacility()", () => {
-    let facilityId; 
+    let facilityId;
 
     beforeEach(async () => {
       await alice.staysContract["registerLodgingFacility(string,bool)"](
@@ -174,7 +177,7 @@ describe("Stays.sol", () => {
     it("can update the lodging facility's URI", async () => {
       await expect(alice.staysContract.updateLodgingFacility(facilityId, "")).to.be.revertedWith('Data URI must be provided')
       await expect(alice.staysContract.updateLodgingFacility(facilityId, "updatedUri")).to.not.be.reverted
-      
+
       const { dataURI } = await alice.staysContract.getLodgingFacilityById(facilityId)
       expect(dataURI).to.be.equal("updatedUri")
     })
@@ -286,7 +289,7 @@ describe("Stays.sol", () => {
 
       await expect(bob.staysContract.deactivateSpace(spaceIds[0])).to.be.revertedWith('Only space owner is allowed')
       await alice.staysContract.deactivateSpace(spaceIds[0])
-      
+
       activeSpaceIds = await alice.staysContract.getActiveSpaceIdsByFacilityId(facilityId)
       expect(activeSpaceIds.length).to.be.equal(0)
 
@@ -502,7 +505,7 @@ describe("Stays.sol", () => {
             { value: 1000000 }
           );
 
-          const tokensForCheckIn = await alice.staysContract.getTokensBySpaceId(sid, 0)
+          await alice.staysContract.getTokensBySpaceId(sid, 0);
 
           const { exists } = await alice.staysContract.getSpaceByTokenId(tokenId)
           expect(exists).to.be.equal(true)
@@ -515,7 +518,7 @@ describe("Stays.sol", () => {
 
           // console.log(JSON.stringify(dataUri, null, 2));
 
-          expect(dataUri.name).to.equal('Stay Amsterdam #1');
+          expect(dataUri.name).to.equal(`Stay Amsterdam #${tokenId}`);
           // @todo add all props
         });
 
@@ -717,10 +720,20 @@ describe("Stays.sol", () => {
         const startDay = 100;
         const numDays = 3;
         let tokenId;
+        const startDay_nch = 103;
+        let tokenId_nch;
         let voucher;
         let chainId;
 
+        const getStayTimestamps = async (start: number, days: number): Promise<[number, number]> => {
+          const dayZero = await alice.staysContract.dayZero();
+          const checkIn = dayZero + (start * 86400);
+          const checkOut = checkIn + (days * 86400);
+          return [checkIn, checkOut];
+        };
+
         beforeEach(async () => {
+          // for tests with checkin
           let tx = await alice.staysContract.newStay(
             sid,
             startDay,
@@ -728,7 +741,7 @@ describe("Stays.sol", () => {
             1,
             { value: valuePerNight * numDays }
           );
-          const eventNewStay = await extractEventFromTx(tx, 'NewStay');
+          let eventNewStay = await extractEventFromTx(tx, 'NewStay');
           tokenId = eventNewStay.tokenId;
           ({ chainId } = await alice.staysContract.provider.getNetwork());
           voucher = await createVoucher(
@@ -739,6 +752,16 @@ describe("Stays.sol", () => {
             alice.staysContract.address,
             chainId
           );
+          // for test without checkin
+          tx = await alice.staysContract.newStay(
+            sid,
+            startDay_nch,
+            numDays,
+            1,
+            { value: valuePerNight * numDays }
+          );
+          eventNewStay = await extractEventFromTx(tx, 'NewStay');
+          tokenId_nch = eventNewStay.tokenId;
         });
 
         it('successfully checks in', async () => {
@@ -758,7 +781,7 @@ describe("Stays.sol", () => {
           ).to.revertedWith('Forbidden unless checkout date');
         });
 
-        it('should not be able to checkout a non-existant stay', async () => {
+        it('should not be able to checkout a non-existent stay', async () => {
           await expect(bob.staysContract.checkOut(9849823)).to.be.revertedWith('Stay not found')
         })
 
@@ -766,10 +789,10 @@ describe("Stays.sol", () => {
           const txCheckIn = await bob.staysContract.checkIn(tokenId, voucher);
           await txCheckIn.wait();
           const initialBalanceBob = await bob.staysContract.provider.getBalance(bob.address);
-          await ethers.provider.send('evm_increaseTime', [(startDay + 1) * 86400]);
+          const [, checkOutTimestamp] = await getStayTimestamps(startDay, numDays);
+          await ethers.provider.send('evm_setNextBlockTimestamp', [checkOutTimestamp]);
           const txCheckOut = await bob.staysContract.checkOut(tokenId);
           const receipt = await txCheckOut.wait();
-          // console.log('RECEIPT', receipt);
           const checkoutTxCost = receipt.cumulativeGasUsed.mul(receipt.effectiveGasPrice);
           const eventCheckOut = await extractEventFromTx(txCheckOut, 'CheckOut');
           expect(eventCheckOut.tokenId).to.equal(tokenId);
@@ -782,6 +805,26 @@ describe("Stays.sol", () => {
           );
 
           await expect(bob.staysContract.checkOut(tokenId)).to.be.revertedWith('Already checked out')
+        });
+
+        it('should checkout without checkin', async () => {
+          const initialBalanceBob = await bob.staysContract.provider.getBalance(bob.address);
+          const [, checkOutTimestamp] = await getStayTimestamps(startDay_nch, numDays);
+          await ethers.provider.send('evm_setNextBlockTimestamp', [checkOutTimestamp]);
+          const txCheckOut = await bob.staysContract.checkOut(tokenId_nch);
+          const receipt = await txCheckOut.wait();
+          const checkoutTxCost = receipt.cumulativeGasUsed.mul(receipt.effectiveGasPrice);
+          const eventCheckOut = await extractEventFromTx(txCheckOut, 'CheckOut');
+          expect(eventCheckOut.tokenId).to.equal(tokenId_nch);
+
+          const finalBalanceBob = await bob.staysContract.provider.getBalance(bob.address);
+          expect(finalBalanceBob).to.equal(
+            initialBalanceBob
+              .add(BigNumber.from(valuePerNight).mul(BigNumber.from(numDays)))
+              .sub(checkoutTxCost)
+          );
+
+          await expect(bob.staysContract.checkOut(tokenId_nch)).to.be.revertedWith('Already checked out')
         });
 
         it('can send stay as a gift and not have the giftee steal', async () => {

@@ -1,22 +1,22 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable no-undef */
-module.exports = (config) => {
+module.exports = config => {
   config.set({
 
 
     // frameworks to use
     // available frameworks: https://www.npmjs.com/search?q=keywords:karma-adapter
-    frameworks: ['mocha', 'karma-typescript'],
+    frameworks: ['mocha', 'chai', 'karma-typescript'],
+
+    exclude: [
+      'temp'
+    ],
 
 
     // list of files / patterns to load in the browser
     files: [
-      {
-        pattern: 'src/**/*.ts'
-      },
-      {
-        pattern: 'test/**/*.ts'
-      }
+      'src/**/*.ts',
+      'test/**/*.ts'
     ],
 
 
@@ -30,7 +30,7 @@ module.exports = (config) => {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://www.npmjs.com/search?q=keywords:karma-reporter
-    reporters: ['progress', 'karma-typescript'],
+    reporters: ['progress'],
 
 
     // web server port
@@ -70,13 +70,18 @@ module.exports = (config) => {
     browserNoActivityTimeout: 100000,
 
     karmaTypescriptConfig: {
-      tsconfig: 'tsconfig.json',
-      // bundlerOptions: {
-      //   transforms: [
-      //     // eslint-disable-next-line no-undef
-      //     require('karma-typescript-es6-transform')()
-      //   ]
-      // },
+      tsconfig: './tsconfig.json',
+      exclude: [
+        'node_modules'
+      ],
+      bundlerOptions: {
+        transforms: [
+          require('karma-typescript-es6-transform')({
+            presets: [require('@babel/preset-env')],
+            plugins: ['@babel/plugin-transform-runtime']
+          })
+        ]
+      },
       coverageOptions: {
         instrumentation: false
       }

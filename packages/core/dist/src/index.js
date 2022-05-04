@@ -33,6 +33,7 @@ const getDayZero_1 = require("./api/getDayZero");
 const checkIn_1 = require("./api/checkIn");
 const checkOut_1 = require("./api/checkOut");
 const cancel_1 = require("./api/cancel");
+const getNewBookingsTokenIds_1 = require("./api/getNewBookingsTokenIds");
 __exportStar(require("./types"), exports);
 class Contract {
     constructor(contractAddress, providerOrUri, web3Storage, withSigner = true) {
@@ -122,6 +123,9 @@ class Contract {
     }
     cancel(tokenId, overrides, transactionHashCb, confirmations) {
         return (0, cancel_1.cancel)(this.contract, tokenId, overrides, transactionHashCb, confirmations);
+    }
+    getNewBookingsTokenIds(fromBlock) {
+        return (0, getNewBookingsTokenIds_1.getNewBookingsTokenIds)(this.contract, fromBlock);
     }
 }
 exports.Contract = Contract;

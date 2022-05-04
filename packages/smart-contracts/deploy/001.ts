@@ -19,7 +19,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   // --- Account listing ---
   console.log(`Deployer: ${deployer}`)
-  console.log(`Test users: ${users}`)
+  console.log('Test users:', users);
 
   // --- Deploy the contracts ---
 
@@ -44,7 +44,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   console.log(tx)
 
   // if forked testnet, assume multisig isn't set as owner...
-  if (!network.config.live && network.name === 'hardhat') {
+  if (network.config.tags.includes('forked') && network.name === 'hardhat') {
     await network.provider.send('hardhat_setBalance', [
       COMMUNITY_MULTI_SIG,
       '0xfffffffffffffffffffffffffffff' // set arbitrarily large amount of ETH in multi-sig
@@ -61,7 +61,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
     console.log(receipt)
 
-    // setup test account 
+    // setup test account
   }
 
 
