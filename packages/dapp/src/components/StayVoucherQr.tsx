@@ -11,12 +11,42 @@ import styled from 'styled-components';
 import { utils, BigNumber as BN } from 'ethers';
 import { CustomButton } from './search/SearchResultCard';
 import { getDate } from '../utils/dates';
-
+import { useWindowsDimension } from '../hooks/useWindowsDimension';
 
 // Initialize logger
 const logger = Logger('StayVoucherQr');
 
+const ResponsiveColumn = (winWidth: number): string[] => {
+  if (winWidth <= 512) {
+    return ['100%'];
+  }
+  if (winWidth <= 600) {
+    return ['80vw'];
+  }
+  return ['17rem', '16rem'];
+};
 
+const ResponsiveRow = (winWidth: number): string[] => {
+  if (winWidth <= 600) {
+    return ['auto', 'auto', 'auto'];
+  }
+  return ['16rem', 'auto'];
+};
+
+const ResponsiveArea = (winWidth: number): any[] => {
+  if (winWidth <= 600) {
+    return [
+      { name: 'label', start: [0, 0], end: [0, 0] },
+      { name: 'qr', start: [0, 1], end: [0, 1] },
+      { name: 'hotel-data', start: [0, 2], end: [0, 2] },
+    ];
+  }
+  return [
+    { name: 'label', start: [0, 0], end: [0, 1] },
+    { name: 'qr', start: [1, 0], end: [1, 0] },
+    { name: 'hotel-data', start: [0, 1], end: [1, 1] },
+  ];
+};
 
 export const Title = styled(Text)`
   color: #0D0E0F;
@@ -50,8 +80,6 @@ export const CustomText = styled(Text)`
   font-weight: 400;
   font-size: 18px;
   line-height: 24px;
-  text-align: start;
-  // text-justify: center;
 `;
 
 export interface StayVoucherQrProps {
@@ -78,6 +106,7 @@ export const StayVoucherQr = ({
   attributes,
   facility
 }: StayVoucherQrProps) => {
+  const { winWidth } = useWindowsDimension();
   const [signCallback, isSignerReady] = useSignVoucher(provider);
   const [qrData, setQrData] = useState<string | undefined>();
 
@@ -148,21 +177,15 @@ export const StayVoucherQr = ({
       >
         {typeof qrData === 'string' &&
           <Grid
-            height='33rem'
             pad='large'
             gap='1rem'
-            columns={['17rem', '16rem']}
-            rows={['16rem', '16em']}
-            areas={[
-              { name: 'label', start: [0, 0], end: [0, 1] },
-              { name: 'qr', start: [1, 0], end: [1, 0] },
-              { name: 'hotel-data', start: [0, 1], end: [1, 1] },
-            ]}
+            rows={ResponsiveRow(winWidth)}
+            columns={ResponsiveColumn(winWidth)}
+            areas={ResponsiveArea(winWidth)}
           >
             <Box
               gridArea='label'
               direction='column'
-              align='start'
             >
               <Title style={{ marginBottom: '.5rem' }}>You stay is booked and is now an NFT.</Title>
               <CustomText>Please take a picture or download the QR code as it will be used for you to check-in at the property.</CustomText>
@@ -174,6 +197,7 @@ export const StayVoucherQr = ({
             </Box>
             <Box
               gridArea='qr'
+              align='center'
             >
               <QRCode
                 size={256}
@@ -186,7 +210,7 @@ export const StayVoucherQr = ({
               border='top'
             >
               <HotelTitle>{facility?.name}</HotelTitle>
-              <CustomText>{getDate(parseTrait('startDay')).toFormat('MM.dd.yyyy')} - {getDate(Number(parseTrait('startDay')) + Number(parseTrait('numberOfDays'))).toFormat('MM.dd.yyyy')}</CustomText>
+              <CustomText>{getDate(parseTrait('startDay')).toFormat('MM.dd.yyyy')}-{getDate(Number(parseTrait('startDay')) + Number(parseTrait('numberOfDays'))).toFormat('MM.dd.yyyy')}</CustomText>
               <CustomText>{facility?.type}, {quantity} {quantity === 1 ? 'room' : 'rooms'}</CustomText>
               <Price>{totalEther} xDAI</Price>
             </Box>

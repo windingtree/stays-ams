@@ -8,6 +8,7 @@ import { utils, BigNumber as BN } from 'ethers';
 // import { CustomButton } from '../components/SearchResultCard';
 import { getDate } from '../../utils/dates';
 import styled from 'styled-components';
+import { useWindowsDimension } from '../../hooks/useWindowsDimension';
 
 const HotelTitle = styled(Text)`
   color: #000;
@@ -33,7 +34,7 @@ export const TokenCard = ({
   facility,
   children
 }: TokenCardProps) => {
-  console.log('facility', facility)
+  const { winWidth } = useWindowsDimension();
   if (!facility || !attributes) {
     return null
   }
@@ -49,13 +50,16 @@ export const TokenCard = ({
   return (
     <Box>
       <Box
-        direction='row'
+        direction={winWidth > 768 ? 'row' : 'column'}
         justify='between'
         pad='small'
-        style={{ borderBottom: '1px solid black' }}
+        style={{
+          borderBottom: '1px solid black',
+          textAlign: winWidth > 768 ? 'start' : 'center',
+        }}
         onClick={() => onClick()}
       >
-        <Box margin={{ right: 'large' }}>
+        <Box align='center'>
           <Image
             height='120'
             width='120'
@@ -69,7 +73,7 @@ export const TokenCard = ({
           <CustomText>{space?.name},{quantity} {quantity === 1 ? 'room' : 'rooms'} </CustomText>
         </Box>
         <Box align='center' justify='center' pad='small'>
-          <CustomText>{getDate(parseTrait('startDay')).toFormat('dd.MM.yyyy')} - {getDate(Number(parseTrait('startDay')) + Number(parseTrait('numberOfDays'))).toFormat('dd.MM.yyyy')}</CustomText>
+          <CustomText>{getDate(parseTrait('startDay')).toFormat('dd.MM.yyyy')}-{getDate(Number(parseTrait('startDay')) + Number(parseTrait('numberOfDays'))).toFormat('dd.MM.yyyy')}</CustomText>
         </Box>
         <Box
           alignSelf='center'

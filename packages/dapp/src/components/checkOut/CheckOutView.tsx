@@ -16,6 +16,23 @@ import { usePoller } from '../../hooks/usePoller';
 import { useContract } from '../../hooks/useContract';
 import { useAppState } from '../../store';
 import { CustomButton } from '../search/SearchResultCard';
+import { useWindowsDimension } from '../../hooks/useWindowsDimension';
+
+export const ResponsiveColumn = (winWidth: number) => {
+  if (winWidth >= 1300) {
+    return ['medium', 'small', 'auto', '10rem'];
+  } else if (winWidth >= 1000) {
+    return ['medium', 'small', 'auto', '10rem'];
+  } else if (winWidth >= 768) {
+    return ['medium', 'small', 'auto', '10rem'];
+  } else if (winWidth >= 600) {
+    return ['auto'];
+  } else if (winWidth <= 500) {
+    return ['auto'];
+  } else if (winWidth <= 400) {
+    return ['auto'];
+  }
+};
 
 const InnerSpinner = styled(Spinner)`
   margin-left: 8px;
@@ -53,6 +70,7 @@ export const CheckOutView = ({
   facility,
   facilityOwner,
 }: CheckOutProps) => {
+  const { winWidth } = useWindowsDimension();
   const { rpcProvider, ipfsNode } = useAppState();
   const [contract] = useContract(rpcProvider, ipfsNode, false);
 
@@ -110,7 +128,7 @@ export const CheckOutView = ({
       <Grid
         fill='horizontal'
         align='center'
-        columns={['medium', 'small', 'auto', '10rem']}
+        columns={ResponsiveColumn(winWidth)}
         responsive
       >
         <Box>
@@ -120,7 +138,7 @@ export const CheckOutView = ({
           <CustomText>{tokenStatus ?? 'unknown'}</CustomText>
         </Box>
         <Box>
-          <CustomText>{getDate(parseTrait('startDay')).toISODate()} - {getDate(Number(parseTrait('startDay')) + Number(parseTrait('numberOfDays'))).toISODate()}</CustomText>
+          <CustomText>{getDate(parseTrait('startDay')).toFormat('MM.dd.yyyy')}-{getDate(Number(parseTrait('startDay')) + Number(parseTrait('numberOfDays'))).toFormat('MM.dd.yyyy')}</CustomText>
         </Box>
         <Box pad={{ vertical: 'small' }}>
           {tokenStatus === 'booked' ?
