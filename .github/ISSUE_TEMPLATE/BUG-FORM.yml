@@ -1,0 +1,46 @@
+name: Bug report
+description: File a bug report
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please ensure that the bug has not already been filed in the issue tracker.
+
+        Thanks for taking the time to report this bug!
+  - type: dropdown
+    attributes:
+      label: Operating System
+      description: What operating system are you on?
+      options:
+        - Windows
+        - macOS (amd)
+        - macOS (M1)
+        - Linux
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: What browsers are you seeing the problem on?
+      multiple: true
+      options:
+        - Firefox
+        - Chrome
+        - Safari
+        - Microsoft Edge
+        - Brave
+        - Opera
+  - type: textarea
+    attributes:
+      label: Describe the bug
+      description: Please include relevant Solidity snippets as well if relevant.
+    validations:
+      required: true
+  - type: input
+    id: contact
+    attributes:
+      label: Contact Details
+      description: How can we get in touch with you if we need more info?
+      placeholder: email / discord handle / telegram
+    validations:
+      required: false
+  
