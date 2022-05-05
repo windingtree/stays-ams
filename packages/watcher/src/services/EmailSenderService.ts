@@ -1,41 +1,57 @@
-import sgMail from "@sendgrid/mail";
+import client from "@sendgrid/mail"
 import { StayInit } from '../../models/stay';
 
 export default class EmailSenderService {
   private fromEmail: string;
-  private message: { subject: string; from: string; html: string; to: string };
+  private message;
   private stayModel: typeof StayInit;
 
   constructor() {
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY || '');
+    client.setApiKey(process.env.SENDGRID_API_KEY || '');
     this.fromEmail = process.env.SENDRID_EMAIL_FROM || '';
   }
 
   public setMessage(stayModel: typeof StayInit) {
     this.stayModel = stayModel;
-    const quantity = stayModel.quantity;
-    const startDate = (new Date(stayModel.start_date)).toLocaleDateString("en-US", { timeZone: "UTC" });
-    const end_date = (new Date(stayModel.end_date)).toLocaleDateString("en-US", { timeZone: "UTC" });
+    const start_date = (new Date(stayModel.start_date)).toLocaleString("en-US", { timeZone: "UTC" });
+    const end_date = (new Date(stayModel.end_date)).toLocaleString("en-US", { timeZone: "UTC" });
+
 
     this.message = {
-      to: process.env.SENDRID_EMAIL_TO || stayModel.email,
       from: process.env.SENDRID_EMAIL_FROM || '',
-      subject: 'You have new Stay',
-      html:
-        `Rooms quantity: <strong>${ quantity }</strong><br>` +
-        `Start Date: <strong>${ startDate }</strong><br>` +
-        `End Date: <strong>${ end_date }</strong><br>` +
-        `Check your account`
-      ,
+      personalizations: [{
+        to: [
+          {
+            email: process.env.SENDRID_EMAIL_TO || stayModel.email,
+            name: stayModel.name
+          }
+        ],
+        dynamic_template_data: {
+          name: stayModel.data.name,
+          token_id: stayModel.token_id,
+          price: stayModel.data.price,
+          guests: stayModel.quantity,
+          start_date,
+          end_date,
+          policy: '-',
+          address: stayModel.data.address,
+          contact: stayModel.data.contact
+        },
+      }],
+      template_id: process.env.SENDRID_EMAIL_TEMPLATE_ID || ''
     };
   }
 
   public async sendEmail() {
-    await sgMail.send(this.message);
-    this.updateStayStatus();
+    await client
+      .send(this.message)
+      .then(async () => await this.updateStayStatus())
+      .catch(error => {
+        throw error;
+      });
   }
 
-  private updateStayStatus() {
+  private async updateStayStatus() {
     this.stayModel.update({ status: 1 });
   }
 }
