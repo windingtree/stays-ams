@@ -22,6 +22,7 @@ export const Modal = ({
       <Layer
         style={{
           borderRadius: '2rem',
+          height:'auto'
         }}
         onEsc={() => onClose()}
         onClickOutside={() => onClose()}
