@@ -11,6 +11,7 @@ export class Stay extends Model<InferAttributes<Stay>, InferCreationAttributes<S
   declare status: number
   declare start_date: Date
   declare end_date: Date
+  declare data: JSON
 }
 
 export let StayInit;
@@ -28,7 +29,8 @@ export default StayInit = (sequelize): typeof Stay => {
     quantity: {type: DataTypes.STRING},
     status: {type: DataTypes.INTEGER},
     start_date: {type: DataTypes.DATE},
-    end_date: {type: DataTypes.DATE}
+    end_date: {type: DataTypes.DATE},
+    data: {type: DataTypes.JSON}
   }, {
     sequelize,
     modelName: 'Stay',

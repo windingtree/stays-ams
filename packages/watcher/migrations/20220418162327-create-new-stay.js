@@ -31,6 +31,9 @@ module.exports = {
       end_date: {
         type: Sequelize.DATE
       },
+      data: {
+        type: Sequelize.JSON
+      },
       status: {
         allowNull: false,
         type: Sequelize.NUMBER
